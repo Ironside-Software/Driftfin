@@ -260,7 +260,7 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                             child: CircularProgressIndicator(strokeCap: StrokeCap.round),
                           ),
                         LoadState.completed => switch (photo.internalType) {
-                            DriftfinItemType.video => SimpleVideoPlayer(
+                            FladderItemType.video => SimpleVideoPlayer(
                                 onTapped: _showOverlay,
                                 showOverlay: showInterface,
                                 video: photos[index],

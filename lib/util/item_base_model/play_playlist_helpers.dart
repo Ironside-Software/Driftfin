@@ -282,8 +282,8 @@ class _PlaylistClassification {
 
 _PlaylistClassification _classifyPlaylistItems(List<ItemBaseModel> items) {
   return _PlaylistClassification(
-    playable: items.where((item) => DriftfinItemType.playable.contains(item.type)).toList(),
-    music: items.where((item) => DriftfinItemType.musicPlayable.contains(item.type)).toList(),
+    playable: items.where((item) => FladderItemType.playable.contains(item.type)).toList(),
+    music: items.where((item) => FladderItemType.musicPlayable.contains(item.type)).toList(),
     gallery: items.whereType<PhotoModel>().toList(),
   );
 }

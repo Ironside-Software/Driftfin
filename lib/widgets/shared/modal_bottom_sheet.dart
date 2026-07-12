@@ -34,7 +34,7 @@ Future<void> showBottomSheetPill({
           padding: const EdgeInsets.symmetric(horizontal: 8).add(MediaQuery.paddingOf(context)),
           child: Card(
             shape: RoundedRectangleBorder(
-              borderRadius: DriftfinTheme.largeShape.borderRadius,
+              borderRadius: FladderTheme.largeShape.borderRadius,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -47,7 +47,7 @@ Future<void> showBottomSheetPill({
                       width: 35,
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.onSurface,
-                        borderRadius: DriftfinTheme.largeShape.borderRadius,
+                        borderRadius: FladderTheme.largeShape.borderRadius,
                       ),
                     ),
                   )

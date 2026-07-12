@@ -34,7 +34,7 @@ class PeopleRow extends ConsumerWidget {
           width: 75,
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: DriftfinTheme.smallShape.borderRadius,
+              borderRadius: FladderTheme.smallShape.borderRadius,
               color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.50),
             ),
             child: Center(
@@ -64,10 +64,10 @@ class PeopleRow extends ConsumerWidget {
               Flexible(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: DriftfinTheme.smallShape.borderRadius,
+                    borderRadius: FladderTheme.smallShape.borderRadius,
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   ),
-                  foregroundDecoration: DriftfinTheme.defaultPosterDecoration,
+                  foregroundDecoration: FladderTheme.defaultPosterDecoration,
                   child: FocusButton(
                     onTap: onTap ??
                         () => Navigator.of(context).push(

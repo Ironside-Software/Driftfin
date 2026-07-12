@@ -140,7 +140,7 @@ class _CurrentlyPlayingBarState extends ConsumerState<FloatingPlayerBar> {
             height: floatingPlayerHeight(context),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainerLow,
-              borderRadius: DriftfinTheme.defaultShape.borderRadius,
+              borderRadius: FladderTheme.defaultShape.borderRadius,
             ),
             child: LayoutBuilder(builder: (context, constraints) {
               return switch (item) {

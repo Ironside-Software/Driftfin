@@ -56,7 +56,7 @@ class EmptyItem extends ConsumerWidget {
                         width: 1.0,
                         color: Colors.white.withValues(alpha: 0.10),
                       ),
-                      borderRadius: DriftfinTheme.defaultShape.borderRadius,
+                      borderRadius: FladderTheme.defaultShape.borderRadius,
                     ),
                     child: DriftfinImage(
                       image: item.getPosters?.primary ?? item.getPosters?.backDrop?.lastOrNull,

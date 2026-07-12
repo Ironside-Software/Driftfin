@@ -421,7 +421,7 @@ class _TrackListItemState extends ConsumerState<_TrackListItem> {
     final durationText = widget.track.overview.runTime?.readAbleDuration;
     final playCountText = widget.track.userData.playCount > 0 ? 'x${widget.track.userData.playCount}' : '-';
 
-    final radius = DriftfinTheme.smallShape.borderRadius;
+    final radius = FladderTheme.smallShape.borderRadius;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),

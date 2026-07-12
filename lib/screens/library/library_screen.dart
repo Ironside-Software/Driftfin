@@ -312,7 +312,7 @@ class LibraryRow extends ConsumerWidget {
                 duration: const Duration(milliseconds: 150),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
-                  borderRadius: DriftfinTheme.smallShape.borderRadius,
+                  borderRadius: FladderTheme.smallShape.borderRadius,
                   border: Border.all(
                     color: Theme.of(context).colorScheme.primary.withValues(alpha: isSelected ? 1.0 : 0.0),
                     width: isSelected ? 3 : 0,
@@ -321,7 +321,7 @@ class LibraryRow extends ConsumerWidget {
                 clipBehavior: Clip.hardEdge,
                 width: 200,
                 child: ClipRRect(
-                  borderRadius: DriftfinTheme.smallShape.borderRadius,
+                  borderRadius: FladderTheme.smallShape.borderRadius,
                   child: AspectRatio(
                     aspectRatio: 1.60,
                     child: DriftfinImage(

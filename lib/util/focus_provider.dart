@@ -202,10 +202,10 @@ class FocusButtonState extends State<FocusButton> {
                 curve: Curves.easeInOut,
                 clipBehavior: Clip.hardEdge,
                 decoration: BoxDecoration(
-                  borderRadius: widget.borderRadius ?? DriftfinTheme.smallShape.borderRadius,
+                  borderRadius: widget.borderRadius ?? FladderTheme.smallShape.borderRadius,
                 ),
                 foregroundDecoration: BoxDecoration(
-                  borderRadius: widget.borderRadius ?? DriftfinTheme.smallShape.borderRadius,
+                  borderRadius: widget.borderRadius ?? FladderTheme.smallShape.borderRadius,
                   color: widget.darkOverlay && widget.visualizeFocus
                       ? Theme.of(context).colorScheme.primaryFixedDim.withValues(alpha: hasFocus ? 0.10 : 0.0)
                       : null,

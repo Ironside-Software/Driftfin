@@ -253,7 +253,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
   Future<void> refresh() async => state = state.copyWith(items: _rootSyncItems(await _db.getAllItems.get()));
 
   Future<List<SyncedItem>> getNestedChildren(SyncedItem item) async {
-    if (item.itemModel?.type == DriftfinItemType.playlist) {
+    if (item.itemModel?.type == FladderItemType.playlist) {
       return _getPlaylistChildrenFromOverlay(item);
     }
     return _db.getNestedChildren(item);
@@ -262,7 +262,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
   Future<List<SyncedItem>> getChildren(String parentId) async => await _db.getChildren(parentId).get();
 
   Future<List<SyncedItem>> getChildrenForItem(SyncedItem item) async {
-    if (item.itemModel?.type == DriftfinItemType.playlist) {
+    if (item.itemModel?.type == FladderItemType.playlist) {
       return _getPlaylistChildrenFromOverlay(item);
     }
     return getChildren(item.id);
@@ -489,13 +489,13 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
       if (parent == null) continue;
 
       switch (parent.itemModel?.type) {
-        case DriftfinItemType.musicAlbum:
+        case FladderItemType.musicAlbum:
           candidateAlbumIds.add(parent.id);
           if (parent.parentId != null) {
             candidateArtistIds.add(parent.parentId!);
           }
           break;
-        case DriftfinItemType.musicArtist:
+        case FladderItemType.musicArtist:
           candidateArtistIds.add(parent.id);
           break;
         default:
@@ -505,7 +505,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
 
     for (final albumId in candidateAlbumIds) {
       final album = await getSyncedItem(albumId);
-      if (album == null || album.itemModel?.type != DriftfinItemType.musicAlbum) continue;
+      if (album == null || album.itemModel?.type != FladderItemType.musicAlbum) continue;
 
       final hasTracks = await _hasSyncedAudioDescendants(album.id);
       if (hasTracks) continue;
@@ -519,7 +519,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
 
     for (final artistId in candidateArtistIds) {
       final artist = await getSyncedItem(artistId);
-      if (artist == null || artist.itemModel?.type != DriftfinItemType.musicArtist) continue;
+      if (artist == null || artist.itemModel?.type != FladderItemType.musicArtist) continue;
 
       final hasTracks = await _hasSyncedAudioDescendants(artist.id);
       if (hasTracks) continue;
@@ -571,7 +571,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
   Future<SyncedItem> deleteFullSyncFiles(SyncedItem syncedItem, DownloadTask? task) async {
     final itemType = syncedItem.itemModel?.type;
 
-    if (itemType == DriftfinItemType.audio) {
+    if (itemType == FladderItemType.audio) {
       await _deleteSyncedItemAndFiles(syncedItem);
       ref.read(downloadTasksProvider(syncedItem.id).notifier).update((state) => DownloadStream.empty());
       await _cleanupOrphanedMusicParents([syncedItem]);
@@ -580,7 +580,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
       return syncedItem;
     }
 
-    if (itemType == DriftfinItemType.musicAlbum) {
+    if (itemType == FladderItemType.musicAlbum) {
       final nestedChildren = await getNestedChildren(syncedItem);
       final removedTracks = nestedChildren.where((element) => element.itemModel is AudioModel).toList();
 
@@ -833,7 +833,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
       SyncedItem updatedItem = item.copyWith(userData: updatedUserData, unSyncedData: !responseSuccessful);
 
       List<SyncedItem> children = [];
-      final shouldUpdateChildren = {DriftfinItemType.series, DriftfinItemType.season}.contains(item.itemModel?.type);
+      final shouldUpdateChildren = {FladderItemType.series, FladderItemType.season}.contains(item.itemModel?.type);
       if (shouldUpdateChildren) {
         // Update child items with the same played status, jellyfin server does this was well
         // when marking a series or season as played

@@ -132,7 +132,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                   image: model.images.primary,
                                   placeHolder: Container(
                                     color: Colors.grey,
-                                    child: Icon(DriftfinItemType.movie.icon),
+                                    child: Icon(FladderItemType.movie.icon),
                                   ),
                                 ),
                               ),
@@ -165,7 +165,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                             decoration: BoxDecoration(
                                               color: model.displayStatusColor.withAlpha(200),
-                                              borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                              borderRadius: FladderTheme.smallShape.borderRadius,
                                             ),
                                             child: Text(
                                               model.displayStatusLabel(context),
@@ -188,7 +188,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).colorScheme.primaryContainer,
-                                      borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                      borderRadius: FladderTheme.smallShape.borderRadius,
                                     ),
                                     child: Text(
                                       model.type == SeerrMediaType.movie
@@ -202,7 +202,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).colorScheme.secondaryContainer,
-                                        borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                        borderRadius: FladderTheme.smallShape.borderRadius,
                                       ),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
@@ -227,7 +227,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).colorScheme.tertiaryContainer,
-                                        borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                        borderRadius: FladderTheme.smallShape.borderRadius,
                                       ),
                                       child: Text(
                                         requestState.contentRating!,
@@ -242,7 +242,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                        borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                        borderRadius: FladderTheme.smallShape.borderRadius,
                                       ),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,

@@ -187,7 +187,7 @@ class _EditImageContentState extends ConsumerState<EditImageContent> {
               ImageType.backdrop => true,
               _ => false,
             },
-            extensions: DriftfinFile.imageTypes,
+            extensions: FladderFile.imageTypes,
             urlPicked: (url) {
               final newFile = EditingImageModel(providerName: "Custom(URL)", url: url);
               ref.read(editItemProvider.notifier).addCustomImages(widget.type, [newFile]);

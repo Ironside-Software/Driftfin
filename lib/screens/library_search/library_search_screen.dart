@@ -54,7 +54,7 @@ class LibrarySearchScreen extends ConsumerStatefulWidget {
   final List<String>? folderId;
   final SortingOrder? sortOrder;
   final SortingOptions? sortingOptions;
-  final Map<DriftfinItemType, bool>? types;
+  final Map<FladderItemType, bool>? types;
   final Map<String, bool>? genres;
   final Map<Studio, bool>? studios;
   final Map<String, bool>? tags;

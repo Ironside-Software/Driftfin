@@ -104,7 +104,7 @@ class PlaybackModel {
   List<SubStreamModel>? get subStreams => throw UnimplementedError();
   List<AudioStreamModel>? get audioStreams => throw UnimplementedError();
 
-  bool get isAudioPlayback => item is AudioModel || item.type == DriftfinItemType.audio;
+  bool get isAudioPlayback => item is AudioModel || item.type == FladderItemType.audio;
 
   Duration resolvedStopPosition(Duration position, Duration? totalDuration) {
     if (!isAudioPlayback) return position;

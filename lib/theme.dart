@@ -30,13 +30,13 @@ ColorScheme _insertAdditionalColours(ColorScheme scheme) => scheme.copyWith(
       surfaceContainerHighest: scheme.surfaceContainerHighest,
     );
 
-class DriftfinTheme {
+class FladderTheme {
   static RoundedRectangleBorder get smallShape => RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
   static RoundedRectangleBorder get defaultShape => RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
   static RoundedRectangleBorder get largeShape => RoundedRectangleBorder(borderRadius: BorderRadius.circular(32));
 
   static BoxDecoration get defaultPosterDecoration => BoxDecoration(
-        borderRadius: DriftfinTheme.smallShape.borderRadius,
+        borderRadius: FladderTheme.smallShape.borderRadius,
         border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
       );
 
@@ -53,7 +53,7 @@ class DriftfinTheme {
       },
     );
 
-    final textTheme = DriftfinFonts.rubikTextTheme(
+    final textTheme = FladderFonts.rubikTextTheme(
       const TextTheme(),
     );
     return ThemeData(
@@ -75,8 +75,8 @@ class DriftfinTheme {
         shape: smallShape,
       ),
       expansionTileTheme: ExpansionTileThemeData(
-        shape: RoundedRectangleBorder(borderRadius: DriftfinTheme.defaultShape.borderRadius),
-        collapsedShape: RoundedRectangleBorder(borderRadius: DriftfinTheme.defaultShape.borderRadius),
+        shape: RoundedRectangleBorder(borderRadius: FladderTheme.defaultShape.borderRadius),
+        collapsedShape: RoundedRectangleBorder(borderRadius: FladderTheme.defaultShape.borderRadius),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -86,7 +86,7 @@ class DriftfinTheme {
       snackBarTheme: SnackBarThemeData(
         backgroundColor: scheme?.secondary,
         behavior: SnackBarBehavior.fixed,
-        shape: RoundedRectangleBorder(borderRadius: DriftfinTheme.defaultShape.borderRadius),
+        shape: RoundedRectangleBorder(borderRadius: FladderTheme.defaultShape.borderRadius),
         elevation: 5,
         dismissDirection: DismissDirection.horizontal,
       ),

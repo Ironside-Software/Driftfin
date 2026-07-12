@@ -2,7 +2,7 @@ import 'package:driftfin/models/item_base_model.dart';
 
 class FavouritesModel {
   final bool loading;
-  final Map<DriftfinItemType, List<ItemBaseModel>> favourites;
+  final Map<FladderItemType, List<ItemBaseModel>> favourites;
   final List<ItemBaseModel> people;
 
   FavouritesModel({
@@ -14,7 +14,7 @@ class FavouritesModel {
   FavouritesModel copyWith({
     bool? loading,
     String? searchQuery,
-    Map<DriftfinItemType, List<ItemBaseModel>>? favourites,
+    Map<FladderItemType, List<ItemBaseModel>>? favourites,
     List<ItemBaseModel>? people,
   }) {
     return FavouritesModel(

@@ -60,8 +60,8 @@ class _SyncItemDetailsState extends ConsumerState<SyncItemDetails> {
     final syncedChildren = ref.watch(syncedChildrenProvider(syncedItem));
     final nestedChildren = ref.watch(syncedNestedChildrenProvider(syncedItem));
     final canDeleteSyncedItem = syncedItem.parentId == null ||
-        baseItem?.type == DriftfinItemType.musicAlbum ||
-        baseItem?.type == DriftfinItemType.audio;
+        baseItem?.type == FladderItemType.musicAlbum ||
+        baseItem?.type == FladderItemType.audio;
     return PullToRefresh(
       refreshOnStart: false,
       onRefresh: () async {

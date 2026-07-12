@@ -325,7 +325,7 @@ class OverviewHeader extends ConsumerWidget {
                       height: 2,
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.onSurface.withAlpha(64),
-                        borderRadius: DriftfinTheme.smallShape.borderRadius,
+                        borderRadius: FladderTheme.smallShape.borderRadius,
                       ),
                     ),
                   ),
@@ -354,7 +354,7 @@ class OverviewHeader extends ConsumerWidget {
                             height: 12,
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.onSurface.withAlpha(64),
-                              borderRadius: DriftfinTheme.smallShape.borderRadius,
+                              borderRadius: FladderTheme.smallShape.borderRadius,
                             ),
                           ),
                         ),
@@ -482,7 +482,7 @@ class SimpleLabel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        borderRadius: DriftfinTheme.smallShape.borderRadius,
+        borderRadius: FladderTheme.smallShape.borderRadius,
         color: backgroundColor.withAlpha(200),
         border: Border.all(
           color: backgroundColor.withAlpha(255),

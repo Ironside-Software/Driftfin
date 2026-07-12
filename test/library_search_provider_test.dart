@@ -105,11 +105,11 @@ void main() {
       final c = container();
       addTearDown(c.dispose);
       final n = notifier(c);
-      n.toggleType(DriftfinItemType.movie);
-      expect(n.state.filters.types[DriftfinItemType.movie], true);
-      expect(n.state.filters.types[DriftfinItemType.series], false);
-      n.toggleType(DriftfinItemType.movie);
-      expect(n.state.filters.types[DriftfinItemType.movie], false);
+      n.toggleType(FladderItemType.movie);
+      expect(n.state.filters.types[FladderItemType.movie], true);
+      expect(n.state.filters.types[FladderItemType.series], false);
+      n.toggleType(FladderItemType.movie);
+      expect(n.state.filters.types[FladderItemType.movie], false);
     });
 
     test('toggleView adds/removes a view from the views map', () {
@@ -228,8 +228,8 @@ void main() {
       final c = container();
       addTearDown(c.dispose);
       final n = notifier(c);
-      n.setTypes({DriftfinItemType.movie: true});
-      expect(n.state.filters.types, {DriftfinItemType.movie: true});
+      n.setTypes({FladderItemType.movie: true});
+      expect(n.state.filters.types, {FladderItemType.movie: true});
     });
 
     test('setRatings replaces officialRatings map wholesale', () {

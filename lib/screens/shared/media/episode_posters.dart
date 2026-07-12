@@ -279,7 +279,7 @@ class EpisodePoster extends ConsumerWidget {
                 tag: heroTag ?? UniqueKey(),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: DriftfinTheme.smallShape.borderRadius,
+                    borderRadius: FladderTheme.smallShape.borderRadius,
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   ),
                   child: DriftfinImage(

@@ -43,10 +43,10 @@ import 'package:driftfin/widgets/pop_up/delete_file.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
 extension ItemBaseModelsBooleans on List<ItemBaseModel> {
-  Map<DriftfinItemType, List<ItemBaseModel>> get groupedItems {
-    Map<DriftfinItemType, List<ItemBaseModel>> groupedItems = {};
+  Map<FladderItemType, List<ItemBaseModel>> get groupedItems {
+    Map<FladderItemType, List<ItemBaseModel>> groupedItems = {};
     for (int i = 0; i < length; i++) {
-      DriftfinItemType type = this[i].type;
+      FladderItemType type = this[i].type;
       if (!groupedItems.containsKey(type)) {
         groupedItems[type] = [this[i]];
       } else {
@@ -56,9 +56,9 @@ extension ItemBaseModelsBooleans on List<ItemBaseModel> {
     return groupedItems;
   }
 
-  DriftfinItemType get getMostCommonType {
-    if (isEmpty) return DriftfinItemType.movie;
-    final Map<DriftfinItemType, int> counts = {};
+  FladderItemType get getMostCommonType {
+    if (isEmpty) return FladderItemType.movie;
+    final Map<FladderItemType, int> counts = {};
 
     for (final item in this) {
       final type = item.type;
@@ -155,21 +155,21 @@ extension ItemBaseModelExtensions on ItemBaseModel {
     final ItemAction? parentAction = switch (this) {
       EpisodeModel _ => !exclude.contains(ItemActions.openShow)
           ? ItemActionButton(
-              icon: Icon(DriftfinItemType.series.icon),
+              icon: Icon(FladderItemType.series.icon),
               action: () => parentBaseModel.navigateTo(context),
               label: Text(context.localized.openShow),
             )
           : null,
       AudioModel _ => !exclude.contains(ItemActions.openParent)
           ? ItemActionButton(
-              icon: Icon(DriftfinItemType.musicAlbum.icon),
+              icon: Icon(FladderItemType.musicAlbum.icon),
               action: () => parentBaseModel.navigateTo(context),
               label: Text(context.localized.showAlbum),
             )
           : null,
       AlbumModel album => !exclude.contains(ItemActions.openParent)
           ? ItemActionButton(
-              icon: Icon(DriftfinItemType.musicArtist.icon),
+              icon: Icon(FladderItemType.musicArtist.icon),
               action: () => album.parentBaseModel.navigateTo(context),
               label: Text(context.localized.showArtist),
             )
@@ -177,7 +177,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
       SeriesModel _ => null,
       _ => !exclude.contains(ItemActions.openParent) && !galleryItem
           ? ItemActionButton(
-              icon: Icon(DriftfinItemType.folder.icon),
+              icon: Icon(FladderItemType.folder.icon),
               action: () => parentBaseModel.navigateTo(context),
               label: Text(context.localized.openParent),
             )
@@ -236,7 +236,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
         )
       else if (!exclude.contains(ItemActions.showAlbum) && galleryItem)
         ItemActionButton(
-          icon: Icon(DriftfinItemType.photoAlbum.icon),
+          icon: Icon(FladderItemType.photoAlbum.icon),
           action: () => parentBaseModel.navigateTo(context),
           label: Text(context.localized.showAlbum),
         ),
@@ -267,7 +267,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
           ),
       ItemActionDivider(),
       if (!exclude.contains(ItemActions.addCollection) && isAdmin)
-        if (type != DriftfinItemType.boxset)
+        if (type != FladderItemType.boxset)
           ItemActionButton(
             icon: const Icon(IconsaxPlusLinear.archive_add),
             action: () async {
@@ -279,7 +279,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
             label: Text(context.localized.addToCollection),
           ),
       if (!exclude.contains(ItemActions.addPlaylist))
-        if (type != DriftfinItemType.playlist)
+        if (type != FladderItemType.playlist)
           ItemActionButton(
             icon: const Icon(IconsaxPlusLinear.archive_add),
             action: () async {
@@ -354,10 +354,10 @@ extension ItemBaseModelExtensions on ItemBaseModel {
           },
           label: Text(context.localized.addShowToFavorites),
         ),
-      if ((type == DriftfinItemType.boxset ||
-              type == DriftfinItemType.folder ||
-              type == DriftfinItemType.collectionFolder ||
-              type == DriftfinItemType.baseType) &&
+      if ((type == FladderItemType.boxset ||
+              type == FladderItemType.folder ||
+              type == FladderItemType.collectionFolder ||
+              type == FladderItemType.baseType) &&
           !exclude.contains(ItemActions.addToHome))
         ItemActionButton(
           icon: Icon(ref.read(homeSettingsProvider).pinnedCollectionIds.contains(id)

@@ -160,9 +160,9 @@ class _GuideOverviewState extends ConsumerState<_GuideOverview> {
                                 aspectRatio: 0.75,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: DriftfinTheme.defaultPosterDecoration.borderRadius,
+                                    borderRadius: FladderTheme.defaultPosterDecoration.borderRadius,
                                   ),
-                                  foregroundDecoration: DriftfinTheme.defaultPosterDecoration,
+                                  foregroundDecoration: FladderTheme.defaultPosterDecoration,
                                   clipBehavior: Clip.hardEdge,
                                   child: DriftfinImage(
                                     image: currentProgram?.images?.primary,

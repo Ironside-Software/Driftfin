@@ -190,7 +190,7 @@ class _TVPosterItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final overlayColor = Theme.of(context).colorScheme.surfaceContainer.harmonizeWith(Colors.black);
 
-    final radius = DriftfinTheme.defaultShape.borderRadius;
+    final radius = FladderTheme.defaultShape.borderRadius;
 
     return FocusButton(
       onTap: onTap,

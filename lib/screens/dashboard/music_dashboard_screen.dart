@@ -146,7 +146,7 @@ class _MusicDashboardScreenState extends ConsumerState<MusicDashboardScreen> {
                     playlists:
                         musicDashboard.playlists.map((playlist) => playlist.copyWith(canDownload: true)).toList(),
                     contentPadding: padding,
-                    label: DriftfinItemType.playlist.label(context.localized, count: musicDashboard.playlists.length),
+                    label: FladderItemType.playlist.label(context.localized, count: musicDashboard.playlists.length),
                     onPlaylistPlayTap: (playlist) => playlist.play(context, ref),
                   ),
                 if (musicDashboard.recentlyAddedAlbums.isNotEmpty)
@@ -154,11 +154,11 @@ class _MusicDashboardScreenState extends ConsumerState<MusicDashboardScreen> {
                     tvMode: useTVExpandedLayout,
                     contentPadding: padding,
                     label: context.localized.dashboardRecentlyAddedItems(
-                      DriftfinItemType.musicAlbum
+                      FladderItemType.musicAlbum
                           .label(context.localized, count: musicDashboard.recentlyAddedAlbums.length)
                           .toLowerCase(),
                     ),
-                    collectionAspectRatio: DriftfinItemType.musicAlbum.aspectRatio,
+                    collectionAspectRatio: FladderItemType.musicAlbum.aspectRatio,
                     posters: musicDashboard.recentlyAddedAlbums,
                   ),
                 if (activeRecentTrackSection != null)
@@ -210,11 +210,11 @@ class _MusicDashboardScreenState extends ConsumerState<MusicDashboardScreen> {
                     tvMode: useTVExpandedLayout,
                     contentPadding: padding,
                     label: context.localized.dashboardRecentlyAddedItems(
-                      DriftfinItemType.musicArtist
+                      FladderItemType.musicArtist
                           .label(context.localized, count: musicDashboard.recentlyAddedArtists.length)
                           .toLowerCase(),
                     ),
-                    collectionAspectRatio: DriftfinItemType.musicAlbum.aspectRatio,
+                    collectionAspectRatio: FladderItemType.musicAlbum.aspectRatio,
                     posters: musicDashboard.recentlyAddedArtists,
                   ),
                 if (musicDashboard.mostPlayed.isNotEmpty)
@@ -222,7 +222,7 @@ class _MusicDashboardScreenState extends ConsumerState<MusicDashboardScreen> {
                     tvMode: useTVExpandedLayout,
                     contentPadding: padding,
                     label: context.localized.mostPlayed,
-                    collectionAspectRatio: DriftfinItemType.musicAlbum.aspectRatio,
+                    collectionAspectRatio: FladderItemType.musicAlbum.aspectRatio,
                     posters: musicDashboard.mostPlayed,
                   ),
               ]

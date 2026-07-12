@@ -60,7 +60,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
         duration: const Duration(milliseconds: 125),
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: DriftfinTheme.defaultPosterDecoration.borderRadius,
+          borderRadius: FladderTheme.defaultPosterDecoration.borderRadius,
         ),
         clipBehavior: Clip.hardEdge,
         child: AnimatedSize(
@@ -268,7 +268,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                           child: FocusButton(
                             onTap: () => nowPlayingItem.navigateTo(context),
                             child: Container(
-                              decoration: DriftfinTheme.defaultPosterDecoration,
+                              decoration: FladderTheme.defaultPosterDecoration,
                               clipBehavior: Clip.hardEdge,
                               child: DriftfinImage(image: nowPlayingItem.getPosters?.primary),
                             ),

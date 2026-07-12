@@ -55,7 +55,7 @@ class PosterImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final radius = DriftfinTheme.smallShape.borderRadius;
+    final radius = FladderTheme.smallShape.borderRadius;
     final padding = const EdgeInsets.all(5);
     final myKey = key ?? UniqueKey();
 

@@ -301,7 +301,7 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                           duration: const Duration(milliseconds: 250),
                           child: Container(
                             decoration: BoxDecoration(
-                                color: backGroundColor, borderRadius: DriftfinTheme.defaultShape.borderRadius),
+                                color: backGroundColor, borderRadius: FladderTheme.defaultShape.borderRadius),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [

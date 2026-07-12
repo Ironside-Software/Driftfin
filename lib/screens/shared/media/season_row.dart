@@ -86,10 +86,10 @@ class SeasonPoster extends ConsumerWidget {
               child: FocusButton(
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: DriftfinTheme.smallShape.borderRadius,
+                    borderRadius: FladderTheme.smallShape.borderRadius,
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   ),
-                  foregroundDecoration: DriftfinTheme.defaultPosterDecoration,
+                  foregroundDecoration: FladderTheme.defaultPosterDecoration,
                   child: DriftfinImage(
                     image: season.getPosters?.primary ??
                         season.parentImages?.backDrop?.firstOrNull ??

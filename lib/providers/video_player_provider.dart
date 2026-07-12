@@ -166,7 +166,7 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
     ref.read(playbackRateProvider.notifier).state = 1.0;
 
     final useMinimizedPlayer =
-        model.item.type == DriftfinItemType.audio || model.mediaStreams?.videoStreams.isEmpty == true;
+        model.item.type == FladderItemType.audio || model.mediaStreams?.videoStreams.isEmpty == true;
 
     mediaState.update((state) => state.copyWith(
           state: useMinimizedPlayer ? VideoPlayerState.minimized : VideoPlayerState.fullScreen,

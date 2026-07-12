@@ -67,18 +67,18 @@ extension CollectionTypeExtension on CollectionType? {
     }
   }
 
-  Set<DriftfinItemType> get itemKinds {
+  Set<FladderItemType> get itemKinds {
     switch (this) {
       case CollectionType.music:
-        return {DriftfinItemType.musicAlbum};
+        return {FladderItemType.musicAlbum};
       case CollectionType.movies:
-        return {DriftfinItemType.movie};
+        return {FladderItemType.movie};
       case CollectionType.tvshows:
-        return {DriftfinItemType.series};
+        return {FladderItemType.series};
       case CollectionType.homevideos:
-        return {DriftfinItemType.photoAlbum, DriftfinItemType.folder, DriftfinItemType.photo, DriftfinItemType.video};
+        return {FladderItemType.photoAlbum, FladderItemType.folder, FladderItemType.photo, FladderItemType.video};
       case CollectionType.livetv:
-        return {DriftfinItemType.tvchannel};
+        return {FladderItemType.tvchannel};
       default:
         return {};
     }

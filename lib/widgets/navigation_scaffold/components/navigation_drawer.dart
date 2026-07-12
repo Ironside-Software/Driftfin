@@ -99,7 +99,7 @@ class NestedNavigationDrawer extends ConsumerWidget {
             var selected = context.router.currentUrl.contains(library.id);
             final Widget? posterIcon = useLibraryPosters
                 ? ClipRRect(
-                    borderRadius: DriftfinTheme.smallShape.borderRadius,
+                    borderRadius: FladderTheme.smallShape.borderRadius,
                     child: AspectRatio(
                       aspectRatio: 1.0,
                       child: DriftfinImage(

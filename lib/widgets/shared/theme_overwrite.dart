@@ -65,7 +65,7 @@ class _ThemeOverwriteState extends ConsumerState<ThemeOverwrite> {
         : null;
 
     final themeData = newColorScheme != null
-        ? DriftfinTheme.theme(newColorScheme, schemeVariant).copyWith(
+        ? FladderTheme.theme(newColorScheme, schemeVariant).copyWith(
             scaffoldBackgroundColor: amoledOverwrite,
             cardColor: amoledOverwrite,
             canvasColor: amoledOverwrite,

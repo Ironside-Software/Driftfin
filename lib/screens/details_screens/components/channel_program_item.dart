@@ -113,9 +113,9 @@ class _ChannelProgramItemState extends State<ChannelProgramItem> with SingleTick
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Theme.of(context).colorScheme.primaryContainer.withAlpha(175),
-                                borderRadius: DriftfinTheme.defaultPosterDecoration.borderRadius,
+                                borderRadius: FladderTheme.defaultPosterDecoration.borderRadius,
                               ),
-                              foregroundDecoration: DriftfinTheme.defaultPosterDecoration,
+                              foregroundDecoration: FladderTheme.defaultPosterDecoration,
                             ),
                           ),
                         ),
@@ -164,7 +164,7 @@ class _ChannelProgramItemState extends State<ChannelProgramItem> with SingleTick
                                 SizedBox(
                                   width: 100,
                                   child: Container(
-                                    decoration: DriftfinTheme.defaultPosterDecoration,
+                                    decoration: FladderTheme.defaultPosterDecoration,
                                     clipBehavior: Clip.hardEdge,
                                     child: AspectRatio(
                                       aspectRatio: 0.75,

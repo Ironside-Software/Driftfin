@@ -73,12 +73,12 @@ extension LibrarySearchModelX on LibrarySearchModel {
     if (totalItemCount == 0) return false;
     if (activePosters.isNotEmpty) {
       return activePosters.any(
-        (element) => {...DriftfinItemType.playable, DriftfinItemType.folder}.contains(element.type),
+        (element) => {...FladderItemType.playable, FladderItemType.folder}.contains(element.type),
       );
     }
     return filters.types.included.isEmpty ||
         filters.types.included.containsAny(
-          {...DriftfinItemType.playable, DriftfinItemType.folder},
+          {...FladderItemType.playable, FladderItemType.folder},
         );
   }
 
@@ -86,13 +86,13 @@ extension LibrarySearchModelX on LibrarySearchModel {
     if (totalItemCount == 0) return false;
     if (activePosters.isNotEmpty) {
       return activePosters.any(
-        (element) => {...DriftfinItemType.galleryItem, DriftfinItemType.photoAlbum, DriftfinItemType.folder}
-            .contains(element.type),
+        (element) =>
+            {...FladderItemType.galleryItem, FladderItemType.photoAlbum, FladderItemType.folder}.contains(element.type),
       );
     }
     return filters.types.included.isEmpty ||
         filters.types.included.containsAny(
-          {...DriftfinItemType.galleryItem, DriftfinItemType.photoAlbum, DriftfinItemType.folder},
+          {...FladderItemType.galleryItem, FladderItemType.photoAlbum, FladderItemType.folder},
         );
   }
 
@@ -100,12 +100,12 @@ extension LibrarySearchModelX on LibrarySearchModel {
     if (totalItemCount == 0) return false;
     if (activePosters.isNotEmpty) {
       return activePosters.any(
-        (element) => {...DriftfinItemType.musicPlayable, DriftfinItemType.folder}.contains(element.type),
+        (element) => {...FladderItemType.musicPlayable, FladderItemType.folder}.contains(element.type),
       );
     }
     return filters.types.included.isEmpty ||
         filters.types.included.containsAny(
-          {...DriftfinItemType.musicPlayable, DriftfinItemType.folder},
+          {...FladderItemType.musicPlayable, FladderItemType.folder},
         );
   }
 

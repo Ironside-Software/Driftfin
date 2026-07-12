@@ -59,7 +59,7 @@ class _LibraryFilterChipsState extends ConsumerState<LibraryFilterChips> {
           onCancel: () => libraryProvider.setViews(librarySearchResults.views),
           onClear: () => libraryProvider.setViews(librarySearchResults.views.setAll(false)),
         ),
-      CategoryChip<DriftfinItemType>(
+      CategoryChip<FladderItemType>(
         label: Text(context.localized.type(librarySearchResults.filters.types.length)),
         items: librarySearchResults.filters.types.sortByKey((value) => value.label(context.localized)),
         activeIcon: IconsaxPlusBold.filter_tick,
@@ -136,7 +136,7 @@ class _LibraryFilterChipsState extends ConsumerState<LibraryFilterChips> {
         onSave: (value) => libraryProvider.setFilters(value),
         onClear: () => libraryProvider.setFilters(librarySearchResults.filters.itemFilters.setAll(false)),
       ),
-      if (librarySearchResults.filters.types[DriftfinItemType.series] == true)
+      if (librarySearchResults.filters.types[FladderItemType.series] == true)
         ExpressiveButton(
           isSelected: !hideEmpty,
           icon: !hideEmpty ? const Icon(IconsaxPlusBold.ghost) : null,

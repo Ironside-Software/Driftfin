@@ -171,7 +171,7 @@ class PosterListItem extends ConsumerWidget {
                           ],
                         ),
                       ),
-                      if (poster.type == DriftfinItemType.book)
+                      if (poster.type == FladderItemType.book)
                         if (poster.userData.progress > 0)
                           Card(
                             color: Theme.of(context).colorScheme.primary,

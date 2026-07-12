@@ -400,7 +400,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
           children: [
             seerrUser?.avatar != null && seerrUser!.avatar!.isNotEmpty
                 ? CircleAvatar(backgroundImage: NetworkImage(seerrUser!.avatar!))
-                : CircleAvatar(child: Icon(DriftfinItemType.person.icon)),
+                : CircleAvatar(child: Icon(FladderItemType.person.icon)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

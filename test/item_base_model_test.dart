@@ -75,7 +75,7 @@ void main() {
     });
 
     test('type defaults to baseType for a bare ItemBaseModel', () {
-      expect(_item().type, DriftfinItemType.baseType);
+      expect(_item().type, FladderItemType.baseType);
     });
   });
 
@@ -246,52 +246,52 @@ void main() {
     test('video and photo BaseItemKind both dispatch to PhotoModel', () {
       final videoDto = const dto.BaseItemDto(type: dto.BaseItemKind.video, id: 'v1');
       final photoDto = const dto.BaseItemDto(type: dto.BaseItemKind.photo, id: 'p1');
-      expect(ItemBaseModel.fromBaseDto(videoDto, null).type, DriftfinItemType.video);
-      expect(ItemBaseModel.fromBaseDto(photoDto, null).type, DriftfinItemType.photo);
+      expect(ItemBaseModel.fromBaseDto(videoDto, null).type, FladderItemType.video);
+      expect(ItemBaseModel.fromBaseDto(photoDto, null).type, FladderItemType.photo);
     });
   });
 
-  group('DriftfinItemType.dtoKind round trip', () {
+  group('FladderItemType.dtoKind round trip', () {
     test('video and musicVideo both map to the same dto BaseItemKind.video (lossy)', () {
-      expect(DriftfinItemType.video.dtoKind, dto.BaseItemKind.video);
-      expect(DriftfinItemType.musicVideo.dtoKind, dto.BaseItemKind.video);
+      expect(FladderItemType.video.dtoKind, dto.BaseItemKind.video);
+      expect(FladderItemType.musicVideo.dtoKind, dto.BaseItemKind.video);
     });
 
     test('but dispatching BaseItemKind.video via fromBaseDto always yields a PhotoModel/video type, never musicVideo',
         () {
       final dtoItem = const dto.BaseItemDto(type: dto.BaseItemKind.video, id: 'v1');
       final result = ItemBaseModel.fromBaseDto(dtoItem, null);
-      expect(result.type, DriftfinItemType.video);
-      expect(result.type, isNot(DriftfinItemType.musicVideo));
+      expect(result.type, FladderItemType.video);
+      expect(result.type, isNot(FladderItemType.musicVideo));
     });
   });
 
-  group('DriftfinItemType static sets', () {
+  group('FladderItemType static sets', () {
     test('playable set contains expected video-like types', () {
-      expect(DriftfinItemType.playable, contains(DriftfinItemType.movie));
-      expect(DriftfinItemType.playable, contains(DriftfinItemType.tvchannel));
-      expect(DriftfinItemType.playable, isNot(contains(DriftfinItemType.audio)));
+      expect(FladderItemType.playable, contains(FladderItemType.movie));
+      expect(FladderItemType.playable, contains(FladderItemType.tvchannel));
+      expect(FladderItemType.playable, isNot(contains(FladderItemType.audio)));
     });
 
     test('musicPlayable contains only audio-related types', () {
-      expect(DriftfinItemType.musicPlayable, contains(DriftfinItemType.audio));
-      expect(DriftfinItemType.musicPlayable, isNot(contains(DriftfinItemType.movie)));
+      expect(FladderItemType.musicPlayable, contains(FladderItemType.audio));
+      expect(FladderItemType.musicPlayable, isNot(contains(FladderItemType.movie)));
     });
 
     test('galleryItem contains photo and video only', () {
-      expect(DriftfinItemType.galleryItem, {DriftfinItemType.photo, DriftfinItemType.video});
+      expect(FladderItemType.galleryItem, {FladderItemType.photo, FladderItemType.video});
     });
   });
 
-  group('DriftfinItemType.aspectRatio', () {
+  group('FladderItemType.aspectRatio', () {
     test('is 0.8 for a documented subset of types', () {
-      expect(DriftfinItemType.video.aspectRatio, 0.8);
-      expect(DriftfinItemType.baseType.aspectRatio, 0.8);
+      expect(FladderItemType.video.aspectRatio, 0.8);
+      expect(FladderItemType.baseType.aspectRatio, 0.8);
     });
 
     test('defaults to 0.55 for everything else', () {
-      expect(DriftfinItemType.movie.aspectRatio, 0.55);
-      expect(DriftfinItemType.series.aspectRatio, 0.55);
+      expect(FladderItemType.movie.aspectRatio, 0.55);
+      expect(FladderItemType.series.aspectRatio, 0.55);
     });
   });
 }

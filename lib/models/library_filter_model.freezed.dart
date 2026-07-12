@@ -21,7 +21,7 @@ mixin _$LibraryFilterModel implements DiagnosticableTreeMixin {
   Map<String, bool> get tags;
   Map<int, bool> get years;
   Map<String, bool> get officialRatings;
-  Map<DriftfinItemType, bool> get types;
+  Map<FladderItemType, bool> get types;
   SortingOptions get sortingOption;
   SortingOrder get sortOrder;
   bool? get favourites;
@@ -76,7 +76,7 @@ abstract mixin class $LibraryFilterModelCopyWith<$Res> {
       Map<String, bool> tags,
       Map<int, bool> years,
       Map<String, bool> officialRatings,
-      Map<DriftfinItemType, bool> types,
+      Map<FladderItemType, bool> types,
       SortingOptions sortingOption,
       SortingOrder sortOrder,
       bool? favourites,
@@ -139,7 +139,7 @@ class _$LibraryFilterModelCopyWithImpl<$Res> implements $LibraryFilterModelCopyW
       types: null == types
           ? _self.types
           : types // ignore: cast_nullable_to_non_nullable
-              as Map<DriftfinItemType, bool>,
+              as Map<FladderItemType, bool>,
       sortingOption: null == sortingOption
           ? _self.sortingOption
           : sortingOption // ignore: cast_nullable_to_non_nullable
@@ -268,7 +268,7 @@ extension LibraryFilterModelPatterns on LibraryFilterModel {
             Map<String, bool> tags,
             Map<int, bool> years,
             Map<String, bool> officialRatings,
-            Map<DriftfinItemType, bool> types,
+            Map<FladderItemType, bool> types,
             SortingOptions sortingOption,
             SortingOrder sortOrder,
             bool? favourites,
@@ -322,7 +322,7 @@ extension LibraryFilterModelPatterns on LibraryFilterModel {
             Map<String, bool> tags,
             Map<int, bool> years,
             Map<String, bool> officialRatings,
-            Map<DriftfinItemType, bool> types,
+            Map<FladderItemType, bool> types,
             SortingOptions sortingOption,
             SortingOrder sortOrder,
             bool? favourites,
@@ -374,7 +374,7 @@ extension LibraryFilterModelPatterns on LibraryFilterModel {
             Map<String, bool> tags,
             Map<int, bool> years,
             Map<String, bool> officialRatings,
-            Map<DriftfinItemType, bool> types,
+            Map<FladderItemType, bool> types,
             SortingOptions sortingOption,
             SortingOrder sortOrder,
             bool? favourites,
@@ -420,21 +420,21 @@ class _LibraryFilterModel extends LibraryFilterModel with DiagnosticableTreeMixi
       final Map<String, bool> tags = const {},
       final Map<int, bool> years = const {},
       final Map<String, bool> officialRatings = const {},
-      final Map<DriftfinItemType, bool> types = const {
-        DriftfinItemType.audio: false,
-        DriftfinItemType.boxset: false,
-        DriftfinItemType.book: false,
-        DriftfinItemType.collectionFolder: false,
-        DriftfinItemType.episode: false,
-        DriftfinItemType.folder: false,
-        DriftfinItemType.movie: false,
-        DriftfinItemType.musicAlbum: false,
-        DriftfinItemType.musicVideo: false,
-        DriftfinItemType.photo: false,
-        DriftfinItemType.person: false,
-        DriftfinItemType.photoAlbum: false,
-        DriftfinItemType.series: false,
-        DriftfinItemType.video: false
+      final Map<FladderItemType, bool> types = const {
+        FladderItemType.audio: false,
+        FladderItemType.boxset: false,
+        FladderItemType.book: false,
+        FladderItemType.collectionFolder: false,
+        FladderItemType.episode: false,
+        FladderItemType.folder: false,
+        FladderItemType.movie: false,
+        FladderItemType.musicAlbum: false,
+        FladderItemType.musicVideo: false,
+        FladderItemType.photo: false,
+        FladderItemType.person: false,
+        FladderItemType.photoAlbum: false,
+        FladderItemType.series: false,
+        FladderItemType.video: false
       },
       this.sortingOption = SortingOptions.sortName,
       this.sortOrder = SortingOrder.ascending,
@@ -507,10 +507,10 @@ class _LibraryFilterModel extends LibraryFilterModel with DiagnosticableTreeMixi
     return EqualUnmodifiableMapView(_officialRatings);
   }
 
-  final Map<DriftfinItemType, bool> _types;
+  final Map<FladderItemType, bool> _types;
   @override
   @JsonKey()
-  Map<DriftfinItemType, bool> get types {
+  Map<FladderItemType, bool> get types {
     if (_types is EqualUnmodifiableMapView) return _types;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_types);
@@ -588,7 +588,7 @@ abstract mixin class _$LibraryFilterModelCopyWith<$Res> implements $LibraryFilte
       Map<String, bool> tags,
       Map<int, bool> years,
       Map<String, bool> officialRatings,
-      Map<DriftfinItemType, bool> types,
+      Map<FladderItemType, bool> types,
       SortingOptions sortingOption,
       SortingOrder sortOrder,
       bool? favourites,
@@ -651,7 +651,7 @@ class __$LibraryFilterModelCopyWithImpl<$Res> implements _$LibraryFilterModelCop
       types: null == types
           ? _self._types
           : types // ignore: cast_nullable_to_non_nullable
-              as Map<DriftfinItemType, bool>,
+              as Map<FladderItemType, bool>,
       sortingOption: null == sortingOption
           ? _self.sortingOption
           : sortingOption // ignore: cast_nullable_to_non_nullable

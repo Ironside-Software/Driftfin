@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DriftfinFonts {
+class FladderFonts {
   static TextTheme rubikTextTheme([TextTheme? textTheme]) {
     textTheme ??= ThemeData.light().textTheme;
 

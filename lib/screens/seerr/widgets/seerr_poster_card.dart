@@ -34,7 +34,7 @@ class SeerrPosterCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final radius = DriftfinTheme.smallShape.borderRadius;
+    final radius = FladderTheme.smallShape.borderRadius;
 
     ImageData? image = poster.images.primary;
     image ??= poster.images.backDrop?.lastOrNull;

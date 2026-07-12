@@ -400,7 +400,7 @@ class _NotificationCard extends StatelessWidget {
 
     final dismissDirection = isPhone ? DismissDirection.vertical : DismissDirection.horizontal;
 
-    final radius = DriftfinTheme.defaultShape.borderRadius;
+    final radius = FladderTheme.defaultShape.borderRadius;
 
     final backgroundColor = Theme.of(context).colorScheme.primary;
     final foregroundColor = Theme.of(context).colorScheme.onPrimary;

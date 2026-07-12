@@ -252,7 +252,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                                                 ? null
                                                 : Container(
                                                     decoration: BoxDecoration(
-                                                      borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                                      borderRadius: FladderTheme.smallShape.borderRadius,
                                                       color: Theme.of(context).colorScheme.surface,
                                                     ),
                                                     child: Padding(
@@ -286,7 +286,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                                               customIcon: usePostersForLibrary
                                                   ? Container(
                                                       decoration: BoxDecoration(
-                                                        borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                                        borderRadius: FladderTheme.smallShape.borderRadius,
                                                       ),
                                                       clipBehavior: Clip.hardEdge,
                                                       child: SizedBox.square(
@@ -314,7 +314,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                                             ? null
                                             : Container(
                                                 decoration: BoxDecoration(
-                                                  borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                                  borderRadius: FladderTheme.smallShape.borderRadius,
                                                   color: Theme.of(context).colorScheme.surface,
                                                 ),
                                                 child: Padding(
@@ -338,7 +338,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                                               expanded: shouldExpand,
                                               customIcon: usePostersForLibrary
                                                   ? ClipRRect(
-                                                      borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                                      borderRadius: FladderTheme.smallShape.borderRadius,
                                                       child: const SizedBox.square(
                                                         dimension: 50,
                                                         child: Card(
@@ -362,7 +362,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                                                           ? Padding(
                                                               padding: const EdgeInsets.symmetric(vertical: 4),
                                                               child: ClipRRect(
-                                                                borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                                                borderRadius: FladderTheme.smallShape.borderRadius,
                                                                 child: SizedBox.square(
                                                                   dimension: 45,
                                                                   child: DriftfinImage(

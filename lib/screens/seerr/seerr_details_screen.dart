@@ -132,9 +132,9 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          borderRadius: DriftfinTheme.defaultPosterDecoration.borderRadius,
+                                          borderRadius: FladderTheme.defaultPosterDecoration.borderRadius,
                                         ),
-                                        foregroundDecoration: DriftfinTheme.defaultPosterDecoration,
+                                        foregroundDecoration: FladderTheme.defaultPosterDecoration,
                                         clipBehavior: Clip.hardEdge,
                                         child: DriftfinImage(
                                           image: currentPoster.images.primary,
@@ -500,7 +500,7 @@ class _SeasonCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondaryContainer,
-        borderRadius: DriftfinTheme.smallShape.borderRadius,
+        borderRadius: FladderTheme.smallShape.borderRadius,
       ),
       child: Column(
         children: [
@@ -759,9 +759,9 @@ class _EpisodeCard extends ConsumerWidget {
             if (posterImage != null)
               Container(
                 decoration: BoxDecoration(
-                  borderRadius: DriftfinTheme.defaultPosterDecoration.borderRadius,
+                  borderRadius: FladderTheme.defaultPosterDecoration.borderRadius,
                 ),
-                foregroundDecoration: DriftfinTheme.defaultPosterDecoration,
+                foregroundDecoration: FladderTheme.defaultPosterDecoration,
                 clipBehavior: Clip.hardEdge,
                 child: SizedBox(
                   width: 175,

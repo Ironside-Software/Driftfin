@@ -293,7 +293,7 @@ class _VideoOptionsMobileState extends ConsumerState<VideoOptions> {
       children: [
         navTitle(currentItem?.title, currentItem?.subTextShort(context.localized)),
         if (currentItem != null) ...{
-          if (currentItem.type == DriftfinItemType.episode)
+          if (currentItem.type == FladderItemType.episode)
             ListTile(
               onTap: () {
                 Navigator.of(context).pop();
@@ -310,7 +310,7 @@ class _VideoOptionsMobileState extends ConsumerState<VideoOptions> {
             },
             title: Text(context.localized.showDetails),
           ),
-          if (currentItem.type != DriftfinItemType.boxset)
+          if (currentItem.type != FladderItemType.boxset)
             ListTile(
               onTap: () async {
                 await addItemToCollection(context, [currentItem]);
@@ -320,7 +320,7 @@ class _VideoOptionsMobileState extends ConsumerState<VideoOptions> {
               },
               title: Text(context.localized.addToCollection),
             ),
-          if (currentItem.type != DriftfinItemType.playlist)
+          if (currentItem.type != FladderItemType.playlist)
             ListTile(
               onTap: () async {
                 await addItemToPlaylist(context, [currentItem]);

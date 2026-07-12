@@ -82,13 +82,13 @@ SeriesModel _series(String id, {Map<String, dynamic>? providerIds}) => SeriesMod
 
 void main() {
   group('ItemBaseModelsBooleans.groupedItems', () {
-    test('groups items by their DriftfinItemType', () {
+    test('groups items by their FladderItemType', () {
       final items = [_item('a'), _movie('m'), _series('s'), _item('b')];
       final grouped = items.groupedItems;
 
-      expect(grouped[DriftfinItemType.baseType]?.map((e) => e.id).toList(), ['a', 'b']);
-      expect(grouped[DriftfinItemType.movie]?.map((e) => e.id).toList(), ['m']);
-      expect(grouped[DriftfinItemType.series]?.map((e) => e.id).toList(), ['s']);
+      expect(grouped[FladderItemType.baseType]?.map((e) => e.id).toList(), ['a', 'b']);
+      expect(grouped[FladderItemType.movie]?.map((e) => e.id).toList(), ['m']);
+      expect(grouped[FladderItemType.series]?.map((e) => e.id).toList(), ['s']);
     });
 
     test('is empty for an empty list', () {
@@ -98,18 +98,18 @@ void main() {
 
   group('ItemBaseModelsBooleans.getMostCommonType', () {
     test('returns movie for an empty list (documented default)', () {
-      expect(<ItemBaseModel>[].getMostCommonType, DriftfinItemType.movie);
+      expect(<ItemBaseModel>[].getMostCommonType, FladderItemType.movie);
     });
 
     test('returns the type with the most occurrences', () {
       final items = [_movie('m1'), _movie('m2'), _series('s1')];
-      expect(items.getMostCommonType, DriftfinItemType.movie);
+      expect(items.getMostCommonType, FladderItemType.movie);
     });
 
     test('ties break toward whichever type is reduced-first (documented behavior)', () {
       final items = [_movie('m1'), _series('s1')];
       // reduce() keeps `a` on a tie (a.value >= b.value), i.e. the first-seen type.
-      expect(items.getMostCommonType, DriftfinItemType.movie);
+      expect(items.getMostCommonType, FladderItemType.movie);
     });
   });
 

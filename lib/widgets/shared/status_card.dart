@@ -21,7 +21,7 @@ class StatusCard extends ConsumerWidget {
             Theme.of(context).colorScheme.surfaceContainer,
             blend: color,
           ),
-          borderRadius: DriftfinTheme.smallShape.borderRadius,
+          borderRadius: FladderTheme.smallShape.borderRadius,
         ),
         child: IconTheme(
           data: IconThemeData(

@@ -90,7 +90,7 @@ extension PhotoAlbumExtension on PhotoAlbumModel? {
     final api = ref.read(jellyApiProvider);
     final op = CancelableOperation.fromFuture(api.itemsGet(
         parentId: albumModel.id,
-        includeItemTypes: DriftfinItemType.galleryItem.map((e) => e.dtoKind).toList(),
+        includeItemTypes: FladderItemType.galleryItem.map((e) => e.dtoKind).toList(),
         recursive: true));
 
     _showLoadingIndicator(context, albumModel, op);
@@ -652,7 +652,7 @@ extension ItemBaseModelsBooleans on List<ItemBaseModel> {
     final op = CancelableOperation.fromFuture(Future(() async {
       List<List<ItemBaseModel>> newList = await Future.wait(map((element) async {
         switch (element.type) {
-          case DriftfinItemType.series:
+          case FladderItemType.series:
             return await ref.read(jellyApiProvider).fetchEpisodeFromShow(seriesId: element.id);
           default:
             return [element];
@@ -826,7 +826,7 @@ class _LoadIndicatorCancelable extends StatelessWidget {
                   if (item != null)
                     Flexible(
                       child: Container(
-                        decoration: DriftfinTheme.defaultPosterDecoration,
+                        decoration: FladderTheme.defaultPosterDecoration,
                         clipBehavior: Clip.hardEdge,
                         height: 175,
                         child: AspectRatio(

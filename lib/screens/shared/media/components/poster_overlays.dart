@@ -174,7 +174,7 @@ class VideoDurationOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (poster.overview.runTime == null) return const SizedBox.shrink();
-    if (!(poster is PhotoModel && (poster as PhotoModel).internalType == DriftfinItemType.video)) {
+    if (!(poster is PhotoModel && (poster as PhotoModel).internalType == FladderItemType.video)) {
       return const SizedBox.shrink();
     }
 
@@ -239,7 +239,7 @@ class BottomOverlaysContainer extends StatelessWidget {
   final bool showProgress;
   final double progress;
   final double progressHeight;
-  final DriftfinItemType itemType;
+  final FladderItemType itemType;
   final EdgeInsets progressPadding;
 
   const BottomOverlaysContainer({
@@ -260,7 +260,7 @@ class BottomOverlaysContainer extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (showFavourite) const FavouriteOverlay(),
-          if (showProgress && (progress > 0 && progress < 100) && itemType != DriftfinItemType.book)
+          if (showProgress && (progress > 0 && progress < 100) && itemType != FladderItemType.book)
             ProgressOverlay(
               progress: progress,
               height: progressHeight,

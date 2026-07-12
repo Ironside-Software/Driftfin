@@ -50,7 +50,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
       if (durationText != null) durationText,
     ].join(' • ');
 
-    final radius = DriftfinTheme.smallShape.borderRadius;
+    final radius = FladderTheme.smallShape.borderRadius;
 
     final smallScreen = AdaptiveLayout.viewSizeOf(context) <= ViewSize.phone;
 

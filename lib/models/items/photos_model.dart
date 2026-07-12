@@ -69,7 +69,7 @@ class PhotoModel extends ItemBaseModel with PhotoModelMappable {
   final String? albumId;
   final DateTime? dateTaken;
   final ImagesData? thumbnail;
-  final DriftfinItemType internalType;
+  final FladderItemType internalType;
 
   const PhotoModel({
     required this.albumId,
@@ -109,8 +109,8 @@ class PhotoModel extends ItemBaseModel with PhotoModelMappable {
 
   @override
   bool get galleryItem => switch (internalType) {
-        DriftfinItemType.photo => albumId?.isNotEmpty == true,
-        DriftfinItemType.video => parentId?.isNotEmpty == true,
+        FladderItemType.photo => albumId?.isNotEmpty == true,
+        FladderItemType.video => parentId?.isNotEmpty == true,
         _ => false,
       };
 
@@ -134,8 +134,8 @@ class PhotoModel extends ItemBaseModel with PhotoModelMappable {
       canDelete: item.canDelete,
       canDownload: item.canDownload,
       internalType: switch (item.type) {
-        BaseItemKind.video => DriftfinItemType.video,
-        _ => DriftfinItemType.photo,
+        BaseItemKind.video => FladderItemType.video,
+        _ => FladderItemType.photo,
       },
     );
   }

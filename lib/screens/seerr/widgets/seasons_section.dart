@@ -66,7 +66,7 @@ class SeerrSeasonsSection extends ConsumerWidget {
                     color: selected
                         ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3)
                         : Theme.of(context).colorScheme.tertiaryContainer.withValues(alpha: 0.3),
-                    borderRadius: DriftfinTheme.smallShape.borderRadius,
+                    borderRadius: FladderTheme.smallShape.borderRadius,
                   ),
                   padding: const EdgeInsets.all(8),
                   child: Row(
@@ -130,7 +130,7 @@ class SeerrSeasonsSection extends ConsumerWidget {
                       ),
                       if (season.posterUrl != null)
                         ClipRRect(
-                          borderRadius: DriftfinTheme.smallShape.borderRadius,
+                          borderRadius: FladderTheme.smallShape.borderRadius,
                           child: SizedBox(
                             height: 100,
                             child: AspectRatio(

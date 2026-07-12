@@ -163,7 +163,7 @@ void main() {
         showFavourite: true,
         showProgress: true,
         progress: 30,
-        itemType: DriftfinItemType.movie,
+        itemType: FladderItemType.movie,
       )));
       await tester.pumpAndSettle();
 
@@ -176,7 +176,7 @@ void main() {
         showFavourite: false,
         showProgress: true,
         progress: 30,
-        itemType: DriftfinItemType.book,
+        itemType: FladderItemType.book,
       )));
       await tester.pumpAndSettle();
 
@@ -189,7 +189,7 @@ void main() {
         showFavourite: false,
         showProgress: true,
         progress: 0,
-        itemType: DriftfinItemType.movie,
+        itemType: FladderItemType.movie,
       )));
       await tester.pumpAndSettle();
 

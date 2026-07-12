@@ -52,7 +52,7 @@ class FlatButton extends ConsumerWidget {
           child: Material(
             color: Colors.transparent,
             clipBehavior: clipBehavior,
-            borderRadius: borderRadiusGeometry ?? DriftfinTheme.defaultShape.borderRadius,
+            borderRadius: borderRadiusGeometry ?? FladderTheme.defaultShape.borderRadius,
             elevation: 0,
             child: InkWell(
               autofocus: autoFocus,

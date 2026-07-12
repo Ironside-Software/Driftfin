@@ -104,8 +104,8 @@ enum SeerrSearchMode {
   IconData get icon => switch (this) {
         SeerrSearchMode.search => IconsaxPlusBold.search_normal,
         SeerrSearchMode.trending => IconsaxPlusBold.trend_up,
-        SeerrSearchMode.discoverMovies => DriftfinItemType.movie.selectedicon,
-        SeerrSearchMode.discoverTv => DriftfinItemType.series.selectedicon,
+        SeerrSearchMode.discoverMovies => FladderItemType.movie.selectedicon,
+        SeerrSearchMode.discoverTv => FladderItemType.series.selectedicon,
       };
 }
 

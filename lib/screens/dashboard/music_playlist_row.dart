@@ -114,7 +114,7 @@ class MusicPlaylistRow extends ConsumerWidget {
                   },
                   onLongPress: () => showBottomSheet(context, ref, playlist),
                   onSecondaryTapDown: (globalPos) => showContextMenu(context, ref, globalPos.localPosition, playlist),
-                  borderRadius: DriftfinTheme.smallShape.borderRadius,
+                  borderRadius: FladderTheme.smallShape.borderRadius,
                   overlays: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -130,7 +130,7 @@ class MusicPlaylistRow extends ConsumerWidget {
                                   context.ensureVisible();
                                 }
                               },
-                              borderRadius: DriftfinTheme.smallShape.borderRadius,
+                              borderRadius: FladderTheme.smallShape.borderRadius,
                               focusedOverlays: [
                                 Align(
                                   alignment: Alignment.center,
@@ -144,7 +144,7 @@ class MusicPlaylistRow extends ConsumerWidget {
                                 ),
                               ],
                               child: ClipRRect(
-                                borderRadius: DriftfinTheme.smallShape.borderRadius,
+                                borderRadius: FladderTheme.smallShape.borderRadius,
                                 child: DriftfinImage(
                                   image: playlist.images?.primary,
                                   fit: BoxFit.cover,
@@ -176,7 +176,7 @@ class MusicPlaylistRow extends ConsumerWidget {
                   child: Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
-                      borderRadius: DriftfinTheme.smallShape.borderRadius,
+                      borderRadius: FladderTheme.smallShape.borderRadius,
                     ),
                     padding: const EdgeInsets.all(8),
                   ),

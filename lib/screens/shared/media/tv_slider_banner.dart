@@ -109,7 +109,7 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
 
   @override
   Widget build(BuildContext context) {
-    final radius = DriftfinTheme.largeShape.borderRadius;
+    final radius = FladderTheme.largeShape.borderRadius;
 
     final isDpad = AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad;
 

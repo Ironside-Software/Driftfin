@@ -480,7 +480,7 @@ class LibrarySearchRoute extends _i38.PageRouteInfo<LibrarySearchRouteArgs> {
     bool? favourites,
     _i42.SortingOrder? sortOrder,
     _i42.SortingOptions? sortingOptions,
-    Map<_i40.DriftfinItemType, bool>? types,
+    Map<_i40.FladderItemType, bool>? types,
     Map<String, bool>? genres,
     Map<_i43.Studio, bool>? studios,
     Map<String, bool>? tags,
@@ -591,7 +591,7 @@ class LibrarySearchRouteArgs {
 
   final _i42.SortingOptions? sortingOptions;
 
-  final Map<_i40.DriftfinItemType, bool>? types;
+  final Map<_i40.FladderItemType, bool>? types;
 
   final Map<String, bool>? genres;
 

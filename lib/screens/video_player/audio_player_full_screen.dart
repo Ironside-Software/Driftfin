@@ -533,7 +533,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
     }
 
     Widget albumArt(BuildContext context, {double size = 512}) {
-      final audioType = DriftfinItemType.audio;
+      final audioType = FladderItemType.audio;
       return Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,

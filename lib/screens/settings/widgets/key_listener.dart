@@ -209,7 +209,7 @@ class KeyListenerWidgetState extends ConsumerState<KeyListenerWidget> {
         onEnter: (event) => showClearButton(true),
         onExit: (event) => showClearButton(false),
         child: ClipRRect(
-          borderRadius: DriftfinTheme.smallShape.borderRadius,
+          borderRadius: FladderTheme.smallShape.borderRadius,
           child: InkWell(
             focusNode: buttonFocus,
             canRequestFocus: false,
@@ -223,7 +223,7 @@ class KeyListenerWidgetState extends ConsumerState<KeyListenerWidget> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: DriftfinTheme.smallShape.borderRadius,
+                borderRadius: FladderTheme.smallShape.borderRadius,
                 border: BoxBorder.all(
                   width: 2.0,
                   strokeAlign: BorderSide.strokeAlignInside,

@@ -35,7 +35,7 @@ class SyncListItem extends ConsumerWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceDim,
-          borderRadius: DriftfinTheme.defaultShape.borderRadius,
+          borderRadius: FladderTheme.defaultShape.borderRadius,
         ),
         child: Dismissible(
           key: Key(syncedItem.id),
@@ -50,7 +50,7 @@ class SyncListItem extends ConsumerWidget {
           ),
           direction: DismissDirection.startToEnd,
           confirmDismiss: (direction) async {
-            if (baseItem?.type == DriftfinItemType.playlist) {
+            if (baseItem?.type == FladderItemType.playlist) {
               await _showPlaylistDeleteDialog(context, ref, syncedItem);
             } else {
               await showDefaultAlertDialog(
@@ -85,7 +85,7 @@ class SyncListItem extends ConsumerWidget {
                   children: [
                     Container(
                       height: 150,
-                      decoration: DriftfinTheme.defaultPosterDecoration,
+                      decoration: FladderTheme.defaultPosterDecoration,
                       clipBehavior: Clip.hardEdge,
                       child: AspectRatio(
                           aspectRatio: baseItem?.primaryRatio ?? 0.67,

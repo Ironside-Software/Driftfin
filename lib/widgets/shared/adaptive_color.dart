@@ -83,23 +83,23 @@ class AdaptiveColorState extends ConsumerState<AdaptiveColor> with WidgetsBindin
     final themeColor = ref.watch(clientSettingsProvider.select((value) => value.themeColor));
     final schemeVariant = ref.watch(clientSettingsProvider.select((value) => value.schemeVariant));
 
-    final fallbackLight = DriftfinTheme.defaultScheme(Brightness.light);
-    final fallbackDark = DriftfinTheme.defaultScheme(Brightness.dark);
+    final fallbackLight = FladderTheme.defaultScheme(Brightness.light);
+    final fallbackDark = FladderTheme.defaultScheme(Brightness.dark);
 
     final baseLightTheme = themeColor == null
-        ? DriftfinTheme.theme(_light ?? fallbackLight, schemeVariant)
-        : DriftfinTheme.theme(themeColor.schemeLight, schemeVariant);
+        ? FladderTheme.theme(_light ?? fallbackLight, schemeVariant)
+        : FladderTheme.theme(themeColor.schemeLight, schemeVariant);
 
     final baseDarkTheme = themeColor == null
-        ? DriftfinTheme.theme(_dark ?? fallbackDark, schemeVariant)
-        : DriftfinTheme.theme(themeColor.schemeDark, schemeVariant);
+        ? FladderTheme.theme(_dark ?? fallbackDark, schemeVariant)
+        : FladderTheme.theme(themeColor.schemeDark, schemeVariant);
 
     // Apply fonts
     final lightTheme = isLinux
         ? baseLightTheme
-        : DriftfinTheme.applyChineseFontToTheme(lightTheme: baseLightTheme, darkTheme: baseDarkTheme);
+        : FladderTheme.applyChineseFontToTheme(lightTheme: baseLightTheme, darkTheme: baseDarkTheme);
 
-    final darkTheme = isLinux ? baseDarkTheme : DriftfinTheme.applyChineseFontToDarkTheme(darkTheme: baseDarkTheme);
+    final darkTheme = isLinux ? baseDarkTheme : FladderTheme.applyChineseFontToDarkTheme(darkTheme: baseDarkTheme);
 
     return ThemesData(
       light: lightTheme,

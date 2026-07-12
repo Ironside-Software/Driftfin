@@ -279,20 +279,20 @@ class ItemBaseModel with ItemBaseModelMappable {
     );
   }
 
-  DriftfinItemType get type => switch (this) {
-        MovieModel _ => DriftfinItemType.movie,
-        SeriesModel _ => DriftfinItemType.series,
-        SeasonModel _ => DriftfinItemType.season,
-        PhotoAlbumModel _ => DriftfinItemType.photoAlbum,
+  FladderItemType get type => switch (this) {
+        MovieModel _ => FladderItemType.movie,
+        SeriesModel _ => FladderItemType.series,
+        SeasonModel _ => FladderItemType.season,
+        PhotoAlbumModel _ => FladderItemType.photoAlbum,
         PhotoModel model => model.internalType,
-        EpisodeModel _ => DriftfinItemType.episode,
-        BookModel _ => DriftfinItemType.book,
-        PlaylistModel _ => DriftfinItemType.playlist,
-        FolderModel _ => DriftfinItemType.folder,
-        AlbumModel _ => DriftfinItemType.musicAlbum,
-        ArtistModel _ => DriftfinItemType.musicArtist,
-        AudioModel _ => DriftfinItemType.audio,
-        ItemBaseModel _ => DriftfinItemType.baseType,
+        EpisodeModel _ => FladderItemType.episode,
+        BookModel _ => FladderItemType.book,
+        PlaylistModel _ => FladderItemType.playlist,
+        FolderModel _ => FladderItemType.folder,
+        AlbumModel _ => FladderItemType.musicAlbum,
+        ArtistModel _ => FladderItemType.musicArtist,
+        AudioModel _ => FladderItemType.audio,
+        ItemBaseModel _ => FladderItemType.baseType,
       };
 
   @override
@@ -308,7 +308,7 @@ class ItemBaseModel with ItemBaseModelMappable {
 }
 
 // Currently supported types
-enum DriftfinItemType {
+enum FladderItemType {
   baseType(
     icon: IconsaxPlusLinear.folder_2,
     selectedicon: IconsaxPlusBold.folder_2,
@@ -386,83 +386,83 @@ enum DriftfinItemType {
     selectedicon: IconsaxPlusBold.slider_horizontal,
   );
 
-  const DriftfinItemType({required this.icon, required this.selectedicon});
+  const FladderItemType({required this.icon, required this.selectedicon});
 
   double get aspectRatio => switch (this) {
-        DriftfinItemType.video => 0.8,
-        DriftfinItemType.photo => 0.8,
-        DriftfinItemType.photoAlbum => 0.8,
-        DriftfinItemType.folder => 0.8,
-        DriftfinItemType.musicAlbum => 0.8,
-        DriftfinItemType.musicArtist => 0.8,
-        DriftfinItemType.audio => 0.8,
-        DriftfinItemType.baseType => 0.8,
-        DriftfinItemType.tvchannel => 0.8,
+        FladderItemType.video => 0.8,
+        FladderItemType.photo => 0.8,
+        FladderItemType.photoAlbum => 0.8,
+        FladderItemType.folder => 0.8,
+        FladderItemType.musicAlbum => 0.8,
+        FladderItemType.musicArtist => 0.8,
+        FladderItemType.audio => 0.8,
+        FladderItemType.baseType => 0.8,
+        FladderItemType.tvchannel => 0.8,
         _ => 0.55,
       };
 
-  static Set<DriftfinItemType> get playable => {
-        DriftfinItemType.series,
-        DriftfinItemType.episode,
-        DriftfinItemType.season,
-        DriftfinItemType.movie,
-        DriftfinItemType.musicVideo,
-        DriftfinItemType.tvchannel,
+  static Set<FladderItemType> get playable => {
+        FladderItemType.series,
+        FladderItemType.episode,
+        FladderItemType.season,
+        FladderItemType.movie,
+        FladderItemType.musicVideo,
+        FladderItemType.tvchannel,
       };
 
-  static Set<DriftfinItemType> get musicPlayable => {
-        DriftfinItemType.audio,
-        DriftfinItemType.musicAlbum,
-        DriftfinItemType.musicArtist,
+  static Set<FladderItemType> get musicPlayable => {
+        FladderItemType.audio,
+        FladderItemType.musicAlbum,
+        FladderItemType.musicArtist,
       };
 
-  static Set<DriftfinItemType> get galleryItem => {
-        DriftfinItemType.photo,
-        DriftfinItemType.video,
+  static Set<FladderItemType> get galleryItem => {
+        FladderItemType.photo,
+        FladderItemType.video,
       };
 
   String label(AppLocalizations l10n, {int count = 1}) => switch (this) {
-        DriftfinItemType.baseType => l10n.mediaTypeBase,
-        DriftfinItemType.audio => l10n.audio(count),
-        DriftfinItemType.collectionFolder => l10n.collectionFolder(count),
-        DriftfinItemType.musicAlbum => l10n.musicAlbum(count),
-        DriftfinItemType.musicArtist => l10n.mediaTypeArtists(count),
-        DriftfinItemType.musicVideo => l10n.video(count),
-        DriftfinItemType.video => l10n.video(count),
-        DriftfinItemType.movie => l10n.mediaTypeMovie(count),
-        DriftfinItemType.series => l10n.mediaTypeSeries(count),
-        DriftfinItemType.season => l10n.mediaTypeSeason(count),
-        DriftfinItemType.episode => l10n.mediaTypeEpisode(count),
-        DriftfinItemType.photo => l10n.mediaTypePhoto(count),
-        DriftfinItemType.person => l10n.mediaTypePerson(count),
-        DriftfinItemType.photoAlbum => l10n.mediaTypePhotoAlbum(count),
-        DriftfinItemType.folder => l10n.mediaTypeFolder(count),
-        DriftfinItemType.boxset => l10n.mediaTypeBoxset(count),
-        DriftfinItemType.playlist => l10n.mediaTypePlaylist(count),
-        DriftfinItemType.book => l10n.mediaTypeBook(count),
-        DriftfinItemType.tvchannel => l10n.mediaTypeTV(count),
+        FladderItemType.baseType => l10n.mediaTypeBase,
+        FladderItemType.audio => l10n.audio(count),
+        FladderItemType.collectionFolder => l10n.collectionFolder(count),
+        FladderItemType.musicAlbum => l10n.musicAlbum(count),
+        FladderItemType.musicArtist => l10n.mediaTypeArtists(count),
+        FladderItemType.musicVideo => l10n.video(count),
+        FladderItemType.video => l10n.video(count),
+        FladderItemType.movie => l10n.mediaTypeMovie(count),
+        FladderItemType.series => l10n.mediaTypeSeries(count),
+        FladderItemType.season => l10n.mediaTypeSeason(count),
+        FladderItemType.episode => l10n.mediaTypeEpisode(count),
+        FladderItemType.photo => l10n.mediaTypePhoto(count),
+        FladderItemType.person => l10n.mediaTypePerson(count),
+        FladderItemType.photoAlbum => l10n.mediaTypePhotoAlbum(count),
+        FladderItemType.folder => l10n.mediaTypeFolder(count),
+        FladderItemType.boxset => l10n.mediaTypeBoxset(count),
+        FladderItemType.playlist => l10n.mediaTypePlaylist(count),
+        FladderItemType.book => l10n.mediaTypeBook(count),
+        FladderItemType.tvchannel => l10n.mediaTypeTV(count),
       };
 
   BaseItemKind get dtoKind => switch (this) {
-        DriftfinItemType.baseType => BaseItemKind.userrootfolder,
-        DriftfinItemType.audio => BaseItemKind.audio,
-        DriftfinItemType.collectionFolder => BaseItemKind.collectionfolder,
-        DriftfinItemType.musicAlbum => BaseItemKind.musicalbum,
-        DriftfinItemType.musicArtist => BaseItemKind.musicartist,
-        DriftfinItemType.musicVideo => BaseItemKind.video,
-        DriftfinItemType.video => BaseItemKind.video,
-        DriftfinItemType.movie => BaseItemKind.movie,
-        DriftfinItemType.series => BaseItemKind.series,
-        DriftfinItemType.season => BaseItemKind.season,
-        DriftfinItemType.episode => BaseItemKind.episode,
-        DriftfinItemType.photo => BaseItemKind.photo,
-        DriftfinItemType.person => BaseItemKind.person,
-        DriftfinItemType.photoAlbum => BaseItemKind.photoalbum,
-        DriftfinItemType.folder => BaseItemKind.folder,
-        DriftfinItemType.boxset => BaseItemKind.boxset,
-        DriftfinItemType.playlist => BaseItemKind.playlist,
-        DriftfinItemType.book => BaseItemKind.book,
-        DriftfinItemType.tvchannel => BaseItemKind.tvchannel,
+        FladderItemType.baseType => BaseItemKind.userrootfolder,
+        FladderItemType.audio => BaseItemKind.audio,
+        FladderItemType.collectionFolder => BaseItemKind.collectionfolder,
+        FladderItemType.musicAlbum => BaseItemKind.musicalbum,
+        FladderItemType.musicArtist => BaseItemKind.musicartist,
+        FladderItemType.musicVideo => BaseItemKind.video,
+        FladderItemType.video => BaseItemKind.video,
+        FladderItemType.movie => BaseItemKind.movie,
+        FladderItemType.series => BaseItemKind.series,
+        FladderItemType.season => BaseItemKind.season,
+        FladderItemType.episode => BaseItemKind.episode,
+        FladderItemType.photo => BaseItemKind.photo,
+        FladderItemType.person => BaseItemKind.person,
+        FladderItemType.photoAlbum => BaseItemKind.photoalbum,
+        FladderItemType.folder => BaseItemKind.folder,
+        FladderItemType.boxset => BaseItemKind.boxset,
+        FladderItemType.playlist => BaseItemKind.playlist,
+        FladderItemType.book => BaseItemKind.book,
+        FladderItemType.tvchannel => BaseItemKind.tvchannel,
       };
 
   final IconData icon;

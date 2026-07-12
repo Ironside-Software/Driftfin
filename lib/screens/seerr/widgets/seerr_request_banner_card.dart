@@ -32,7 +32,7 @@ class SeerrRequestBannerCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final radius = DriftfinTheme.smallShape.borderRadius;
+    final radius = FladderTheme.smallShape.borderRadius;
 
     ImageData? backgroundImage = poster.images.backDrop?.firstOrNull;
     backgroundImage ??= poster.images.backDrop?.lastOrNull;

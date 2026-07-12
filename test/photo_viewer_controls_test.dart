@@ -42,7 +42,7 @@ PhotoModel _photo({String id = 'photo-1', String name = 'A Photo', bool favourit
       albumId: null,
       dateTaken: null,
       thumbnail: null,
-      internalType: DriftfinItemType.photo,
+      internalType: FladderItemType.photo,
       name: name,
       id: id,
       overview: const OverviewModel(),

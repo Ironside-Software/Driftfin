@@ -61,7 +61,7 @@ void main() {
     });
 
     test('maps enabled types to their dto kinds', () {
-      const model = LibraryFilterModel(types: {DriftfinItemType.movie: true, DriftfinItemType.series: false});
+      const model = LibraryFilterModel(types: {FladderItemType.movie: true, FladderItemType.series: false});
       expect(model.toQueryParams().includeItemTypes, [BaseItemKind.movie]);
     });
 

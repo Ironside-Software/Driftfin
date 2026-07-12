@@ -50,8 +50,8 @@ class _BackgroundImageState extends ConsumerState<BackgroundImage> {
       } else if (widget.items.isNotEmpty) {
         final randomItem = widget.items.shuffled().firstOrNull;
         final itemId = switch (randomItem?.type) {
-          DriftfinItemType.folder => randomItem?.id,
-          DriftfinItemType.series => randomItem?.parentId ?? randomItem?.id,
+          FladderItemType.folder => randomItem?.id,
+          FladderItemType.series => randomItem?.parentId ?? randomItem?.id,
           _ => randomItem?.id,
         };
 
