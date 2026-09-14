@@ -15,7 +15,7 @@ on:
 jobs:
   build:
     name: Build plugin
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -64,7 +64,7 @@ jobs:
     name: Release plugin
     if: startsWith(github.ref, 'refs/tags/plugin-v')
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     permissions:
       contents: write
     steps:
