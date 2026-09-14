@@ -38,7 +38,7 @@ env:
 jobs:
   # Check if workflow should run based on trigger conditions
   check-trigger:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
       should_run: ${{ steps.check.outputs.should_run }}
       build_type: ${{ steps.check.outputs.build_type }}
@@ -81,7 +81,7 @@ jobs:
   fetch-info:
     needs: [check-trigger]
     if: needs.check-trigger.outputs.should_run == 'true'
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
       version_name: ${{ steps.fetch.outputs.version_name }}
       flutter_version: ${{ steps.fetch.outputs.flutter_version }}
@@ -118,7 +118,7 @@ jobs:
 
   build-android:
     needs: [fetch-info]
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
       artifact_suffix: ${{ env.ARTIFACT_SUFFIX }}
     steps:
@@ -206,7 +206,7 @@ jobs:
           path: build/app/outputs/android_artifacts/
 
   build-windows:
-    runs-on: windows-2022
+    runs-on: blacksmith-2vcpu-windows-2025
     needs: [fetch-info]
 
     steps:
@@ -247,7 +247,7 @@ jobs:
           path: windows\Output\fladder_setup.exe
 
   build-ios:
-    runs-on: macos-latest
+    runs-on: blacksmith-6vcpu-macos-latest
     needs: [fetch-info]
 
     steps:
@@ -286,7 +286,7 @@ jobs:
           path: build/ios/archive/Runner.xcarchive/Products/Applications/iOS.ipa
 
   build-macos:
-    runs-on: macos-latest
+    runs-on: blacksmith-6vcpu-macos-latest
     needs: [fetch-info]
 
     steps:
@@ -326,7 +326,7 @@ jobs:
           path: build/macos/Build/Products/Release-production/macOS.dmg
 
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     needs: [fetch-info]
 
     steps:
@@ -389,7 +389,7 @@ jobs:
             Fladder_x86_64.AppImage.zsync
 
   build-linux-flatpak:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     if: needs.fetch-info.outputs.build_type == 'release' || needs.fetch-info.outputs.build_type == 'nightly'
     needs: [fetch-info, build-linux]
     container:
@@ -419,7 +419,7 @@ jobs:
           path: Fladder-Linux.flatpak
 
   build-web:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     needs: [fetch-info]
 
     steps:
@@ -470,7 +470,7 @@ jobs:
       - build-linux
       - build-linux-flatpak
       - build-web
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     if: needs.fetch-info.outputs.build_type == 'release' || needs.fetch-info.outputs.build_type == 'nightly'
     permissions:
       contents: write
@@ -686,7 +686,7 @@ jobs:
       - fetch-info
       - create_release
       - build-android
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - name: Download Artifacts Android
         uses: actions/download-artifact@v4
@@ -709,7 +709,7 @@ jobs:
     needs:
       - fetch-info
       - create_release
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     if: needs.fetch-info.outputs.build_type == 'release'
     steps:
       - name: Checkout repository
