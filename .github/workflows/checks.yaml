@@ -40,8 +40,15 @@ jobs:
         uses: dart-lang/setup-dart@v1
 
       - name: Analyze Flutter
+        if: github.event_name != 'workflow_dispatch'
         uses: ValentinVignal/action-dart-analyze@v2.0
         with:
           emojis: false
           fail-on: info
           line-length: 120
+
+      - name: Analyze Flutter (manual)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          dart format --output=none --set-exit-if-changed --line-length 120 .
+          flutter analyze --fatal-infos
