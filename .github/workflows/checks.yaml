@@ -49,6 +49,6 @@ jobs:
 
       - name: Analyze Flutter (manual)
         if: github.event_name == 'workflow_dispatch'
-        run: |
-          dart format --output=none --set-exit-if-changed --line-length 120 .
-          flutter analyze --fatal-infos
+        # The PR action checks changed files through GitHub's compare API;
+        # manual runs have no PR base, so analyze the full project locally.
+        run: flutter analyze --fatal-infos
