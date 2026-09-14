@@ -34,7 +34,7 @@ List<TranslationReport> checkTranslationCompleteness(Directory l10nDir) {
     final isArb = entity is File && entity.path.endsWith('.arb');
     final isTemplate = entity.path == templateFile.path;
     if (isArb && !isTemplate) {
-      arbFiles.add(entity as File);
+      arbFiles.add(entity);
     }
   }
   arbFiles.sort((a, b) => a.path.compareTo(b.path));
