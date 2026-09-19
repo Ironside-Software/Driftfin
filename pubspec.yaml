@@ -164,6 +164,8 @@ dependencies:
   uuid: any
 # Playback forks are pinned until their native behavior is verified against upstream.
 dependency_overrides:
+  # smtc_windows 1.1.0 rejects runtimes differing from its generated bridge version.
+  flutter_rust_bridge: 2.11.1
   # Bonsoir 6.1.0 omits Foundation under SPM. Pin its upstream fix; Bonsoir 7
   # changes the service.host field that cast_plus 2.2.0 uses for discovery.
   bonsoir_darwin:
