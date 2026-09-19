@@ -77,6 +77,9 @@ void main() {
     final download = steps('testflight')
         .singleWhere((step) => '${step['uses']}'.startsWith('actions/download-artifact@'));
     expect(download['with']['name'], 'ios');
+    final upload = steps('testflight').singleWhere((step) => step['name'] == 'Upload to TestFlight');
+    // App Store Connect rejects updating this immutable value once it is set by the IPA.
+    expect(upload['with'].containsKey('uses-non-exempt-encryption'), isFalse);
   });
 
   group('Unix runner scripts', () {
@@ -90,6 +93,7 @@ with open('ios/Runner/Info.plist', 'rb') as source:
 purpose = info.get('NSCameraUsageDescription')
 assert isinstance(purpose, str) and purpose.strip(), 'Missing camera purpose string'
 assert 'does not need camera access' in purpose, 'Do not claim an unused camera feature'
+assert info.get('ITSAppUsesNonExemptEncryption') is False, 'Declare encryption compliance in the IPA'
 ''',
       ]);
       expect(result.exitCode, 0, reason: '${result.stderr}');
