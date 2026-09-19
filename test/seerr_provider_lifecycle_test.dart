@@ -53,7 +53,7 @@ Widget _screen(ProviderContainer container) => UncontrolledProviderScope(
 );
 
 void main() {
-  test('profile retries when plugin negotiation finishes without a plugin', () async {
+  test('unknown saved credentials stay dormant after plugin negotiation', () async {
     var calls = 0;
     await http.runWithClient(
       () async {
@@ -69,12 +69,46 @@ void main() {
         container.read(serverIntegrationConnectionProvider.notifier).state = ServerIntegrationConfigStatus.noPlugin;
         await container.pump();
         await Future<void>.delayed(Duration.zero);
-        expect(calls, 1);
-        expect(container.read(seerrUserProvider)?.id, 1);
+        expect(calls, 0);
+        expect(container.read(seerrUserProvider), isNull);
+        expect(container.read(seerrAvailableProvider), isFalse);
+        expect(container.read(userProvider)?.seerrCredentials?.apiKey, 'test-key');
       },
       () => MockClient((_) async {
         calls++;
         return _profile();
+      }),
+    );
+  });
+
+  test('reconnecting unknown credentials never sends the stored key or custom headers', () async {
+    final requests = <http.Request>[];
+    await http.runWithClient(
+      () async {
+        final container = _container();
+        final account = container.read(userProvider)!;
+        container.read(userProvider.notifier).userState = account.copyWith(
+          seerrCredentials: account.seerrCredentials!.copyWith(
+            origin: CredentialOrigin.unknown,
+            sessionCookie: 'old-cookie',
+            customHeaders: {'Authorization': 'old-secret'},
+          ),
+        );
+        final cookie = await container
+            .read(seerrApiProvider)
+            .authenticateLocal(email: 'user@example.test', password: 'new-password');
+        expect(cookie, contains('new-session'));
+        expect(requests, hasLength(1));
+        expect(requests.single.url.path, '/api/v1/auth/local');
+        expect(
+          requests.single.headers.keys.map((key) => key.toLowerCase()),
+          isNot(anyOf(contains('x-api-key'), contains('cookie'), contains('authorization'))),
+        );
+        expect(requests.single.body, contains('new-password'));
+      },
+      () => MockClient((request) async {
+        requests.add(request);
+        return http.Response('{"id":1}', 200, headers: {'set-cookie': 'connect.sid=new-session; Path=/; HttpOnly'});
       }),
     );
   });

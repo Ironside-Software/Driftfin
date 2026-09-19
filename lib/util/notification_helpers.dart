@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:chopper/chopper.dart';
 
@@ -27,6 +28,9 @@ class NotificationHelpers {
   }
 
   static SeerrChopperService createSeerrClient(SeerrCredentialsModel credentials, {CredentialsModel? jellyfin}) {
+    if (jellyfin == null && credentials.origin != CredentialOrigin.manual) {
+      throw const HttpException('Reconnect Seerr to confirm saved credentials');
+    }
     if (jellyfin != null && jellyfin.url.isEmpty) {
       jellyfin = jellyfin.copyWith(url: jellyfin.localUrl ?? '');
     }

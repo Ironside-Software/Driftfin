@@ -52,6 +52,13 @@ Future<({ServerIntegrationConfig? config, ServerIntegrationConfigStatus status, 
 fetchServerIntegrationConfigDiagnostic(String url, Map<String, String> headers, http.Client client) async {
   try {
     final response = await client.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 8));
+    if (response.statusCode == 426) {
+      return (
+        config: ServerIntegrationConfig.managed(null),
+        status: ServerIntegrationConfigStatus.incompatible,
+        detail: 'upgrade_required',
+      );
+    }
     if (response.statusCode == 404) {
       return (config: null, status: ServerIntegrationConfigStatus.noPlugin, detail: null);
     }
@@ -121,7 +128,11 @@ final seerrAvailableProvider = Provider<bool>((ref) {
   if (ref.watch(managedIntegrationsProvider)) {
     return ref.watch(serverIntegrationConfigProvider)?.capabilities?.feature('discovery').allowed == true;
   }
-  return ref.watch(userProvider.select((user) => user?.seerrCredentials?.isConfigured ?? false));
+  return ref.watch(
+    userProvider.select(
+      (user) => user?.seerrCredentials?.origin == CredentialOrigin.manual && user!.seerrCredentials!.isConfigured,
+    ),
+  );
 });
 
 class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationConfig?> {

@@ -6,36 +6,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Jellyfin.Plugin.Driftfin.Api
 {
-    /// <summary>
-    /// Serves the server-wide Driftfin integration config to clients. The mere
-    /// existence of <c>GET /Driftfin/Config</c> is how the app detects that the
-    /// plugin is installed (a 404 means "not installed" → the app uses its local
-    /// per-device settings).
-    /// </summary>
+    /// <summary>Legacy configuration contract. Clients must use the managed protocol.</summary>
     [ApiController]
     [Route("Driftfin")]
     [Produces("application/json")]
     public class DriftfinConfigController : ControllerBase
     {
-        /// <summary>Returns the current integration config. Any authenticated user may read it.</summary>
-        /// <returns>The integration config.</returns>
+        /// <summary>Requires clients of the retired secret-sharing contract to upgrade.</summary>
+        /// <returns>A non-secret upgrade notice.</returns>
         [HttpGet("Config")]
-        // Any logged-in Jellyfin user may read it. Jellyfin 10.11 removed the
-        // named "DefaultAuthorization" policy (referencing it throws
-        // "AuthorizationPolicy ... was not found" -> HTTP 500), so plain
-        // [Authorize] is the portable way to require an authenticated user.
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<DriftfinConfigDto> GetConfig()
-        {
-            var config = Plugin.Instance?.Configuration;
-            if (config is null)
-            {
-                return NotFound();
-            }
-
-            return Ok(DriftfinConfigDto.FromConfiguration(config));
-        }
+        [ProducesResponseType(StatusCodes.Status426UpgradeRequired)]
+        public ActionResult GetConfig() =>
+            StatusCode(StatusCodes.Status426UpgradeRequired, new { reason = "upgrade_required", protocolVersion = 1 });
 
         /// <summary>Updates the integration config. Admin only.</summary>
         /// <param name="body">The new config.</param>
@@ -80,23 +63,6 @@ namespace Jellyfin.Plugin.Driftfin.Api
         /// <summary>Gets or sets the Trakt config.</summary>
         [JsonPropertyName("trakt")]
         public TraktConfigDto Trakt { get; set; } = new();
-
-        /// <summary>Builds a DTO from stored plugin configuration.</summary>
-        /// <param name="c">The plugin configuration.</param>
-        /// <returns>The DTO.</returns>
-        public static DriftfinConfigDto FromConfiguration(PluginConfiguration c) => new()
-        {
-            LocalUrl = c.LocalUrl,
-            Seerr = new SeerrConfigDto { Enabled = c.SeerrEnabled, Url = c.SeerrUrl, ApiKey = c.SeerrApiKey },
-            Sonarr = new ArrConfigDto { Enabled = c.SonarrEnabled, Url = c.SonarrUrl, ApiKey = c.SonarrApiKey },
-            Radarr = new ArrConfigDto { Enabled = c.RadarrEnabled, Url = c.RadarrUrl, ApiKey = c.RadarrApiKey },
-            Trakt = new TraktConfigDto
-            {
-                Enabled = c.TraktEnabled,
-                ClientId = c.TraktClientId,
-                ClientSecret = c.TraktClientSecret
-            }
-        };
 
         /// <summary>Copies DTO values into stored plugin configuration.</summary>
         /// <param name="c">The plugin configuration to mutate.</param>

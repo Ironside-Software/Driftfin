@@ -1,24 +1,24 @@
 # Driftfin — Jellyfin server plugin
 
-Optional Jellyfin **server** plugin that stores Driftfin's client integration
-settings — Jellyseerr/Overseerr, Sonarr, Radarr and Trakt — **once, on the
-server**, so every Driftfin client pulls one shared configuration instead of
-each user re-entering URLs and API keys on every device.
-
-The Driftfin app works **fully without this plugin** — it just falls back to its
-normal per-device settings. Install the plugin only if you want centrally
-managed integrations.
+Optional Jellyfin **server** plugin for managed Seerr, Sonarr and Radarr
+integrations, diagnostics and unified discovery in Driftfin. Integration API
+keys stay on the server. Core Jellyfin browsing and playback work without it;
+explicitly configured manual integrations remain available.
 
 ## How it works
 
-- The plugin exposes `GET /Driftfin/Config`, which returns the configured
-  integrations as JSON to any authenticated Jellyfin user. Driftfin calls this
-  on login; a `404` simply means the plugin isn't installed.
-- An admin edits the values from **Dashboard → Plugins → Driftfin**
-  (or via the admin-only `POST /Driftfin/Config`).
-- Any integration that is enabled **and** fully filled in becomes
-  *server-managed*: Driftfin uses those values and shows the matching in-app
-  fields as read-only ("Managed by server").
+- Driftfin negotiates the non-secret `GET /Driftfin/v1/capabilities` contract.
+  Managed operations use the user's Jellyfin session.
+- An administrator configures integrations through **Dashboard → Plugins →
+  Driftfin**. Sonarr/Radarr management and connection diagnostics require a
+  Jellyfin administrator.
+- Seerr operations require an exact mapping to the caller's Jellyfin user on
+  the paired server. Requests retain that user's permissions, ownership and
+  quotas; no owner-account fallback is allowed. The verified managed Seerr
+  version is 3.4.1; unsupported versions fail closed.
+- Unified discovery matches catalog results to the caller's accessible Jellyfin
+  library by provider IDs. Restricted library policies disable discovery when
+  catalog visibility cannot be guaranteed.
 - The plugin also exposes `POST /Driftfin/SyncPlay/{groupId}/Messages`, which
   any authenticated group member may call to relay a Watch Together chat
   message, emoji reaction, or typing/buffering presence ping to the rest of
@@ -29,13 +29,29 @@ managed integrations.
   Driftfin issue #4. Without the plugin, chat still works between clients
   where one side has remote-control rights; reactions/presence are local-only.
 
-> **Security note:** `GET /Driftfin/Config` returns the stored values —
-> including API keys — to every logged-in user (this matches how Driftfin
-> already lets each user hold these keys client-side). Don't enable it on a
-> server where untrusted users shouldn't see your *.arr keys.
+## Upgrade from plugin 1 or 2
 
-Per-user secrets are never centralized: Trakt OAuth tokens and Jellyseerr
-session cookies are still established locally on each device.
+Plugin **3.0.0.0** retires the secret-sharing `GET /Driftfin/Config` contract.
+It returns HTTP 426 with `upgrade_required` to authenticated clients. Saved
+server configuration and the plugin GUID are preserved; this does not erase
+keys already copied to older clients.
+
+1. Deploy a compatible Driftfin app before upgrading the plugin. Older apps
+   retain core Jellyfin functionality but must upgrade to use managed integrations.
+2. Verify the deployed Seerr and arr versions, then upgrade the plugin and
+   restart Jellyfin. Keep older-server artifacts in the catalog.
+3. Refresh integrations in Driftfin and use the administrator connection checks.
+   Regular users need their own mapped Seerr account.
+4. Reconnect integrations whose old local credentials have unknown provenance.
+   Personal Trakt OAuth remains local; the new plugin no longer distributes
+   Trakt application secrets. Configure a personal Trakt application explicitly.
+5. After migration, administrators should rotate previously distributed
+   integration keys in each service and update the plugin dashboard. Rotation
+   is deliberately manual.
+
+There is no legacy key-sharing compatibility switch. The admin-only configuration
+write route remains available, and Jellyfin's standard plugin configuration API
+continues to serve the dashboard.
 
 ## Build from source
 
@@ -55,7 +71,7 @@ The plugin DLL lands in
 | 12.x | 2.0.0.0 and later | .NET 10 |
 | 10.10 / 10.11 | 1.0.2.0 (retained in the catalog) | .NET 8 |
 
-Plugin 2 targets the exact Jellyfin 12.0.0 API. Jellyfin 10.x must keep the
+Plugins 2 and 3 target the exact Jellyfin 12.0.0 API. Jellyfin 10.x must keep the
 older plugin; changing its manifest alone cannot make its DLL compatible with 12.
 The plugin GUID and configuration filename stay the same, so upgrading retains
 saved settings. After updating, restart Jellyfin and refresh integrations in Driftfin.
@@ -67,7 +83,7 @@ admin/user permissions and SyncPlay group membership. Run the same checks locall
 ```bash
 dotnet test jellyfin-plugin/Jellyfin.Plugin.Driftfin.Tests/Jellyfin.Plugin.Driftfin.Tests.csproj -c Release
 python3 -m unittest discover -s jellyfin-plugin/scripts -p 'test_*.py' -v
-python3 jellyfin-plugin/scripts/smoke_test.py
+python3 jellyfin-plugin/scripts/smoke_test.py --with-seerr
 ```
 
 The Python metadata tests require PyYAML. The smoke test requires Docker and

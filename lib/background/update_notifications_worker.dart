@@ -204,7 +204,10 @@ Future<List<NotificationModel>> _fetchAndNotifySeerrRequestsForAccount(
   SeerrChopperService? seerrApi;
   try {
     final seerrCredentials = account.seerrCredentials ?? const SeerrCredentialsModel();
-    if (!account.managedIntegrations && !seerrCredentials.isConfigured) return [];
+    if (!account.managedIntegrations &&
+        (seerrCredentials.origin != CredentialOrigin.manual || !seerrCredentials.isConfigured)) {
+      return [];
+    }
 
     final seerrBase = seerrCredentials.serverUrl.endsWith('/')
         ? seerrCredentials.serverUrl.substring(0, seerrCredentials.serverUrl.length - 1)

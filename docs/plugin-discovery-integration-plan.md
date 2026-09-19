@@ -51,8 +51,17 @@ Status: implementation in progress. Updated 2026-09-19.
   including refreshing discovery without resubmitting mutations. Detail/request
   return paths use the same refresh mechanism.
   Re-run the full gate after migration is complete.
-- Still required: complete provenance/export migration (including unknown-origin
-  handling and retirement of legacy secret responses), deployed arr-version
+- Migration checkpoint: plugin 3 retires legacy secret reads with HTTP 426;
+  a new app treats that response as a managed server requiring upgrade, never
+  direct fallback. The live Jellyfin fixture verifies both users receive only
+  the upgrade notice, while admin dashboard configuration and saved XML survive.
+  Unknown-origin Seerr credentials stay stored but inactive until reconnection;
+  foreground/background requests cannot use them. Reconnection strips old auth.
+  Focused client tests (42), backend tests (83), script checks (8), and the full
+  combined smoke fixture pass; analysis is clean. The migration checkpoint full
+  suite passes 1,676 tests with three credential-dependent skips.
+- Still required: complete arr/Trakt provenance and preference/export migration,
+  deployed arr-version
   verification before rollout, platform gates, final regression/coverage, and PR
   review. No feature release or merge has been performed.
 

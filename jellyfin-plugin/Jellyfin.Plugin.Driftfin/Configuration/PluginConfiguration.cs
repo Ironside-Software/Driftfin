@@ -4,8 +4,7 @@ namespace Jellyfin.Plugin.Driftfin.Configuration
 {
     /// <summary>
     /// Server-wide Driftfin client integration settings. Configured by an admin
-    /// in the Jellyfin dashboard and served to clients via the plugin's
-    /// <c>GET /Driftfin/Config</c> endpoint.
+    /// in the Jellyfin dashboard. Integration credentials remain on the server.
     /// </summary>
     public class PluginConfiguration : BasePluginConfiguration
     {
