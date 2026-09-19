@@ -11,6 +11,17 @@ void main() {
   List<YamlMap> steps(String job) => (jobs[job]['steps'] as YamlList).cast<YamlMap>();
   String script(String job, String name) => steps(job).singleWhere((step) => step['name'] == name)['run'] as String;
 
+  test('iOS-only dispatch skips other platforms without changing full release defaults', () {
+    final input = workflow['on']['workflow_dispatch']['inputs']['ios_only'];
+    expect(input['type'], 'boolean');
+    expect(input['default'], isFalse);
+    for (final job in platforms.where((job) => job != 'ios')) {
+      expect(jobs[job]['if'], r'${{ !inputs.ios_only }}', reason: job);
+    }
+    expect(jobs['ios']['if'], isNull);
+    expect(jobs['testflight']['needs'], 'ios');
+  });
+
   test('all build jobs and Pages check out the same resolved commit', () {
     for (final job in [...platforms, 'pages']) {
       final checkout = steps(job).singleWhere((step) => '${step['uses']}'.startsWith('actions/checkout@'));
@@ -51,6 +62,21 @@ void main() {
   });
 
   group('Unix runner scripts', () {
+    test('iOS bundle declares the camera purpose required by the bundled MDK library', () async {
+      final result = await Process.run('python3', [
+        '-c',
+        '''
+import plistlib
+with open('ios/Runner/Info.plist', 'rb') as source:
+    info = plistlib.load(source)
+purpose = info.get('NSCameraUsageDescription')
+assert isinstance(purpose, str) and purpose.strip(), 'Missing camera purpose string'
+assert 'does not need camera access' in purpose, 'Do not claim an unused camera feature'
+''',
+      ]);
+      expect(result.exitCode, 0, reason: '${result.stderr}');
+    });
+
     test('version metadata distinguishes pushed tags from manual builds', () async {
       final temp = Directory.systemTemp.createTempSync('driftfin-version-');
       addTearDown(() => temp.deleteSync(recursive: true));

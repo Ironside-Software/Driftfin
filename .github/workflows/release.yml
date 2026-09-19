@@ -13,6 +13,11 @@ on:
         required: true
         default: false
         type: boolean
+      ios_only:
+        description: Build only iOS (can be combined with TestFlight)
+        required: true
+        default: false
+        type: boolean
       ref:
         description: Git ref to build for every platform (blank uses the selected branch)
         required: false
@@ -54,6 +59,7 @@ jobs:
 
   web:
     name: Build Web
+    if: ${{ !inputs.ios_only }}
     needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -76,6 +82,7 @@ jobs:
 
   windows:
     name: Build Windows
+    if: ${{ !inputs.ios_only }}
     needs: prepare
     runs-on: blacksmith-2vcpu-windows-2025
     steps:
@@ -166,6 +173,7 @@ jobs:
 
   android:
     name: Build Android (${{ matrix.mode }})
+    if: ${{ !inputs.ios_only }}
     needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     strategy:
@@ -227,6 +235,7 @@ jobs:
 
   macos_desktop:
     name: Build macOS
+    if: ${{ !inputs.ios_only }}
     needs: prepare
     runs-on: blacksmith-6vcpu-macos-latest
     env:
@@ -254,6 +263,7 @@ jobs:
 
   linux:
     name: Build Linux
+    if: ${{ !inputs.ios_only }}
     needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
