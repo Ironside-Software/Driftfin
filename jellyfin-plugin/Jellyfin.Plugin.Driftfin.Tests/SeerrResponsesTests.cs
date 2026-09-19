@@ -69,6 +69,25 @@ namespace Jellyfin.Plugin.Driftfin.Tests
         }
 
         [Fact]
+        public void FourKSeasonRequestsDoNotLockNormalSeasonsOrLeakOtherUsers()
+        {
+            var result = Member.Project("tv/1", Json("""
+                {"id":1,"name":"Show","mediaInfo":{"seasons":[{"seasonNumber":9,"status4k":5}],"requests":[
+                  {"id":8,"status":1,"is4k":true,"seasons":[1],"requestedBy":{"id":42}},
+                  {"id":9,"status":2,"is4k":false,"seasons":[2],"requestedBy":{"id":42}},
+                  {"id":10,"status":2,"is4k":true,"seasons":[3],"requestedBy":{"id":99}}]}}
+                """));
+            var seasons = result["mediaInfo"]!["seasons"]!.AsArray();
+            Assert.Equal(2, seasons.Count);
+            Assert.Equal(1, seasons[0]!["seasonNumber"]!.GetValue<int>());
+            Assert.Equal(1, seasons[0]!["status"]!.GetValue<int>());
+            Assert.Equal(2, seasons[0]!["status4k"]!.GetValue<int>());
+            Assert.Equal(2, seasons[1]!["seasonNumber"]!.GetValue<int>());
+            Assert.Equal(3, seasons[1]!["status"]!.GetValue<int>());
+            Assert.Equal(1, seasons[1]!["status4k"]!.GetValue<int>());
+        }
+
+        [Fact]
         public void AccessibleLibraryMatchControlsAvailabilityAndPlayback()
         {
             var match = new LibraryMatch("accessible", false, 4, new Dictionary<int, int> { [1] = 5 }, new Dictionary<int, int> { [1] = 10 });

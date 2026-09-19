@@ -46,7 +46,10 @@ class SeerrSeasonsSection extends ConsumerWidget {
           final selected = requestState.selectedSeasons[seasonNumber] ?? false;
           final status = seasonStatuses[seasonNumber];
           final seasonDownloads =
-              model.mediaInfo?.downloadStatus?.where((d) => d.episode?.seasonNumber == seasonNumber).toList() ?? [];
+              (requestState.use4k ? model.mediaInfo?.downloadStatus4k : model.mediaInfo?.downloadStatus)
+                  ?.where((d) => d.episode?.seasonNumber == seasonNumber)
+                  .toList() ??
+              [];
 
           return Builder(
             builder: (context) {

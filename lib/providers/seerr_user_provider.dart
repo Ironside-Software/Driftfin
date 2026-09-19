@@ -12,8 +12,10 @@ part 'seerr_user_provider.g.dart';
 
 @riverpod
 class SeerrUser extends _$SeerrUser {
+  int _generation = 0;
   @override
   SeerrUserModel? build() {
+    _generation++;
     ref.watch(userProvider.select((user) => (user?.id, user?.credentials.serverId, user?.credentials.token)));
     ref.watch(serverIntegrationConfigProvider);
     ref.watch(serverIntegrationConnectionProvider);
@@ -22,21 +24,27 @@ class SeerrUser extends _$SeerrUser {
   }
 
   Future<SeerrUserModel?> refreshUser() async {
+    // Callers await this result without necessarily listening to the provider.
+    final keepAlive = ref.keepAlive();
+    final generation = _generation;
     try {
       final api = ref.read(seerrApiProvider);
-      final response = await api.me();
-      if (!ref.mounted) return null;
+      final response = await api.me().timeout(const Duration(seconds: 20));
+      if (!ref.mounted || generation != _generation) return null;
       if (response.isSuccessful && response.body != null) {
         state = response.body;
         return response.body;
       }
     } catch (error) {
       log('Unable to refresh Seerr user (${error.runtimeType})', name: 'SeerrUser');
+    } finally {
+      keepAlive.close();
     }
     return null;
   }
 
   void clearUser() {
+    _generation++;
     state = null;
   }
 }

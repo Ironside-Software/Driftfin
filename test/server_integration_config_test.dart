@@ -267,17 +267,12 @@ void main() {
     });
 
     test('legacy Trakt login never overwrites personal credentials or tokens', () async {
-      final manual = TraktSettings(
+      const manual = TraktSettings(
         origin: CredentialOrigin.manual,
         clientId: 'personal',
         clientSecret: 'personal-secret',
         enabled: true,
-        tokens: const TraktTokens(
-          accessToken: 'personal-token',
-          refreshToken: 'refresh',
-          createdAt: 0,
-          expiresIn: 999999,
-        ),
+        tokens: TraktTokens(accessToken: 'personal-token', refreshToken: 'refresh', createdAt: 0, expiresIn: 999999),
       );
       final saved = jsonEncode(manual.toJson());
       await prefs.setString('traktSettings', saved);

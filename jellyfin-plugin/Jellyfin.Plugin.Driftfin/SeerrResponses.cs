@@ -155,6 +155,7 @@ namespace Jellyfin.Plugin.Driftfin
             result["status"] = match?.Status ?? (requests.Any(r => r?["status"]?.GetValue<int>() == 2) ? 3 : requests.Count > 0 ? 2 : 1);
             if (match?.Playable == true) result["jellyfinMediaId"] = match.ItemId;
             var seasonStates = new Dictionary<int, int>();
+            var fourKSeasonStates = new Dictionary<int, int>();
             foreach (var request in requests)
             {
                 if (request?["seasons"] is not JsonArray seasons) continue;
@@ -163,13 +164,21 @@ namespace Jellyfin.Plugin.Driftfin
                 foreach (var season in seasons)
                 {
                     var number = season is JsonValue scalar ? scalar.GetValue<int>() : season?["seasonNumber"]?.GetValue<int>();
-                    if (number.HasValue) seasonStates[number.Value] = status == 2 ? 3 : 2;
+                    var states = request["is4k"]?.GetValue<bool>() == true ? fourKSeasonStates : seasonStates;
+                    if (number.HasValue) states[number.Value] = status == 2 ? 3 : 2;
                 }
             }
             if (match is not null)
                 foreach (var season in match.EpisodeCounts.Keys) seasonStates[season] = match.SeasonStatus(season);
-            result["seasons"] = new JsonArray(seasonStates.OrderBy(entry => entry.Key)
-                .Select(entry => (JsonNode)new JsonObject { ["seasonNumber"] = entry.Key, ["status"] = entry.Value }).ToArray());
+            // Native matching proves library access, not 4K resolution. Only the
+            // caller-visible 4K requests can establish a 4K season request state.
+            result["seasons"] = new JsonArray(seasonStates.Keys.Union(fourKSeasonStates.Keys).OrderBy(number => number)
+                .Select(number => (JsonNode)new JsonObject
+                {
+                    ["seasonNumber"] = number,
+                    ["status"] = seasonStates.TryGetValue(number, out var normal) ? normal : 1,
+                    ["status4k"] = fourKSeasonStates.TryGetValue(number, out var fourK) ? fourK : 1,
+                }).ToArray());
             if (requests.Count > 0 || match is not null)
                 foreach (var key in new[] { "downloadStatus", "downloadStatus4k" }) AddArray(result, value, key, download =>
                 {

@@ -18,11 +18,7 @@ class SeerrDetails extends _$SeerrDetails {
   late final api = ref.read(seerrApiProvider);
 
   @override
-  SeerrDetailsModel build({
-    required int tmdbId,
-    required SeerrMediaType mediaType,
-    SeerrDashboardPosterModel? poster,
-  }) {
+  SeerrDetailsModel build({required int tmdbId, required SeerrMediaType mediaType, SeerrDashboardPosterModel? poster}) {
     state = SeerrDetailsModel(
       tmdbId: tmdbId,
       mediaType: mediaType,
@@ -43,10 +39,7 @@ class SeerrDetails extends _$SeerrDetails {
 
     SeerrDashboardPosterModel? poster = state.poster;
 
-    final refreshedPoster = await api.fetchDashboardPosterFromIds(
-      tmdbId: currentTmdbId,
-      mediaType: currentMediaType,
-    );
+    final refreshedPoster = await api.fetchDashboardPosterFromIds(tmdbId: currentTmdbId, mediaType: currentMediaType);
 
     poster = refreshedPoster ?? poster;
     if (poster == null) return;
@@ -83,9 +76,7 @@ class SeerrDetails extends _$SeerrDetails {
           people: _mapCredits(details.credits),
           seasonStatuses: updatedPoster.seasonStatuses ?? const {},
           externalIds: details.externalIds ?? state.externalIds,
-          ratings: SeerrRatingsResponse(
-            rt: ratings,
-          ),
+          ratings: SeerrRatingsResponse(rt: ratings),
         );
       }
     } else {
@@ -95,9 +86,7 @@ class SeerrDetails extends _$SeerrDetails {
         final userRegion = currentUserBody?.settings?.discoverRegion ?? 'US';
         final contentRating = SeerrHelpers.extractContentRating(details.contentRatings, userRegion);
 
-        final updatedPoster = poster.copyWith(
-          mediaInfo: details.mediaInfo,
-        );
+        final updatedPoster = poster.copyWith(mediaInfo: details.mediaInfo);
 
         final ratings = await api.movieRatings(poster.tmdbId);
 
@@ -127,9 +116,7 @@ class SeerrDetails extends _$SeerrDetails {
 
     state = state.copyWith(
       currentUser: currentUserBody,
-      poster: poster.copyWith(
-        mediaInfo: refreshedPoster?.mediaInfo == null ? null : poster.mediaInfo,
-      ),
+      poster: poster.copyWith(mediaInfo: refreshedPoster?.mediaInfo == null ? null : poster.mediaInfo),
     );
   }
 
@@ -139,13 +126,7 @@ class SeerrDetails extends _$SeerrDetails {
     final people = <Person>[];
     final seen = <String>{};
 
-    void addPerson({
-      int? id,
-      required String name,
-      String? role,
-      String? profileUrl,
-      PersonKind? type,
-    }) {
+    void addPerson({int? id, required String name, String? role, String? profileUrl, PersonKind? type}) {
       final safeName = name.trim();
       if (safeName.isEmpty) return;
 
@@ -158,13 +139,7 @@ class SeerrDetails extends _$SeerrDetails {
       }
 
       people.add(
-        Person(
-          id: (id ?? safeName.hashCode).toString(),
-          name: safeName,
-          role: role ?? '',
-          image: image,
-          type: type,
-        ),
+        Person(id: (id ?? safeName.hashCode).toString(), name: safeName, role: role ?? '', image: image, type: type),
       );
     }
 
@@ -220,10 +195,7 @@ class SeerrDetails extends _$SeerrDetails {
     final poster = state.poster;
     if (poster == null) return;
 
-    final response = await api.seasonDetails(
-      tvId: poster.tmdbId,
-      seasonNumber: seasonNumber,
-    );
+    final response = await api.seasonDetails(tvId: poster.tmdbId, seasonNumber: seasonNumber);
 
     if (response.isSuccessful && response.body != null) {
       final episodes = response.body!.episodes ?? [];
@@ -251,6 +223,12 @@ class SeerrDetails extends _$SeerrDetails {
 @Freezed(copyWith: true)
 abstract class SeerrDetailsModel with _$SeerrDetailsModel {
   const SeerrDetailsModel._();
+
+  bool get canRequestMore =>
+      currentUser?.canRequestMedia(isTv: mediaType == SeerrMediaType.tvshow) == true &&
+      (poster?.hasDisplayStatus != true ||
+          mediaType == SeerrMediaType.tvshow ||
+          currentUser!.canRequestMedia(isTv: false, is4k: true));
 
   const factory SeerrDetailsModel({
     int? tmdbId,
@@ -303,8 +281,10 @@ abstract class SeerrDetailsModel with _$SeerrDetailsModel {
 
     addUrl('TMDB', 'https://www.themoviedb.org/${isTv ? 'tv' : 'movie'}/$tmdbId');
     addUrl('IMDb', imdbId != null ? 'https://www.imdb.com/title/$imdbId' : null);
-    addUrl('Trakt',
-        imdbId != null ? 'https://trakt.tv/search/imdb/$imdbId?source=imdb' : 'https://trakt.tv/search/tmdb/$tmdbId');
+    addUrl(
+      'Trakt',
+      imdbId != null ? 'https://trakt.tv/search/imdb/$imdbId?source=imdb' : 'https://trakt.tv/search/tmdb/$tmdbId',
+    );
     addUrl('TVDB', tvdbId != null ? 'http://www.thetvdb.com/?tab=series&id=$tvdbId' : null);
     addUrl('Rotten Tomatoes', rtUrl);
     return urls;
@@ -314,9 +294,7 @@ abstract class SeerrDetailsModel with _$SeerrDetailsModel {
     if (relatedVideos.isEmpty) return null;
 
     final trailers = relatedVideos
-        .where(
-          (video) => (video.type ?? '').toLowerCase() == 'trailer',
-        )
+        .where((video) => (video.type ?? '').toLowerCase() == 'trailer')
         .toList(growable: false);
 
     for (final trailer in trailers) {

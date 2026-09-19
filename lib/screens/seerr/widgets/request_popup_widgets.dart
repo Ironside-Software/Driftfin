@@ -10,14 +10,18 @@ import 'package:driftfin/util/localization_helper.dart';
 class AutoApproveBanner extends StatelessWidget {
   final SeerrUserModel? user;
   final bool isTv;
+  final bool is4k;
 
-  const AutoApproveBanner({required this.user, required this.isTv, super.key});
+  const AutoApproveBanner({required this.user, required this.isTv, this.is4k = false, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final hasGlobalAutoApprove = user?.hasPermission(SeerrPermission.autoApprove) ?? false;
-    final hasMovieAutoApprove = user?.hasPermission(SeerrPermission.autoApproveMovie) ?? false;
-    final hasSeriesAutoApprove = user?.hasPermission(SeerrPermission.autoApproveTv) ?? false;
+    final hasGlobalAutoApprove =
+        user?.hasPermission(is4k ? SeerrPermission.autoApprove4k : SeerrPermission.autoApprove) ?? false;
+    final hasMovieAutoApprove =
+        user?.hasPermission(is4k ? SeerrPermission.autoApprove4kMovie : SeerrPermission.autoApproveMovie) ?? false;
+    final hasSeriesAutoApprove =
+        user?.hasPermission(is4k ? SeerrPermission.autoApprove4kTv : SeerrPermission.autoApproveTv) ?? false;
     final hasAutoApprove = hasGlobalAutoApprove || (isTv ? hasSeriesAutoApprove : hasMovieAutoApprove);
 
     if (!hasAutoApprove) return const SizedBox.shrink();
@@ -37,9 +41,8 @@ class AutoApproveBanner extends StatelessWidget {
             Expanded(
               child: Text(
                 context.localized.seerrAutoApproveNotice,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onTertiaryContainer,
-                    ),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.onTertiaryContainer),
               ),
             ),
           ],
@@ -71,9 +74,7 @@ class PermissionDeniedWarning extends StatelessWidget {
                 Expanded(
                   child: Text(
                     context.localized.seerrPermissionDenied,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
+                    style: Theme.of(context).textTheme.bodyMedium
                         ?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer),
                   ),
                 ),
@@ -91,11 +92,7 @@ class QuotaLimitCard extends StatelessWidget {
   final SeerrQuotaEntry quota;
   final SeerrMediaType type;
 
-  const QuotaLimitCard({
-    required this.quota,
-    required this.type,
-    super.key,
-  });
+  const QuotaLimitCard({required this.quota, required this.type, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -105,8 +102,9 @@ class QuotaLimitCard extends StatelessWidget {
 
     final limitReached = quota.limit != null && quota.remaining != null && quota.remaining! <= 0;
 
-    final mediaTypeLabel =
-        type == SeerrMediaType.movie ? context.localized.mediaTypeMovie(5) : context.localized.mediaTypeSeries(5);
+    final mediaTypeLabel = type == SeerrMediaType.movie
+        ? context.localized.mediaTypeMovie(5)
+        : context.localized.mediaTypeSeries(5);
 
     return Container(
       decoration: BoxDecoration(
@@ -124,20 +122,14 @@ class QuotaLimitCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    context.localized.requestQuotaStatus(
-                      quotaRemaining,
-                      quotaLimit,
-                      quotaDays,
-                    ),
+                    context.localized.requestQuotaStatus(quotaRemaining, quotaLimit, quotaDays),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   if (limitReached)
                     Text(
                       context.localized.requestQuotaLimitReached(mediaTypeLabel.toLowerCase()),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.error,
-                            fontWeight: FontWeight.w700,
-                          ),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.w700),
                     ),
                 ],
               ),
@@ -164,17 +156,17 @@ class QuotaLimitCard extends StatelessWidget {
                       child: Text(
                         "$quotaRemaining/$quotaLimit",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: limitReached
-                                  ? Theme.of(context).colorScheme.error
-                                  : Theme.of(context).colorScheme.onPrimaryContainer,
-                            ),
+                          fontWeight: FontWeight.w700,
+                          color: limitReached
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
