@@ -21,6 +21,7 @@ const _testLayoutModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 /// Test double that records calls instead of hitting the real Jellyfin API.

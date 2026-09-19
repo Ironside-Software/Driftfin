@@ -33,7 +33,7 @@ class _FakeSyncNotifier extends StateNotifier<SyncSettingsModel> implements Sync
   Future<SyncedItem?> getSyncedItem(String? id) async => null;
 
   @override
-  Future<List<SyncedItem>> getNestedChildren(SyncedItem item) async => const [];
+  Future<List<SyncedItem>> getNestedChildren(SyncedItem? item) async => const [];
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -49,6 +49,7 @@ const _phoneModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 const _desktopModel = AdaptiveLayoutModel(
@@ -61,6 +62,7 @@ const _desktopModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 ItemBaseModel _item({

@@ -30,6 +30,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 // A landscape phone during fullscreen playback - the realistic narrow case
@@ -45,6 +46,7 @@ const _narrowPhoneModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 const _narrowPhoneSize = Size(560, 320);
 

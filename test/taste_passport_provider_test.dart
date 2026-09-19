@@ -31,7 +31,7 @@ ItemBaseModel _item(String id, {List<String> genres = const [], Duration? runTim
 }
 
 ServerQueryResult _queryResult(List<ItemBaseModel> items) =>
-    ServerQueryResult(original: const [], items: items, totalRecordCount: items.length, startIndex: 0);
+    ServerQueryResult(items: items, totalRecordCount: items.length, startIndex: 0);
 
 /// Canned watched-items response for [TastePassportNotifier.fetchProfile].
 class _FakeTastePassportJellyService extends JellyService {

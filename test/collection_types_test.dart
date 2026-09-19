@@ -72,9 +72,9 @@ void main() {
 
     test('unmapped types (and null) return an empty set', () {
       expect(CollectionType.boxsets.itemKinds, isEmpty);
-      expect(CollectionType.books.itemKinds, isEmpty);
+      expect(CollectionType.books.itemKinds, {FladderItemType.book});
       expect(CollectionType.playlists.itemKinds, isEmpty);
-      expect(CollectionType.folders.itemKinds, isEmpty);
+      expect(CollectionType.folders.itemKinds, FladderItemType.values.toSet()..remove(FladderItemType.baseType));
       expect(null.itemKinds, isEmpty);
     });
   });
@@ -85,11 +85,11 @@ void main() {
       expect(CollectionType.photos.defaultFilters.recursive, isFalse);
     });
 
-    test('everything else (including null) defaults to recursive', () {
+    test('movie and TV libraries recurse; a generic search does not', () {
       expect(CollectionType.movies.defaultFilters.recursive, isTrue);
       expect(CollectionType.tvshows.defaultFilters.recursive, isTrue);
-      expect(null.defaultFilters.recursive, isTrue);
-      expect(null.defaultFilters, const LibraryFilterModel(recursive: true));
+      expect(null.defaultFilters.recursive, isFalse);
+      expect(null.defaultFilters, const LibraryFilterModel());
     });
   });
 

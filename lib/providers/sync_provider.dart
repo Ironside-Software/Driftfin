@@ -224,16 +224,22 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
   Directory get mainDirectory => Directory(path.joinAll([_savePath ?? "", subPath]));
 
   Directory? get saveDirectory {
-    if (kIsWeb) return null;
-    final directory = _savePath != null
-        ? Directory(path.joinAll([_savePath ?? "", subPath, ref.read(userProvider)?.id ?? "UnknownUser"]))
-        : null;
-    directory?.createSync(recursive: true);
-    if (directory?.existsSync() == true) {
-      final noMedia = File(path.joinAll([directory?.path ?? "", ".nomedia"]));
-      noMedia.writeAsString('');
+    try {
+      if (kIsWeb) return null;
+      final directory = _savePath != null
+          ? Directory(path.joinAll([_savePath ?? "", subPath, ref.read(userProvider)?.id ?? "UnknownUser"]))
+          : null;
+      directory?.createSync(recursive: true);
+      if (directory?.existsSync() == true) {
+        final noMedia = File(path.joinAll([directory?.path ?? "", ".nomedia"]));
+        noMedia.writeAsString('');
+        noMedia.createSync();
+      }
+      return directory;
+    } catch (e) {
+      log('Error accessing save directory: ${e.toString()}');
+      return null;
     }
-    return directory;
   }
 
   String? get syncPath => saveDirectory?.path;
@@ -277,7 +283,8 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
     await refresh();
   }
 
-  Future<List<SyncedItem>> getNestedChildren(SyncedItem item) async {
+  Future<List<SyncedItem>> getNestedChildren(SyncedItem? item) async {
+    if (item == null) return [];
     if (item.itemModel?.type == FladderItemType.playlist) {
       return _getPlaylistChildrenFromOverlay(item);
     }
@@ -734,6 +741,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
 
     if (isAudioItem) {
       await writeMusicOverlayFile(syncItem, effectiveMusicTranscodeModel);
+      await _saveSyncedLyrics(syncItem);
     } else {
       await writeOverlayFile(syncItem, effectiveTranscodeModel, subtitles);
     }
@@ -752,7 +760,6 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
       final directOptions = {
         'Static': 'true',
         'mediaSourceId': mediaSource!.id,
-        'api_key': user.credentials.token,
       };
       downloadUrl = buildServerUrl(
         ref,
@@ -890,6 +897,23 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
       final updatedItem = item.copyWith(userData: updatedUserData, unSyncedData: !responseSuccessful);
       await _db.insertItem(updatedItem);
     });
+  }
+
+  Future<void> _saveSyncedLyrics(SyncedItem syncItem) async {
+    try {
+      final response = await api.audioItemIdLyricsGet(itemId: syncItem.id);
+      final lyrics = response.body;
+      if (lyrics == null) {
+        if (syncItem.lyricsFile.existsSync()) {
+          await syncItem.lyricsFile.delete();
+        }
+        return;
+      }
+
+      await syncItem.lyricsFile.writeAsString(jsonEncode(lyrics.toJson()));
+    } catch (e) {
+      log('Error saving lyrics for item ${syncItem.id}: ${e.toString()}');
+    }
   }
 }
 

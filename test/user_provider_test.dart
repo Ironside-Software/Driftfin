@@ -438,7 +438,7 @@ void main() {
       container.read(userProvider.notifier).loginUser(_account());
       final item = _item(id: 'item-42');
       final url = container.read(userProvider.notifier).createDownloadUrl(item);
-      expect(url, 'https://jellyfin.example.com/Items/item-42/Download?api_key=token-123');
+      expect(url, 'https://jellyfin.example.com/Items/item-42/Download?ApiKey=token-123');
     });
 
     test('still builds a (blank-credential) url when logged out', () {
@@ -447,7 +447,7 @@ void main() {
       // `state` is null here, so both `state?.credentials.url` and
       // `state?.credentials.token` evaluate to null, and their string
       // interpolation renders as the literal word "null".
-      expect(url, 'null/Items/item-42/Download?api_key=null');
+      expect(url, 'null/Items/item-42/Download?ApiKey=null');
     });
   });
 

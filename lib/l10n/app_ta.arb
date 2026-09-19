@@ -100,8 +100,8 @@
   "syncedAtLabel": "கடைசியாக ஒத்திசைக்கப்பட்டது: {time}",
   "addToCollection": "சேகரிப்பில் சேர்க்கவும்",
   "addToPlaylist": "பிளேலிச்ட்டில் சேர்க்கவும்",
-  "addToQueue": "வரிசையில் சேர்",
-  "instantMix": "உடனடி மிக்ஸ்",
+  "addToQueue": "வரிசையில் சேர்க்கவும்",
+  "instantMix": "Instant mix",
   "addedToQueue": "{count, plural, one{{count} டிராக் வரிசையில் சேர்க்கப்பட்டது} other{{count} டிராக்குகள் வரிசையில் சேர்க்கப்பட்டன}}",
   "advanced": "மேம்பட்ட",
   "all": "அனைத்தும்",
@@ -112,13 +112,13 @@
   "appLockTitle": "{userName} க்கான உள்நுழைவு முறையை அமை",
   "ascending": "ஏறுதல்",
   "audio": "ஆடியோ",
-  "audioPlayerPlaybackOptionsTitle": "பிளேபேக் விருப்பங்கள்",
-  "audioPlayerRepeatAll": "அனைத்தையும் மீண்டும் இயக்கு",
-  "audioPlayerRepeatOff": "மீண்டும் இயக்கம் அணைக்கப்பட்டது",
-  "audioPlayerRepeatOne": "ஒன்றை மீண்டும் இயக்கு",
-  "audioPlayerShuffle": "கலைத்து இயக்கு",
+  "audioPlayerPlaybackOptionsTitle": "பின்னணி விருப்பங்கள்",
+  "audioPlayerRepeatAll": "Repeat அனைத்தும்",
+  "audioPlayerRepeatOff": "Repeat அணை",
+  "audioPlayerRepeatOne": "Repeat one",
+  "audioPlayerShuffle": "கலக்கு",
   "showArtist": "கலைஞரைக் காட்டு",
-  "track": "{count, plural, one{டிராக்} other{டிராக்குகள்}}",
+  "track": "{count, plural, one{Track} other{Tracks}}",
   "autoPlay": "தானாக விளையாடும்",
   "backgroundBlur": "பின்னணி மங்கலானது",
   "backgroundOpacity": "பின்னணி ஒளிபுகாநிலை",
@@ -133,11 +133,11 @@
   "clearChanges": "மாற்றங்களை அழிக்கவும்",
   "clearSelection": "தேர்வை நீக்கு",
   "close": "மூடு",
-  "generateLoginLink": "{userName} க்கான குறியீடு",
-  "shareLoginLink": "உள்நுழைவு இணைப்பைப் பகிர்",
-  "shareQRCode": "QR குறியீட்டைப் பகிர்",
-  "copyLoginLink": "இணைப்பை நகலெடு",
-  "includePassword": "கடவுச்சொல்லைச் சேர்",
+  "generateLoginLink": "குறியீடு க்கு {userName}",
+  "shareLoginLink": "பங்கு புகுபதிவு இணைப்பு",
+  "shareQRCode": "பங்கு QR குறியீடு",
+  "copyLoginLink": "இணைப்பை நகலெடுக்கவும்",
+  "includePassword": "Include password",
   "invalidAuthLink": "தவறான உள்நுழைவு இணைப்பு",
   "code": "குறியீடு",
   "collectionFolder": "சேகரிப்பு கோப்புறை",
@@ -154,7 +154,7 @@
   "dashboardContinueWatching": "தொடர்ந்து பார்த்துக் கொள்ளுங்கள்",
   "nextUp": "அடுத்தது",
   "dashboardRecentlyAdded": "அண்மைக் காலத்தில் {name} இல் சேர்க்கப்பட்டது",
-  "dashboardRecentlyAddedItems": "சமீபத்தில் சேர்க்கப்பட்ட {name}",
+  "dashboardRecentlyAddedItems": "அண்மைக் காலத்தில் added {name}",
   "dateAdded": "தேதி சேர்க்கப்பட்டது",
   "dateLastContentAdded": "தேதி கடைசி உள்ளடக்கம் சேர்க்கப்பட்டது",
   "datePlayed": "விளையாடிய தேதி",
@@ -199,8 +199,8 @@
   "home": "வீடு",
   "homeBannerSlideshow": "ச்லைடுசோ",
   "homeBannerCarousel": "கொணர்வி",
-  "homeBannerDetailed": "விரிவான",
-  "homeBannerTV": "டிவி",
+  "homeBannerDetailed": "Detailed",
+  "homeBannerTV": "டி.வி",
   "identify": "அடையாளம் காணவும்",
   "immediately": "உடனடியாக",
   "incorrectPinTryAgain": "தவறான முள். மீண்டும் முயற்சிக்கவும்.",
@@ -228,15 +228,15 @@
   "mediaTypeBook": "நூல்",
   "mediaTypeBoxset": "பாக்ச் செட்",
   "mediaTypeEpisode": "அத்தியாயம்",
-  "mediaTypeFolder": "கோப்புறை",
+  "mediaTypeFolder": "{count, plural, one{Folder} other{Folders}}",
   "mediaTypeMovie": "படம்",
   "mediaTypePerson": "ஆள்",
   "mediaTypeArtists": "{count, plural, one{கலைஞர்} other{கலைஞர்கள்}}",
   "mediaTypePhoto": "புகைப்படம்",
-  "mediaTypePhotoAlbum": "புகைப்பட ஆல்பம்",
+  "mediaTypePhotoAlbum": "{count, plural, one{Photo Album} other{Photo Albums}}",
   "mediaTypePlaylist": "பிளேலிச்ட்",
   "mediaTypeSeason": "சீசன்",
-  "mediaTypeSeries": "தொடர்",
+  "mediaTypeSeries": "{count, plural, one{Series} other{Series}}",
   "mediaTypeTV": "{count, plural, one{டிவி சேனல்} other{டிவி சேனல்கள்}}",
   "metaDataSavedFor": "மேனிலை தரவு {item} க்காகச் சேமிக்கப்பட்டது",
   "metadataRefreshDefault": "புதிய மற்றும் புதுப்பிக்கப்பட்ட கோப்புகளுக்கு ச்கேன் செய்யுங்கள்",
@@ -283,7 +283,7 @@
   "playFromStart": "தொடக்கத்திலிருந்தே {name} விளையாடுங்கள்",
   "playLabel": "விளையாடுங்கள்",
   "playVideos": "வீடியோக்களை இயக்கவும்",
-  "playMusic": "இசையை இயக்கு",
+  "playMusic": "இசையை இயக்கவும்",
   "played": "விளையாடியது",
   "quickConnectAction": "விரைவான இணைப்பு குறியீட்டை உள்ளிடவும்",
   "quickConnectInputACode": "ஒரு குறியீட்டை உள்ளிடவும்",
@@ -291,7 +291,7 @@
   "quickConnectWrongCode": "தவறான குறியீடு",
   "random": "சீரற்ற",
   "rating": "{count, plural, other{வீதப்பாடுகள்} one{வீதப்பாடு}}",
-  "popularity": "பிரபலம்",
+  "popularity": "புகழ்",
   "reWatch": "மீண்டும் பார்க்க",
   "read": "{item} படிக்கவும்",
   "readFromStart": "தொடக்கத்திலிருந்து {item} படிக்கவும்",
@@ -315,15 +315,15 @@
   "retrievePublicListOfUsers": "பயனர்களின் பொது பட்டியலை மீட்டெடுக்கவும்",
   "retry": "மீண்டும் முயற்சிக்கவும்",
   "runTime": "நேரம் ரன்",
-  "runtimeMinutesTitle": "ஓட்ட நேரம் (நிமிடங்கள்)",
+  "runtimeMinutesTitle": "இயக்க நேரம் (நிமிடங்கள்)",
   "runtimeRangeMinutes": "{min} - {max} நிமிடங்கள்",
-  "minutesShort": "{count} நிமி",
+  "minutesShort": "{count} மணித்துளி",
   "streamingServices": "வழங்குநர்கள் ({count})",
   "save": "சேமி",
   "saved": "சேமிக்கப்பட்டது",
   "scanBiometricHint": "அடையாளத்தை சரிபார்க்கவும்",
   "scanLibrary": "ச்கேன் நூலகம்",
-  "authenticateWithBiometrics": "{user} ஐ அங்கீகரிக்க பயோமெட்ரிக்ஸைப் பயன்படுத்தவும்",
+  "authenticateWithBiometrics": "{user}ஐ அங்கீகரிக்க பயோமெட்ரிக்சைப் பயன்படுத்தவும்",
   "scanningName": "ச்கேனிங் - {name}…",
   "scrollToTop": "மேலே உருட்டவும்",
   "search": "தேடல்",
@@ -348,7 +348,7 @@
   "settingsClientTitle": "படபடப்பு",
   "settingsContinue": "தொடரவும்",
   "settingsEnableOsMediaControls": "OS மீடியா கட்டுப்பாடுகளை இயக்கவும்",
-  "settingsEnableOsMediaControlsDesc": "மீடியா-கீகளைப் பயன்படுத்தி பிளேபேக்கைக் கட்டுப்படுத்த அனுமதிக்கவும், தற்போது இயங்கும் மீடியாவை OS-ல் காட்டவும்",
+  "settingsEnableOsMediaControlsDesc": "மீடியா-விசைகளைப் பயன்படுத்தி பிளேபேக் கட்டுப்பாட்டை அனுமதிக்கவும் மற்றும் OS இல் தற்போது இயங்கும் மீடியாவைக் காட்டவும்",
   "settingsHomeBannerDescription": "ச்லைடுசோ, கொணர்வி அல்லது பேனரை மறைக்க",
   "settingsHomeBannerTitle": "முகப்பு பேனர்",
   "settingsHomeBannerInformationDesc": "வீட்டு பேனரில் காண்பிக்க செய்தி",
@@ -363,24 +363,24 @@
   "settingsPlayerNativeLibassAccelDesc": "வீடியோ பிளேயர் லிபாச் வசன ரெண்டரரைப் பயன்படுத்தவும்",
   "settingsPlayerNativeLibassAccelTitle": "சொந்த லிபாச் வசன வரிகள்",
   "settingsPlayerBufferSizeTitle": "வீடியோ இடையக அளவு",
-  "settingsPlayerPlayPauseFadeTitle": "இயக்கு/இடைநிறுத்து ஒலி மங்கல்",
-  "settingsPlayerPlayPauseFadeDesc": "இயக்கும்போது அல்லது இடைநிறுத்தும்போது ஒலியை மங்கச் செய்",
+  "settingsPlayerPlayPauseFadeTitle": "ப்ளே/பாச் வால்யூம் மங்கல்",
+  "settingsPlayerPlayPauseFadeDesc": "விளையாடும்போது அல்லது இடைநிறுத்தும்போது ஒலியை உள்ளேயும் வெளியேயும் குறைக்கவும்",
   "settingsPlayerBufferSizeDesc": "வீடியோ பிளேபேக்கிற்கான இடையக அளவை உள்ளமைக்கவும், தற்காலிக சேமிப்பில் எவ்வளவு தரவு ஏற்றப்படுகிறது என்பதை தீர்மானிக்கவும்.",
   "settingsPlayerTitle": "வீரர்",
   "settingsPlayerVideoHWAccelDesc": "வீடியோ வழங்க சி.பீ.யைப் பயன்படுத்தவும் (பரிந்துரைக்கப்படுகிறது)",
   "settingsPlayerVideoHWAccelTitle": "வன்பொருள் முடுக்கம்",
   "settingsPosterPinch": "சுவரொட்டிகளை அளவிட பிஞ்ச்-சூம்",
   "settingsPosterSize": "சுவரொட்டி அளவு",
-  "settingsProfileDesc": "பூட்டு திரை",
+  "settingsProfileDesc": "பூட்டுத்திரை, உள்ளக URL, சீர்",
   "settingsProfileTitle": "சுயவிவரம்",
   "settingsProfileSubtitleLanguage": "விருப்பமான வசன மொழி",
   "anyLanguage": "எந்த மொழியும்",
   "settingsProfileSubtitleMode": "வசன முறை",
-  "subtitlePlaybackModeDefault": "இயல்பு",
-  "subtitlePlaybackModeAlways": "எப்போதும் இயக்கு",
-  "subtitlePlaybackModeOnlyForced": "கட்டாயமானவை மட்டும்",
-  "subtitlePlaybackModeNone": "ஏதுமில்லை",
-  "subtitlePlaybackModeSmart": "ஸ்மார்ட்",
+  "subtitlePlaybackModeDefault": "இயல்புநிலை",
+  "subtitlePlaybackModeAlways": "எப்போதும் விளையாடு",
+  "subtitlePlaybackModeOnlyForced": "கட்டாயம் மட்டுமே",
+  "subtitlePlaybackModeNone": "எதுவுமில்லை",
+  "subtitlePlaybackModeSmart": "அறிவாளி",
   "settingsQuickConnectTitle": "விரைவான இணைப்பு",
   "settingsSecurity": "பாதுகாப்பு",
   "settingsShowScaleSlider": "சுவரொட்டி அளவு ச்லைடைக் காட்டு",
@@ -406,10 +406,10 @@
   "syncDeleteItemDesc": "{item} க்கான அனைத்து ஒத்திசைக்கப்பட்ட தரவையும் நீக்கவா?",
   "syncDeleteItemTitle": "ஒத்திசைக்கப்பட்ட உருப்படியை நீக்கு",
   "syncDeletePopupPermanent": "இந்த நடவடிக்கை நிரந்தரமானது மற்றும் உள்நாட்டில் ஒத்திசைக்கப்பட்ட அனைத்து கோப்புகளையும் அகற்றும்",
-  "syncPlaylistDeleteTitle": "ஒத்திசைக்கப்பட்ட பிளேலிஸ்டை நீக்கு",
-  "syncPlaylistDeleteContent": "இந்த பிளேலிஸ்டிலிருந்து ஒத்திசைக்கப்பட்ட டிராக்குகளையும் நீக்க விரும்புகிறீர்களா?",
-  "syncPlaylistKeepTracks": "டிராக்குகளை வைத்திரு",
-  "syncPlaylistRemoveTracks": "டிராக்குகளை அகற்று",
+  "syncPlaylistDeleteTitle": "நீக்கு synced playlist",
+  "syncPlaylistDeleteContent": "Do you also want பெறுநர் அகற்று the tracks synced இருந்து this playlist?",
+  "syncPlaylistKeepTracks": "தடங்களை வைத்திருங்கள்",
+  "syncPlaylistRemoveTracks": "தடங்களை அகற்று",
   "syncDetails": "விவரங்களை ஒத்திசைக்கவும்",
   "syncOpenParent": "திறந்த பெற்றோர்",
   "syncRemoveDataDesc": "ஒத்திசைக்கப்பட்ட வீடியோ தரவை நீக்கவா? இது நிரந்தரமானது மற்றும் நீங்கள் கோப்புகளை மீண்டும் ஒத்திசைக்க வேண்டும்",
@@ -439,13 +439,13 @@
   "videoScalingFillScreenDesc": "வழிசெலுத்தல் மற்றும் நிலை பட்டியை நிரப்பவும்",
   "videoScalingFillScreenNotif": "நிரப்பப்பட்ட-திரை கிடைமட்ட சுழற்சியில் வீடியோ பொருத்தத்தை மேலெழுதும்",
   "videoScalingFillScreenTitle": "திரை நிரப்பவும்",
-  "pictureInPictureTitle": "பட-உள்-பட (PiP)",
-  "pictureInPictureAutoTitle": "தானியங்கி பட-உள்-பட",
-  "pictureInPictureSubtitle": "பிளேயரை விட்டு வெளியேறும்போது தானாக பட-உள்-பட முறைக்குச் செல்லும். இந்த அமைப்பைப் பொருட்படுத்தாமல் கட்டுப்பாடுகளில் உள்ள PiP பொத்தான் எப்போதும் செயல்படும்.",
-  "pictureInPictureNotSupported": "இந்த சாதனத்தில் பட-உள்-பட முறை கிடைக்கவில்லை",
+  "pictureInPictureTitle": "பிக்சர்-இன்-பிக்சர்",
+  "pictureInPictureAutoTitle": "ஆட்டோ பிக்சர்-இன்-பிக்சர்",
+  "pictureInPictureSubtitle": "நீங்கள் பிளேயரை விட்டு வெளியேறும் போது தானாகவே பிக்சர்-இன்-பிக்ச்சரை உள்ளிடவும். இந்த அமைப்பைப் பொருட்படுத்தாமல் கட்டுப்பாடுகளில் உள்ள PiP பொத்தான் எப்போதும் வேலை செய்யும்.",
+  "pictureInPictureNotSupported": "இந்தச் சாதனத்தில் பிக்சர்-இன்-பிக்சர் இல்லை",
   "videoScalingFitHeight": "பொருத்தமான உயரத்திற்கு",
   "videoScalingFitWidth": "பொருந்தக்கூடிய அகலம்",
-  "videoScalingScaleDown": "அளவிடுதல்",
+  "videoScalingScaleDown": "அளவைக் குறைக்கவும்",
   "viewPhotos": "புகைப்படங்களைக் காண்க",
   "writer": "{count, plural, other{எழுத்தாளர்} two{எழுத்தாளர்கள்}}",
   "year": "{count, plural, other{ஆண்டுகள்} one{ஆண்டு}}",
@@ -456,7 +456,7 @@
   "addToNewPlaylist": "புதிய பிளேலிச்ட்",
   "addItemsToPlaylist": "பிளேலிச்ட்டில் {itemLength} உருப்படி (களை) சேர்க்கவும்",
   "addedToPlaylist": "{playlistName} பிளேலிச்ட்டில் சேர்க்கப்பட்டது",
-  "removedFromPlaylist": "{playlistName} பிளேலிஸ்டிலிருந்து அகற்றப்பட்டது",
+  "removedFromPlaylist": "{playlistName} பிளேலிச்ட்டில் இருந்து அகற்றப்பட்டது",
   "syncStatusEnqueued": "Enqueuted",
   "syncStatusRunning": "இயங்கும்",
   "syncStatusNotFound": "கண்டுபிடிக்கப்படவில்லை",
@@ -499,9 +499,9 @@
   "off": "அணை",
   "screenBrightness": "திரை ஒளி",
   "enableEdgeGesturesTitle": "விளிம்பு சைகைகளை இயக்கு",
-  "enableEdgeGesturesDesc": "திரையின் விளிம்புகளில் மேலும் கீழும் நகர்த்துவதன் மூலம் பிரகாசம் மற்றும் ஒலியளவைக் கட்டுப்படுத்தவும்",
-  "reverseEdgeGesturesTitle": "விளிம்பு சைகைகளை மாற்று",
-  "reverseEdgeGesturesDesc": "பிரகாசம் மற்றும் ஒலியளவு கட்டுப்பாட்டிற்கான பக்கத்தை மாற்று",
+  "enableEdgeGesturesDesc": "திரையின் விளிம்புகளில் மேலும் கீழும் சறுக்கி ஒளி மற்றும் ஒலியளவைக் கட்டுப்படுத்தவும்",
+  "reverseEdgeGesturesTitle": "விளிம்பு சைகைகளை மாற்றவும்",
+  "reverseEdgeGesturesDesc": "ஒளி மற்றும் ஒலி அளவைக் கட்டுப்படுத்த பக்கத்தை மாற்றவும்",
   "scale": "அளவு",
   "playBackSettings": "பின்னணி அமைப்புகள்",
   "settingsAutoNextTitle": "அடுத்த முன்னோட்டம்",
@@ -522,7 +522,7 @@
   "updateFilterForLibrary": "புதுப்பிப்பு வடிகட்டி",
   "removeFilterForLibrary": "{filter} ஐ அகற்று?",
   "deleteFilterConfirmation": "இந்த வடிப்பானை நீக்க விரும்புகிறீர்களா?",
-  "deleteRequestConfirmation": "இந்த கோரிக்கையை நீக்க வேண்டுமா?",
+  "deleteRequestConfirmation": "இந்தக் கோரிக்கையை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
   "libraryFiltersLimitReached": "வடிகட்டி வரம்பு அடைந்தது (10) சில வடிப்பான்களை அகற்றவும்",
   "libraryFiltersRemoveAll": "அனைத்து வடிப்பான்களையும் அகற்றவும்",
   "libraryFiltersRemoveAllConfirm": "இது ஒவ்வொரு நூலகத்திற்கும் சேமிக்கப்பட்ட அனைத்து வடிப்பான்களையும் நீக்கிவிடும்",
@@ -552,12 +552,12 @@
   "resumeVideo": "வீடியோவை மீண்டும் தொடங்குங்கள்",
   "closeVideo": "வீடியோவை மூடு",
   "playNextVideo": "அடுத்த வீடியோவை இயக்கவும்",
-  "playerSettingsBackendTitle": "வீடியோ பிளேயர் பின்தளத்தில்",
+  "playerSettingsBackendTitle": "மீடியா பிளேயர் பின்தளம்",
   "playerSettingsBackendDesc": "உகந்த பின்னணி அனுபவத்திற்கு உங்களுக்கு விருப்பமான மீடியா பிளேயரைத் தேர்வுசெய்க",
-  "playerSettingsReplayGainTitle": "ReplayGain",
-  "playerSettingsReplayGainDesc": "ReplayGain குறிச்சொற்களைப் பயன்படுத்தி இசையின் சத்தத்தை சீரமைக்கவும்.",
+  "playerSettingsReplayGainTitle": "மீண்டும் விளையாடு",
+  "playerSettingsReplayGainDesc": "ReplayGain குறிச்சொற்களைப் பயன்படுத்தி இசை ஒலியை இயல்பாக்கவும்.",
   "playerSettingsReplayGainLevelTitle": "ReplayGain நிலை",
-  "playerSettingsReplayGainLevelDesc": "ReplayGain சீரமைப்பிற்கான இலக்கு சத்த அளவை அமைக்கவும். பொதுவான தரநிலை -14 dB, ஆனால் உங்கள் விருப்பப்படி சரிசெய்யலாம்.",
+  "playerSettingsReplayGainLevelDesc": "ReplayGain இயல்பாக்கத்திற்கான இலக்கு ஒலி அளவை அமைக்கவும். ஒரு பொதுவான தரநிலை -14 dB, ஆனால் நீங்கள் அதை உங்கள் விருப்பத்திற்கு ஏற்ப சரிசெய்யலாம்.",
   "playerSettingsSmartDownmixTitle": "ஸ்மார்ட் டவுன்மிக்ஸ்",
   "playerSettingsSmartDownmixDesc": "5.1/7.1 ஆடியோவை ஸ்டீரியோவாக டவுன்மிக்ஸ் செய்யும்போது எஃபெக்ட்கள் மற்றும் பின்புற சேனல்களை விட உரையாடலை அதிகரிக்கவும்.",
   "playerSettingsDialogueBoostTitle": "உரையாடல் மேம்பாடு",
@@ -566,14 +566,14 @@
   "dialogueBoostLow": "குறைவு",
   "dialogueBoostMedium": "நடுத்தரம்",
   "dialogueBoostHigh": "அதிகம்",
-  "settingsPlayerCrossfadeTitle": "குறுக்கு மங்கல் (Crossfade)",
-  "settingsPlayerCrossfadeDesc": "ஒரே ஆல்பத்தில் தொடர்ச்சியாக இல்லாத டிராக்குகளுக்கு இடையே மங்கச் செய்",
-  "settingsPlayerCrossfadeDurationTitle": "குறுக்கு மங்கல் கால அளவு",
-  "settingsPlayerCrossfadeDurationDesc": "குறுக்கு மங்கலின் கால அளவு",
+  "settingsPlayerCrossfadeTitle": "கிராச்ஃபேட்",
+  "settingsPlayerCrossfadeDesc": "ஒரே ஆல்பத்தில் தொடர்ச்சியாக இல்லாத டிராக்குகளுக்கு இடையே மங்கல்",
+  "settingsPlayerCrossfadeDurationTitle": "கிராச்ஃபேட் காலம்",
+  "settingsPlayerCrossfadeDurationDesc": "குறுக்குவழியின் காலம்",
   "defaultLabel": "இயல்புநிலை",
   "noVideoPlayerOptions": "தேர்ந்தெடுக்கப்பட்ட பின்தளத்தில் விருப்பங்கள் இல்லை",
   "mdkExperimental": "எம்.டி.கே இன்னும் ஒரு சோதனை கட்டத்தில் உள்ளது",
-  "skipButtonLabel": "(கள்) கிப் {segment}",
+  "skipButtonLabel": "{segment} ஐத் தவிர்",
   "mediaSegmentUnknown": "தெரியவில்லை",
   "mediaSegmentCommercial": "வணிக",
   "mediaSegmentPreview": "முன்னோட்டம்",
@@ -606,155 +606,155 @@
   "qualityOptionsOriginal": "அசல்",
   "qualityOptionsAuto": "தானி",
   "advancedVideoOptionsTitle": "மேம்பட்ட வீடியோ விருப்பங்கள்",
-  "advancedVideoOptionsDesc": "HDR, டோன் மேப்பிங் மற்றும் மேம்பட்ட வண்ண கையாளுதலை இயக்கு (சில சாதனங்களில் நிலையற்றது)",
+  "advancedVideoOptionsDesc": "HDR, டோன் மேப்பிங் மற்றும் மேம்பட்ட வண்ண கையாளுதலை இயக்கு (சில சாதனங்களுக்கு நிலையற்றது)",
   "version": "பதிப்பு",
   "mediaSegmentActions": "ஊடக பிரிவு செயல்கள்",
   "segmentActionNone": "எதுவுமில்லை",
   "segmentActionAskToSkip": "தவிர்க்கச் சொல்லுங்கள்",
-  "segmentActionSkipOnce": "ஒரு முறை தவிர்",
+  "segmentActionSkipOnce": "ஒருமுறை தவிர்க்கவும்",
   "segmentActionSkip": "தவிர்",
   "loading": "ஏற்றுகிறது",
   "exitDriftfinTitle": "Driftfin-லிருந்து வெளியேறு",
   "exitDriftfinDesc": "Driftfin-ஐ மூட வேண்டுமா?",
-  "quitMultipleWindowsDesc": "உங்களிடம் {count} சாளரங்கள் திறந்துள்ளன. Driftfin-லிருந்து வெளியேறுவது அவை அனைத்தையும் மூடிவிடும். தொடர விரும்புகிறீர்களா?",
+  "quitMultipleWindowsDesc": "உங்களிடம் {count} சாளரங்கள் திறக்கப்பட்டுள்ளன. ஃபிளாடரை விட்டு வெளியேறுவது அவை அனைத்தையும் மூடும். தொடர வேண்டுமா?",
   "closeWindow": "சாளரத்தை மூடு",
   "castAndCrew": "நடிகர்கள் & குழுவினர்",
   "guestActor": "{count, plural, other{கௌரவ நடிகர்கள்} one{கௌரவ நடிகர்}}",
-  "maxConcurrentDownloadsTitle": "அதிகபட்ச ஒரே நேர பதிவிறக்கங்கள்",
-  "maxConcurrentDownloadsDesc": "ஒரே நேரத்தில் இயங்கக்கூடிய அதிகபட்ச பதிவிறக்கங்களின் எண்ணிக்கையை அமைக்கிறது. வரம்பை முடக்க 0 என அமைக்கவும்.",
+  "maxConcurrentDownloadsTitle": "அதிகபட்ச ஒரே நேரத்தில் பதிவிறக்கங்கள்",
+  "maxConcurrentDownloadsDesc": "Sets the பெருமம் எண் of downloads that can ஓடு at the same time. Set பெறுநர் 0 பெறுநர் முடக்கு the limit.",
   "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
   "smartDownloadBudgetDesc": "Automatically reclaims watched downloads, oldest first, to stay under this storage limit. Unwatched downloads are never removed. Leave empty to disable.",
-  "playbackTrackSelection": "பிளேபேக் டிராக் தேர்வு",
-  "rememberSubtitleSelections": "முந்தைய உருப்படியின் அடிப்படையில் வசன டிராக்கை அமை",
-  "rememberAudioSelections": "முந்தைய உருப்படியின் அடிப்படையில் ஆடியோ டிராக்கை அமை",
-  "rememberSubtitleSelectionsDesc": "கடைசி வீடியோவிற்கு நெருக்கமான வசன டிராக்கை அமைக்க முயற்சி செய்யும்.",
-  "rememberAudioSelectionsDesc": "கடைசி வீடியோவிற்கு நெருக்கமான ஆடியோ டிராக்கை அமைக்க முயற்சி செய்யும்.",
-  "similarToRecentlyPlayed": "சமீபத்தில் இயக்கியதை ஒத்தது",
-  "similarToLikedItem": "பிடித்த உருப்படியை ஒத்தது",
-  "hasDirectorFromRecentlyPlayed": "சமீபத்தில் இயக்கியதிலிருந்த இயக்குனர் உள்ளார்",
-  "hasActorFromRecentlyPlayed": "சமீபத்தில் இயக்கியதிலிருந்த நடிகர் உள்ளார்",
-  "hasLikedDirector": "பிடித்த இயக்குனர் உள்ளார்",
-  "hasLikedActor": "பிடித்த நடிகர் உள்ளார்",
-  "latest": "சமீபத்தியவை",
-  "recommended": "பரிந்துரைக்கப்பட்டவை",
-  "playbackType": "பிளேபேக் வகை",
+  "playbackTrackSelection": "பின்னணி டிராக் தேர்வு",
+  "rememberSubtitleSelections": "முந்தைய உருப்படியின் அடிப்படையில் வசன வரிகளை அமைக்கவும்",
+  "rememberAudioSelections": "முந்தைய உருப்படியின் அடிப்படையில் ஆடியோ டிராக்கை அமைக்கவும்",
+  "rememberSubtitleSelectionsDesc": "சப்டைட்டில் டிராக்கை கடைசி வீடியோவுக்கு மிக நெருக்கமான பொருத்தமாக அமைக்க முயற்சிக்கவும்.",
+  "rememberAudioSelectionsDesc": "கடைசி வீடியோவுக்கு மிக நெருக்கமான பொருத்தத்திற்கு ஆடியோ டிராக்கை அமைக்க முயற்சிக்கவும்.",
+  "similarToRecentlyPlayed": "Similar பெறுநர் அண்மைக் காலத்தில் played",
+  "similarToLikedItem": "விரும்பிய பொருளைப் போன்றது",
+  "hasDirectorFromRecentlyPlayed": "அண்மைக் காலத்தில் இயக்கியவர்",
+  "hasActorFromRecentlyPlayed": "அண்மைக் காலத்தில் நடித்த நடிகர் உண்டு",
+  "hasLikedDirector": "இயக்குனருக்கு பிடித்திருக்கிறது",
+  "hasLikedActor": "நடிகரை விரும்பினார்",
+  "latest": "அண்மைக் கால",
+  "recommended": "பரிந்துரைக்கப்படுகிறது",
+  "playbackType": "பின்னணி வகை",
   "playbackTypeDirect": "நேரடி",
-  "playbackTypeTranscode": "டிரான்ஸ்கோட்",
-  "playbackTypeOffline": "ஆஃப்லைன்",
-  "playbackTypeTV": "டிவி",
-  "latestReleases": "சமீபத்திய வெளியீடுகள்",
-  "autoCheckForUpdates": "அவ்வப்போது புதுப்பிப்புகளை சரிபார்",
+  "playbackTypeTranscode": "டிரான்ச்கோட்",
+  "playbackTypeOffline": "இணையமில்லாமல்",
+  "playbackTypeTV": "டி.வி",
+  "latestReleases": "அண்மைக் கால வெளியீடுகள்",
+  "autoCheckForUpdates": "Periodically சரிபார் க்கு updates",
   "installUpdate": "புதுப்பிப்பை நிறுவு",
   "installUpdateConfirmTitle": "{version} ஐ நிறுவவா?",
   "installUpdateConfirmBody": "Driftfin இந்த பதிப்பைப் பதிவிறக்கி, மூடி, தானாக புதுப்பித்து மறுதொடக்கம் செய்யும். சேமிக்கப்படாத எந்த பிளேபேக்கும் தடைபடலாம்.",
   "downloadingUpdate": "புதுப்பிப்பு பதிவிறக்கப்படுகிறது…",
   "updateInstallFailed": "புதுப்பிப்பு தோல்வியடைந்தது: {error}",
-  "newReleaseFoundTitle": "புதுப்பிப்பு {newRelease} கிடைக்கிறது!",
-  "newUpdateFoundOnGithub": "Github-ல் புதிய புதுப்பிப்பு கண்டுபிடிக்கப்பட்டது",
-  "enableBackgroundPostersTitle": "பின்னணி போஸ்டர்களை இயக்கு",
-  "enableBackgroundPostersDesc": "பொருந்தும் திரைகளில் சீரற்ற போஸ்டர்களைக் காட்டு",
+  "newReleaseFoundTitle": "புதுப்பிப்பு {newRelease} உள்ளது!",
+  "newUpdateFoundOnGithub": "Github இல் புதிய அப்டேட் கிடைத்தது",
+  "enableBackgroundPostersTitle": "பின்னணி சுவரொட்டிகளை இயக்கவும்",
+  "enableBackgroundPostersDesc": "பொருந்தக்கூடிய திரைகளில் சீரற்ற சுவரொட்டிகளைக் காட்டு",
   "notificationDownloadingDownloading": "பதிவிறக்குகிறது",
   "notificationDownloadingPaused": "பதிவிறக்கம் இடைநிறுத்தப்பட்டது",
   "notificationDownloadingFinished": "பதிவிறக்கம் முடிந்தது",
-  "notificationDownloadingError": "பதிவிறக்கப் பிழை",
-  "syncAllItemsTitle": "{itemName} இலிருந்து அனைத்து உருப்படிகளையும் ஒத்திசைக்கவா?",
-  "syncAllItemsDesc": "இது '{itemName}' இலிருந்து ({itemCount}) உருப்படிகளை உங்கள் சாதனத்திற்கு ஒத்திசைக்கும்.\nஉருப்படிகளின் எண்ணிக்கையைப் பொறுத்து இதற்கு சிறிது நேரம் ஆகலாம்.",
+  "notificationDownloadingError": "பதிவிறக்க பிழை",
+  "syncAllItemsTitle": "Sync அனைத்தும் items இருந்து {itemName}?",
+  "syncAllItemsDesc": "இது '{itemName}' இலிருந்து உங்கள் சாதனத்துடன் ({itemCount}) உருப்படிகளை ஒத்திசைக்கும். \nThis can take a while depending on the amount of items.",
   "syncDeleteAllItemsTitle": "{itemName} இலிருந்து ஒத்திசைக்கப்பட்ட அனைத்து உருப்படிகளையும் நீக்கவா?",
-  "syncDeleteAllItemsDesc": "இது '{itemName}' இலிருந்து ஒத்திசைக்கப்பட்ட அனைத்து உருப்படிகளையும் நீக்கும்.\nஇது நிரந்தரமானது, மேலும் ({itemCount}) கோப்புகளை மீண்டும் ஒத்திசைக்க வேண்டும்.",
+  "syncDeleteAllItemsDesc": "இது '{itemName}' இலிருந்து அனைத்து ஒத்திசைக்கப்பட்ட உருப்படிகளையும் நீக்கும். \nஇது நிரந்தரமானது மற்றும் நீங்கள் ({itemCount}) கோப்புகளை மீண்டும் ஒத்திசைக்க வேண்டும்.",
   "syncPauseAll": "அனைத்தையும் இடைநிறுத்து",
-  "syncResumeAll": "அனைத்தையும் தொடர்",
+  "syncResumeAll": "அனைத்தையும் தொடரவும்",
   "syncStopAll": "அனைத்தையும் நிறுத்து",
-  "syncDeleteAll": "அனைத்து கோப்புகளையும் நீக்கு",
-  "syncAllFiles": "அனைத்து கோப்புகளையும் ஒத்திசை",
-  "usePostersForLibraryIconsTitle": "நூலக ஐகான்களுக்கு போஸ்டர்களைக் காட்டு",
-  "usePostersForLibraryIconsDesc": "நூலகங்களுக்கு ஐகான்களுக்குப் பதிலாக போஸ்டர்களைக் காட்டு",
-  "offline": "ஆஃப்லைன்",
+  "syncDeleteAll": "எல்லா கோப்புகளையும் நீக்கு",
+  "syncAllFiles": "எல்லா கோப்புகளையும் ஒத்திசைக்கவும்",
+  "usePostersForLibraryIconsTitle": "நூலக ஐகான்களுக்கான சுவரொட்டிகளைக் காட்டு",
+  "usePostersForLibraryIconsDesc": "நூலகங்களுக்கான ஐகான்களுக்குப் பதிலாக சுவரொட்டிகளைக் காட்டு",
+  "offline": "இணையமில்லாமல்",
   "shortCuts": "குறுக்குவழிகள்",
   "keyboardShortCuts": "விசைப்பலகை குறுக்குவழிகள்",
-  "skipForwardLength": "முன்னோக்கி தாவும் நீளம்",
-  "skipBackLength": "பின்னோக்கி தாவும் நீளம்",
-  "playPause": "இயக்கு/இடைநிறுத்து",
-  "seekForward": "முன்னோக்கி நகர்த்து",
-  "seekBack": "பின்னோக்கி நகர்த்து",
-  "seekForwardInstant": "முன்னோக்கி நகர்த்து (உடனடி)",
-  "seekBackInstant": "பின்னோக்கி நகர்த்து (உடனடி)",
-  "stepForward": "ஒரு படி முன்னே",
-  "stepBack": "ஒரு படி பின்னே",
-  "mute": "ஒலி நிறுத்து",
-  "volumeUp": "ஒலியை அதிகரி",
-  "volumeDown": "ஒலியை குறை",
-  "speedUp": "வேகத்தை அதிகரி",
-  "speedDown": "வேகத்தை குறை",
+  "skipForwardLength": "முன்னோக்கி நீளத்தைத் தவிர்க்கவும்",
+  "skipBackLength": "பின் நீளத்தைத் தவிர்க்கவும்",
+  "playPause": "விளையாடு/இடைநிறுத்தம்",
+  "seekForward": "சீக் ஃபார்வர்டு",
+  "seekBack": "சீக் பேக்",
+  "seekForwardInstant": "சீக் ஃபார்வர்டு (உடனடி)",
+  "seekBackInstant": "சீக் பேக் (உடனடி)",
+  "stepForward": "படி முன்னோக்கி",
+  "stepBack": "பின்வாங்கவும்",
+  "mute": "முடக்கு",
+  "volumeUp": "வால்யூம் அப்",
+  "volumeDown": "வால்யூம் பேரூர்",
+  "speedUp": "வேகப்படுத்து",
+  "speedDown": "வேகத்தைக் குறைக்கவும்",
   "nextVideo": "அடுத்த வீடியோ",
   "prevVideo": "முந்தைய வீடியோ",
   "nextChapter": "அடுத்த அத்தியாயம்",
   "prevChapter": "முந்தைய அத்தியாயம்",
   "fullScreen": "முழுத்திரை",
-  "skipMediaSegment": "மீடியா பகுதியைத் தவிர்",
+  "skipMediaSegment": "மீடியா பிரிவைத் தவிர்",
   "exit": "வெளியேறு",
-  "shortCutAlreadyAssigned": "குறுக்குவழி '{hotKey}' ஏற்கனவே ஒதுக்கப்பட்டுள்ளது",
-  "blurred": "மங்கலாக்கப்பட்டது",
-  "volumeIndicator": "ஒலியளவு: {volume}",
+  "shortCutAlreadyAssigned": "'{hotKey}' குறுக்குவழி ஏற்கனவே ஒதுக்கப்பட்டுள்ளது",
+  "blurred": "மங்கலானது",
+  "volumeIndicator": "தொகுதி: {volume}",
   "brightnessIndicator": "பிரகாசம்: {brightness}",
-  "speedIndicator": "பிளேபேக் வேகம்: {speed}",
-  "enableSpeedBoostTitle": "வேக அதிகரிப்பை இயக்கு",
-  "enableSpeedBoostDesc": "பிளேபேக் வேகத்தை தற்காலிகமாக அதிகரிக்க திரையை (மொபைல்) அல்லது ஸ்பேஸ்பாரை (டெஸ்க்டாப்) அழுத்திப் பிடிக்கவும்",
+  "speedIndicator": "பின்னணி விகிதம்: {speed}",
+  "enableSpeedBoostTitle": "வேக ஊக்கத்தை இயக்கு",
+  "enableSpeedBoostDesc": "பிளேபேக் வேகத்தை தற்காலிகமாக அதிகரிக்க திரை (மொபைல்) அல்லது ச்பேச்பாரை (டெச்க்டாப்) அழுத்திப் பிடிக்கவும்",
   "speedBoostRateTitle": "வேக அதிகரிப்பு விகிதம்",
-  "speedBoostRateDesc": "வேக அதிகரிப்பு இயக்கப்படும்போது பிளேபேக் வேகம்",
-  "enableDoubleTapSeekTitle": "நகர்த்த/இயக்க/இடைநிறுத்த இரட்டை-தட்டு",
-  "enableDoubleTapSeekDesc": "பின்னோக்கி/முன்னோக்கி நகர்த்த திரையின் இடது/வலது பக்கத்தை இரட்டை-தட்டவும். இயக்க/இடைநிறுத்த நடுவில் இரட்டை-தட்டவும்",
-  "quickConnectPostFailed": "விரைவு இணைப்பு குறியீட்டைப் பெற முடியவில்லை",
-  "quickConnectLoginUsingCode": "விரைவு இணைப்பைப் பயன்படுத்துகிறது",
+  "speedBoostRateDesc": "வேக அதிகரிப்பு செயல்படுத்தப்படும் போது பின்னணி விரைவு",
+  "enableDoubleTapSeekTitle": "தேட/விளையாட/இடைநிறுத்த இருமுறை தட்டவும்",
+  "enableDoubleTapSeekDesc": "பின்னோக்கி/முன்னோக்கி பார்க்க திரையின் இடது/வலது பக்கத்தை இருமுறை தட்டவும். விளையாட/இடைநிறுத்த மையத்தில் இருமுறை தட்டவும்",
+  "quickConnectPostFailed": "Failed பெறுநர் get quick இணை குறியீடு",
+  "quickConnectLoginUsingCode": "Using quick இணை",
   "quickConnectEnterCodeDescription": "உள்நுழைய கீழே உள்ள குறியீட்டை உள்ளிடவும்",
-  "openJellyfinQuickConnect": "Jellyfin QuickConnect ஐத் திற",
+  "openJellyfinQuickConnect": "Jellyfin QuickConnect ஐத் திறக்கவும்",
   "showMore": "மேலும் காட்டு",
   "showLess": "குறைவாகக் காட்டு",
-  "itemColorsTitle": "உருப்படி நிறங்கள்",
-  "itemColorsDesc": "விவரப் பக்கத்தை தீம் செய்ய உருப்படியின் முதன்மை நிறத்தைப் பயன்படுத்தவும்",
+  "itemColorsTitle": "பொருள் வண்ணங்கள்",
+  "itemColorsDesc": "விவரங்கள் பக்கத்தை கருப்பொருள் செய்ய பொருளின் முதன்மை நிறத்தைப் பயன்படுத்தவும்",
   "reduceAnimationsTitle": "அசைவூட்டங்களைக் குறைக்கவும்",
   "reduceAnimationsDesc": "குறைந்த திறன் கொண்ட சாதனங்களில் சிறந்த செயல்திறனுக்காக UI அசைவூட்டங்களை முடக்கவும்",
-  "mediaTunnelingTitle": "மீடியா டன்னலிங்",
-  "mediaTunnelingDesc": "நேட்டிவ் பிளேயருக்கு மீடியா டன்னலிங்கை இயக்கு",
-  "clientSettingsUseSystemIMETitle": "சிஸ்டம் விசைப்பலகையைப் பயன்படுத்து",
-  "clientSettingsUseSystemIMEDesc": "உங்கள் கணினி வழங்கும் உள்ளமைந்த விசைப்பலகையைப் பயன்படுத்து",
-  "nextUpInCount": "{seconds} இல் அடுத்தது",
+  "mediaTunnelingTitle": "ஊடக சுரங்கப்பாதை",
+  "mediaTunnelingDesc": "நேட்டிவ் பிளேயருக்கு மீடியா டன்னலிங்கை இயக்கவும்",
+  "clientSettingsUseSystemIMETitle": "கணினி விசைப்பலகையைப் பயன்படுத்தவும்",
+  "clientSettingsUseSystemIMEDesc": "உங்கள் கணினி வழங்கிய உள்ளமைக்கப்பட்ட விசைப்பலகையைப் பயன்படுத்தவும்",
+  "nextUpInCount": "அடுத்தது {seconds}",
   "formattedTime": "{time}",
-  "takeScreenshot": "ஸ்கிரீன்ஷாட் எடு",
-  "takeScreenshotClean": "ஸ்கிரீன்ஷாட் எடு (வசனங்கள் இல்லாமல்)",
-  "toggleSubtitles": "வசனங்களை நிலைமாற்று",
-  "screenshotTaken": "ஸ்கிரீன்ஷாட் சேமிக்கப்பட்டது!",
-  "screenshotCleanTaken": "வசனங்கள் இல்லாத ஸ்கிரீன்ஷாட் சேமிக்கப்பட்டது!",
-  "errorTakingScreenshot": "ஸ்கிரீன்ஷாட் எடுப்பதில் பிழை ஏற்பட்டது",
-  "openImeKeyboard": "IME விசைப்பலகையைத் திற",
+  "takeScreenshot": "திரைக்காட்சி எடுக்கவும்",
+  "takeScreenshotClean": "திரைக்காட்சி எடுக்கவும் (வசனங்கள் இல்லாமல்)",
+  "toggleSubtitles": "வசன வரிகளை நிலைமாற்று",
+  "screenshotTaken": "திரைக்காட்சி சேமிக்கப்பட்டது!",
+  "screenshotCleanTaken": "வசனங்கள் இல்லாத திரைக்காட்சி சேமிக்கப்பட்டது!",
+  "errorTakingScreenshot": "ச்கிரீன்சாட்டை எடுப்பதில் பிழை",
+  "openImeKeyboard": "IME விசைப்பலகையைத் திறக்கவும்",
   "screensaverDvd": "DVD",
-  "screensaverLogo": "லோகோ",
+  "screensaverLogo": "சின்னம்",
   "screensaverTime": "நேரம்",
   "screensaverBlack": "கருப்பு",
-  "playerSettingsScreensaverTitle": "ஸ்க்ரீன்சேவர்",
-  "playerSettingsScreensaverDesc": "பிளேயர் செயல்பாடு இல்லாதபோது காட்டப்படும் ஸ்க்ரீன்சேவரைத் தேர்ந்தெடுக்கவும்",
-  "settingsLocalUrlTitle": "உள்ளூர் Jellyfin URL",
-  "settingsLocalUrlSetTitle": "உள்ளூர் Jellyfin URL ஐ கட்டமை",
-  "settingsLocalUrlSetDesc": "உள்ளூர் Jellyfin முகவரியைக் குறிப்பிடவும். உங்கள் சாதனம் அதே நெட்வொர்க்கில் இருக்கும்போது Driftfin இந்த URL ஐ தானாகப் பயன்படுத்தும்.",
-  "regenerateTrickplayImages": "ட்ரிக்பிளே படங்களை மீண்டும் உருவாக்கு",
-  "controlPanel": "கட்டுப்பாட்டு பலகை",
+  "playerSettingsScreensaverTitle": "ச்கிரீன்சேவர்",
+  "playerSettingsScreensaverDesc": "பிளேயர் செயல்பாடு இல்லாத திரை சேவரைத் தேர்ந்தெடுக்கவும்",
+  "settingsLocalUrlTitle": "உள்ளக செல்லிஃபின் முகவரி",
+  "settingsLocalUrlSetTitle": "உள்ளக செல்லிஃபின் முகவரி ஐ உள்ளமைக்கவும்",
+  "settingsLocalUrlSetDesc": "உள்ளக செல்லிஃபின் முகவரியைக் குறிப்பிடவும். உங்கள் சாதனம் ஒரே நெட்வொர்க்கில் இருக்கும்போது Driftfin தானாகவே இந்த முகவரி ஐப் பயன்படுத்தும்.",
+  "regenerateTrickplayImages": "தந்திரமான படங்களை மீண்டும் உருவாக்கவும்",
+  "controlPanel": "கண்ட்ரோல் பேனல்",
   "controlPanelDesc": "சேவையகம், செயல்பாடு, பயனர்கள், நூலகம்",
-  "controlDashboard": "கட்டுப்பாட்டு டேஷ்போர்டு",
-  "serverName": "சேவையக பெயர்",
-  "serverVersion": "சேவையக பதிப்பு",
-  "webVersion": "வலை பதிப்பு",
+  "controlDashboard": "கட்டுப்பாட்டு டாச்போர்டு",
+  "serverName": "சர்வர் பெயர்",
+  "serverVersion": "சர்வர் பதிப்பு",
+  "webVersion": "இணைய பதிப்பு",
   "devices": "சாதனங்கள்",
   "used": "பயன்படுத்தப்பட்டது",
   "storagePaths": "சேமிப்பு பாதைகள்",
   "programData": "நிரல் தரவு",
-  "web": "வலை",
-  "cache": "கேச்",
+  "web": "விரலிடைத் தோல்",
+  "cache": "தற்காலிக சேமிப்பு",
   "logs": "பதிவுகள்",
-  "transcodingTemp": "டிரான்ஸ்கோடிங் தற்காலிகம்",
-  "count": "எண்ணிக்கை",
-  "scanAllLibraries": "அனைத்து நூலகங்களையும் ஸ்கேன் செய்",
-  "restartServer": "சேவையகத்தை மறுதொடக்கம் செய்",
-  "shutDownServer": "சேவையகத்தை அணை",
-  "dashboardDesc": "சேவையகம், எண்ணிக்கை, சாதனங்கள், சேமிப்பகம்",
+  "transcodingTemp": "டிரான்ச்கோடிங் டெம்ப்",
+  "count": "எண்ணுங்கள்",
+  "scanAllLibraries": "அனைத்து நூலகங்களையும் வருடு செய்யவும்",
+  "restartServer": "சேவையகத்தை மறுதொடக்கம் செய்யுங்கள்",
+  "shutDownServer": "சர்வரை மூடு",
+  "dashboardDesc": "சேவையகம், எண்ணிக்கை, சாதனங்கள், சேமிப்பு",
   "lastActivity": "கடைசி செயல்பாடு",
   "activeTasks": "செயலில் உள்ள பணிகள்",
   "hours": "{count, plural, one{மணி நேரம்} other{மணி நேரங்கள்}}",
@@ -764,366 +764,366 @@
   "days": "நாட்கள்",
   "timeAgo": "{time} முன்பு",
   "airsIn": "{count} {duration} இல் ஒளிபரப்பாகும்",
-  "lastRunTaking": "கடைசியாக இயங்கியது {date}, எடுத்துக்கொண்டது {time}",
-  "lessThenAMinute": "ஒரு நிமிடத்திற்கும் குறைவு",
-  "plannedTasks": "திட்டமிடப்பட்ட பணிகள்",
-  "taskTriggerTypeInterval": "இடைவெளி",
-  "taskTriggerTypeDaily": "தினசரி",
-  "taskTriggerTypeWeekly": "வாராந்திர",
-  "taskTriggerTypeStartup": "தொடக்கம்",
+  "lastRunTaking": "கடைசி ஓட்டம் {date}, எடுத்துக்கொண்டது {time}",
+  "lessThenAMinute": "ஒரு நிமிடத்திற்கும் குறைவானது",
+  "plannedTasks": "Planned பணிகள்",
+  "taskTriggerTypeInterval": "இடைவேளை",
+  "taskTriggerTypeDaily": "நாள்தோறும்",
+  "taskTriggerTypeWeekly": "வாரந்தோறும்",
+  "taskTriggerTypeStartup": "தொடங்கு",
   "create": "உருவாக்கு",
-  "taskTriggerTypeName": "தூண்டல் வகை",
-  "newTrigger": "புதிய தூண்டல்",
-  "newTaskTrigger": "புதிய பணி தூண்டல்",
+  "taskTriggerTypeName": "தூண்டுதல் வகை",
+  "newTrigger": "புதிய தூண்டுதல்",
+  "newTaskTrigger": "புதிய பணி தூண்டுதல்",
   "dayOfTheWeek": "வாரத்தின் நாள்",
   "time": "நேரம்",
-  "interval": "இடைவெளி",
-  "taskTimeLimitInHours": "கால வரம்பு (மணிநேரம்)",
+  "interval": "இடைவேளை",
+  "taskTimeLimitInHours": "நேர வரம்பு (மணிநேரம்)",
   "taskTriggerIntervalDesc": "ஒவ்வொரு {time}",
-  "taskTriggerDailyDesc": "தினமும் {time} மணிக்கு",
-  "taskTriggerWeeklyDesc": "வாராந்திரம் {day} அன்று {time} மணிக்கு",
-  "taskTriggerTimeLimitSub": "கால வரம்பு: {time}",
+  "taskTriggerDailyDesc": "தினமும் {time}",
+  "taskTriggerWeeklyDesc": "வாரந்தோறும் {day} அன்று {time}",
+  "taskTriggerTimeLimitSub": "நேர வரம்பு: {time}",
   "performance": "செயல்திறன்",
-  "serverNameLabel": "சேவையக பெயர்",
+  "serverNameLabel": "சர்வர் பெயர்",
   "cachePath": "கேச் பாதை",
-  "metadataPath": "மேலான தரவு பாதை",
-  "maxConcurrentLibraryScanLabel": "அதிகபட்ச ஒரே நேர நூலக ஸ்கேன்கள்",
-  "maxConcurrentLibraryScanDesc": "நூலக ஸ்கேன்களின் போது இணையான பணிகளின் அதிகபட்ச எண்ணிக்கை. இதை காலியாக விட்டால் உங்கள் கணினியின் கோர் எண்ணிக்கையின் அடிப்படையில் வரம்பு தேர்ந்தெடுக்கப்படும். எச்சரிக்கை: இந்த எண்ணிக்கையை மிக அதிகமாக அமைப்பது நெட்வொர்க் கோப்பு அமைப்புகளில் சிக்கல்களை ஏற்படுத்தலாம்; சிக்கல்கள் ஏற்பட்டால் இந்த எண்ணிக்கையைக் குறைக்கவும்.",
-  "maxImageDecodingThreadsLabel": "அதிகபட்ச பட டீகோடிங் த்ரெட்கள்",
-  "maxImageDecodingThreadsDesc": "இணையாக இயங்க அனுமதிக்கப்படும் பட என்கோடிங்குகளின் அதிகபட்ச எண்ணிக்கை. இதை காலியாக விட்டால் உங்கள் கணினியின் கோர் எண்ணிக்கையின் அடிப்படையில் வரம்பு தேர்ந்தெடுக்கப்படும்.",
-  "controlPanelServerDesc": "சேவையக பெயர், விரைவு இணைப்பு, செயல்திறன்",
-  "deleteUserTitle": "பயனர் {user} ஐ நீக்கவா?",
+  "metadataPath": "மேனிலை தரவு பாதை",
+  "maxConcurrentLibraryScanLabel": "அதிகபட்ச ஒரே நேரத்தில் நூலக ச்கேன்கள்",
+  "maxConcurrentLibraryScanDesc": "லைப்ரரி ச்கேன்களின் போது இணையான பணிகளின் அதிகபட்ச எண்ணிக்கை. இதை காலியாக விடுவது உங்கள் சிச்டம்களின் முக்கிய எண்ணிக்கையின் அடிப்படையில் வரம்பை தேர்ந்தெடுக்கும். எச்சரிக்கை: இந்த எண்ணை மிக அதிகமாக அமைப்பதால் பிணைய கோப்பு முறைமைகளில் சிக்கல்கள் ஏற்படலாம்; நீங்கள் சிக்கல்களை எதிர்கொண்டால், இந்த எண்ணைக் குறைக்கவும்.",
+  "maxImageDecodingThreadsLabel": "அதிகபட்ச பட டிகோடிங் இழைகள்",
+  "maxImageDecodingThreadsDesc": "இணையாக இயக்க அனுமதிக்கப்படும் பட குறியாக்கங்களின் அதிகபட்ச எண்ணிக்கை. இதை காலியாக விடுவது உங்கள் சிச்டம்களின் முக்கிய எண்ணிக்கையின் அடிப்படையில் வரம்பை தேர்ந்தெடுக்கும்.",
+  "controlPanelServerDesc": "சர்வர் பெயர், விரைவு இணைப்பு, செயல்திறன்",
+  "deleteUserTitle": "{user} பயனரை நீக்கவா?",
   "deleteUserDesc": "இது பயனர் {user} மற்றும் தொடர்புடைய அனைத்து அமைப்புகளையும் நிரந்தரமாக நீக்கும்.",
-  "userInformation": "பயனர் தகவல்",
-  "allowManageServer": "இந்த பயனருக்கு சேவையகத்தை நிர்வகிக்க அனுமதிக்கவும்",
-  "allowCollections": "இந்த பயனருக்கு தொகுப்புகளை அனுமதிக்கவும்",
-  "allowEditSubtitles": "இந்த பயனருக்கு வசனங்களைத் திருத்த அனுமதிக்கவும்",
+  "userInformation": "பயனர் செய்தி",
+  "allowManageServer": "சேவையகத்தை நிர்வகிக்க இந்தப் பயனரை அனுமதிக்கவும்",
+  "allowCollections": "இந்த பயனரை சேகரிப்பை அனுமதிக்கவும்",
+  "allowEditSubtitles": "இந்த பயனர் வசன திருத்தங்களை அனுமதிக்கவும்",
   "featureAccess": "அம்ச அணுகல்",
-  "allowLiveTVAccess": "நேரடி டிவி அணுகலை அனுமதி",
-  "allowLiveTVRecording": "நேரடி டிவி பதிவு மேலாண்மையை அனுமதி",
+  "allowLiveTVAccess": "நேரடி டிவி அணுகலை அனுமதிக்கவும்",
+  "allowLiveTVRecording": "நேரடி டிவி ரெக்கார்டிங் நிர்வாகத்தை அனுமதிக்கவும்",
   "mediaPlayback": "மீடியா பிளேபேக்",
-  "allowMediaPlayback": "மீடியா பிளேபேக்கை அனுமதி",
-  "allowVideoTranscoding": "டிரான்ஸ்கோடிங் தேவைப்படும் வீடியோ பிளேபேக்கை அனுமதி",
-  "allowAudioTranscoding": "டிரான்ஸ்கோடிங் தேவைப்படும் ஆடியோ பிளேபேக்கை அனுமதி",
-  "allowMediaConversion": "மீடியா மாற்றம் தேவைப்படும் வீடியோ பிளேபேக்கை அனுமதி",
-  "forceRemoteTranscoding": "தொலை மூல டிரான்ஸ்கோடிங்கை கட்டாயப்படுத்து",
-  "syncplay": "Syncplay",
-  "syncplayAccess": "Syncplay அணுகல்",
-  "syncplayAccessCreateAndJoinGroups": "குழுக்களை உருவாக்கி இணை",
-  "syncplayAccessJoinGroups": "குழுக்களில் இணை",
-  "syncplayAccessNone": "ஏதுமில்லை",
-  "allowMediaDeletion": "மீடியா நீக்கத்தை அனுமதி",
+  "allowMediaPlayback": "மீடியா பிளேபேக்கை அனுமதிக்கவும்",
+  "allowVideoTranscoding": "டிரான்ச்கோடிங் தேவைப்படும் வீடியோ பிளேபேக்கை அனுமதிக்கவும்",
+  "allowAudioTranscoding": "டிரான்ச்கோடிங் தேவைப்படும் ஆடியோ பிளேபேக்கை அனுமதிக்கவும்",
+  "allowMediaConversion": "மீடியா மாற்றம் தேவைப்படும் வீடியோ பிளேபேக்கை அனுமதிக்கவும்",
+  "forceRemoteTranscoding": "ரிமோட் சோர்ச் டிரான்ச்கோடிங்கை கட்டாயப்படுத்தவும்",
+  "syncplay": "ஒத்திசைவு",
+  "syncplayAccess": "ஒத்திசைவு அணுகல்",
+  "syncplayAccessCreateAndJoinGroups": "குழுக்களை உருவாக்கி சேரவும்",
+  "syncplayAccessJoinGroups": "குழுக்களில் சேரவும்",
+  "syncplayAccessNone": "எதுவுமில்லை",
+  "allowMediaDeletion": "மீடியா நீக்கத்தை அனுமதிக்கவும்",
   "allLibraries": "அனைத்து நூலகங்கள்",
   "libraryAccess": "நூலக அணுகல்",
-  "enableAllLibraries": "அனைத்து நூலகங்களுக்கும் அணுகலை இயக்கு",
-  "enableAllDevices": "அனைத்து சாதனங்களுக்கும் அணுகலை இயக்கு",
+  "enableAllLibraries": "அனைத்து நூலகங்களுக்கும் அணுகலை இயக்கவும்",
+  "enableAllDevices": "எல்லா சாதனங்களுக்கும் அணுகலை இயக்கவும்",
   "parentalControl": "பெற்றோர் கட்டுப்பாடு",
-  "blockedItemsNoRating": "மதிப்பீடு இல்லாத அல்லது அங்கீகரிக்கப்படாத உருப்படிகளைத் தடு",
+  "blockedItemsNoRating": "எந்த அல்லது அங்கீகரிக்கப்படாத மதிப்பீடுகள் கொண்ட தடுக்கப்பட்ட உருப்படிகள்",
   "maxParentalRating": "அதிகபட்ச பெற்றோர் மதிப்பீடு",
-  "allowItemsTags": "குறிச்சொற்களுடன் உருப்படிகளை அனுமதி",
-  "blockItemsTags": "குறிச்சொற்களுடன் உருப்படிகளைத் தடு",
+  "allowItemsTags": "குறிச்சொற்களைக் கொண்ட உருப்படிகளை அனுமதிக்கவும்",
+  "blockItemsTags": "குறிச்சொற்களுடன் உருப்படிகளைத் தடுக்கவும்",
   "accessSchedules": "அணுகல் அட்டவணைகள்",
-  "addAccessSchedule": "அணுகல் அட்டவணையைச் சேர்",
+  "addAccessSchedule": "அணுகல் அட்டவணையைச் சேர்க்கவும்",
   "dayOfWeek": "வாரத்தின் நாள்",
   "startTime": "தொடக்க நேரம்",
   "endTime": "முடிவு நேரம்",
-  "addTag": "குறிச்சொல்லைச் சேர்",
-  "createNewUser": "புதிய பயனரை உருவாக்கு",
-  "createUser": "பயனரை உருவாக்கு",
+  "addTag": "குறியைச் சேர்க்கவும்",
+  "createNewUser": "புதிய பயனரை உருவாக்கவும்",
+  "createUser": "பயனரை உருவாக்கவும்",
   "users": "பயனர்கள்",
   "editUser": "பயனரைத் திருத்து",
-  "general": "பொது",
+  "general": "பொது",
   "access": "அணுகல்",
   "endTimeMustBeAfter": "முடிவு நேரம் தொடக்க நேரத்திற்குப் பிறகு இருக்க வேண்டும்",
-  "assignLibraries": "நூலகங்களை ஒதுக்கு",
-  "enableAccessAllLibraries": "அனைத்து நூலகங்களுக்கும் அணுகலை இயக்கு",
+  "assignLibraries": "நூலகங்களை ஒதுக்குங்கள்",
+  "enableAccessAllLibraries": "அனைத்து நூலகங்களுக்கும் அணுகலை இயக்கவும்",
   "currentPassword": "தற்போதைய கடவுச்சொல்",
   "newPassword": "புதிய கடவுச்சொல்",
-  "confirmPassword": "கடவுச்சொல்லை உறுதிப்படுத்து",
-  "resetPassword": "கடவுச்சொல்லை மீட்டமை",
-  "passwordResetSuccess": "கடவுச்சொல் வெற்றிகரமாக மீட்டமைக்கப்பட்டது",
+  "confirmPassword": "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
+  "resetPassword": "கடவுச்சொல்லை மீட்டமைக்கவும்",
+  "passwordResetSuccess": "கடவுச்சொல் மீட்டமைக்கப்பட்டது",
   "passwordResetFailed": "கடவுச்சொல்லை மீட்டமைக்க முடியவில்லை",
-  "passwordMismatch": "புதிய கடவுச்சொல் மற்றும் உறுதிப்படுத்தும் கடவுச்சொல் பொருந்தவில்லை",
+  "passwordMismatch": "புதிய கடவுச்சொல் மற்றும் உறுதிப்படுத்தல் கடவுச்சொல் பொருந்தவில்லை",
   "passwordChangeSuccess": "கடவுச்சொல் வெற்றிகரமாக மாற்றப்பட்டது",
-  "savePassword": "கடவுச்சொல்லைச் சேமி",
+  "savePassword": "கடவுச்சொல்லை சேமிக்கவும்",
   "deleteLibraryConfirmTitle": "நூலகத்தை நீக்கவா?",
-  "deleteLibraryConfirmMessage": "{libraryName} ஐ நீக்க வேண்டுமா?\nஇந்த செயலை மீட்டெடுக்க முடியாது.",
+  "deleteLibraryConfirmMessage": "{libraryName} ஐ நிச்சயமாக நீக்க விரும்புகிறீர்களா? \nஇந்தச் செயலைச் செயல்தவிர்க்க முடியாது.",
   "noLibrarySelected": "நூலகம் எதுவும் தேர்ந்தெடுக்கப்படவில்லை",
-  "enabledPhotos": "புகைப்படங்கள் இயக்கப்பட்டது",
-  "enabledLUFSScan": "LUFS ஸ்கேன் இயக்கப்பட்டது",
+  "enabledPhotos": "இயக்கப்பட்ட புகைப்படங்கள்",
+  "enabledLUFSScan": "LUFS வருடு இயக்கப்பட்டது",
   "enabledRealtimeMonitoring": "நிகழ்நேர கண்காணிப்பு இயக்கப்பட்டது",
-  "automaticallyAddToCollection": "தொகுப்பில் தானாக சேர்",
-  "enabledEmbeddedTitles": "உட்பொதிந்த தலைப்புகள் இயக்கப்பட்டது",
-  "enabledEmbeddedExtrasTitles": "உட்பொதிந்த கூடுதல் தலைப்புகள் இயக்கப்பட்டது",
+  "automaticallyAddToCollection": "சேகரிப்பில் தானாகவே சேர்",
+  "enabledEmbeddedTitles": "உட்பொதிக்கப்பட்ட தலைப்புகள் இயக்கப்பட்டன",
+  "enabledEmbeddedExtrasTitles": "கூடுதல் உட்பொதிக்கப்பட்ட தலைப்புகள் இயக்கப்பட்டது",
   "automaticRefreshInterval": "தானியங்கி புதுப்பிப்பு இடைவெளி",
-  "autoRefreshIntervalNote": "இதை இயக்குவது நூலக புதுப்பிப்பு நேரத்தை அதிகரிக்கச் செய்யலாம்.",
+  "autoRefreshIntervalNote": "இதை இயக்குவது நீண்ட நூலக புதுப்பிப்பு நேரத்தை ஏற்படுத்தும்.",
   "preferredDownloadLanguage": "விருப்பமான பதிவிறக்க மொழி",
-  "countryRegion": "நாடு/பகுதி",
-  "saveMetadata": "மேலான தரவை சேமி",
-  "metadataFetchers": "மேலான தரவு பெறுநர்கள் ({type})",
-  "enableAndRankMetadataFetchers": "உங்கள் விருப்பமான மேலான தரவு பெறுநர்களை முன்னுரிமை வரிசையில் இயக்கி வரிசைப்படுத்தவும்.",
-  "enableAndRankImagesFetchers": "உங்கள் விருப்பமான பட பெறுநர்களை முன்னுரிமை வரிசையில் இயக்கி வரிசைப்படுத்தவும்.",
-  "imageFetchers": "பட பெறுநர்கள் ({type})",
-  "mediaSegmentProviders": "மீடியா பகுதி வழங்குநர்கள்",
-  "enableAndRankMediaSegmentProviders": "உங்கள் விருப்பமான மீடியா பகுதி வழங்குநர்களை முன்னுரிமை வரிசையில் இயக்கி வரிசைப்படுத்தவும்.",
-  "trickplay": "ட்ரிக்பிளே",
-  "enableTrickplayImageExtraction": "ட்ரிக்பிளே பட பிரித்தெடுத்தலை இயக்கு",
-  "extractTrickplayImagesDuringLibraryScan": "நூலக ஸ்கேன்களின் போது ட்ரிக்பிளே படங்களைப் பிரித்தெடு",
-  "saveTrickplayImagesNextToMedia": "ட்ரிக்பிளே படங்களை மீடியாவின் அருகில் சேமி",
+  "countryRegion": "நாடு/பிராந்தியம்",
+  "saveMetadata": "மெட்டாடேட்டாவைச் சேமிக்கவும்",
+  "metadataFetchers": "மேனிலை தரவு பெறுபவர்கள் ({type})",
+  "enableAndRankMetadataFetchers": "Enable and rank your preferred metadata fetchers in order of priority.",
+  "enableAndRankImagesFetchers": "முன்னுரிமையின்படி உங்கள் விருப்பமான படங்களைப் பெறுபவர்களை இயக்கி வரிசைப்படுத்தவும்.",
+  "imageFetchers": "படத்தை எடுப்பவர்கள் ({type})",
+  "mediaSegmentProviders": "மீடியா பிரிவு வழங்குநர்கள்",
+  "enableAndRankMediaSegmentProviders": "முன்னுரிமையின்படி உங்களுக்கு விருப்பமான மீடியாசெக்மென்ட் வழங்குநர்களை இயக்கி தரவரிசைப்படுத்தவும்.",
+  "trickplay": "தந்திரம்",
+  "enableTrickplayImageExtraction": "ட்ரிக்ப்ளே படத்தை பிரித்தெடுப்பதை இயக்கு",
+  "extractTrickplayImagesDuringLibraryScan": "லைப்ரரி வருடு செய்யும் போது ட்ரிக்ப்ளே படங்களை பிரித்தெடுக்கவும்",
+  "saveTrickplayImagesNextToMedia": "ட்ரிக்ப்ளே படங்களை மீடியாவுக்கு அடுத்ததாக சேமிக்கவும்",
   "chapterImages": "அத்தியாய படங்கள்",
-  "enableChapterImageExtraction": "அத்தியாய பட பிரித்தெடுத்தலை இயக்கு",
-  "extractChapterImagesDuringLibraryScan": "நூலக ஸ்கேன்களின் போது அத்தியாய படங்களைப் பிரித்தெடு",
+  "enableChapterImageExtraction": "Enable பாடங்கள் படம் extraction",
+  "extractChapterImagesDuringLibraryScan": "Extract பாடங்கள் படங்கள் during library scans",
   "subtitleDownloads": "வசன பதிவிறக்கங்கள்",
-  "downloadLanguages": "பதிவிறக்க மொழிகள்",
-  "subtitleDownloaders": "வசன பதிவிறக்குநர்கள்",
-  "onlyPerfectSubtitleMatch": "மீடியாவுடன் சரியாகப் பொருந்தும் வசனங்களை மட்டும் பதிவிறக்கு",
-  "perfectSubtitleMatchDescription": "சரியான பொருத்தத்தை கட்டாயமாக்குவது உங்கள் சரியான வீடியோ கோப்புடன் சோதிக்கப்பட்டு சரிபார்க்கப்பட்ட வசனங்களை மட்டுமே சேர்க்கும். இதை அணைப்பது வசனங்கள் பதிவிறக்கப்படும் வாய்ப்பை அதிகரிக்கும், ஆனால் தவறான நேரம் அல்லது தவறான வசன உரையின் வாய்ப்பையும் அதிகரிக்கும்.",
-  "skipSubtitlesIfAudioMatches": "இயல்பு ஆடியோ டிராக் பதிவிறக்க மொழியுடன் பொருந்தினால் தவிர்",
-  "skipSubtitlesIfEmbedded": "வீடியோவில் ஏற்கனவே உட்பொதிந்த வசனங்கள் இருந்தால் தவிர்",
-  "saveSubtitlesNextToMedia": "வசனங்களை மீடியாவின் அருகில் சேமி",
-  "saveArtWorkNextToMedia": "கலைப்படைப்பை மீடியா கோப்புகளின் அருகில் சேமி",
-  "saveArtWorkNextToMediaDesc": "கலைப்படைப்பை மீடியா கோப்புறைகளில் சேமிப்பது அவற்றை எளிதாகத் திருத்தக்கூடிய இடத்தில் வைக்கும்.",
+  "downloadLanguages": "மொழிகளைப் பதிவிறக்கவும்",
+  "subtitleDownloaders": "Subtitle downloaders",
+  "onlyPerfectSubtitleMatch": "மீடியாவுடன் சரியாகப் பொருந்தக்கூடிய வசனங்களை மட்டும் பதிவிறக்கவும்",
+  "perfectSubtitleMatchDescription": "சரியான பொருத்தம் தேவைப்படுவதால், உங்கள் சரியான வீடியோ கோப்புடன் சோதனை செய்யப்பட்டு சரிபார்க்கப்பட்ட வசனங்களை மட்டும் சேர்க்க, வசன வரிகள் வடிகட்டப்படும். இதைத் தேர்வுநீக்கினால், வசனங்கள் பதிவிறக்கப்படும் வாய்ப்பு அதிகரிக்கும், ஆனால் தவறான அல்லது தவறான வசன உரைக்கான வாய்ப்புகள் அதிகரிக்கும்.",
+  "skipSubtitlesIfAudioMatches": "Skip if the இயல்புநிலை audio மின்தடம் matches the பதிவிறக்கம் மொழி",
+  "skipSubtitlesIfEmbedded": "வீடியோவில் ஏற்கனவே உட்பொதிக்கப்பட்ட வசனங்கள் இருந்தால் தவிர்க்கவும்",
+  "saveSubtitlesNextToMedia": "Save subtitles அடுத்தது பெறுநர் ஊடகம்",
+  "saveArtWorkNextToMedia": "சேமி ஒளிமறைப்பு அடுத்தது பெறுநர் ஊடகம் கோப்புகள்",
+  "saveArtWorkNextToMediaDesc": "மீடியா கோப்புறைகளில் கலைப்படைப்புகளைச் சேமிப்பது அவற்றை எளிதாகத் திருத்தக்கூடிய இடத்தில் வைக்கும்.",
   "select": "தேர்ந்தெடு",
-  "newLibrary": "புதிய நூலகம்",
+  "newLibrary": "New Library",
   "contentType": "உள்ளடக்க வகை",
   "metadataImageLongPressTouch": "படத்தை நீக்க நீண்ட நேரம் அழுத்தவும்",
-  "metadataImageLongPressClick": "படத்தை நீக்க வலது கிளிக் செய்யவும்",
+  "metadataImageLongPressClick": "படத்தை நீக்க வலது சொடுக்கு செய்யவும்",
   "primary": "முதன்மை",
-  "logo": "{count, plural, one{லோகோ} other{லோகோக்கள்}}",
+  "logo": "{count, plural, other{Logos} one{Logo}}",
   "backdrop": "{count, plural, one{பின்னணி படம்} other{பின்னணி படங்கள்}}",
-  "selectFolderToAdd": "சேர்க்க கோப்புறையைத் தேர்ந்தெடு",
-  "systemRootFolder": "கணினி மூல கோப்புறை",
+  "selectFolderToAdd": "சேர்க்க கோப்புறையைத் தேர்ந்தெடுக்கவும்",
+  "systemRootFolder": "கணினி ரூட் கோப்புறை",
   "selectedPath": "தேர்ந்தெடுக்கப்பட்ட பாதை: {path}",
-  "recentlyAdded": "சமீபத்தில் சேர்க்கப்பட்டவை",
-  "recentlyPlayed": "சமீபத்தில் இயக்கப்பட்டவை",
-  "recentlyFavorited": "சமீபத்தில் பிடித்தவையாக்கப்பட்டவை",
-  "mostPlayed": "அதிகம் இயக்கப்பட்டவை",
-  "recentRequests": "சமீபத்திய கோரிக்கைகள்",
+  "recentlyAdded": "அண்மைக் காலத்தில் சேர்க்கப்பட்டது",
+  "recentlyPlayed": "அண்மைக் காலத்தில் விளையாடியது",
+  "recentlyFavorited": "அண்மைக் காலத்தில் பிடித்தது",
+  "mostPlayed": "அதிகம் விளையாடியது",
+  "recentRequests": "அண்மைக் கால கோரிக்கைகள்",
   "trending": "டிரெண்டிங்",
   "popularMovies": "பிரபலமான திரைப்படங்கள்",
-  "popularSeries": "பிரபலமான நிகழ்ச்சிகள்",
-  "expectedMovies": "எதிர்பார்க்கப்படும் திரைப்படங்கள்",
-  "expectedSeries": "எதிர்பார்க்கப்படும் நிகழ்ச்சிகள்",
-  "requestConfiguration": "கோரிக்கை கட்டமைப்பு",
-  "qualityProfile": "தர விவரக்குறிப்பு",
-  "selectProfile": "விவரக்குறிப்பைத் தேர்ந்தெடு",
-  "rootFolder": "மூல கோப்புறை",
+  "popularSeries": "பிரபலமான தொடர்",
+  "expectedMovies": "எதிர்பார்த்த படங்கள்",
+  "expectedSeries": "Expected series",
+  "requestConfiguration": "கோரிக்கை உள்ளமைவு",
+  "qualityProfile": "தரமான சுயவிவரம்",
+  "selectProfile": "சுயவிவரத்தைத் தேர்ந்தெடுக்கவும்",
+  "rootFolder": "ரூட் கோப்புறை",
   "selectFolder": "கோப்புறையைத் தேர்ந்தெடு",
-  "tags": "குறிச்சொற்கள்",
+  "tags": "குறிச்சொற்கள்",
   "noTags": "குறிச்சொற்கள் இல்லை",
-  "requestAs": "இப்படிக் கோரு",
-  "requestQuotaStatus": "{limit} இல் {remaining} மீதமுள்ளது (ஒவ்வொரு {days} நாட்களுக்கும் மீட்டமைக்கப்படும்)",
-  "requestQuotaLimitReached": "{mediaType}-க்கான கோரிக்கை வரம்பை அடைந்துவிட்டீர்கள்.",
-  "submitRequest": "கோரிக்கையை சமர்ப்பி",
-  "noOverviewAvailable": "மேலோட்டம் கிடைக்கவில்லை.",
+  "requestAs": "Request அச்",
+  "requestQuotaStatus": "மீதமுள்ள {remaining} இல் {limit} (ஒவ்வொரு {days} நாட்களுக்கும் மீட்டமைக்கப்படும்)",
+  "requestQuotaLimitReached": "Request limit reached க்கு {mediaType}.",
+  "submitRequest": "Submit request",
+  "noOverviewAvailable": "மேலோட்டம் இல்லை.",
   "downloading": "பதிவிறக்குகிறது",
   "request": "கோரிக்கை",
-  "requestMore": "மேலும் கோரு",
-  "viewRequest": "கோரிக்கையைப் பார்",
+  "requestMore": "மேலும் கோருங்கள்",
+  "viewRequest": "கோரிக்கையைப் பார்க்கவும்",
   "email": "மின்னஞ்சல்",
-  "username": "பயனர்பெயர்",
+  "username": "பயனர் பெயர்",
   "ok": "சரி",
-  "transcodeInfoTitle": "டிரான்ஸ்கோட் தகவல்",
-  "transcodeInfoNoMetadata": "டிரான்ஸ்கோடிங் மேலான தரவு எதுவும் இல்லை.",
-  "transcodeDetailsTitle": "டிரான்ஸ்கோட் விவரங்கள்",
-  "containerLabel": "கண்டெய்னர்",
+  "transcodeInfoTitle": "டிரான்ச்கோட் செய்தி",
+  "transcodeInfoNoMetadata": "இல்லை transcoding metadata is available.",
+  "transcodeDetailsTitle": "டிரான்ச்கோட் விவரங்கள்",
+  "containerLabel": "சரக்குப் பெட்டகம்",
   "videoCodecLabel": "வீடியோ கோடெக்",
   "audioCodecLabel": "ஆடியோ கோடெக்",
   "bitrateLabel": "பிட்ரேட்",
-  "kbps": "kbps",
-  "resolutionLabel": "தெளிவுத்திறன்",
-  "seerr": "Seerr",
+  "kbps": "கேபிஎச்",
+  "resolutionLabel": "பகுத்தல்",
+  "seerr": "உடல்",
   "seerrNotConfigured": "கட்டமைக்கப்படவில்லை",
   "seerrLoadingUser": "பயனரை ஏற்றுகிறது",
-  "seerrUnknownUser": "தெரியாத பயனர்",
+  "seerrUnknownUser": "அறியப்படாத பயனர்",
   "loggedInAs": "{displayName} ஆக உள்நுழைந்துள்ளீர்கள்",
-  "seerrServer": "Seerr சேவையகம்",
-  "seerrAuthenticateLocal": "Seerr அங்கீகாரம் (உள்ளூர்)",
-  "rootFolderDefaultLabel": "{folder} (இயல்பு)",
-  "seerrAnimeSeriesNote": "* இந்த நிகழ்ச்சி ஒரு அனிமே.",
+  "seerrServer": "சீர் சர்வர்",
+  "seerrAuthenticateLocal": "சீர் ஏற்பு (உள்ளூர்)",
+  "rootFolderDefaultLabel": "{folder} (இயல்புநிலை)",
+  "seerrAnimeSeriesNote": "* இந்தத் தொடர் ஒரு அனிமேசன்.",
   "seerrAutoApproveNotice": "நீங்கள் சமர்ப்பிக்கும் கோரிக்கைகள் தானாக அங்கீகரிக்கப்படும்.",
-  "seerrPermissionDenied": "இந்த மீடியா வகையைக் கோர உங்களுக்கு அனுமதி இல்லை.",
-  "seerrRequestStatusPending": "நிலுவையில்",
+  "seerrPermissionDenied": "இந்த மீடியா வகையைக் கோர உங்களுக்கு இசைவு இல்லை.",
+  "seerrRequestStatusPending": "நிலுவையில் உள்ளது",
   "seerrRequestStatusApproved": "அங்கீகரிக்கப்பட்டது",
   "seerrRequestStatusDeclined": "நிராகரிக்கப்பட்டது",
   "seerrRequestStatusFailed": "தோல்வியடைந்தது",
-  "seerrRequestStatusCompleted": "முடிக்கப்பட்டது",
-  "seerrMediaStatusProcessing": "செயலாக்கப்படுகிறது",
-  "seerrMediaStatusPartiallyAvailable": "பகுதியாக கிடைக்கிறது",
-  "seerrMediaStatusAvailable": "கிடைக்கிறது",
-  "seerrMediaStatusBlacklisted": "தடைசெய்யப்பட்டது",
+  "seerrRequestStatusCompleted": "முடிந்தது",
+  "seerrMediaStatusProcessing": "செயலாக்கம்",
+  "seerrMediaStatusPartiallyAvailable": "ஓரளவு கிடைக்கும்",
+  "seerrMediaStatusAvailable": "கிடைக்கும்",
+  "seerrMediaStatusBlacklisted": "பிளாக்லிச்ட்",
   "seerrMediaStatusDeleted": "நீக்கப்பட்டது",
-  "seerrAuthApiKey": "API விசை",
-  "seerrAuthLocal": "உள்ளூர்",
-  "seerrAuthJellyfin": "Jellyfin",
-  "seerrUserFetchFailed": "Seerr-லிருந்து பயனரைப் பெற முடியவில்லை",
-  "seerrEnterServerUrlFirst": "முதலில் ஒரு Seerr சேவையக URL ஐ உள்ளிடவும்",
-  "seerrUrlSchemeWarning": "URL திட்டத்தை தானாக கண்டறிய முடியவில்லை. https:// என இயல்பாக அமைக்கப்படுகிறது. உங்கள் சேவையகம் HTTPS ஐப் பயன்படுத்தவில்லை என்றால் http:// என முன்னொட்டு செய்யவும்.",
-  "seerrApiKeySaved": "API விசை சேமிக்கப்பட்டது",
-  "seerrLoggedIn": "Seerr-ல் உள்நுழைந்தது",
-  "seerrConnectedToServer": "Seerr சேவையகத்துடன் இணைக்கப்பட்டது: {serverUrl}",
+  "seerrAuthApiKey": "பநிஇ விசை",
+  "seerrAuthLocal": "உள்ளக",
+  "seerrAuthJellyfin": "செல்லிமீன்",
+  "seerrUserFetchFailed": "Seerr இலிருந்து பயனரைப் பெறுவதில் தோல்வி",
+  "seerrEnterServerUrlFirst": "முதலில் சீர் சர்வர் முகவரி ஐ உள்ளிடவும்",
+  "seerrUrlSchemeWarning": "முகவரி திட்டத்தை தானாகக் கண்டறிய முடியவில்லை. இயல்புநிலையாக https://. உங்கள் சர்வர் HTTPS ஐப் பயன்படுத்தவில்லை என்றால் http:// உடன் முன்னொட்டு.",
+  "seerrApiKeySaved": "பநிஇ விசை சேமிக்கப்பட்டது",
+  "seerrLoggedIn": "Seerr இல் உள்நுழைந்துள்ளார்",
+  "seerrConnectedToServer": "Seerr சர்வருடன் இணைக்கப்பட்டது: {serverUrl}",
   "seerrCustomHeaders": "தனிப்பயன் தலைப்புகள்",
-  "seerrHeader": "தலைப்பு",
+  "seerrHeader": "தலைப்பி",
   "seerrHeaderValue": "மதிப்பு",
-  "emailUsername": "மின்னஞ்சல்/பயனர்பெயர்",
-  "discover": "கண்டறி",
-  "sponsor": "ஸ்பான்சர்",
-  "sponsorMessage": "Driftfin-ஐப் பயன்படுத்துவதை நீங்கள் விரும்பினால், தொடர்ச்சியான வளர்ச்சி மற்றும் மேம்பாடுகளை ஆதரிக்க இந்த திட்டத்திற்கு ஸ்பான்சர் செய்ய பரிசீலிக்கவும். உங்கள் ஆதரவிற்கு நன்றி!",
-  "min": "நிமி",
+  "emailUsername": "மின்னஞ்சல்/பயனர் பெயர்",
+  "discover": "கண்டுபிடி",
+  "sponsor": "ஒப்புரவாளர்",
+  "sponsorMessage": "நீங்கள் ஃபிளாடரைப் பயன்படுத்துவதை விரும்புகிறீர்கள் என்றால், தற்போதைய மேம்பாடு மற்றும் மேம்பாடுகளை ஆதரிக்க திட்டத்திற்கு நிதியளிப்பதைக் கருத்தில் கொள்ளுங்கள். உங்கள் ஆதரவுக்கு நன்றி!",
+  "min": "மணித்துளி",
   "max": "அதிகபட்சம்",
-  "manageRequest": "கோரிக்கையை நிர்வகி",
-  "requestAll": "அனைத்தையும் கோரு",
-  "openInSeerr": "Seerr-ல் திற",
-  "openInSonarr": "Sonarr-ல் திற",
-  "openInRadarr": "Radarr-ல் திற",
-  "removeFromSonarr": "Sonarr-லிருந்து அகற்று",
-  "removeFromRadarr": "Radarr-லிருந்து அகற்று",
-  "markAllSeasonsAsAvailable": "அனைத்து பருவங்களையும் கிடைக்கிறது எனக் குறி",
-  "markAsAvailable": "கிடைக்கிறது எனக் குறி",
+  "manageRequest": "கோரிக்கையை நிர்வகிக்கவும்",
+  "requestAll": "அனைவரையும் கேட்டுக்கொள்",
+  "openInSeerr": "Seerr இல் திறக்கவும்",
+  "openInSonarr": "சோனாரில் திறக்கவும்",
+  "openInRadarr": "ராடாரில் திறக்கவும்",
+  "removeFromSonarr": "Sonarr இலிருந்து அகற்று",
+  "removeFromRadarr": "ராடாரிலிருந்து அகற்று",
+  "markAllSeasonsAsAvailable": "எல்லாப் பருவங்களையும் கிடைக்கக்கூடியதாகக் குறிக்கவும்",
+  "markAsAvailable": "கிடைப்பதாகக் குறிக்கவும்",
   "deleteData": "தரவை நீக்கு",
-  "removeSeriesFromSonarrConfirm": "இந்த நிகழ்ச்சியை Sonarr-லிருந்து அகற்றவா? இது கோப்புகள் உட்பட அனைத்து தரவையும் அகற்றும்.",
-  "removeMovieFromRadarrConfirm": "இந்த திரைப்படத்தை Radarr-லிருந்து அகற்றவா? இது கோப்புகள் உட்பட அனைத்து தரவையும் அகற்றும்.",
-  "removedFromSonarr": "Sonarr-லிருந்து அகற்றப்பட்டது",
-  "removedFromRadarr": "Radarr-லிருந்து அகற்றப்பட்டது",
-  "markAllSeasonsAsAvailableConfirm": "அனைத்து பருவங்களையும் கிடைக்கிறது எனக் குறிக்கவா?",
-  "markAsAvailableConfirm": "கிடைக்கிறது எனக் குறிக்கவா?",
-  "markedAsAvailable": "கிடைக்கிறது என குறிக்கப்பட்டது",
-  "deleteSeerrDataConfirm": "Seerr-லிருந்து அனைத்து கோப்புகளையும் நீக்கவா? இந்த செயலை மீட்டெடுக்க முடியாது.\nதரவு இன்னும் {service}-ல் இருந்தால், அது மீண்டும் இறக்குமதி செய்யப்படலாம்.",
+  "removeSeriesFromSonarrConfirm": "இந்த தொடரை Sonarr இலிருந்து அகற்றவா? இது கோப்புகள் உட்பட எல்லா தரவையும் அகற்றும்.",
+  "removeMovieFromRadarrConfirm": "Radarr இலிருந்து இந்தத் திரைப்படத்தை அகற்றவா? இது கோப்புகள் உட்பட எல்லா தரவையும் அகற்றும்.",
+  "removedFromSonarr": "சோனாரிலிருந்து அகற்றப்பட்டது",
+  "removedFromRadarr": "ராடாரிலிருந்து அகற்றப்பட்டது",
+  "markAllSeasonsAsAvailableConfirm": "எல்லா சீசன்களும் கிடைக்கும் என குறிக்கவா?",
+  "markAsAvailableConfirm": "கிடைப்பதாகக் குறிக்கவா?",
+  "markedAsAvailable": "கிடைப்பதாகக் குறிக்கப்பட்டது",
+  "deleteSeerrDataConfirm": "Seerr இலிருந்து எல்லா கோப்புகளையும் நீக்கவா? இந்தச் செயலைச் செயல்தவிர்க்க முடியாது. \n{service} இல் தரவு இன்னும் இருந்தால், அது மீண்டும் இறக்குமதி செய்யப்படலாம்.",
   "dataDeleted": "தரவு நீக்கப்பட்டது",
-  "approve": "அங்கீகரி",
+  "approve": "ஒப்புதல்",
   "decline": "நிராகரி",
-  "pendingRequests": "{count, plural, one{{count} நிலுவை கோரிக்கை} other{நிலுவையில் கோரிக்கைகள் இல்லை}}",
-  "processing": "செயலாக்கப்படுகிறது",
-  "seerrDetails": "Seerr விவரங்கள்",
-  "viewTrailer": "ட்ரெய்லரைப் பார்",
-  "watch": "பார்",
-  "watchChannel": "{channel} ஐப் பார்",
+  "pendingRequests": "{count, plural, other{No pending requests} one{{count} pending request} two{{count} pending requests}}",
+  "processing": "செயலாக்கம்",
+  "seerrDetails": "பார்ப்பவர் விவரங்கள்",
+  "viewTrailer": "டிரெய்லரைப் பார்க்கவும்",
+  "watch": "பார்க்கவும்",
+  "watchChannel": "{channel} பார்க்கவும்",
   "now": "இப்போது",
-  "nowPlaying": "இப்போது இயங்குகிறது",
+  "nowPlaying": "இப்போது விளையாடுகிறது",
   "upNext": "அடுத்தது",
   "queue": "வரிசை",
   "queueIsEmpty": "வரிசை காலியாக உள்ளது",
-  "queueItemCount": "{count} உருப்படிகள்",
-  "removeFromQueue": "வரிசையிலிருந்து அகற்று",
-  "noPrograms": "நிகழ்ச்சிகள் எதுவும் கிடைக்கவில்லை",
-  "switchChannel": "சேனலை மாற்று",
+  "queueItemCount": "{count} items",
+  "removeFromQueue": "வரிசையில் இருந்து அகற்று",
+  "noPrograms": "திட்டங்கள் எதுவும் இல்லை",
+  "switchChannel": "சேனலை மாற்றவும்",
   "switchChannelDesc": "{channelName} இல் \"{programName}\" ஐப் பார்க்க விரும்புகிறீர்களா?",
   "specialFeature": "{count, plural, one{சிறப்பு அம்சம்} other{சிறப்பு அம்சங்கள்}}",
   "activeTvChannels": "செயலில் உள்ள டிவி சேனல்கள்",
-  "enableNewTVLayout": "புதிய டிவி தளவமைப்பை இயக்கு",
-  "liveTV": "நேரடி டிவி",
-  "liveTvManageTunersEpg": "டியூனர் சாதனங்கள் மற்றும் EPG வழங்குநர்களை நிர்வகி",
-  "tunerDevices": "டியூனர் சாதனங்கள்",
+  "enableNewTVLayout": "புதிய டிவி தளவமைப்பை இயக்கவும்",
+  "liveTV": "நேரலை டிவி",
+  "liveTvManageTunersEpg": "ட்யூனர் சாதனங்கள் மற்றும் EPG வழங்குநர்களை நிர்வகிக்கவும்",
+  "tunerDevices": "ட்யூனர் சாதனங்கள்",
   "epgGuideProviders": "EPG வழிகாட்டி வழங்குநர்கள்",
-  "noTunerDevicesConfigured": "டியூனர் சாதனங்கள் எதுவும் கட்டமைக்கப்படவில்லை",
-  "noEpgProvidersConfigured": "EPG வழங்குநர்கள் எதுவும் கட்டமைக்கப்படவில்லை",
-  "addTunerDevice": "டியூனர் சாதனத்தைச் சேர்",
+  "noTunerDevicesConfigured": "ட்யூனர் சாதனங்கள் எதுவும் உள்ளமைக்கப்படவில்லை",
+  "noEpgProvidersConfigured": "இல்லை EPG providers configured",
+  "addTunerDevice": "ட்யூனர் சாதனத்தைச் சேர்க்கவும்",
   "addProvider": "வழங்குநரைச் சேர்",
-  "tunerHostAddedSuccessfully": "டியூனர் ஹோஸ்ட் வெற்றிகரமாக சேர்க்கப்பட்டது",
-  "failedToAddTunerHost": "டியூனர் ஹோஸ்டைச் சேர்க்க முடியவில்லை: {error}",
-  "tunerHostUpdatedSuccessfully": "டியூனர் ஹோஸ்ட் வெற்றிகரமாக புதுப்பிக்கப்பட்டது",
-  "failedToUpdateTunerHost": "டியூனர் ஹோஸ்டைப் புதுப்பிக்க முடியவில்லை: {error}",
-  "deleteTunerHost": "டியூனர் ஹோஸ்டை நீக்கு",
-  "deleteTunerHostConfirm": "\"{name}\" ஐ நீக்க வேண்டுமா?",
-  "tunerHostDeletedSuccessfully": "டியூனர் ஹோஸ்ட் வெற்றிகரமாக நீக்கப்பட்டது",
-  "failedToDeleteTunerHost": "டியூனர் ஹோஸ்டை நீக்க முடியவில்லை: {error}",
-  "epgProviderAddedSuccessfully": "EPG வழங்குநர் வெற்றிகரமாக சேர்க்கப்பட்டது",
-  "failedToAddEpgProvider": "EPG வழங்குநரைச் சேர்க்க முடியவில்லை: {error}",
+  "tunerHostAddedSuccessfully": "ட்யூனர் புரவலன் வெற்றிகரமாக சேர்க்கப்பட்டது",
+  "failedToAddTunerHost": "Failed பெறுநர் கூட்டு இசைப்பி host: {error}",
+  "tunerHostUpdatedSuccessfully": "ட்யூனர் புரவலன் வெற்றிகரமாக புதுப்பிக்கப்பட்டது",
+  "failedToUpdateTunerHost": "ட்யூனர் ஓச்டைப் புதுப்பிக்க முடியவில்லை: {error}",
+  "deleteTunerHost": "ட்யூனர் ஓச்டை நீக்கு",
+  "deleteTunerHostConfirm": "\"{name}\" ஐ நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
+  "tunerHostDeletedSuccessfully": "ட்யூனர் புரவலன் வெற்றிகரமாக நீக்கப்பட்டது",
+  "failedToDeleteTunerHost": "ட்யூனர் ஓச்டை நீக்க முடியவில்லை: {error}",
+  "epgProviderAddedSuccessfully": "EPG வழங்குநர் வெற்றிகரமாக சேர்க்கப்பட்டார்",
+  "failedToAddEpgProvider": "EPG வழங்குநரைச் சேர்ப்பதில் தோல்வி: {error}",
   "epgProviderUpdatedSuccessfully": "EPG வழங்குநர் வெற்றிகரமாக புதுப்பிக்கப்பட்டது",
   "failedToUpdateEpgProvider": "EPG வழங்குநரைப் புதுப்பிக்க முடியவில்லை: {error}",
-  "deleteEpgProvider": "EPG வழங்குநரை நீக்கு",
-  "deleteEpgProviderConfirm": "இந்த வழங்குநரை நீக்க வேண்டுமா?",
-  "epgProviderDeletedSuccessfully": "EPG வழங்குநர் வெற்றிகரமாக நீக்கப்பட்டது",
+  "deleteEpgProvider": "நீக்கு EPG வழங்குநர்",
+  "deleteEpgProviderConfirm": "இந்த வழங்குநரை நிச்சயமாக நீக்க விரும்புகிறீர்களா?",
+  "epgProviderDeletedSuccessfully": "EPG வழங்குநர் வெற்றிகரமாக நீக்கப்பட்டார்",
   "failedToDeleteEpgProvider": "EPG வழங்குநரை நீக்க முடியவில்லை: {error}",
-  "editTunerDevice": "டியூனர் சாதனத்தைத் திருத்து",
-  "friendlyName": "நட்பான பெயர்",
-  "url": "URL",
+  "editTunerDevice": "ட்யூனர் சாதனத்தைத் திருத்து",
+  "friendlyName": "நட்புப் பெயர்",
+  "url": "முகவரி",
   "userAgent": "பயனர் முகவர்",
-  "userAgentOptional": "பயனர் முகவர் (விருப்பத்தேர்வு)",
-  "maxConcurrentStreams": "அதிகபட்ச ஒரே நேர ஸ்ட்ரீம்கள்",
-  "addEpgProvider": "EPG வழங்குநரைச் சேர்",
+  "userAgentOptional": "பயனர் முகவர் (விரும்பினால்)",
+  "maxConcurrentStreams": "அதிகபட்ச ஒரே நேரத்தில் நீரோடைகள்",
+  "addEpgProvider": "EPG வழங்குநரைச் சேர்க்கவும்",
   "editEpgProvider": "EPG வழங்குநரைத் திருத்து",
-  "xmltvPathUrl": "XMLTV பாதை/URL",
-  "enableAllTuners": "அனைத்து டியூனர்களுக்கும் இயக்கு",
-  "enabledTuners": "இயக்கப்பட்ட டியூனர்கள்",
-  "selectTuners": "டியூனர்களைத் தேர்ந்தெடு",
+  "xmltvPathUrl": "எக்ச்எம்எல்டிவி பாதை/URL",
+  "enableAllTuners": "அனைத்து ட்யூனர்களுக்கும் இயக்கு",
+  "enabledTuners": "இயக்கப்பட்ட ட்யூனர்கள்",
+  "selectTuners": "ட்யூனர்களைத் தேர்ந்தெடுக்கவும்",
   "moviePrefix": "திரைப்பட முன்னொட்டு",
   "movieCategories": "திரைப்பட வகைகள்",
   "newsCategories": "செய்தி வகைகள்",
   "sportsCategories": "விளையாட்டு வகைகள்",
   "kidsCategories": "குழந்தைகள் வகைகள்",
-  "fileOrUrl": "கோப்பு அல்லது URL",
-  "tunerIpAddress": "டியூனர் IP முகவரி",
-  "fallbackMaxBitrate": "அதிகபட்ச பேக்அப் பிட்ரேட் (Mbps)",
-  "concurrentStreams": "அதிகபட்ச ஒரே நேர ஸ்ட்ரீம்கள்",
+  "fileOrUrl": "கோப்பு அல்லது முகவரி",
+  "tunerIpAddress": "ட்யூனர் ஐபி முகவரி",
+  "fallbackMaxBitrate": "அதிகபட்ச ஃபால்பேக் பிட்ரேட் (Mbps)",
+  "concurrentStreams": "அதிகபட்ச ஒரே நேரத்தில் நீரோடைகள்",
   "concurrentStreamsHint": "0 = வரம்பற்றது",
-  "allowFmp4Container": "fMP4 டிரான்ஸ்கோடிங் கண்டெய்னரை அனுமதி",
-  "allowStreamSharing": "ஸ்ட்ரீம் பகிர்வை அனுமதி",
-  "enableStreamLooping": "ஸ்ட்ரீம் லூப்பிங்கை இயக்கு",
-  "ignoreDts": "DTS நேர முத்திரைகளை புறக்கணி",
-  "readAtNativeFramerate": "நேட்டிவ் ஃபிரேம் விகிதத்தில் படி",
-  "importFavoritesOnly": "பிடித்த சேனல்களை மட்டும் இறக்குமதி செய்",
-  "allowHWTranscoding": "வன்பொருள் டிரான்ஸ்கோடிங்கை அனுமதி",
-  "detectDevices": "சாதனங்களைக் கண்டறி",
-  "discoveredDevices": "கண்டறியப்பட்ட சாதனங்கள்",
-  "noDevicesFound": "சாதனங்கள் எதுவும் கிடைக்கவில்லை",
+  "allowFmp4Container": "fMP4 டிரான்ச்கோடிங் கொள்கலனை அனுமதிக்கவும்",
+  "allowStreamSharing": "Allow stream sharing",
+  "enableStreamLooping": "ச்ட்ரீம் லூப்பிங்கை இயக்கு",
+  "ignoreDts": "டிடிஎச் நேர முத்திரைகளைப் புறக்கணிக்கவும்",
+  "readAtNativeFramerate": "சொந்த ஃப்ரேம்ரேட்டில் படிக்கவும்",
+  "importFavoritesOnly": "பிடித்த சேனல்களை மட்டும் இறக்குமதி செய்யவும்",
+  "allowHWTranscoding": "வன்பொருள் டிரான்ச்கோடிங்கை அனுமதிக்கவும்",
+  "detectDevices": "சாதனங்களைக் கண்டறியவும்",
+  "discoveredDevices": "கண்டுபிடிக்கப்பட்ட சாதனங்கள்",
+  "noDevicesFound": "சாதனங்கள் எதுவும் இல்லை",
   "failedToDiscoverDevices": "சாதனங்களைக் கண்டறிய முடியவில்லை: {error}",
   "path": "பாதை",
-  "maxConcurrentStreamsLabel": "அதிகபட்ச ஒரே நேர ஸ்ட்ரீம்கள்",
-  "noCategories": "வகைகள் இல்லை",
-  "moviePrefixSubLabel": "திரைப்பட தலைப்புகளுக்கு முன்னொட்டு பயன்படுத்தப்பட்டிருந்தால், சேவையகம் அதை சரியாக செயலாக்க இங்கே தட்டச்சு செய்யவும்.",
+  "maxConcurrentStreamsLabel": "அதிகபட்ச ஒரே நேரத்தில் நீரோடைகள்",
+  "noCategories": "பிரிவுகள் இல்லை",
+  "moviePrefixSubLabel": "திரைப்படத் தலைப்புகளுக்கு முன்னொட்டுப் பயன்படுத்தப்பட்டால், அதை இங்கே தட்டச்சு செய்யவும், இதனால் சர்வர் அதைச் சரியாகச் செயலாக்க முடியும்.",
   "movieCategoriesSubLabel": "திரைப்பட முன்னொட்டுடன் பொருந்தும் சேனல்களுக்கு ஒதுக்க வேண்டிய வகைகள்",
-  "newsCategoriesSubLabel": "செய்தி முன்னொட்டுடன் பொருந்தும் சேனல்களுக்கு ஒதுக்க வேண்டிய வகைகள்",
+  "newsCategoriesSubLabel": "செய்தி முன்னொட்டுடன் பொருந்தக்கூடிய சேனல்களுக்கு ஒதுக்க வேண்டிய வகைகள்",
   "sportsCategoriesSubLabel": "விளையாட்டு முன்னொட்டுடன் பொருந்தும் சேனல்களுக்கு ஒதுக்க வேண்டிய வகைகள்",
   "kidsCategoriesSubLabel": "குழந்தைகள் முன்னொட்டுடன் பொருந்தும் சேனல்களுக்கு ஒதுக்க வேண்டிய வகைகள்",
-  "enableNewTVLayoutDesc": "டேஷ்போர்டில் பெரிய டிவி பாணி பேனர்களைக் காட்டு. இது எதிர்கால வெளியீட்டில் இயல்பு தளவமைப்பாக மாறும்.",
+  "enableNewTVLayoutDesc": "பெரிய டிவி பாணி பேனர்களை டாச்போர்டில் காட்டு. இது எதிர்கால வெளியீட்டில் இயல்புநிலை அமைப்பாக மாறும்.",
   "notifications": "அறிவிப்புகள்",
-  "showNewItemNotificationTitle": "நூலக உருப்படிகளுக்கான அறிவிப்புகள்",
+  "showNewItemNotificationTitle": "Notifications க்கு library items",
   "notificationChannelDescription": "புதிதாக சேர்க்கப்பட்ட உருப்படிகளுக்கான அறிவிப்புகள்",
-  "seerrRequestNotifications": "Seerr கோரிக்கைகளுக்கான அறிவிப்புகள்",
-  "notificationNewEpisodes": "புதிய பாகங்கள் சேர்க்கப்பட்டன",
-  "notificationNewItems": "{count, plural, one{{count} புதிய உருப்படி} other{{count} புதிய உருப்படிகள்}}",
+  "seerrRequestNotifications": "சீர் கோரிக்கைகளுக்கான அறிவிப்புகள்",
+  "notificationNewEpisodes": "புதிய அத்தியாயங்கள் சேர்க்கப்பட்டன",
+  "notificationNewItems": "{count, plural, one{{count} புதிய item} other{{count} புதிய items}}",
   "notificationNewRequests": "{count, plural, one{{count} புதிய கோரிக்கை} other{{count} புதிய கோரிக்கைகள்}}",
-  "notificationTimerIOSWarning": " iOS புதுப்பிப்புகள் எப்போது/நடக்குமா என்பதை முடிவு செய்கிறது, அறிவிப்புகள் தாமதமாகலாம் அல்லது காட்டப்படாமல் போகலாம்.",
-  "batteryOptimizationDesc": "பேட்டரி மேம்படுத்தல்கள் Driftfin-க்கான பின்னணி அறிவிப்புகளை தாமதப்படுத்தலாம்.\nஅறிவிப்பு நம்பகத்தன்மையை மேம்படுத்த சிஸ்டம் அமைப்புகளைத் திறந்து Driftfin-க்கான மேம்படுத்தல்களை அணைக்க தட்டவும்.",
-  "updateCheckInterval": "புதுப்பிப்பு சரிபார்ப்பு இடைவெளி",
+  "notificationTimerIOSWarning": " புதுப்பிப்புகள் எப்போது/எப்போது இயங்குகின்றன என்பதை ஐஇமு தீர்மானிக்கிறது, அறிவிப்புகள் தாமதமாகலாம் அல்லது காட்டப்படாமல் போகலாம்.",
+  "batteryOptimizationDesc": "பேட்டரி மேம்படுத்தல்கள் Driftfin க்கான பின்னணி அறிவிப்புகளை தாமதப்படுத்தலாம். \nசிச்டம் அமைப்புகளைத் திறக்க தட்டவும் மற்றும் அறிவிப்பு நம்பகத்தன்மையை மேம்படுத்த பிளாடருக்கான மேம்படுத்தல்களை முடக்கவும்.",
+  "updateCheckInterval": "சரிபார்ப்பு இடைவெளியைப் புதுப்பிக்கவும்",
   "updateCheckIntervalDesc": "பின்னணி பணி எவ்வளவு அடிக்கடி இயங்குகிறது",
-  "notificationsIntervalClientReminder": "அறிவிப்பு இடைவெளி அனைத்து பயனர்களுக்கும் அமைக்கப்பட்டுள்ளது.",
-  "lastUpdateAt": "{date} அன்று {time} மணிக்கு கடைசியாக புதுப்பிக்கப்பட்டது",
-  "includeHiddenItems": "மறைக்கப்பட்ட நூலகங்களை சேர்",
-  "includeHiddenItemsDesc": "டேஷ்போர்டிலிருந்து மறைக்கப்பட்ட நூலகங்களை சேர்",
-  "settingsBlurEffectsTitle": "மங்கல் விளைவுகளை இயக்கு",
-  "settingsBlurEffectsDesc": "UI-ல் மங்கல் விளைவுகளை இயக்கு. இதை அணைப்பது குறைந்த திறன் சாதனங்களில் செயல்திறனை மேம்படுத்தலாம்.",
-  "profileSettingsOpenAuthAtLaunch": "செயலி பூட்டில் அங்கீகார-முறையைக் காட்டு",
-  "toggleSidebar": "பக்கப்பட்டியை நிலைமாற்று",
+  "notificationsIntervalClientReminder": "அனைத்து பயனர்களுக்கும் அறிவிப்பு இடைவெளி அமைக்கப்பட்டுள்ளது.",
+  "lastUpdateAt": "கடைசியாகப் புதுப்பிக்கப்பட்டது {date} அன்று {time}",
+  "includeHiddenItems": "மறைக்கப்பட்ட நூலகங்களைச் சேர்க்கவும்",
+  "includeHiddenItemsDesc": "டாச்போர்டிலிருந்து மறைக்கப்பட்ட நூலகங்களைச் சேர்க்கவும்",
+  "settingsBlurEffectsTitle": "மங்கலான விளைவுகளை இயக்கு",
+  "settingsBlurEffectsDesc": "இடைமுகம் இல் மங்கலான விளைவுகளை இயக்கவும். இதை முடக்குவது குறைந்த-இறுதி சாதனங்களில் செயல்திறனை மேம்படுத்தலாம்.",
+  "profileSettingsOpenAuthAtLaunch": "பயன்பாட்டு பூட்டில் அங்கீகார முறையைக் காட்டு",
+  "toggleSidebar": "பக்கப்பட்டியை மாற்றவும்",
   "requestedSuccessForItem": "{itemName} வெற்றிகரமாக கோரப்பட்டது",
   "linkData": "இணைப்பு தரவு",
-  "passwordNotRequired": "தேவையில்லை, இணைப்பில் கடவுச்சொல்லைச் சேர்க்காமல் இருக்க காலியாக விடவும்",
-  "authLinkButtonToolTip": "அங்கீகார இணைப்பு உரையாடலைத் திற",
-  "connectWithAuthLink": "அங்கீகார இணைப்புடன் இணை",
+  "passwordNotRequired": "தேவையில்லை, இணைப்பில் கடவுச்சொல்லை சேர்க்காமல் இருக்க காலியாக விடவும்",
+  "authLinkButtonToolTip": "அங்கீகார இணைப்பு உரையாடலைத் திறக்கவும்",
+  "connectWithAuthLink": "அங்கீகார இணைப்புடன் இணைக்கவும்",
   "pasteDriftfinAuthLink": "driftfin அங்கீகார இணைப்பை ஒட்டவும் driftfin:///login?authLink=...",
   "connect": "இணை",
-  "authLinkDesc": "அங்கீகார இணைப்பை வழங்குமாறு சேவையக நிர்வாகியிடம் கேளுங்கள். இணைப்பில் அங்கீகார தகவல் உள்ளது, எனவே அதை பாதுகாப்பாக வைத்திருக்கவும்.",
+  "authLinkDesc": "அங்கீகார இணைப்பை வழங்க சர்வர் நிர்வாகியிடம் கேளுங்கள். இணைப்பில் அங்கீகரிப்புத் செய்தி உள்ளது, எனவே அதைப் பாதுகாப்பாக வைத்திருக்கவும்.",
   "deletedItem": "{itemName} நீக்கப்பட்டது",
   "libraryOrderTitle": "முகப்புத் திரை வரிசை",
-  "libraryOrderDescription": "முகப்புத் திரையில் நூலகங்களை மறுவரிசைப்படுத்த இழுக்கவும். தேர்வுநீக்கப்பட்ட நூலகங்கள் சமீபத்தில் சேர்க்கப்பட்ட உருப்படிகளைக் காட்டாது.",
-  "hidePlayedInLatestTitle": "பார்க்கப்பட்ட உள்ளடக்கத்தை மறை",
-  "hidePlayedInLatestDescription": "'சமீபத்தில் சேர்க்கப்பட்ட மீடியா' இலிருந்து பார்க்கப்பட்ட உள்ளடக்கத்தை மறை",
+  "libraryOrderDescription": "முகப்புத் திரையில் நூலகங்களை மறுவரிசைப்படுத்த இழுக்கவும். தேர்வு செய்யப்படாத நூலகங்கள் அண்மைக் காலத்தில் சேர்க்கப்பட்ட உருப்படிகளைக் காட்டாது.",
+  "hidePlayedInLatestTitle": "பார்த்த உள்ளடக்கத்தை மறை",
+  "hidePlayedInLatestDescription": "'அண்மைக் காலத்தில் சேர்க்கப்பட்ட மீடியா' இலிருந்து பார்த்த உள்ளடக்கத்தை மறை",
   "groupedFoldersTitle": "தொகுக்கப்பட்ட நூலகங்கள்",
-  "groupedFoldersDescription": "பின்வரும் நூலகங்களிலிருந்து உள்ளடக்கத்தை 'திரைப்படங்கள்', 'இசை' மற்றும் 'டிவி' போன்ற காட்சிகளாக தானாக தொகு.",
-  "downloadTranscoded": "டிரான்ஸ்கோட் செய்யப்பட்டதைப் பதிவிறக்கு",
-  "downloadOriginal": "மூலத்தைப் பதிவிறக்கு",
+  "groupedFoldersDescription": "பின்வரும் நூலகங்களிலிருந்து உள்ளடக்கத்தை 'திரைப்படங்கள்', 'இசை' மற்றும் 'டிவி' போன்ற காட்சிகளாகத் தானாகவே குழுவாக்கவும்.",
+  "downloadTranscoded": "பதிவிறக்கம் குறியிடப்பட்டது",
+  "downloadOriginal": "அசல் பதிவிறக்க",
   "personBirthday": "பிறந்த நாள்: {date}",
   "personAge": "வயது: {age}",
-  "personBirthPlace": "{place} இல் பிறந்தார்",
-  "seerrMovies": "திரைப்படங்களைக் கண்டறி",
-  "seerrSeries": "நிகழ்ச்சிகளைக் கண்டறி",
+  "personBirthPlace": "{place} பிறந்தார்",
+  "seerrMovies": "திரைப்படங்களைக் கண்டறியுங்கள்",
+  "seerrSeries": "தொடர்களைக் கண்டறியுங்கள்",
   "today": "இன்று",
-  "musicDashboard": "இசை டேஷ்போர்டு",
-  "quiet": "அமைதி",
-  "loud": "சத்தம்",
-  "share": "பகிர்",
-  "setAs": "இப்படி அமை",
+  "musicDashboard": "இசை டாச்போர்டு",
+  "quiet": "அமைதியான",
+  "loud": "சத்தமாக",
+  "share": "பங்கு",
+  "setAs": "என அமைக்கவும்",
   "cast": "காஸ்ட்",
   "castTo": "இதில் இயக்கு…",
   "castSearching": "சாதனங்களைத் தேடுகிறது…",
@@ -1157,5 +1157,611 @@
   "tastePassportEmpty": "சில விஷயங்களைப் பாருங்கள், உங்கள் ரசனை சுயவிவரம் இங்கே தோன்றும்",
   "livingHomeBecauseYouWatched": "நீங்கள் {name} ஐப் பார்த்ததால்",
   "livingHomeHiddenGems": "நீங்கள் வைத்திருக்கும் மறைந்த ரத்தினங்கள்",
-  "livingHomeMoreFromDirector": "{name} இலிருந்து மேலும்"
+  "livingHomeMoreFromDirector": "{name} இலிருந்து மேலும்",
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@generateLoginLink": {
+    "description": "Code for a user to share",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@runtimeRangeMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@minutesShort": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "@streamingServices": {
+    "description": "Streaming providers (Netflix,HBO, etc.)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "exitFladderTitle": "பிளாடரில் இருந்து வெளியேறு",
+  "exitFladderDesc": "Driftfin ஐ நிச்சயமாக மூட விரும்புகிறீர்களா?",
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@newReleaseFoundTitle": {
+    "placeholders": {
+      "newRelease": {
+        "type": "String"
+      }
+    }
+  },
+  "@syncAllItemsTitle": {
+    "description": "syncAllItemsFrom",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "@syncAllItemsDesc": {
+    "description": "syncAllitemsFromDesc",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      },
+      "itemCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@syncDeleteAllItemsTitle": {
+    "description": "syncDeleteAllitemsFrom",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "@syncDeleteAllItemsDesc": {
+    "description": "syncDeleteAllitemsFromDesc",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      },
+      "itemCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@shortCutAlreadyAssigned": {
+    "placeholders": {
+      "hotKey": {
+        "type": "String"
+      }
+    }
+  },
+  "@volumeIndicator": {
+    "placeholders": {
+      "volume": {
+        "type": "int"
+      }
+    }
+  },
+  "@brightnessIndicator": {
+    "placeholders": {
+      "brightness": {
+        "type": "int"
+      }
+    }
+  },
+  "@speedIndicator": {
+    "placeholders": {
+      "speed": {
+        "type": "double"
+      }
+    }
+  },
+  "@nextUpInCount": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "@formattedTime": {
+    "description": "Formatted time",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      }
+    }
+  },
+  "@timeAgo": {
+    "description": "timeAgo",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@airsIn": {
+    "description": "airsIn",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      },
+      "duration": {
+        "type": "String",
+        "example": "days"
+      }
+    }
+  },
+  "@lastRunTaking": {
+    "description": "lastRunTaking",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@taskTriggerIntervalDesc": {
+    "description": "Task trigger interval desc",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@taskTriggerDailyDesc": {
+    "description": "taskTriggerDailyDesc",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@taskTriggerWeeklyDesc": {
+    "description": "taskTriggerWeeklyDesc",
+    "placeholders": {
+      "day": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@taskTriggerTimeLimitSub": {
+    "description": "taskTriggerTimeLimit",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteUserTitle": {
+    "description": "deleteUserTitle",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteUserDesc": {
+    "description": "deleteUserDesc",
+    "placeholders": {
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteLibraryConfirmMessage": {
+    "placeholders": {
+      "libraryName": {
+        "type": "String"
+      }
+    }
+  },
+  "@metadataFetchers": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "@imageFetchers": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
+  "@logo": {
+    "description": "logo",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@selectedPath": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@requestQuotaStatus": {
+    "placeholders": {
+      "remaining": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "@requestQuotaLimitReached": {
+    "placeholders": {
+      "mediaType": {
+        "type": "String"
+      }
+    }
+  },
+  "@loggedInAs": {
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "@rootFolderDefaultLabel": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "@seerrConnectedToServer": {
+    "placeholders": {
+      "serverUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteSeerrDataConfirm": {
+    "description": "Confirmation message for deleting Seerr data",
+    "placeholders": {
+      "service": {
+        "type": "String",
+        "example": "Sonarr/Radarr"
+      }
+    }
+  },
+  "@pendingRequests": {
+    "description": "pendingRequests",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@watchChannel": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@switchChannelDesc": {
+    "placeholders": {
+      "programName": {
+        "type": "String"
+      },
+      "channelName": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToAddTunerHost": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToUpdateTunerHost": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteTunerHostConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToDeleteTunerHost": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToAddEpgProvider": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToUpdateEpgProvider": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToDeleteEpgProvider": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToDiscoverDevices": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@notificationNewItems": {
+    "description": "Plural for number of new items in a notification",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@lastUpdateAt": {
+    "description": "lastUpdateAt",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      },
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "@requestedSuccessForItem": {
+    "description": "Message shown when a media item is successfully requested",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "pasteFladderAuthLink": "flutter auth இணைப்பை ஒட்டவும் flutter:///login?authLink=...",
+  "@deletedItem": {
+    "description": "Message shown when a item is deleted",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "@personBirthday": {
+    "description": "Birthday label with formatted date",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@personAge": {
+    "description": "Age label with age number",
+    "placeholders": {
+      "age": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "@personBirthPlace": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Music Video} other{Music Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Collection} other{Collections}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "posterColorsTitle": "Generated poster colors",
+  "posterColorsDesc": "Use generated colors for posters in place of the default color",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "selectRandom": "Select random",
+  "stopSelection": "Stop selecting {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Play items",
+  "shuffleItems": "Shuffle items",
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Incognito",
+  "incognitoModeGlobal": "Incognito mode (App)",
+  "incognitoModeLocal": "Incognito mode (Profile)",
+  "incognitoModeDesc": "Incognito mode disables sending playback status to the server",
+  "showInSideBar": "Show in sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "hideInSideBar": "Hide from sidebar",
+  "showInSideBarDesc": "Show this filter in the sidebar for quick access",
+  "applyFilter": "Apply filter",
+  "playerSettingsAmbientBlurTitle": "Enable ambient blur",
+  "playerSettingsAmbientBlurDesc": "Enable ambient blur in the player. This will blur the background behind the player to reduce distractions.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur can cause performance issues on lower-end devices.",
+  "openSelected": "Open selected",
+  "discography": "Discography",
+  "youLiked": "You liked",
+  "instantMixBy": "Instant Mix of {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Latest tracks by {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorites of {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back Mode",
+  "leanBackModeDesc": "Enable lean-back mode on Android devices, even if the device reports back as false.",
+  "leanBackModeInfo": "Lean-back mode is re-enabled by default on AndroidTV devices. Toggling this option on non-AndroidTV devices may cause unexpected behavior.",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

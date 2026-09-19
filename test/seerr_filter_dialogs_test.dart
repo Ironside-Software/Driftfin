@@ -21,6 +21,7 @@ const _phoneModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 /// Harness that pumps a single button whose onPressed exposes both a real
@@ -72,10 +73,10 @@ void main() {
       await tester.pumpWidget(_harness(
         builder: (context, notifier) => ElevatedButton(
           onPressed: () {
-            noneLabel = yearLabel(context, const SeerrFilterModel());
-            rangeLabel = yearLabel(context, const SeerrFilterModel(yearGte: 2000, yearLte: 2020));
-            minOnlyLabel = yearLabel(context, const SeerrFilterModel(yearGte: 2000));
-            maxOnlyLabel = yearLabel(context, const SeerrFilterModel(yearLte: 2020));
+            noneLabel = yearLabel(context, (null, null));
+            rangeLabel = yearLabel(context, (2000, 2020));
+            minOnlyLabel = yearLabel(context, (2000, null));
+            maxOnlyLabel = yearLabel(context, (null, 2020));
           },
           child: const Text('go'),
         ),
@@ -152,7 +153,8 @@ void main() {
     testWidgets('renders the range summary and Save closes it, updating filters without submit', (tester) async {
       await tester.pumpWidget(_harness(
         builder: (context, notifier) => ElevatedButton(
-          onPressed: () => openYearDialog(context, notifier, const SeerrFilterModel(yearGte: 2010, yearLte: 2015)),
+          onPressed: () => openYearDialog(context,
+              (first, last) => notifier.setYearRangeWithoutSubmit(minYear: first, maxYear: last), (2010, 2015)),
           child: const Text('open'),
         ),
       ));
@@ -177,7 +179,8 @@ void main() {
         builder: (context, notifier) {
           capturedNotifier = notifier;
           return ElevatedButton(
-            onPressed: () => openYearDialog(context, notifier, const SeerrFilterModel(yearGte: 2010, yearLte: 2015)),
+            onPressed: () => openYearDialog(context,
+                (first, last) => notifier.setYearRangeWithoutSubmit(minYear: first, maxYear: last), (2010, 2015)),
             child: const Text('open'),
           );
         },

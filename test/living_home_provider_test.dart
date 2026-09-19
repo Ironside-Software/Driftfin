@@ -39,7 +39,7 @@ ItemBaseModel _item(
 }
 
 ServerQueryResult _queryResult(List<ItemBaseModel> items) =>
-    ServerQueryResult(original: const [], items: items, totalRecordCount: items.length, startIndex: 0);
+    ServerQueryResult(items: items, totalRecordCount: items.length, startIndex: 0);
 
 /// Canned Jellyfin responses for [LivingHomeNotifier.fetchRails], keyed by
 /// which of the three fan-out calls is being made (favourite taste sample,

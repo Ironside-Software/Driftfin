@@ -48,7 +48,7 @@ extension LibraryFilterModelQuery on LibraryFilterModel {
         ...itemFilters.included,
         if (favourites == true) ItemFilter.isfavorite,
       ],
-      includeItemTypes: types.included.map((e) => e.dtoKind).toList(),
+      includeItemTypes: types.included.expand((e) => e.dtoKind).toList(),
       recursive: recursive,
     );
   }
