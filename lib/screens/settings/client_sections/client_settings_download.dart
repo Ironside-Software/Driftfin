@@ -9,7 +9,6 @@ import 'package:driftfin/models/settings/settings_entry.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/providers/sync/background_download_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
-import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
 import 'package:driftfin/screens/settings/widgets/settings_label_divider.dart';
 import 'package:driftfin/screens/settings/widgets/settings_list_group.dart';
@@ -33,10 +32,11 @@ int? smartDownloadBudgetBytesFromMb(int? megaBytes) => megaBytes != null ? megaB
 List<Widget> buildClientSettingsDownload(BuildContext context, WidgetRef ref, Function setState) {
   final clientSettings = ref.watch(clientSettingsProvider);
   final currentFolder = ref.watch(syncProvider.notifier).savePath;
-  final canSync = ref.watch(userProvider.select((value) => value?.canDownload ?? false));
 
   return [
-    if (canSync && !kIsWeb) ...[
+    // Local storage and download preferences remain useful without a server
+    // session or permission to start new downloads.
+    if (!kIsWeb) ...[
       ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.downloadsTitle), [
         if (AdaptiveLayout.of(context).isDesktop) ...[
           SettingsListTile(

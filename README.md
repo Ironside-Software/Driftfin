@@ -102,15 +102,15 @@ from the app.
 1. **Install** — build the plugin (see
    [`jellyfin-plugin/README.md`](./jellyfin-plugin/README.md)), then either drop
    the DLL into a `Driftfin` folder under your Jellyfin `plugins/` directory, or
-   add a plugin-repository manifest URL in *Dashboard → Plugins → Repositories*
+   add [the plugin repository](https://ironside-software.github.io/Driftfin/jellyfin-plugin/manifest.json) in *Dashboard → Plugins → Repositories*
    and install "Driftfin". Restart Jellyfin.
 2. **Configure** — open *Dashboard → Plugins → Driftfin* and fill in the
    integrations you want to share, then **Save**.
 3. **Use** — Driftfin clients pull the config on the next login; managed fields
    become read-only. Uninstall the plugin to hand control back to each client.
 
-⚠️ The plugin's `targetAbi` must match your Jellyfin server version (defaults to
-**10.10.x**). See [`jellyfin-plugin/README.md`](./jellyfin-plugin/README.md).
+Plugin **2.0.0.0 targets Jellyfin 12**. Servers on 10.10/10.11 retain plugin
+1.0.2.0 from the same catalog; upgrading preserves saved settings.
 
 ## Contributing
 

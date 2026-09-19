@@ -1,10 +1,10 @@
 ---
 name: "Driftfin"
 guid: "a3b1e7c4-1d2f-4b8a-9c6e-7f0d2e5a9b11"
-version: "1.0.2.0"
-targetAbi: "10.10.0.0"
-framework: "net8.0"
-owner: "hamadtheironside"
+version: "2.0.0.0"
+targetAbi: "12.0.0.0"
+framework: "net10.0"
+owner: "Ironside-Software"
 overview: "Centralize Driftfin client integration settings on the server."
 description: >
   Stores Jellyseerr, Sonarr, Radarr and Trakt connection settings server-side
@@ -14,6 +14,10 @@ category: "General"
 artifacts:
   - "Jellyfin.Plugin.Driftfin.dll"
 changelog: >
+  - 2.0.0.0: Rebuild for Jellyfin 12 and .NET 10. Older servers retain
+    plugin 1.0.2.0; the plugin identity and saved configuration are unchanged.
+    Fix Watch Together chat for users without remote-control permission and
+    require group membership before relaying messages.
   - 1.0.2.0: Add a server-wide "Local (LAN) URL" setting that Driftfin clients
     on the local network adopt automatically.
   - 1.0.1.0: Fix /Driftfin/Config and SyncPlay message relay returning 500 on
