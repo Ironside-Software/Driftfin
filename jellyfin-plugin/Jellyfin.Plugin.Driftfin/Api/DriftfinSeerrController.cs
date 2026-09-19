@@ -130,8 +130,9 @@ namespace Jellyfin.Plugin.Driftfin.Api
                 if (Request.Method == "DELETE") return NoContent();
                 if (Request.Method == "POST" && path == "request" && SeerrResponses.Int(response, "id") <= 0)
                     throw new IntegrationException("no_request_created", 409);
-                response = await _client.EnrichCatalogRequests(config, response, identity, cancellationToken).ConfigureAwait(false);
                 var matches = new LibraryMatches(_library, user, policy.EnableMediaPlayback);
+                response = await _client.EnrichCatalogRequests(config, response, identity, cancellationToken,
+                    catalog => matches.Find("tv", catalog) is not null).ConfigureAwait(false);
                 var projection = new SeerrResponses(identity, matches.Find);
                 return Ok(discovery ? projection.Discovery(response) : projection.Project(path, response));
             }

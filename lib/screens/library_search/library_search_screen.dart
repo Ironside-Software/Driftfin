@@ -9,6 +9,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.enums.swagger.dart';
 import 'package:driftfin/models/boxset_model.dart';
+import 'package:driftfin/models/discovery_search.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/items/playlist_model.dart';
@@ -17,10 +18,14 @@ import 'package:driftfin/models/library_search/library_search_model.dart';
 import 'package:driftfin/models/library_search/library_search_options.dart';
 import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/providers/library_search_provider.dart';
+import 'package:driftfin/providers/discovery_search_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
+import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/collections/add_to_collection.dart';
 import 'package:driftfin/screens/library_search/widgets/library_filter_chips.dart';
+import 'package:driftfin/screens/library_search/widgets/discovery_search_results.dart';
 import 'package:driftfin/screens/library_search/widgets/library_play_options_.dart';
 import 'package:driftfin/screens/library_search/widgets/library_saved_filters.dart';
 import 'package:driftfin/screens/library_search/widgets/library_sort_dialogue.dart';
@@ -89,12 +94,30 @@ class LibrarySearchScreen extends ConsumerStatefulWidget {
 }
 
 class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
-  final Debouncer debouncer = Debouncer(const Duration(seconds: 1));
+  final Debouncer debouncer = Debouncer(const Duration(milliseconds: 350));
   final GlobalKey<RefreshIndicatorState> refreshKey = GlobalKey<RefreshIndicatorState>();
   final ScrollController scrollController = ScrollController();
   late double lastScale = 0;
 
   bool loadOnStart = false;
+  SearchScope? _scope;
+  SearchScope _activeScope = SearchScope.library;
+  String? _lastRefreshedQuery;
+
+  bool get globalSearch =>
+      widget.parentId == null &&
+      widget.favourites == null &&
+      widget.sortOrder == null &&
+      widget.sortingOptions == null &&
+      widget.types == null &&
+      widget.genres == null &&
+      widget.studios == null &&
+      widget.itemFilters == null &&
+      widget.tags == null &&
+      widget.years == null &&
+      widget.officialRatings == null &&
+      widget.recursive == null &&
+      widget.isDefault != true;
 
   Key get uniqueKey => Key(widget.parentId?.join(',').toString() ?? "EmptySearch");
   StateNotifierProvider<LibrarySearchNotifier, LibrarySearchModel> get providerKey => librarySearchProvider(uniqueKey);
@@ -111,34 +134,49 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
   @override
   void initState() {
     super.initState();
+    scrollController.addListener(scrollPosition);
     WidgetsBinding.instance.addPostFrameCallback((value) {
-      initLibrary();
+      if (mounted) initLibrary();
     });
   }
 
   Future<void> initLibrary() async {
     await refreshKey.currentState?.show();
+    if (!mounted) return;
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
-    scrollController.addListener(() {
-      scrollPosition();
-    });
   }
 
   void scrollPosition() {
-    if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.65) {
+    if (_activeScope != SearchScope.discover &&
+        scrollController.hasClients &&
+        scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.65) {
       libraryProvider.loadMore();
     }
   }
 
   Future<void> refreshSearch() async {
     await refreshKey.currentState?.show();
-    scrollController.jumpTo(0);
+    if (mounted && scrollController.hasClients) scrollController.jumpTo(0);
+  }
+
+  @override
+  void dispose() {
+    debouncer.dispose();
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final isEmptySearchScreen = widget.parentId == null && widget.favourites == null;
     final librarySearchResults = ref.watch(providerKey);
+    final libraryOnly = hasLibraryOnlySearchFilters(librarySearchResults);
+    final supportsDiscovery =
+        ref.watch(serverIntegrationConfigProvider)?.capabilities?.feature('discovery').allowed == true;
+    final scope = _activeScope = !globalSearch || libraryOnly
+        ? SearchScope.library
+        : _scope ?? (supportsDiscovery ? SearchScope.all : SearchScope.library);
+    final showDiscovery = scope != SearchScope.library && librarySearchResults.filters.searchQuery.trim().isNotEmpty;
     final postersList = librarySearchResults.posters.hideEmptyChildren(librarySearchResults.filters.hideEmptyShows);
     final libraryViewType = ref.watch(libraryViewTypeProvider);
 
@@ -148,9 +186,24 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
 
     ref.listen(providerKey, (previous, next) {
       if (previous?.shouldRefresh(next) == true) {
-        refreshSearch();
+        if (previous?.filters.searchQuery != next.filters.searchQuery) {
+          debouncer.run(() {
+            if (mounted) refreshSearch();
+          });
+        } else {
+          refreshSearch();
+        }
       }
     });
+    ref.listen(
+      userProvider.select((account) => (account?.id, account?.credentials.serverId, account?.credentials.token)),
+      (_, _) {
+        debouncer.dispose();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) refreshSearch();
+        });
+      },
+    );
 
     final adaptiveLayout = AdaptiveLayout.of(context);
 
@@ -538,7 +591,8 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
             extendBody: true,
             backgroundColor: Colors.transparent,
             extendBodyBehindAppBar: true,
-            bottomNavigationBar: AdaptiveLayout.inputDeviceOf(context) != InputDevice.dPad
+            bottomNavigationBar:
+                scope != SearchScope.discover && AdaptiveLayout.inputDeviceOf(context) != InputDevice.dPad
                 ? HideOnScroll(
                     controller: scrollController,
                     visibleBuilder: (visible) => BottomMenuBar(
@@ -562,8 +616,21 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                 child: PullToRefresh(
                   refreshKey: refreshKey,
                   autoFocus: false,
-                  contextRefresh: false,
+                  contextRefresh: globalSearch,
                   onRefresh: () async {
+                    final query = ref.read(providerKey).filters.searchQuery;
+                    if (globalSearch &&
+                        _activeScope != SearchScope.library &&
+                        query.trim().isNotEmpty &&
+                        query == _lastRefreshedQuery) {
+                      ref.invalidate(
+                        discoverySearchProvider((
+                          query: query,
+                          language: discoveryLanguage(Localizations.localeOf(context)),
+                        )),
+                      );
+                    }
+                    _lastRefreshedQuery = query;
                     final filter = incomingFilter();
                     if (libraryProvider.mounted) {
                       return libraryProvider.initRefresh(parentIds: widget.parentId ?? [], filters: filter);
@@ -620,17 +687,76 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                                     uniqueKey: uniqueKey,
                                     libraryProvider: libraryProvider,
                                     scrollController: scrollController,
+                                    showFilters: scope == SearchScope.library,
+                                    onQueryChanged: globalSearch ? libraryProvider.setSearch : null,
+                                    onSearchSubmitted: globalSearch
+                                        ? () {
+                                            debouncer.dispose();
+                                            refreshSearch();
+                                          }
+                                        : null,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                         ),
+                        if (globalSearch)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                start: adaptiveLayout.sideBarWidth + 12,
+                                end: 12,
+                                bottom: 12,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SegmentedButton<SearchScope>(
+                                    segments: [
+                                      ButtonSegment(
+                                        value: SearchScope.all,
+                                        label: Text(context.localized.all),
+                                        enabled: !libraryOnly,
+                                      ),
+                                      ButtonSegment(
+                                        value: SearchScope.library,
+                                        label: Text(context.localized.library(1)),
+                                      ),
+                                      ButtonSegment(
+                                        value: SearchScope.discover,
+                                        label: Text(context.localized.discover),
+                                        enabled: !libraryOnly,
+                                      ),
+                                    ],
+                                    selected: {scope},
+                                    onSelectionChanged: (selection) {
+                                      setState(() => _scope = selection.single);
+                                      if (selection.single != SearchScope.discover) refreshSearch();
+                                    },
+                                  ),
+                                  if (libraryOnly) Text(context.localized.discoveryLibraryOnlyFilters),
+                                ],
+                              ),
+                            ),
+                          ),
                         if (AdaptiveLayout.of(context).isDesktop)
                           const SliverToBoxAdapter(
                             child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [PosterSizeWidget()]),
                           ),
-                        if (postersList.isNotEmpty)
+                        if (showDiscovery && scope == SearchScope.all)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Text(
+                                context.localized.discoveryLibraryResults,
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                          ),
+                        if (scope != SearchScope.discover && librarySearchResults.loading)
+                          const SliverToBoxAdapter(child: LinearProgressIndicator()),
+                        if (scope != SearchScope.discover && postersList.isNotEmpty)
                           SliverPadding(
                             padding: EdgeInsets.only(
                               left: mediaQuery.padding.left,
@@ -642,8 +768,21 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                               groupByType: librarySearchResults.filters.groupBy,
                             ),
                           )
-                        else
-                          SliverFillRemaining(child: Center(child: Text(context.localized.noItemsToShow))),
+                        else if (scope != SearchScope.discover && !librarySearchResults.loading)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Center(child: Text(context.localized.noItemsToShow)),
+                            ),
+                          ),
+                        if (showDiscovery)
+                          SliverPadding(
+                            padding: EdgeInsetsDirectional.only(start: adaptiveLayout.sideBarWidth + 12, end: 12),
+                            sliver: DiscoverySearchResults(
+                              query: librarySearchResults.filters.searchQuery,
+                              libraryItems: scope == SearchScope.all ? postersList : const [],
+                            ),
+                          ),
                         SliverPadding(padding: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height * 0.20)),
                       ],
                     );
@@ -668,6 +807,9 @@ class LibraryAppBar extends ConsumerWidget {
   final Key uniqueKey;
   final LibrarySearchNotifier libraryProvider;
   final ScrollController scrollController;
+  final bool showFilters;
+  final ValueChanged<String>? onQueryChanged;
+  final VoidCallback? onSearchSubmitted;
 
   const LibraryAppBar({
     required this.toolbarHeight,
@@ -679,6 +821,9 @@ class LibraryAppBar extends ConsumerWidget {
     required this.uniqueKey,
     required this.libraryProvider,
     required this.scrollController,
+    this.showFilters = true,
+    this.onQueryChanged,
+    this.onSearchSubmitted,
     super.key,
   });
 
@@ -715,6 +860,7 @@ class LibraryAppBar extends ConsumerWidget {
                         key: uniqueKey,
                         title: librarySearchResults.searchBarTitle(context),
                         debounceDuration: const Duration(seconds: 1),
+                        onChanged: onQueryChanged,
                         onItem: (value) async {
                           await value.navigateTo(context);
                           refreshKey.currentState?.show();
@@ -722,8 +868,9 @@ class LibraryAppBar extends ConsumerWidget {
                         onSubmited: (value) async {
                           if (librarySearchResults.filters.searchQuery != value) {
                             libraryProvider.setSearch(value);
-                            refreshKey.currentState?.show();
+                            if (onSearchSubmitted == null) refreshKey.currentState?.show();
                           }
+                          onSearchSubmitted?.call();
                         },
                       ),
                     ),
@@ -792,38 +939,39 @@ class LibraryAppBar extends ConsumerWidget {
               ),
             ),
           ),
-          Row(
-            spacing: 6,
-            children: [
-              if (AdaptiveLayout.inputDeviceOf(context) != InputDevice.dPad)
-                ScrollStatePosition(
-                  controller: scrollController,
-                  positionBuilder: (state) => AnimatedFadeSize(
-                    child: state != ScrollState.top
-                        ? Tooltip(
-                            message: context.localized.scrollToTop,
-                            child: IconButton.filled(
-                              onPressed: () => scrollController.animateTo(
-                                0,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOutCubic,
+          if (showFilters)
+            Row(
+              spacing: 6,
+              children: [
+                if (AdaptiveLayout.inputDeviceOf(context) != InputDevice.dPad)
+                  ScrollStatePosition(
+                    controller: scrollController,
+                    positionBuilder: (state) => AnimatedFadeSize(
+                      child: state != ScrollState.top
+                          ? Tooltip(
+                              message: context.localized.scrollToTop,
+                              child: IconButton.filled(
+                                onPressed: () => scrollController.animateTo(
+                                  0,
+                                  duration: const Duration(milliseconds: 500),
+                                  curve: Curves.easeInOutCubic,
+                                ),
+                                icon: const Icon(IconsaxPlusLinear.arrow_up),
                               ),
-                              icon: const Icon(IconsaxPlusLinear.arrow_up),
-                            ),
-                          )
-                        : const SizedBox.shrink(),
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ),
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(vertical: 8)
+                        .add(EdgeInsets.only(right: AdaptiveLayout.adaptivePadding(context).right)),
+                    scrollDirection: Axis.horizontal,
+                    child: LibraryFilterChips(key: uniqueKey),
                   ),
                 ),
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(vertical: 8)
-                      .add(EdgeInsets.only(right: AdaptiveLayout.adaptivePadding(context).right)),
-                  scrollDirection: Axis.horizontal,
-                  child: LibraryFilterChips(key: uniqueKey),
-                ),
-              ),
-            ],
-          ),
+              ],
+            ),
           if (AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad)
             Container(
               padding: EdgeInsets.only(right: AdaptiveLayout.adaptivePadding(context).right),

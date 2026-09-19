@@ -47,7 +47,7 @@ extension LibrarySearchModelX on LibrarySearchModel {
       return false;
     } else {
       for (var item in libraryItemCounts.entries) {
-        if (lastIndices[item.key] != item.value) {
+        if ((lastIndices[item.key] ?? 0) < item.value) {
           return false;
         }
       }
@@ -91,9 +91,7 @@ extension LibrarySearchModelX on LibrarySearchModel {
       );
     }
     return filters.types.included.isEmpty ||
-        filters.types.included.containsAny(
-          {...FladderItemType.playable, FladderItemType.folder},
-        );
+        filters.types.included.containsAny({...FladderItemType.playable, FladderItemType.folder});
   }
 
   bool get showGalleryButtons {
@@ -105,9 +103,11 @@ extension LibrarySearchModelX on LibrarySearchModel {
       );
     }
     return filters.types.included.isEmpty ||
-        filters.types.included.containsAny(
-          {...FladderItemType.galleryItem, FladderItemType.photoAlbum, FladderItemType.folder},
-        );
+        filters.types.included.containsAny({
+          ...FladderItemType.galleryItem,
+          FladderItemType.photoAlbum,
+          FladderItemType.folder,
+        });
   }
 
   bool get showMusicButtons {
@@ -118,32 +118,19 @@ extension LibrarySearchModelX on LibrarySearchModel {
       );
     }
     return filters.types.included.isEmpty ||
-        filters.types.included.containsAny(
-          {...FladderItemType.musicPlayable, FladderItemType.folder},
-        );
+        filters.types.included.containsAny({...FladderItemType.musicPlayable, FladderItemType.folder});
   }
 
   LibrarySearchModel resetLazyLoad() {
-    return copyWith(
-      selectedPosters: [],
-      lastIndices: const {},
-      libraryItemCounts: const {},
-    );
+    return copyWith(selectedPosters: [], lastIndices: const {}, libraryItemCounts: const {});
   }
 
   LibrarySearchModel fullReset() {
-    return copyWith(
-      posters: [],
-      selectedPosters: [],
-      lastIndices: const {},
-      libraryItemCounts: const {},
-    );
+    return copyWith(posters: [], selectedPosters: [], lastIndices: const {}, libraryItemCounts: const {});
   }
 
   LibrarySearchModel setFiltersToDefault() {
-    return copyWith(
-      filters: const LibraryFilterModel(),
-    );
+    return copyWith(filters: const LibraryFilterModel());
   }
 
   (int? min, int? max) get yearRange {
@@ -151,7 +138,7 @@ extension LibrarySearchModelX on LibrarySearchModel {
     if (years.isEmpty) return (null, null);
     return (
       years.reduce((value, element) => value < element ? value : element),
-      years.reduce((value, element) => value > element ? value : element)
+      years.reduce((value, element) => value > element ? value : element),
     );
   }
 
@@ -160,7 +147,7 @@ extension LibrarySearchModelX on LibrarySearchModel {
     if (years.isEmpty) return (DateTime.now().year - 100, DateTime.now().year + 10);
     return (
       years.reduce((value, element) => value < element ? value : element),
-      years.reduce((value, element) => value > element ? value : element)
+      years.reduce((value, element) => value > element ? value : element),
     );
   }
 

@@ -2685,5 +2685,11 @@
   "pluginManaged": "Connected through Jellyfin. Service credentials stay on the server.",
   "pluginTraktMigration": "Server-provided Trakt app credentials are no longer shared. Configure your own Trakt app credentials here; your personal authorization is preserved.",
   "pluginCheckReference": "Diagnostic reference",
-  "pluginLastChecked": "Last checked"
+  "pluginLastChecked": "Last checked",
+  "discoveryRequested": "Requested",
+  "discoveryRequestable": "Requestable",
+  "discoveryUnavailable": "Unavailable",
+  "discoveryLoadMore": "More discovery results",
+  "discoveryLibraryResults": "Library results",
+  "discoveryLibraryOnlyFilters": "Clear library filters to search all sources."
 }

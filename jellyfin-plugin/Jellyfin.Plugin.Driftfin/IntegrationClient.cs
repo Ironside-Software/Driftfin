@@ -51,7 +51,7 @@ namespace Jellyfin.Plugin.Driftfin
         public IntegrationClient(HttpClient client) => _client = client;
 
         internal async Task<JsonElement> EnrichCatalogRequests(PluginConfiguration config, JsonElement response,
-            SeerrIdentity identity, CancellationToken cancellationToken)
+            SeerrIdentity identity, CancellationToken cancellationToken, Func<JsonElement, bool>? hasLocalSeries = null)
         {
             if (response.ValueKind != JsonValueKind.Object) return response;
             var body = JsonNode.Parse(response.GetRawText())!.AsObject();
@@ -66,10 +66,13 @@ namespace Jellyfin.Plugin.Driftfin
                     if (key == "results" && items.Count > 100) throw new IntegrationException("invalid_response");
                     foreach (var entry in items)
                     {
-                        if (entry is not JsonObject item || item["mediaInfo"] is not JsonObject info
-                            || info["requests"] is JsonArray) continue;
+                        if (entry is not JsonObject item) continue;
                         var type = item["mediaType"]?.GetValue<string>();
                         if (type != "movie" && type != "tv") continue;
+                        var needsOwnership = item["mediaInfo"] is JsonObject info && info["requests"] is not JsonArray;
+                        var needsEpisodes = type == "tv" && item["numberOfEpisodes"] is null
+                            && hasLocalSeries?.Invoke(JsonSerializer.SerializeToElement(item)) == true;
+                        if (!needsOwnership && !needsEpisodes) continue;
                         var id = item["id"]?.GetValue<int>();
                         if (id is null or <= 0) continue;
                         var route = $"api/v1/{type}/{id}";
