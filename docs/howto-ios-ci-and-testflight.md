@@ -3,7 +3,7 @@
 Driftfin's production iOS bundle identifier is `app.driftfin.79758DD3NW`.
 The GitHub Actions workflow at `.github/workflows/release.yml` contains the
 manual TestFlight path alongside the cross-platform release jobs. The iOS job
-builds the `production` flavor once with Xcode 26.6 on macOS 26, signs it when
+builds the `production` flavor once with Xcode 26.6 on a macOS runner, signs it when
 TestFlight is selected, and stores the IPA as an artifact. The TestFlight job
 downloads that artifact and uploads it to App Store Connect.
 

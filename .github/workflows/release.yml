@@ -108,7 +108,7 @@ jobs:
   ios:
     name: Build iOS
     needs: prepare
-    runs-on: macos-26
+    runs-on: blacksmith-6vcpu-macos-latest
     environment: ${{ inputs.testflight && 'testflight' || '' }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
@@ -228,7 +228,7 @@ jobs:
   macos_desktop:
     name: Build macOS
     needs: prepare
-    runs-on: macos-26
+    runs-on: blacksmith-6vcpu-macos-latest
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
     steps:

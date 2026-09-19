@@ -249,7 +249,8 @@ dev_dependencies:
   dart_mappable_builder: ^4.5.0
   auto_route_generator: ^10.2.3
   icons_launcher: ^3.0.2
-  pigeon: ^29.0.2
+  # Pigeon 28+ changes native callbacks to coroutines; migrate callers before upgrading.
+  pigeon: 27.3.2
 
 flutter:
   # The following line ensures that the Material Icons font is
