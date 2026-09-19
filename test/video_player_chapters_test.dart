@@ -20,6 +20,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 Chapter _chapter({required String name, String imageUrl = '', int startMs = 0}) =>

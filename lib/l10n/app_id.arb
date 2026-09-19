@@ -101,8 +101,8 @@
   "addToCollection": "Tambahkan ke koleksi",
   "addToPlaylist": "Tambahkan ke daftar putar",
   "addToQueue": "Tambahkan ke antrean",
-  "instantMix": "Mix instan",
-  "addedToQueue": "{count, plural, other{{count} trek ditambahkan ke antrean} one{{count} trek ditambahkan ke antrean}}",
+  "instantMix": "Campuran instan",
+  "addedToQueue": "{count, plural, one{Menambahkan {count} lagu ke antrean} other{Menambahkan {count} lagu ke antrean}}",
   "advanced": "Lanjutan",
   "all": "Semua",
   "amoledBlack": "Hitam Amoled",
@@ -118,7 +118,7 @@
   "audioPlayerRepeatOne": "Ulangi satu",
   "audioPlayerShuffle": "Acak",
   "showArtist": "Tampilkan artis",
-  "track": "{count, plural, other{Trek} one{Trek}}",
+  "track": "{count, plural, one{Lagu} other{Lagu}}",
   "autoPlay": "Putar Otomatis",
   "backgroundBlur": "Blur Latar Belakang",
   "backgroundOpacity": "Opasitas Latar Belakang",
@@ -231,7 +231,7 @@
   "mediaTypeFolder": "{count, plural, one{Folder} other{Folder}}",
   "mediaTypeMovie": "{count, plural, one{Film} other{Film}}",
   "mediaTypePerson": "{count, plural, one{Orang} other{Orang}}",
-  "mediaTypeArtists": "{count, plural, other{Artis} one{Artis}}",
+  "mediaTypeArtists": "{count, plural, one{Artis} other{Artis}}",
   "mediaTypePhoto": "{count, plural, one{Foto} other{Foto}}",
   "mediaTypePhotoAlbum": "{count, plural, one{Album Foto} other{Album Foto}}",
   "mediaTypePlaylist": "{count, plural, one{Daftar Putar} other{Daftar Putar}}",
@@ -363,8 +363,8 @@
   "settingsPlayerNativeLibassAccelDesc": "Gunakan perender subtitle libass pada pemutar video",
   "settingsPlayerNativeLibassAccelTitle": "Subtitle libass native",
   "settingsPlayerBufferSizeTitle": "Ukuran buffer video",
-  "settingsPlayerPlayPauseFadeTitle": "Fade volume putar/jeda",
-  "settingsPlayerPlayPauseFadeDesc": "Kecilkan dan besarkan volume secara bertahap saat memutar atau menjeda",
+  "settingsPlayerPlayPauseFadeTitle": "Fade volume saat putar/jeda",
+  "settingsPlayerPlayPauseFadeDesc": "Naikkan dan turunkan volume secara bertahap saat memutar atau menjeda",
   "settingsPlayerBufferSizeDesc": "Konfigurasikan ukuran buffer untuk pemutaran video, menentukan seberapa banyak data yang dimuat ke dalam cache.",
   "settingsPlayerTitle": "Pemutar",
   "settingsPlayerVideoHWAccelDesc": "Gunakan GPU untuk merender video (disarankan)",
@@ -406,10 +406,10 @@
   "syncDeleteItemDesc": "Hapus semua data yang disinkronkan untuk {item}?",
   "syncDeleteItemTitle": "Hapus item yang disinkronkan",
   "syncDeletePopupPermanent": "Tindakan ini bersifat permanen dan akan menghapus semua file yang disinkronkan secara lokal",
-  "syncPlaylistDeleteTitle": "Hapus playlist tersinkron",
-  "syncPlaylistDeleteContent": "Apakah Anda juga ingin menghapus trek yang disinkronkan dari playlist ini?",
-  "syncPlaylistKeepTracks": "Simpan trek",
-  "syncPlaylistRemoveTracks": "Hapus trek",
+  "syncPlaylistDeleteTitle": "Hapus playlist tersinkronisasi",
+  "syncPlaylistDeleteContent": "Apakah Anda juga ingin menghapus lagu yang disinkronkan dari playlist ini?",
+  "syncPlaylistKeepTracks": "Simpan lagu",
+  "syncPlaylistRemoveTracks": "Hapus lagu",
   "syncDetails": "Detail sinkronisasi",
   "syncOpenParent": "Buka Induk",
   "syncRemoveDataDesc": "Hapus data video yang disinkronkan? Ini bersifat permanen dan Anda perlu menyinkronkan ulang file",
@@ -439,10 +439,10 @@
   "videoScalingFillScreenDesc": "Video akan direntangkan untuk mengisi seluruh layar",
   "videoScalingFillScreenNotif": "Video direntangkan untuk mengisi layar",
   "videoScalingFillScreenTitle": "Isi Layar",
-  "pictureInPictureTitle": "Gambar-dalam-Gambar",
-  "pictureInPictureAutoTitle": "Gambar-dalam-Gambar otomatis",
-  "pictureInPictureSubtitle": "Masuk ke mode Gambar-dalam-Gambar secara otomatis saat Anda meninggalkan pemutar. Tombol PiP di kontrol selalu berfungsi terlepas dari pengaturan ini.",
-  "pictureInPictureNotSupported": "Gambar-dalam-Gambar tidak tersedia di perangkat ini",
+  "pictureInPictureTitle": "Picture-in-Picture",
+  "pictureInPictureAutoTitle": "Picture-in-Picture Otomatis",
+  "pictureInPictureSubtitle": "Secara otomatis masuk ke mode Picture-in-Picture saat Anda meninggalkan pemutar. Tombol PiP pada kontrol akan selalu berfungsi terlepas dari pengaturan ini.",
+  "pictureInPictureNotSupported": "Picture-in-Picture tidak tersedia di perangkat ini",
   "videoScalingFitHeight": "Sesuaikan Tinggi",
   "videoScalingFitWidth": "Sesuaikan Lebar",
   "videoScalingScaleDown": "Perkecil",
@@ -518,7 +518,7 @@
   "unableToPlayMedia": "Tidak dapat memutar media",
   "errorOpeningMedia": "Kesalahan saat membuka media",
   "unableToPlayBooksOnWeb": "Buku saat ini belum didukung di web",
-  "defaultFilterForLibrary": "Filter default untuk perpustakaan",
+  "defaultFilterForLibrary": "Atur filter default untuk pustaka",
   "updateFilterForLibrary": "Perbarui filter",
   "removeFilterForLibrary": "Hapus {filter}?",
   "deleteFilterConfirmation": "Apakah Anda yakin ingin menghapus filter ini?",
@@ -552,12 +552,12 @@
   "resumeVideo": "Lanjutkan video",
   "closeVideo": "Tutup video",
   "playNextVideo": "Putar video berikutnya",
-  "playerSettingsBackendTitle": "Backend Pemutar Video",
+  "playerSettingsBackendTitle": "Backend pemutar media",
   "playerSettingsBackendDesc": "Pilih backend pemutar video",
   "playerSettingsReplayGainTitle": "ReplayGain",
-  "playerSettingsReplayGainDesc": "Normalisasi kekerasan musik menggunakan tag ReplayGain.",
-  "playerSettingsReplayGainLevelTitle": "Tingkat ReplayGain",
-  "playerSettingsReplayGainLevelDesc": "Atur target tingkat kekerasan untuk normalisasi ReplayGain. Standar umum adalah -14 dB, tetapi Anda dapat menyesuaikannya sesuai preferensi.",
+  "playerSettingsReplayGainDesc": "Normalkan kenyaringan musik menggunakan tag ReplayGain.",
+  "playerSettingsReplayGainLevelTitle": "Level ReplayGain",
+  "playerSettingsReplayGainLevelDesc": "Atur tingkat kenyaringan target untuk normalisasi ReplayGain. Standar umum adalah -14 dB, tetapi Anda dapat menyesuaikannya sesuai preferensi.",
   "playerSettingsSmartDownmixTitle": "Downmix pintar",
   "playerSettingsSmartDownmixDesc": "Tingkatkan dialog relatif terhadap efek dan kanal belakang saat melakukan downmix audio 5.1/7.1 ke stereo.",
   "playerSettingsDialogueBoostTitle": "Penguat dialog",
@@ -567,7 +567,7 @@
   "dialogueBoostMedium": "Sedang",
   "dialogueBoostHigh": "Tinggi",
   "settingsPlayerCrossfadeTitle": "Crossfade",
-  "settingsPlayerCrossfadeDesc": "Fade antar trek yang tidak berurutan dalam album yang sama",
+  "settingsPlayerCrossfadeDesc": "Fade antar lagu yang tidak berurutan dalam album yang sama",
   "settingsPlayerCrossfadeDurationTitle": "Durasi crossfade",
   "settingsPlayerCrossfadeDurationDesc": "Durasi crossfade",
   "defaultLabel": "Bawaan",
@@ -616,7 +616,7 @@
   "loading": "Memuat",
   "exitDriftfinTitle": "Keluar dari Driftfin",
   "exitDriftfinDesc": "Apakah Anda yakin ingin menutup Driftfin?",
-  "quitMultipleWindowsDesc": "Anda memiliki {count} jendela terbuka. Keluar dari Driftfin akan menutup semuanya. Apakah Anda ingin melanjutkan?",
+  "quitMultipleWindowsDesc": "Anda memiliki {count} jendela yang terbuka. Keluar dari Driftfin akan menutup semuanya. Apakah Anda ingin melanjutkan?",
   "closeWindow": "Tutup jendela",
   "castAndCrew": "Pemeran dan Kru",
   "guestActor": "{count, plural, other{Aktor Tamu} one{Aktor Tamu}}",
@@ -706,7 +706,7 @@
   "quickConnectPostFailed": "Gagal mendapatkan kode Quick Connect",
   "quickConnectLoginUsingCode": "Gunakan Quick Connect",
   "quickConnectEnterCodeDescription": "Masukkan kode yang ditampilkan di perangkat Anda",
-  "openJellyfinQuickConnect": "Buka Jellyfin QuickConnect",
+  "openJellyfinQuickConnect": "Buka QuickConnect Jellyfin",
   "showMore": "Tampilkan lebih banyak",
   "showLess": "Tampilkan lebih sedikit",
   "itemColorsTitle": "Warna item",
@@ -721,7 +721,7 @@
   "formattedTime": "{time}",
   "takeScreenshot": "Ambil tangkapan layar",
   "takeScreenshotClean": "Ambil tangkapan layar (tanpa subtitle)",
-  "toggleSubtitles": "Alihkan subtitle",
+  "toggleSubtitles": "Tampilkan/sembunyikan subtitle",
   "screenshotTaken": "Tangkapan layar tersimpan!",
   "screenshotCleanTaken": "Tangkapan layar tanpa subtitle berhasil disimpan!",
   "errorTakingScreenshot": "Terjadi kesalahan saat mengambil tangkapan layar",
@@ -1123,7 +1123,7 @@
   "quiet": "Pelan",
   "loud": "Keras",
   "share": "Bagikan",
-  "setAs": "Jadikan sebagai",
+  "setAs": "Setel sebagai",
   "cast": "Cast",
   "castTo": "Putar di…",
   "castSearching": "Mencari perangkat…",
@@ -1157,5 +1157,187 @@
   "tastePassportEmpty": "Tonton beberapa hal dan profil selera Anda akan muncul di sini",
   "livingHomeBecauseYouWatched": "Karena Anda menonton {name}",
   "livingHomeHiddenGems": "Permata tersembunyi yang Anda miliki",
-  "livingHomeMoreFromDirector": "Lebih banyak dari {name}"
+  "livingHomeMoreFromDirector": "Lebih banyak dari {name}",
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "posterColorsTitle": "Warna poster yang dihasilkan",
+  "posterColorsDesc": "Gunakan warna yang dihasilkan untuk poster sebagai pengganti warna default",
+  "selectRandom": "Pilih secara acak",
+  "stopSelection": "Berhenti memilih {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Putar item",
+  "shuffleItems": "Acak item",
+  "disc": "Disk {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Video Musik} other{Video Musik}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Koleksi} other{Koleksi}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "incognito": "Mode Samaran",
+  "incognitoModeGlobal": "Mode Samaran (Aplikasi)",
+  "incognitoModeLocal": "Mode Samaran (Profil)",
+  "incognitoModeDesc": "Mode Samaran menonaktifkan pengiriman status pemutaran ke server",
+  "showInSideBar": "Tampilkan di bilah sisi",
+  "hideInSideBar": "Sembunyikan dari bilah sisi",
+  "showInSideBarDesc": "Tampilkan filter ini di bilah sisi untuk akses cepat",
+  "applyFilter": "Terapkan filter",
+  "playerSettingsAmbientBlurTitle": "Aktifkan blur ambient",
+  "playerSettingsAmbientBlurDesc": "Aktifkan blur ambient di pemutar. Ini akan memburamkan latar belakang di belakang pemutar untuk mengurangi gangguan.",
+  "playerSettingsAmbientBlurDescWarning": "Blur ambient dapat menyebabkan masalah kinerja pada perangkat berkelas rendah.",
+  "openSelected": "Buka yang dipilih",
+  "discography": "Diskografi",
+  "youLiked": "Anda menyukai",
+  "instantMixBy": "Mix Instan dari {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Trek terbaru oleh {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorit dari {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Mode Santai",
+  "leanBackModeDesc": "Aktifkan mode santai pada perangkat Android, bahkan jika perangkat melaporkan sebagai false.",
+  "leanBackModeInfo": "Mode santai diaktifkan ulang secara default pada perangkat AndroidTV. Mengaktifkan opsi ini pada perangkat non-AndroidTV dapat menyebabkan perilaku yang tidak diharapkan.",
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "showOnDashboard": "Show on dashboard",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

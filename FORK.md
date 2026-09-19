@@ -3,11 +3,9 @@
 Driftfin is a fork of [Fladder](https://github.com/DonutWare/Fladder) by DonutWare,
 under GPL-3.0. (Branding/license credit lives in `README.md`.)
 
-> [!NOTE]
-> **Driftfin has diverged and no longer merges upstream Fladder.** The "Syncing
-> upstream into the fork" section below is kept for historical reference only — it
-> is no longer part of the workflow, and edits no longer need to be conflict-safe.
-> For current release steps, see the **Releases** section in `CLAUDE.md`.
+Upstream updates are merged explicitly when requested. Preserve Driftfin features,
+branding, and release workflows; regenerate bindings and run analysis and tests
+after resolving conflicts. For release steps, see **Releases** in `CLAUDE.md`.
 
 ## What the fork changes
 
@@ -59,7 +57,7 @@ that the fork no longer tracks an upstream base version.
 `.github/workflows/build.yml` is Fladder's full multi-platform pipeline (Android,
 macOS, Linux/flatpak, Play Console, web deploy). It is **disabled** — it needs secrets
 this fork doesn't have (Android keystore, Play Console, a `FLADDER_BOT` GitHub App) and
-the fork no longer merges upstream, so there's no reason to keep it live. Driftfin uses
+is retained only as a reference. Driftfin uses
 `release.yml` instead. If you ever want Android or the full set, re-enable it (rename
 `build.yml.disabled` → `build.yml`) and wire up those secrets.
 

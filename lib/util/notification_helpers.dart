@@ -14,9 +14,9 @@ const String updateTaskName = 'io.github.hamadtheironside.driftfin.update_notifi
 const String updateTaskNameDebug = 'io.github.hamadtheironside.driftfin.update_notifications_check_debug';
 
 class NotificationHelpers {
-  static String buildDetailsDeepLink(String id) => 'fladder:///details?id=${Uri.encodeComponent(id)}';
+  static String buildDetailsDeepLink(String id) => 'driftfin:///details?id=${Uri.encodeComponent(id)}';
 
-  static String buildSeerrDeepLink(String mediaType, int tmdbId) => 'fladder:///seerr/$mediaType/$tmdbId';
+  static String buildSeerrDeepLink(String mediaType, int tmdbId) => 'driftfin:///seerr/$mediaType/$tmdbId';
 
   static List<LastSeenModel> replaceOrAppendLastSeen(List<LastSeenModel> servers, LastSeenModel saved) {
     final exists = servers.any((s) => s.userId == saved.userId);

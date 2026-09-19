@@ -101,8 +101,8 @@
   "addToCollection": "添加到合集",
   "addToPlaylist": "添加到播放列表",
   "addToQueue": "添加到队列",
-  "instantMix": "即兴混音",
-  "addedToQueue": "{count, plural, one{已添加 {count} 首曲目到队列} other{已添加 {count} 首曲目到队列}}",
+  "instantMix": "即时混音",
+  "addedToQueue": "{count, plural, one{已将 {count} 首曲目添加到队列} other{已将 {count} 首曲目添加到队列}}",
   "advanced": "高级",
   "all": "全部",
   "amoledBlack": "Amoled 黑色",
@@ -113,11 +113,11 @@
   "ascending": "升序",
   "audio": "{count, plural, one{音频} other{音频}}",
   "audioPlayerPlaybackOptionsTitle": "播放选项",
-  "audioPlayerRepeatAll": "全部重复",
+  "audioPlayerRepeatAll": "重复所有",
   "audioPlayerRepeatOff": "关闭重复",
-  "audioPlayerRepeatOne": "单曲重复",
-  "audioPlayerShuffle": "随机播放",
-  "showArtist": "显示艺术家",
+  "audioPlayerRepeatOne": "重复一次",
+  "audioPlayerShuffle": "随机",
+  "showArtist": "表演艺术家",
   "track": "{count, plural, one{曲目} other{曲目}}",
   "autoPlay": "自动播放",
   "backgroundBlur": "背景模糊",
@@ -154,7 +154,7 @@
   "dashboardContinueWatching": "继续观看",
   "nextUp": "接下来",
   "dashboardRecentlyAdded": "最近添加于 {name}",
-  "dashboardRecentlyAddedItems": "最近添加的 {name}",
+  "dashboardRecentlyAddedItems": "最近添加 {name}",
   "dateAdded": "添加日期",
   "dateLastContentAdded": "最后添加内容的日期",
   "datePlayed": "播放日期",
@@ -323,7 +323,7 @@
   "saved": "已保存",
   "scanBiometricHint": "验证身份",
   "scanLibrary": "扫描媒体库",
-  "authenticateWithBiometrics": "使用生物识别验证 {user}",
+  "authenticateWithBiometrics": "使用生物识别技术进行身份验证 {user}",
   "scanningName": "扫描 - {name}…",
   "scrollToTop": "滚动到顶部",
   "search": "搜索",
@@ -363,8 +363,8 @@
   "settingsPlayerNativeLibassAccelDesc": "使用视频播放器 libass 字幕渲染器",
   "settingsPlayerNativeLibassAccelTitle": "本地 libass 字幕",
   "settingsPlayerBufferSizeTitle": "视频缓冲区大小",
-  "settingsPlayerPlayPauseFadeTitle": "播放/暂停音量渐变",
-  "settingsPlayerPlayPauseFadeDesc": "播放或暂停时渐入渐出音量",
+  "settingsPlayerPlayPauseFadeTitle": "播放/暂停音量渐弱",
+  "settingsPlayerPlayPauseFadeDesc": "播放或暂停时音量逐渐增大或减小",
   "settingsPlayerBufferSizeDesc": "配置视频播放的缓冲区大小，确定加载到缓存中的数据量。",
   "settingsPlayerTitle": "播放器",
   "settingsPlayerVideoHWAccelDesc": "使用 GPU 渲染视频（推荐）",
@@ -406,10 +406,10 @@
   "syncDeleteItemDesc": "为 {item} 删除所有已同步的数据？",
   "syncDeleteItemTitle": "删除已同步的项目",
   "syncDeletePopupPermanent": "此操作是永久性的，将删除所有已在本地同步的文件",
-  "syncPlaylistDeleteTitle": "删除已同步的播放列表",
-  "syncPlaylistDeleteContent": "是否同时移除从此播放列表同步的曲目？",
-  "syncPlaylistKeepTracks": "保留曲目",
-  "syncPlaylistRemoveTracks": "移除曲目",
+  "syncPlaylistDeleteTitle": "删除同步播放列表",
+  "syncPlaylistDeleteContent": "您是否也想删除此播放列表中同步的曲目？",
+  "syncPlaylistKeepTracks": "保持曲目",
+  "syncPlaylistRemoveTracks": "删除曲目",
   "syncDetails": "同步详情",
   "syncOpenParent": "打开父级",
   "syncRemoveDataDesc": "删除已同步的视频数据？这是永久性的，您需要重新同步文件",
@@ -441,7 +441,7 @@
   "videoScalingFillScreenTitle": "全屏填充",
   "pictureInPictureTitle": "画中画",
   "pictureInPictureAutoTitle": "自动画中画",
-  "pictureInPictureSubtitle": "离开播放器时自动进入画中画模式。无论此设置如何，控制栏中的画中画按钮始终可用。",
+  "pictureInPictureSubtitle": "离开播放器时自动进入画中画模式。无论此设置如何，控制面板中的画中画按钮始终有效。",
   "pictureInPictureNotSupported": "此设备不支持画中画功能",
   "videoScalingFitHeight": "适应高度",
   "videoScalingFitWidth": "适应宽度",
@@ -518,7 +518,7 @@
   "unableToPlayMedia": "寻找兼容的媒体类型时出错",
   "errorOpeningMedia": "尝试播放此媒体时发生错误",
   "unableToPlayBooksOnWeb": "目前书籍在网页上不受支持",
-  "defaultFilterForLibrary": "媒体库的默认筛选器",
+  "defaultFilterForLibrary": "设置媒体库的默认筛选器",
   "updateFilterForLibrary": "更新筛选器",
   "removeFilterForLibrary": "删除 {filter}？",
   "deleteFilterConfirmation": "您确实要删除该筛选器吗？",
@@ -552,12 +552,12 @@
   "resumeVideo": "恢复播放视频",
   "closeVideo": "关闭视频",
   "playNextVideo": "播放下一个视频",
-  "playerSettingsBackendTitle": "视频播放器后端",
+  "playerSettingsBackendTitle": "媒体播放器后端",
   "playerSettingsBackendDesc": "选择您喜好的媒体播放器以获得最佳播放体验",
   "playerSettingsReplayGainTitle": "回放增益",
-  "playerSettingsReplayGainDesc": "使用 ReplayGain 标签标准化音乐音量。",
-  "playerSettingsReplayGainLevelTitle": "回放增益级别",
-  "playerSettingsReplayGainLevelDesc": "设置回放增益标准化的目标响度级别。常见标准为 -14 dB，但您可以根据个人喜好进行调整。",
+  "playerSettingsReplayGainDesc": "使用回放增益标签对音乐音量进行标准化。",
+  "playerSettingsReplayGainLevelTitle": "回放增益等级",
+  "playerSettingsReplayGainLevelDesc": "设置回放增益等级，标准化的目标响度级别。通常的标准是 - 14分贝，但您可以根据自己的喜好进行调整。",
   "playerSettingsSmartDownmixTitle": "智能混音降轨",
   "playerSettingsSmartDownmixDesc": "在将 5.1/7.1 音频降混为立体声时，相对于音效和后方声道增强对白。",
   "playerSettingsDialogueBoostTitle": "对白增强",
@@ -566,10 +566,10 @@
   "dialogueBoostLow": "低",
   "dialogueBoostMedium": "中",
   "dialogueBoostHigh": "高",
-  "settingsPlayerCrossfadeTitle": "交叉淡入淡出",
-  "settingsPlayerCrossfadeDesc": "在同一专辑中不连续的曲目之间进行淡入淡出",
-  "settingsPlayerCrossfadeDurationTitle": "交叉淡入淡出时长",
-  "settingsPlayerCrossfadeDurationDesc": "交叉淡入淡出的持续时间",
+  "settingsPlayerCrossfadeTitle": "淡入淡出",
+  "settingsPlayerCrossfadeDesc": "同一张专辑中不连续的曲目之间使用淡入淡出效果",
+  "settingsPlayerCrossfadeDurationTitle": "淡入淡出持续时间",
+  "settingsPlayerCrossfadeDurationDesc": "淡入淡出持续时间",
   "defaultLabel": "默认",
   "noVideoPlayerOptions": "所选的后端没有设置项",
   "mdkExperimental": "MDK 仍处于实验阶段",
@@ -616,7 +616,7 @@
   "loading": "加载中",
   "exitDriftfinTitle": "退出 Driftfin",
   "exitDriftfinDesc": "您确定要关闭 Driftfin 吗？",
-  "quitMultipleWindowsDesc": "您有 {count} 个窗口已打开。退出 Driftfin 将关闭所有窗口。是否继续？",
+  "quitMultipleWindowsDesc": "您目前打开了 {count} 个窗口。退出 Driftfin 将关闭所有窗口。是否继续？",
   "closeWindow": "关闭窗口",
   "castAndCrew": "演职人员",
   "guestActor": "{count, plural, other{客串演员} one{客串演员}}",
@@ -624,7 +624,7 @@
   "maxConcurrentDownloadsDesc": "设置可同时运行的最大下载数量。设置为 0 则禁用限制。",
   "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
   "smartDownloadBudgetDesc": "Automatically reclaims watched downloads, oldest first, to stay under this storage limit. Unwatched downloads are never removed. Leave empty to disable.",
-  "playbackTrackSelection": "播放轨道选择",
+  "playbackTrackSelection": "播放曲目选择",
   "rememberSubtitleSelections": "根据上一项设置字幕轨",
   "rememberAudioSelections": "根据上一项设置音轨",
   "rememberSubtitleSelectionsDesc": "尝试将字幕轨设置为与上一个视频最接近的匹配。",
@@ -706,7 +706,7 @@
   "quickConnectPostFailed": "无法获取快速连接代码",
   "quickConnectLoginUsingCode": "使用快速连接",
   "quickConnectEnterCodeDescription": "输入以下代码登录",
-  "openJellyfinQuickConnect": "打开 Jellyfin 快速连接",
+  "openJellyfinQuickConnect": "打开 Jellyfin 快速连接器",
   "showMore": "显示更多",
   "showLess": "显示更少",
   "itemColorsTitle": "项目颜色",
@@ -897,7 +897,7 @@
   "recentlyAdded": "最近添加",
   "recentlyPlayed": "最近播放",
   "recentlyFavorited": "最近收藏",
-  "mostPlayed": "播放最多",
+  "mostPlayed": "最多播放",
   "recentRequests": "最近请求",
   "trending": "热门趋势",
   "popularMovies": "热门电影",
@@ -1000,10 +1000,10 @@
   "watchChannel": "观看 {channel}",
   "now": "现今",
   "nowPlaying": "正在播放",
-  "upNext": "接下来播放",
+  "upNext": "接下来",
   "queue": "队列",
   "queueIsEmpty": "队列为空",
-  "queueItemCount": "{count} 个项目",
+  "queueItemCount": "{count} 项目",
   "removeFromQueue": "从队列中移除",
   "noPrograms": "暂无可用程序",
   "switchChannel": "切换频道",
@@ -1120,10 +1120,10 @@
   "seerrSeries": "推荐节目",
   "today": "今天",
   "musicDashboard": "音乐控制台",
-  "quiet": "安静",
+  "quiet": "静音",
   "loud": "响亮",
   "share": "分享",
-  "setAs": "设为",
+  "setAs": "设置为",
   "cast": "投屏",
   "castTo": "播放到…",
   "castSearching": "正在搜索设备…",
@@ -1157,5 +1157,185 @@
   "tastePassportEmpty": "观看一些内容后，您的品味画像将显示在此处",
   "livingHomeBecauseYouWatched": "因为您看过 {name}",
   "livingHomeHiddenGems": "您拥有的宝藏内容",
-  "livingHomeMoreFromDirector": "更多来自 {name} 的作品"
+  "livingHomeMoreFromDirector": "更多来自 {name} 的作品",
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "posterColorsTitle": "生成的海报颜色",
+  "posterColorsDesc": "使用生成的颜色作为海报颜色，以替代默认颜色",
+  "selectRandom": "随机选择",
+  "stopSelection": "停止选择 {count} 个项目",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "播放项目",
+  "shuffleItems": "随机排列项目",
+  "disc": "光盘 {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{合集} other{合集}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "incognitoMode": "隐身模式",
+  "incognitoModeDesc": "隐身模式会禁用向服务器发送播放状态",
+  "incognito": "隐身",
+  "incognitoModeGlobal": "隐身模式（应用）",
+  "incognitoModeLocal": "隐身模式（个人资料）",
+  "showInSideBar": "在侧边栏中显示",
+  "hideInSideBar": "在侧边栏中隐藏",
+  "showInSideBarDesc": "在侧边栏中显示此筛选器以便快速访问",
+  "applyFilter": "应用筛选器",
+  "playerSettingsAmbientBlurTitle": "启用环境光模糊",
+  "playerSettingsAmbientBlurDesc": "启用播放器中的环境光模糊效果。这将模糊播放器后的背景，以减少干扰。",
+  "playerSettingsAmbientBlurDescWarning": "环境光模糊可能会导致低端设备出现性能问题。",
+  "mediaTypeMusicVideo": "{count, plural, one{音乐视频} other{音乐视频}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "openSelected": "打开选定的",
+  "discography": "专辑列表",
+  "youLiked": "你喜欢",
+  "instantMixBy": "即时混合 {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "最新曲目 {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "收藏 {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "休闲模式",
+  "leanBackModeDesc": "即使设备报告为 false，也要在 Android 设备上启用休闲模式。",
+  "leanBackModeInfo": "在 Android TV 设备上，默认重新启用“休闲模式”。在非 Android TV 设备上切换此选项可能会导致意外情况。",
+  "lyrics": "歌词",
+  "returnToSyncedLyrics": "返回同步歌词",
+  "noSyncedLyrics": "暂无同步歌词",
+  "localNetworkPermissionRequest": "允许本地网络访问以发现服务器。",
+  "requestPermission": "请求权限",
+  "localNetworkPermissionDenied": "需要本地网络访问权限。请在系统设置中启用附近设备权限。",
+  "openSettings": "打开设置",
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

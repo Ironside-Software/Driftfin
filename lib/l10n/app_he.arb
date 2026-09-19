@@ -99,10 +99,10 @@
   "syncedNever": "עדיין לא סונכרן",
   "syncedAtLabel": "סונכרן לאחרונה: {time}",
   "addToCollection": "הוסף לאוסף",
-  "addToPlaylist": "הוסף לרשימת ניגון",
-  "addToQueue": "הוספה לתור",
+  "addToPlaylist": "הוסף לרשימת השמעה",
+  "addToQueue": "הוסף לתור",
   "instantMix": "מיקס מיידי",
-  "addedToQueue": "{count, plural, one{רצועה אחת נוספה לתור} two{{count} רצועות נוספו לתור} other{{count} רצועות נוספו לתור}}",
+  "addedToQueue": "{count, plural, one{נוספה רצועה אחת לתור} other{נוספו {count} רצועות לתור}}",
   "advanced": "מתקדם",
   "all": "הכל",
   "amoledBlack": "שחור אמולד",
@@ -110,37 +110,37 @@
   "appLockBiometrics": "ביומטרים",
   "appLockPasscode": "סיסמה",
   "appLockTitle": "הגדר את שיטת ההתחברות עבור {userName}",
-  "ascending": "עולה",
-  "audio": "שמע",
+  "ascending": "בסדר עולה",
+  "audio": "{count, plural, one{שמע} other{שמע}}",
   "audioPlayerPlaybackOptionsTitle": "אפשרויות השמעה",
-  "audioPlayerRepeatAll": "חזרה על הכול",
+  "audioPlayerRepeatAll": "חזור על הכל",
   "audioPlayerRepeatOff": "ללא חזרה",
-  "audioPlayerRepeatOne": "חזרה על רצועה אחת",
-  "audioPlayerShuffle": "ערבוב",
-  "showArtist": "הצגת האמן",
-  "track": "{count, plural, one{רצועה} two{רצועות} other{רצועות}}",
+  "audioPlayerRepeatOne": "חזור פעם אחת",
+  "audioPlayerShuffle": "ערבב",
+  "showArtist": "הצג אמן",
+  "track": "{count, plural, one{רצועת שמע} other{רצועות שמע}}",
   "autoPlay": "ניגון אוטומטי",
   "backgroundBlur": "טשטוש רקע",
   "backgroundOpacity": "שקיפות רקע",
   "biometricsFailedCheckAgain": "ביומטרי נכשל. יש לבדוק את ההגדרות ולנסות מחדש.",
-  "bold": "מובלט",
-  "cancel": "לבטל",
+  "bold": "מודגש",
+  "cancel": "ביטול",
   "change": "לשנות",
   "chapter": "{count, plural, one{פרק} other{פרקים}}",
   "clear": "לנקות",
   "clearAllSettings": "לנקות את כלל ההגדרות",
-  "clearAllSettingsQuestion": "לנקות את כלל ההגדרות?",
+  "clearAllSettingsQuestion": "לנקות את כל ההגדרות?",
   "clearChanges": "לנקות את השינויים",
   "clearSelection": "לנקות בחירה",
   "close": "לסגור",
   "generateLoginLink": "קוד עבור {userName}",
-  "shareLoginLink": "שיתוף קישור התחברות",
-  "shareQRCode": "שיתוף קוד QR",
-  "copyLoginLink": "העתקת קישור",
-  "includePassword": "כלול סיסמה",
+  "shareLoginLink": "שתף קישור התחברות",
+  "shareQRCode": "שתף קוד QR",
+  "copyLoginLink": "העתק קישור",
+  "includePassword": "כולל סיסמה",
   "invalidAuthLink": "קישור התחברות לא תקין",
   "code": "קוד",
-  "collectionFolder": "תקית אוספים",
+  "collectionFolder": "{count, plural, one{תיקיית אוספים} other{תיקיות אוספים}}",
   "color": "צבע",
   "combined": "מאוחד",
   "communityRating": "דירוג קהילה",
@@ -153,63 +153,63 @@
   "dashboardContinueReading": "להמשיך לקרוא",
   "dashboardContinueWatching": "להמשיך לצפות",
   "nextUp": "הבא בתור",
-  "dashboardRecentlyAdded": "נוסף לאחרונה ב-{name}",
-  "dashboardRecentlyAddedItems": "{name} שנוספו לאחרונה",
+  "dashboardRecentlyAdded": "נוסף לאחרונה ב {name}",
+  "dashboardRecentlyAddedItems": "{name} נוסף לאחרונה",
   "dateAdded": "תאריך הוספה",
   "dateLastContentAdded": "תאריך הוספת התוכן האחרון",
   "datePlayed": "תאריך ניגון",
   "delete": "מחיקה",
-  "deleteFileFromSystem": "מחיקת הפריט {item} תמחק אותו הן ממערכת הקבצים והן מספריית המדיה שלך. האם אתה בטוח שברצונך להמשיך?",
-  "deleteItem": "למחוק את {item}?",
-  "descending": "יורד",
-  "director": "{count, plural, one{במאי} other{במאים}}",
+  "deleteFileFromSystem": "ביטול פריט {item} ימחק אותו הן ממערכת הקבצים והן בספריית המדיה שלך. אתה בטוח שאתה רוצה להמשיך?",
+  "deleteItem": "מחיקת {item}?",
+  "descending": "בסדר יורד",
+  "director": "{count, plural, other{במאי} two{במאים}}",
   "disableFilters": "לכבות את המסננים",
   "disabled": "כבוי",
   "discovered": "גילוי",
   "displayLanguage": "שפת תצוגה",
   "downloadsClearDesc": "למחוק את כל המידע המסונכרן, לנקות את כל המידע לכל משתמש מסונכרן?",
   "downloadsClearTitle": "לנקות מידע מסונכרן",
-  "downloadsPath": "דרך",
+  "downloadsPath": "נתיב",
   "downloadsSyncedData": "מידע מסונכרן",
   "downloadsTitle": "הורדות",
   "dynamicText": "דינאמי",
   "editMetadata": "לערוך מידע צללים",
   "empty": "ריק",
   "enabled": "דלוק",
-  "endsAt": "מסתיים ב-{date}",
-  "episode": "{count, plural, one{פרק} other{פרקים}}",
+  "endsAt": "מסתיים ב {date}",
+  "episode": "{count, plural, other{פרקים} one{פרק} }",
   "error": "תקלה",
   "failedToLoadImage": "לא היה ניתן לטעון את התמונה",
   "favorite": "מועדף",
   "favorites": "מועדפים",
   "fetchingLibrary": "מושך ספריית חפצים…",
-  "filter": "{count, plural, one{מסנן} other{מסננים}}",
+  "filter": "{count, plural, other{מסננים} one{מסנן}}",
   "folders": "תיקיות",
   "fontColor": "צבע גופן",
   "fontSize": "גודל גופן",
   "forceRefresh": "ריענון מאולץ",
-  "genre": "{count, plural, one{ז'אנר} other{ז'אנרים}}",
+  "genre": "{count, plural, other{סגנונות} one{סגנון}}",
   "goTo": "לך אל",
   "grid": "רשת",
   "group": "קבוצה",
   "groupBy": "לקבץ לפי",
   "heightOffset": "היסט גובה",
   "hide": "הסתר",
-  "hideEmpty": "הסתר ריקים",
+  "hideEmpty": "הסתר ריק",
   "home": "בית",
   "homeBannerSlideshow": "מצגת שקופיות",
   "homeBannerCarousel": "קרוסלה",
   "homeBannerDetailed": "מפורט",
   "homeBannerTV": "טלוויזיה",
-  "identify": "זהה",
-  "immediately": "מיידית",
-  "incorrectPinTryAgain": "קוד PIN שגוי. נסה שוב.",
+  "identify": "מזהה",
+  "immediately": "מיידי",
+  "incorrectPinTryAgain": "PIN שגוי. נסה שוב.",
   "info": "מידע",
-  "invalidUrl": "כתובת URL לא תקינה",
+  "invalidUrl": "כתובת אתר לא תקינה",
   "itemCount": "כמות פריטים: {count}",
-  "label": "{count, plural, one{תווית} other{תוויות}}",
-  "library": "{count, plural, one{ספרייה} other{ספריות}}",
-  "libraryFetchNoItemsFound": "לא נמצאו פריטים. נסה הגדרות אחרות.",
+  "label": "{count, plural, other{תגיות} one{תג}}",
+  "library": "{count, plural, other{ספריות} one{ספריה}}",
+  "libraryFetchNoItemsFound": "לא נמצאו פריטים. נסו הגדרות שונות.",
   "libraryPageSizeDesc": "קבע את כמות הפריטים לטעינה בכל פעם. הערך 0 מכבה עימוד.",
   "libraryPageSizeTitle": "גודל עמוד הספרייה",
   "light": "בהיר",
@@ -218,7 +218,7 @@
   "loggedIn": "מחובר",
   "login": "התחבר",
   "logout": "התנתק",
-  "logoutUserPopupContent": "פעולה זו תנתק את {userName} ותמחק את המשתמש מהאפליקציה.\nיהיה עליך להתחבר מחדש ב-{serverName}.",
+  "logoutUserPopupContent": "פעולה זו תנתק את {userName} ותמחק את המשתמש מהאפליקציה.\nיש להתחבר מחדש אל {serverName}.",
   "logoutUserPopupTitle": "לנתק את {userName}?",
   "loop": "לולאה",
   "markAsUnwatched": "סמן כלא נצפה",
@@ -228,13 +228,13 @@
   "mediaTypeBook": "{count, plural, one{ספר} other{ספרים}}",
   "mediaTypeBoxset": "{count, plural, one{אוסף} other{אוספים}}",
   "mediaTypeEpisode": "{count, plural, one{פרק} other{פרקים}}",
-  "mediaTypeFolder": "{count, plural, one{תיקייה} other{תיקיות}}",
+  "mediaTypeFolder": "{count, plural, one{תיקיה} other{תיקיות}}",
   "mediaTypeMovie": "{count, plural, one{סרט} other{סרטים}}",
   "mediaTypePerson": "{count, plural, one{אדם} other{אנשים}}",
   "mediaTypeArtists": "{count, plural, one{אמן} other{אמנים}}",
   "mediaTypePhoto": "{count, plural, one{תמונה} other{תמונות}}",
   "mediaTypePhotoAlbum": "{count, plural, one{אלבום תמונות} other{אלבומי תמונות}}",
-  "mediaTypePlaylist": "{count, plural, one{פלייליסט} other{פלייליסטים}}",
+  "mediaTypePlaylist": "{count, plural, one{רשימת השמעה} other{רשימות השמעה}}",
   "mediaTypeSeason": "{count, plural, one{עונה} other{עונות}}",
   "mediaTypeSeries": "{count, plural, one{סדרה} other{סדרות}}",
   "mediaTypeTV": "{count, plural, one{ערוץ טלוויזיה} other{ערוצי טלוויזיה}}",
@@ -242,70 +242,70 @@
   "metadataRefreshDefault": "סרוק אחר קבצים חדשים ומעודכנים",
   "metadataRefreshFull": "החלף את כל המטא-דאטה",
   "metadataRefreshValidation": "חפש מטא-דאטה חסרה",
-  "minutes": "{count, plural, one{דקה} other{דקות}}",
+  "minutes": "{count, plural, other{דקות} one{דקה} }",
   "mode": "מצב",
-  "moreFrom": "עוד מ-{info}",
-  "moreOptions": "אפשרויות נוספות",
-  "mouseDragSupport": "גרירה באמצעות עכבר",
+  "moreFrom": "עוד מ {info}",
+  "moreOptions": "עוד אפשרויות",
+  "mouseDragSupport": "גרור באמצעות העכבר",
   "musicAlbum": "{count, plural, one{אלבום} other{אלבומים}}",
   "name": "שם",
   "navigation": "ניווט",
   "navigationDashboard": "מסך שליטה",
   "navigationFavorites": "מועדפים",
-  "navigationSync": "מסונכרן",
-  "never": "לעולם לא",
+  "navigationSync": "סונכרן",
+  "never": "אף פעם",
   "noItemsSynced": "לא סונכרנו פריטים",
   "noItemsToShow": "אין פריטים להצגה",
-  "noRating": "אין דירוג",
+  "noRating": "ללא דירוג",
   "noResults": "אין תוצאות",
   "noServersFound": "לא נמצאו שרתים חדשים",
-  "noSuggestionsFound": "לא נמצאו הצעות",
+  "noSuggestionsFound": "לא נמצאו המלצות",
   "none": "ללא",
   "normal": "רגיל",
-  "notPartOfAlbum": "אינו חלק מאלבום",
+  "notPartOfAlbum": "לא חלק מאלבום",
   "openParent": "פתח פריט אב",
   "openShow": "פתח סדרה",
   "options": "אפשרויות",
   "other": "אחר",
-  "outlineColor": "צבע קו מתאר",
-  "outlineSize": "גודל קו מתאר",
+  "outlineColor": "צבע קו המתאר",
+  "outlineSize": "גודל קו המתאר",
   "overview": "סקירה כללית",
   "page": "עמוד {index}",
   "parentalRating": "דירוג הורים",
   "password": "סיסמה",
   "pathClearTitle": "נקה נתיב הורדות",
   "pathEditDesc": "מיקום זה מוגדר עבור כלל המשתמשים, וכל נתון מסונכרן לא יהיה נגיש עוד. הוא יישאר באחסון שלך.",
-  "pathEditSelect": "בחר יעד להורדות",
+  "pathEditSelect": "בחר נתיב הורדות",
   "pathEditTitle": "שנה מיקום",
-  "play": "נגן את {item}",
+  "play": "נגן {item}",
   "playCount": "ספירת ניגונים",
-  "playFrom": "נגן מ-{name}",
-  "playFromStart": "נגן את {name} מההתחלה",
+  "playFrom": "נגן מ {name}",
+  "playFromStart": "נגן {name} מההתחלה",
   "playLabel": "נגן",
   "playVideos": "נגן סרטונים",
   "playMusic": "נגן מוזיקה",
   "played": "נוגן",
   "quickConnectAction": "הזן קוד חיבור מהיר עבור",
   "quickConnectInputACode": "הזן קוד",
-  "quickConnectTitle": "חיבור מהיר",
+  "quickConnectTitle": "התחברות מהירה",
   "quickConnectWrongCode": "קוד שגוי",
   "random": "אקראי",
-  "rating": "{count, plural, one{דירוג} other{דירוגים}}",
+  "rating": "{count, plural, other{דירוגים} one{דירוג}}",
   "popularity": "פופולריות",
-  "reWatch": "צפה שוב",
-  "read": "קרא את {item}",
-  "readFromStart": "קרא את {item} מההתחלה",
+  "reWatch": "צפה מחדש",
+  "read": "קרא {item}",
+  "readFromStart": "קרא {item} מההתחלה",
   "recursive": "רקורסיבי",
   "refresh": "רענן",
   "refreshMetadata": "רענן מטא-דאטה",
   "refreshPopup": "רענון - {name}",
   "refreshPopupContentMetadata": "המטא-דאטה מתעדכנת בהתאם להגדרות ולשירותי האינטרנט המופעלים במסך השליטה.",
   "related": "קשורים",
-  "releaseDate": "תאריך יציאה",
+  "releaseDate": "תאריך שחרור",
   "contentRating": "דירוג תוכן",
   "removeAsFavorite": "הסר מהמועדפים",
   "removeFromCollection": "הסר מהאוסף",
-  "removeFromPlaylist": "הסר מרשימת הניגון",
+  "removeFromPlaylist": "הסר מרשימת השמעה",
   "replaceAllImages": "החלף את כל התמונות",
   "replaceExistingImages": "החלף תמונות קיימות",
   "restart": "הפעל מחדש",
@@ -314,25 +314,25 @@
   "resume": "המשך את {item}",
   "retrievePublicListOfUsers": "אחזר רשימה ציבורית של משתמשים",
   "retry": "נסה שוב",
-  "runTime": "משך זמן",
-  "runtimeMinutesTitle": "משך זמן (דקות)",
+  "runTime": "זמן ריצה",
+  "runtimeMinutesTitle": "זמן ריצה (דקות)",
   "runtimeRangeMinutes": "{min} - {max} דקות",
   "minutesShort": "{count} דק׳",
   "streamingServices": "ספקים ({count})",
-  "save": "שמירה",
+  "save": "שמור",
   "saved": "נשמר",
   "scanBiometricHint": "אימות זהות",
-  "scanLibrary": "סריקת ספרייה",
+  "scanLibrary": "סרוק ספריה",
   "authenticateWithBiometrics": "השתמש בזיהוי ביומטרי כדי לאמת את {user}",
   "scanningName": "סורק - {name}…",
-  "scrollToTop": "גלילה לראש הדף",
-  "search": "חיפוש",
-  "season": "{count, plural, one{עונה} other{עונות}}",
-  "seconds": "{count, plural, one{שנייה} other{שניות}}",
-  "selectAll": "בחירת הכל",
+  "scrollToTop": "גלול להתחלה",
+  "search": "חפש",
+  "season": "{count, plural, other{עונות} one{עונה} }",
+  "seconds": "{count, plural, other{שניות} one{שניה}}",
+  "selectAll": "בחר הכל",
   "selectTime": "בחירת שעה",
   "selectViewType": "בחירת סוג תצוגה",
-  "selected": "נבחר",
+  "selected": "נבחרו",
   "selectedWith": "נבחר {info}",
   "separate": "נפרד",
   "server": "שרת",
@@ -340,9 +340,9 @@
   "setIdentityTo": "שינוי זהות ל-{name}",
   "settingSecurityApplockTitle": "נעילת אפליקציה",
   "settings": "הגדרות",
-  "settingsBlurEpisodesDesc": "טשטוש כל הפרקים הקרובים",
-  "settingsBlurEpisodesTitle": "טשטוש פרקים הבאים בתור",
-  "settingsBlurredPlaceholderDesc": "הצגת רקע מטושטש בזמן טעינת פוסטרים",
+  "settingsBlurEpisodesDesc": "טשטש פרקים עתידיים",
+  "settingsBlurEpisodesTitle": "טשטש את הפרקים הבאים",
+  "settingsBlurredPlaceholderDesc": "הצג רקע מטושטש בטעינת הכרזות",
   "settingsBlurredPlaceholderTitle": "מציין מקום מטושטש",
   "settingsClientDesc": "כללי, פסק זמן, פריסה, ערכת נושא",
   "settingsClientTitle": "Driftfin",
@@ -370,39 +370,39 @@
   "settingsPlayerVideoHWAccelDesc": "שימוש בכרטיס המסך לעיבוד הווידאו (מומלץ)",
   "settingsPlayerVideoHWAccelTitle": "האצת חומרה",
   "settingsPosterPinch": "צביטה להגדלת פוסטרים",
-  "settingsPosterSize": "גודל פוסטר",
+  "settingsPosterSize": "גודל כרזה",
   "settingsProfileDesc": "מסך נעילה, כתובת מקומית, Seerr",
   "settingsProfileTitle": "פרופיל",
   "settingsProfileSubtitleLanguage": "שפת כתוביות מועדפת",
   "anyLanguage": "כל שפה",
   "settingsProfileSubtitleMode": "מצב כתוביות",
   "subtitlePlaybackModeDefault": "ברירת מחדל",
-  "subtitlePlaybackModeAlways": "הפעל תמיד",
+  "subtitlePlaybackModeAlways": "תמיד",
   "subtitlePlaybackModeOnlyForced": "כפויות בלבד",
-  "subtitlePlaybackModeNone": "ללא",
-  "subtitlePlaybackModeSmart": "חכם",
-  "settingsQuickConnectTitle": "חיבור מהיר",
+  "subtitlePlaybackModeNone": "אף פעם",
+  "subtitlePlaybackModeSmart": "בחירה חכמה",
+  "settingsQuickConnectTitle": "התחברות מהירה",
   "settingsSecurity": "אבטחה",
   "settingsShowScaleSlider": "הצגת מחוון גודל הפוסטר",
-  "settingsVisual": "חזותי",
+  "settingsVisual": "תצוגה",
   "shadow": "צל",
   "backgroundColor": "צבע רקע",
-  "showAlbum": "הצגת אלבום",
-  "showDetails": "הצגת פרטים",
+  "showAlbum": "הצג אלבום",
+  "showDetails": "הצג פרטים",
   "showEmpty": "הצגת ריק",
   "shuffleVideos": "ערבוב סרטונים",
   "somethingWentWrong": "משהו השתבש",
-  "somethingWentWrongPasswordCheck": "משהו השתבש. יש לבדוק את הסיסמה.",
-  "sortBy": "מיון לפי",
+  "somethingWentWrongPasswordCheck": "משהו השתבש. בדוק את הסיסמה.",
+  "sortBy": "מיין לפי",
   "sortName": "שם",
   "sortOrder": "סדר מיון",
-  "start": "התחלה",
+  "start": "התחל",
   "studio": "{count, plural, one{אולפן} other{אולפנים}}",
   "subtitleConfigurator": "הגדרות כתוביות",
   "subtitleConfiguratorPlaceHolder": "זהו טקסט מציין מקום, אין כאן דבר.",
   "subtitles": "כתוביות",
-  "switchUser": "החלפת משתמש",
-  "sync": "סנכרון",
+  "switchUser": "החלף משתמש",
+  "sync": "סנכרן",
   "syncDeleteItemDesc": "למחוק את כל המידע המסונכרן עבור {item}?",
   "syncDeleteItemTitle": "מחיקת פריט מסונכרן",
   "syncDeletePopupPermanent": "פעולה זו היא סופית ותסיר את כל הקבצים המסונכרנים באופן מקומי",
@@ -761,7 +761,7 @@
   "weeks": "{count, plural, one{שבוע} other{שבועות}}",
   "months": "{count, plural, one{חודש} other{חודשים}}",
   "years": "{count, plural, one{שנה} other{שנים}}",
-  "days": "ימים",
+  "days": "{count, plural, one{יום} other{ימים}}",
   "timeAgo": "לפני {time}",
   "airsIn": "משודר בעוד {count} {duration}",
   "lastRunTaking": "הפעלה אחרונה {date}, שנמשכה {time}",
@@ -1157,5 +1157,474 @@
   "tastePassportEmpty": "צפה בכמה תכנים ופרופיל הטעם שלך יופיע כאן",
   "livingHomeBecauseYouWatched": "כי צפית ב{name}",
   "livingHomeHiddenGems": "פנינים נסתרות שיש לך",
-  "livingHomeMoreFromDirector": "עוד מ{name}"
+  "livingHomeMoreFromDirector": "עוד מ{name}",
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@generateLoginLink": {
+    "description": "Code for a user to share",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@continuePage": {
+    "description": "Continue - page 1",
+    "placeholders": {
+      "page": {
+        "type": "int"
+      }
+    }
+  },
+  "@dashboardRecentlyAdded": {
+    "description": "Recently added on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteFileFromSystem": {
+    "description": "Delete file from system",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteItem": {
+    "description": "deleteItem",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "@director": {
+    "description": "director",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@episode": {
+    "description": "episode",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@filter": {
+    "description": "filter",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@logoutUserPopupTitle": {
+    "description": "Pop-up for logging out the user",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeBook": {
+    "description": "Book (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@endsAt": {
+    "description": "endsAt",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "jm"
+      }
+    }
+  },
+  "@genre": {
+    "description": "genre",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@label": {
+    "description": "label",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@library": {
+    "description": "Plural",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@logoutUserPopupContent": {
+    "description": "Pop-up for logging out the user description",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      },
+      "serverName": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeEpisode": {
+    "description": "Episode (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypeFolder": {
+    "description": "Folder (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypeMovie": {
+    "description": "Movie (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypePhoto": {
+    "description": "Photo (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypePhotoAlbum": {
+    "description": "Photo Album (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypePlaylist": {
+    "description": "Playlist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypeSeason": {
+    "description": "Season (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypeSeries": {
+    "description": "Series (plural, same singular/plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypeTV": {
+    "description": "TV Channel (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@minutes": {
+    "description": "minute",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@moreFrom": {
+    "description": "More from",
+    "placeholders": {
+      "info": {
+        "type": "String"
+      }
+    }
+  },
+  "@musicAlbum": {
+    "description": "Music album (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@page": {
+    "description": "page",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "@play": {
+    "description": "Play with",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "@playFrom": {
+    "description": "playFrom",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@playFromStart": {
+    "description": "speel vanaf het begin",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@rating": {
+    "description": "rating",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@read": {
+    "description": "read",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "@readFromStart": {
+    "description": "Read book from start",
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "@runtimeRangeMinutes": {
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "@streamingServices": {
+    "description": "Streaming providers (Netflix,HBO, etc.)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@scanningName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@season": {
+    "description": "season",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@seconds": {
+    "description": "second",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Music Video} other{Music Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Collection} other{Collections}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "posterColorsTitle": "Generated poster colors",
+  "posterColorsDesc": "Use generated colors for posters in place of the default color",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "selectRandom": "Select random",
+  "stopSelection": "Stop selecting {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Play items",
+  "shuffleItems": "Shuffle items",
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Incognito",
+  "incognitoModeGlobal": "Incognito mode (App)",
+  "incognitoModeLocal": "Incognito mode (Profile)",
+  "incognitoModeDesc": "Incognito mode disables sending playback status to the server",
+  "showInSideBar": "Show in sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "hideInSideBar": "Hide from sidebar",
+  "showInSideBarDesc": "Show this filter in the sidebar for quick access",
+  "applyFilter": "Apply filter",
+  "playerSettingsAmbientBlurTitle": "Enable ambient blur",
+  "playerSettingsAmbientBlurDesc": "Enable ambient blur in the player. This will blur the background behind the player to reduce distractions.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur can cause performance issues on lower-end devices.",
+  "openSelected": "Open selected",
+  "discography": "Discography",
+  "youLiked": "You liked",
+  "instantMixBy": "Instant Mix of {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Latest tracks by {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorites of {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back Mode",
+  "leanBackModeDesc": "Enable lean-back mode on Android devices, even if the device reports back as false.",
+  "leanBackModeInfo": "Lean-back mode is re-enabled by default on AndroidTV devices. Toggling this option on non-AndroidTV devices may cause unexpected behavior.",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

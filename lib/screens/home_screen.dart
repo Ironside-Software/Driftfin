@@ -161,9 +161,7 @@ class HomeScreen extends ConsumerWidget {
               if (seerrAuthenticated) {
                 return DestinationModel(
                   label: context.localized.discover,
-                  icon: pendingRequests > 0
-                      ? Badge.count(count: pendingRequests, child: Icon(e.icon))
-                      : Icon(e.icon),
+                  icon: pendingRequests > 0 ? Badge.count(count: pendingRequests, child: Icon(e.icon)) : Icon(e.icon),
                   selectedIcon: pendingRequests > 0
                       ? Badge.count(count: pendingRequests, child: Icon(e.selectedIcon))
                       : Icon(e.selectedIcon),
@@ -204,20 +202,22 @@ class HomeScreen extends ConsumerWidget {
                 );
               }
             case HomeTabs.library:
-              return DestinationModel(
-                label: context.localized.library(0),
-                icon: Icon(e.icon),
-                selectedIcon: Icon(e.selectedIcon),
-                route: const LibraryRoute(),
-                action: () => e.navigate(context),
-                floatingActionButton: AdaptiveFab(
-                  context: context,
-                  title: context.localized.search,
-                  key: Key(e.name.capitalize()),
-                  onPressed: () => context.router.navigate(LibrarySearchRoute()),
-                  child: const Icon(IconsaxPlusLinear.search_status),
-                ),
-              );
+              if (!isMusicDashboardMode) {
+                return DestinationModel(
+                  label: context.localized.library(0),
+                  icon: Icon(e.icon),
+                  selectedIcon: Icon(e.selectedIcon),
+                  route: const LibraryRoute(),
+                  action: () => e.navigate(context),
+                  floatingActionButton: AdaptiveFab(
+                    context: context,
+                    title: context.localized.search,
+                    key: Key(e.name.capitalize()),
+                    onPressed: () => context.router.navigate(LibrarySearchRoute()),
+                    child: const Icon(IconsaxPlusLinear.search_status),
+                  ),
+                );
+              }
           }
         })
         .nonNulls

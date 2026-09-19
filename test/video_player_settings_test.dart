@@ -53,8 +53,12 @@ void main() {
   });
 
   group('VideoPlayerSettingsModel.volume', () {
-    test('mirrors internalVolume', () {
+    test('uses system volume on mobile and internal volume on desktop', () {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
       final model = VideoPlayerSettingsModel(internalVolume: 42);
+      expect(model.volume, 100);
+      debugDefaultTargetPlatformOverride = TargetPlatform.linux;
       expect(model.volume, 42);
     });
   });
@@ -205,12 +209,12 @@ void main() {
       expect(clampReplayGainDb(-100), -60.0);
     });
 
-    test('clamps above 20 down to 20', () {
-      expect(clampReplayGainDb(100), 20.0);
+    test('caps positive replay gain at zero', () {
+      expect(clampReplayGainDb(100), 0.0);
     });
 
     test('passes through in-range values unchanged', () {
-      expect(clampReplayGainDb(5), 5.0);
+      expect(clampReplayGainDb(-5), -5.0);
     });
   });
 
@@ -222,9 +226,9 @@ void main() {
     });
 
     test('adjustedReplayGainDb adds the offset to the track gain and clamps', () {
-      expect(ReplayGainVolumeLevel.normal.adjustedReplayGainDb(2.0), 8.0);
-      expect(ReplayGainVolumeLevel.loud.adjustedReplayGainDb(null), 8.0);
-      expect(ReplayGainVolumeLevel.loud.adjustedReplayGainDb(1000), 20.0);
+      expect(ReplayGainVolumeLevel.normal.adjustedReplayGainDb(2.0), 0.0);
+      expect(ReplayGainVolumeLevel.loud.adjustedReplayGainDb(null), 0.0);
+      expect(ReplayGainVolumeLevel.loud.adjustedReplayGainDb(1000), 0.0);
       expect(ReplayGainVolumeLevel.quiet.adjustedReplayGainDb(-1000), -60.0);
     });
   });

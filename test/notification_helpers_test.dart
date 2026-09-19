@@ -7,26 +7,26 @@ import 'package:driftfin/util/notification_helpers.dart';
 
 void main() {
   group('NotificationHelpers.buildDetailsDeepLink', () {
-    test('wraps the id in the fladder details scheme', () {
-      expect(NotificationHelpers.buildDetailsDeepLink('abc123'), 'fladder:///details?id=abc123');
+    test('wraps the id in the driftfin details scheme', () {
+      expect(NotificationHelpers.buildDetailsDeepLink('abc123'), 'driftfin:///details?id=abc123');
     });
 
     test('percent-encodes characters that are unsafe in a URI component', () {
-      expect(NotificationHelpers.buildDetailsDeepLink('a b/c?d'), 'fladder:///details?id=a%20b%2Fc%3Fd');
+      expect(NotificationHelpers.buildDetailsDeepLink('a b/c?d'), 'driftfin:///details?id=a%20b%2Fc%3Fd');
     });
 
     test('empty id still produces a valid link', () {
-      expect(NotificationHelpers.buildDetailsDeepLink(''), 'fladder:///details?id=');
+      expect(NotificationHelpers.buildDetailsDeepLink(''), 'driftfin:///details?id=');
     });
   });
 
   group('NotificationHelpers.buildSeerrDeepLink', () {
     test('builds a seerr deep link with media type and tmdb id', () {
-      expect(NotificationHelpers.buildSeerrDeepLink('movie', 42), 'fladder:///seerr/movie/42');
+      expect(NotificationHelpers.buildSeerrDeepLink('movie', 42), 'driftfin:///seerr/movie/42');
     });
 
     test('works for tv media type', () {
-      expect(NotificationHelpers.buildSeerrDeepLink('tv', 7), 'fladder:///seerr/tv/7');
+      expect(NotificationHelpers.buildSeerrDeepLink('tv', 7), 'driftfin:///seerr/tv/7');
     });
   });
 
