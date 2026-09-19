@@ -99,6 +99,13 @@ jobs:
           files: dist/*.zip
           body: |
             Requires **Jellyfin 12 / .NET 10**. Existing plugin settings are preserved.
+
+            **Plugin 3 is a breaking integration update. Upgrade Driftfin clients first.**
+            This version retires the legacy credential-sharing endpoint. Old clients
+            keep core Jellyfin access but must upgrade to use managed integrations.
+            Configure personal Trakt credentials and rotate previously shared integration
+            keys after migration, following the migration steps in the documentation.
+
             Older servers can continue using plugin 1.0.2.0 from the same catalog.
 
             Add this repository in **Dashboard → Plugins → Repositories**:

@@ -1,6 +1,6 @@
 # Driftfin plugin: discovery, server-side integrations, and diagnostics
 
-Status: implementation in progress. Updated 2026-09-19.
+Status: implementation and review complete; delivery gates are tracked in PR #77. Updated 2026-09-19.
 
 ## Implementation evidence
 
@@ -84,21 +84,31 @@ Status: implementation in progress. Updated 2026-09-19.
   tests and the combined live smoke fixture pass.
 - Details loading now discards late responses/errors after disposal, refresh or
   account changes, and retains the latest detailed media state. The focused
-  request/details/lifecycle suite passes 23 tests; full coverage is running.
+  request/details/lifecycle suite passes 23 tests. The final full suite passes
+  1,695 tests with three credential-dependent skips; changed-line coverage is
+  72% against `origin/develop` (60% required). Whole-project analysis, all eight
+  script checks, and validation of all 38 translation files pass.
 - Windows portable/installer builds and platform UI checks passed in
   [run 35475977615](https://github.com/Ironside-Software/Driftfin/actions/runs/35475977615).
   Flutter CI passed in
   [run 35475964560](https://github.com/Ironside-Software/Driftfin/actions/runs/35475964560).
-  Both validate commit `9bc0582c`; the review corrections need updated CI.
-  Signed iOS verification is queued in
-  [run 35475986802](https://github.com/Ironside-Software/Driftfin/actions/runs/35475986802)
-  with TestFlight publishing disabled.
+  Signed iOS verification also passed in
+  [run 35475986802](https://github.com/Ironside-Software/Driftfin/actions/runs/35475986802).
+  These validate commit `9bc0582c`. Final application code at `7e8ff3e9` is
+  being verified by Windows
+  [run 35476656306](https://github.com/Ironside-Software/Driftfin/actions/runs/35476656306)
+  and signed iOS
+  [run 35476657960](https://github.com/Ironside-Software/Driftfin/actions/runs/35476657960),
+  with TestFlight publishing disabled; PR #77 records the final outcomes.
 - [PR #77](https://github.com/Ironside-Software/Driftfin/pull/77) is open as a draft.
   The first CI run exposed a fixture UID mismatch and one test lint; both are
-  fixed. Final checks must run on the updated head.
-- Still required: deployed arr-version
-  verification before rollout, platform gates, final regression/coverage, and PR
-  review. No feature release or merge has been performed.
+  fixed. The backend review corrections were checked again with no remaining
+  findings; frontend lifecycle, authorization, migration, search and release
+  behavior were reviewed against the plan. The plugin release notes explicitly
+  require compatible clients first and explain the breaking integration change.
+- Before production rollout, verify the deployed Seerr/Jellyseerr and arr
+  versions. Fixtures are not evidence of the production versions. No feature
+  release or merge has been performed.
 
 ## Agreed scope
 
