@@ -97,7 +97,7 @@ Future<AppBootstrapResult> bootstrapApplication(List<String> args) async {
 
   await SvgUtils.preCacheSVGs();
 
-  final leanBackEnabled = await _resolveLeanBackEnabled();
+  final leanBackEnabled = await resolveLeanBackEnabled();
 
   var windowArguments = '';
   if (isDesktopPlatform) {
@@ -142,7 +142,7 @@ Future<AppBootstrapResult> bootstrapApplication(List<String> args) async {
   );
 }
 
-Future<bool> _resolveLeanBackEnabled() async {
+Future<bool> resolveLeanBackEnabled() async {
   if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) {
     return false;
   }

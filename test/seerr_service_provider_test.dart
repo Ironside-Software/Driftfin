@@ -9,6 +9,7 @@ import 'package:http/testing.dart';
 
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_service_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/seerr/seerr_chopper_service.dart';
 import 'package:driftfin/seerr/seerr_json_converter.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
@@ -32,7 +33,7 @@ SeerrService buildService(http.Client client) {
     client: client,
     converter: const SeerrJsonConverter(),
   );
-  final container = ProviderContainer();
+  final container = ProviderContainer(overrides: [offlineStateProvider.overrideWithValue(false)]);
   final ref = container.read(_refProvider);
   return SeerrService(ref, SeerrChopperService.create(chopper));
 }

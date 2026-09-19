@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_requests_provider.dart';
 import 'package:driftfin/providers/seerr_service_provider.dart';
@@ -34,6 +35,7 @@ ProviderContainer _container(Future<http.Response> Function(http.Request) handle
     converter: const SeerrJsonConverter(),
   );
   final container = ProviderContainer(overrides: [
+    offlineStateProvider.overrideWithValue(false),
     seerrUserProvider.overrideWith(_User.new),
     seerrApiProvider.overrideWith(() => _Api(client)),
     seerrRequestsProvider.overrideWith(SeerrRequestsNotifier.new),

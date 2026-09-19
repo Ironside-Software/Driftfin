@@ -7,13 +7,13 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('LibraryFilterModel.hasActiveFilters', () {
-    test('a brand-new default model already has active filters (hideEmptyShows defaults true)', () {
-      expect(const LibraryFilterModel().hasActiveFilters, isTrue);
+    test('a default model has no active filters', () {
+      expect(const LibraryFilterModel().hasActiveFilters, isFalse);
     });
 
-    test('is false when hideEmptyShows is off and nothing else is set', () {
+    test('disabling hideEmptyShows differs from the default', () {
       const model = LibraryFilterModel(hideEmptyShows: false);
-      expect(model.hasActiveFilters, isFalse);
+      expect(model.hasActiveFilters, isTrue);
     });
 
     test('is true when any genre is enabled', () {
@@ -21,8 +21,8 @@ void main() {
       expect(model.hasActiveFilters, isTrue);
     });
 
-    test('is true when recursive is explicitly false', () {
-      const model = LibraryFilterModel(hideEmptyShows: false, recursive: false);
+    test('is true when recursive differs from its default', () {
+      const model = LibraryFilterModel(recursive: true);
       expect(model.hasActiveFilters, isTrue);
     });
 
@@ -72,16 +72,16 @@ void main() {
   });
 
   group('LibraryFilterModel equality/hashCode', () {
-    test('differing only in hideEmptyShows are still == (inconsistency in the hand-written operator)', () {
+    test('differing hideEmptyShows values are not equal', () {
       const a = LibraryFilterModel(hideEmptyShows: true);
       const b = LibraryFilterModel(hideEmptyShows: false);
-      expect(a == b, isTrue);
+      expect(a == b, isFalse);
     });
 
-    test('differing only in groupBy are still == (groupBy excluded from comparison)', () {
+    test('differing groupBy values are not equal', () {
       const a = LibraryFilterModel(groupBy: GroupBy.name);
       const b = LibraryFilterModel(groupBy: GroupBy.rating);
-      expect(a == b, isTrue);
+      expect(a == b, isFalse);
     });
 
     test('differing in genres are not equal', () {
@@ -90,10 +90,10 @@ void main() {
       expect(a == b, isFalse);
     });
 
-    test('hashCode does not distinguish differing itemFilters (double-XOR cancels out)', () {
-      const a = LibraryFilterModel(itemFilters: {ItemFilter.isplayed: true});
-      const b = LibraryFilterModel(itemFilters: {ItemFilter.isplayed: false});
-      expect(a.hashCode, b.hashCode);
+    test('differing search queries are not equal', () {
+      const a = LibraryFilterModel(searchQuery: "one");
+      const b = LibraryFilterModel(searchQuery: "two");
+      expect(a, isNot(b));
     });
   });
 
@@ -115,12 +115,12 @@ void main() {
       expect(cleared.officialRatings, {'PG': false});
       expect(cleared.years, {2020: false});
       expect(cleared.itemFilters, {ItemFilter.isplayed: false});
-      expect(cleared.favourites, isFalse);
-      expect(cleared.recursive, isTrue);
-      expect(cleared.hideEmptyShows, isFalse);
+      expect(cleared.favourites, isNull);
+      expect(cleared.recursive, isFalse);
+      expect(cleared.hideEmptyShows, isTrue);
     });
 
-    test('sortingOption, sortOrder, groupBy and types are untouched by clear()', () {
+    test('clear resets sorting, grouping and enabled types to defaults', () {
       const model = LibraryFilterModel(
         sortingOption: SortingOptions.communityRating,
         sortOrder: SortingOrder.descending,
@@ -128,10 +128,10 @@ void main() {
         types: {FladderItemType.movie: true},
       );
       final cleared = model.clear();
-      expect(cleared.sortingOption, SortingOptions.communityRating);
-      expect(cleared.sortOrder, SortingOrder.descending);
-      expect(cleared.groupBy, GroupBy.genres);
-      expect(cleared.types, {FladderItemType.movie: true});
+      expect(cleared.sortingOption, SortingOptions.sortName);
+      expect(cleared.sortOrder, SortingOrder.ascending);
+      expect(cleared.groupBy, GroupBy.none);
+      expect(cleared.types, {FladderItemType.movie: false});
     });
   });
 
@@ -211,13 +211,13 @@ void main() {
       expect(merged.studios, {a24: true, marvel: false});
     });
 
-    test('defaults recursive to true and favourites to false when the incoming filter leaves them unset', () {
+    test('uses recursive false and favourites false from an incoming default filter', () {
       const known = LibraryFilterModel(recursive: false, favourites: true);
       const incoming = LibraryFilterModel();
 
       final merged = known.mergeEnabledFrom(incoming);
 
-      expect(merged.recursive, isTrue);
+      expect(merged.recursive, isFalse);
       expect(merged.favourites, isFalse);
     });
   });

@@ -36,7 +36,7 @@ ItemBaseModel _poster(String id) {
 }
 
 ServerQueryResult _queryResult(List<ItemBaseModel> items) =>
-    ServerQueryResult(original: const [], items: items, totalRecordCount: items.length, startIndex: 0);
+    ServerQueryResult(items: items, totalRecordCount: items.length, startIndex: 0);
 
 class _FakeUser extends User {
   _FakeUser(this.initial);

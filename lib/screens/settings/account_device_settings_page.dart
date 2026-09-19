@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:driftfin/jellyfin/jellyfin_open_api.enums.swagger.dart' as enums;
 import 'package:driftfin/models/settings/settings_entry.dart';
 import 'package:driftfin/providers/config_sync_provider.dart';
+import 'package:driftfin/providers/incognito_mode_provider.dart';
 import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/providers/cultures_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
@@ -109,6 +110,12 @@ class _AccountDeviceSettingsPageState extends ConsumerState<AccountDeviceSetting
           context,
           SettingsLabelDivider(label: context.localized.settingsAccountSectionTitle),
           [
+            SettingsListTileCheckbox(
+              label: Text(context.localized.incognitoModeLocal),
+              value: user?.incognitoMode ?? false,
+              subLabel: Text(context.localized.incognitoModeDesc),
+              onChanged: (value) => ref.read(userProvider.notifier).toggleIncognitoMode(),
+            ),
             SettingsListTile(
               label: Text(context.localized.password),
               onTap: () => openPasswordResetDialog(context),
@@ -263,6 +270,30 @@ class _AccountDeviceSettingsPageState extends ConsumerState<AccountDeviceSetting
           context,
           SettingsLabelDivider(label: context.localized.advanced),
           [
+            SettingsListTile(
+              label: Text(context.localized.incognitoModeGlobal),
+              subLabel: Text(context.localized.incognitoModeDesc),
+              onTap: () => ref.read(incognitoModeProvider.notifier).state = !ref.read(incognitoModeProvider),
+              trailing: Switch(
+                value: ref.watch(incognitoModeProvider),
+                onChanged: (value) => ref.read(incognitoModeProvider.notifier).state = value,
+              ),
+            ),
+            if (defaultTargetPlatform == TargetPlatform.android)
+              Column(
+                children: [
+                  SettingsListTileCheckbox(
+                    label: Text(context.localized.leanBackModeTitle),
+                    subLabel: Text(context.localized.leanBackModeDesc),
+                    value: ref.watch(clientSettingsProvider.select((value) => value.forceLeanBackMode)),
+                    onChanged: (value) =>
+                        ref.read(clientSettingsProvider.notifier).setForceLeanBackMode(value ?? false),
+                  ),
+                  SettingsMessageBox(
+                    context.localized.leanBackModeInfo,
+                  ),
+                ],
+              ),
             if (AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad)
               SettingsListTile(
                 id: SettingId.useSystemIME,
@@ -307,11 +338,14 @@ class _AccountDeviceSettingsPageState extends ConsumerState<AccountDeviceSetting
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: ViewSize.values.map((e) {
                       final isCurrent = AdaptiveLayout.viewSizeOf(context) == e;
+                      final isEnabled =
+                          ref.watch(homeSettingsProvider.select((value) => value.layoutStates.contains(e)));
                       return Row(
                         spacing: 4,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(e.label(context)),
+                          Text(e.label(context),
+                              style: TextStyle(color: isEnabled ? null : Theme.of(context).disabledColor)),
                           if (isCurrent) const Icon(IconsaxPlusLinear.tick_circle, size: 16),
                         ],
                       );
@@ -351,11 +385,14 @@ class _AccountDeviceSettingsPageState extends ConsumerState<AccountDeviceSetting
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: LayoutMode.values.map((e) {
                       final isCurrent = AdaptiveLayout.layoutModeOf(context) == e;
+                      final isEnabled =
+                          ref.watch(homeSettingsProvider.select((value) => value.screenLayouts.contains(e)));
                       return Row(
                         spacing: 4,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(e.label(context)),
+                          Text(e.label(context),
+                              style: TextStyle(color: isEnabled ? null : Theme.of(context).disabledColor)),
                           if (isCurrent) const Icon(IconsaxPlusLinear.tick_circle, size: 16),
                         ],
                       );

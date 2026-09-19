@@ -25,6 +25,7 @@ const _testLayoutModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 class _FakeUser extends User {
@@ -32,7 +33,10 @@ class _FakeUser extends User {
   final AccountModel? initial;
 
   @override
-  AccountModel? build() => initial;
+  AccountModel? build() {
+    ref.onDispose(debouncer.dispose);
+    return initial;
+  }
 }
 
 AccountModel _accountWithFilters(List<LibraryFiltersModel> filters) {
@@ -101,11 +105,13 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byType(PopupMenuButton));
+    await tester.pumpAndSettle();
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
-    expect(find.byTooltip(l10n.addToHomeShelf), findsOneWidget);
+    expect(find.text(l10n.addToHomeShelf), findsOneWidget);
   });
 
-  testWidgets('shows the remove tooltip once the filter is already a home shelf', (tester) async {
+  testWidgets('shows the remove action once the filter is already a home shelf', (tester) async {
     final filter = LibraryFiltersModel(id: 'f1', name: 'Unwatched Sci-Fi', isFavourite: false, showOnHome: true);
     final container = await _containerWith([filter]);
     addTearDown(container.dispose);
@@ -114,8 +120,10 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byType(PopupMenuButton));
+    await tester.pumpAndSettle();
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
-    expect(find.byTooltip(l10n.removeFromHomeShelf), findsOneWidget);
+    expect(find.text(l10n.removeFromHomeShelf), findsOneWidget);
   });
 
   testWidgets('tapping the toggle saves the filter with showOnHome flipped', (tester) async {
@@ -127,11 +135,14 @@ void main() {
     await tester.tap(find.text('open'));
     await tester.pumpAndSettle();
 
+    await tester.tap(find.byType(PopupMenuButton));
+    await tester.pumpAndSettle();
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
-    await tester.tap(find.byTooltip(l10n.addToHomeShelf));
+    await tester.tap(find.text(l10n.addToHomeShelf));
     await tester.pumpAndSettle();
 
     final saved = container.read(userProvider)?.libraryFilters.first;
     expect(saved?.showOnHome, isTrue);
+    container.read(userProvider.notifier).debouncer.dispose();
   });
 }

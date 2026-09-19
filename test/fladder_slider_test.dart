@@ -17,6 +17,7 @@ const _touchModel = AdaptiveLayoutModel(
   controller: {},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 const _dpadModel = AdaptiveLayoutModel(
@@ -29,6 +30,7 @@ const _dpadModel = AdaptiveLayoutModel(
   controller: {},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 Widget _harness(

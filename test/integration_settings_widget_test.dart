@@ -28,6 +28,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 /// Test double so we can drive plugin-managed state without the network.

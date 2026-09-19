@@ -39,18 +39,20 @@ ItemBaseModel _item({
 
 void main() {
   group('SortingOptions.toSortBy', () {
-    test('always appends a trailing sortname tie-break', () {
-      expect(SortingOptions.communityRating.toSortBy, [dto.ItemSortBy.communityrating, dto.ItemSortBy.sortname]);
+    test('always appends a trailing sortname and name tie-breaks', () {
+      expect(SortingOptions.communityRating.toSortBy,
+          [dto.ItemSortBy.communityrating, dto.ItemSortBy.sortname, dto.ItemSortBy.name]);
     });
 
-    test('sortName itself ends up with a duplicated sortname entry', () {
-      expect(SortingOptions.sortName.toSortBy, [dto.ItemSortBy.sortname, dto.ItemSortBy.sortname]);
+    test('sortName itself ends up with a duplicated sortname entry before name', () {
+      expect(SortingOptions.sortName.toSortBy,
+          [dto.ItemSortBy.sortname, dto.ItemSortBy.name, dto.ItemSortBy.sortname, dto.ItemSortBy.name]);
     });
 
     test('multi-key options (releaseDate) keep both underlying keys plus the tie-break', () {
       expect(
         SortingOptions.releaseDate.toSortBy,
-        [dto.ItemSortBy.productionyear, dto.ItemSortBy.premieredate, dto.ItemSortBy.sortname],
+        [dto.ItemSortBy.productionyear, dto.ItemSortBy.premieredate, dto.ItemSortBy.sortname, dto.ItemSortBy.name],
       );
     });
   });

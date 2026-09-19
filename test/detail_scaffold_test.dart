@@ -22,6 +22,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 ItemBaseModel _item({String name = 'Test Movie', String id = 'id-1'}) => ItemBaseModel(

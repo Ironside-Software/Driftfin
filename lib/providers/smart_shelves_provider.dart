@@ -10,7 +10,8 @@ import 'package:driftfin/util/library_filter_query.dart';
 /// "everything from A24"). Re-runs the saved filter's query on every fetch,
 /// so the shelf always reflects the current library state.
 final smartShelvesProvider = FutureProvider<List<RecommendedModel>>((ref) async {
-  final savedFilters = ref.watch(userProvider.select((value) => value?.libraryFilters ?? const []));
+  final savedFilters = ref
+      .watch(userProvider.select((value) => value?.userSettings?.libraryFilters ?? value?.libraryFilters ?? const []));
   final shelves = savedFilters.where((filter) => filter.showOnHome).toList();
   if (shelves.isEmpty) return const [];
 

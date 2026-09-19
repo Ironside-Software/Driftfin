@@ -31,22 +31,21 @@ class _PipLifecycleControllerState extends ConsumerState<PipLifecycleController>
     if (!mounted) return;
     final state = ref.read(mediaPlaybackProvider).state;
     final autoEnter = ref.read(videoPlayerSettingsProvider).enablePictureInPicture;
-    _apply(state, autoEnter);
+    final isAudioPlayback = ref.read(playBackModel)?.isAudioPlayback ?? false;
+    _apply(state, autoEnter, isAudioPlayback: isAudioPlayback);
   }
 
-  /// PiP should only auto-enter when an actual video is loaded — not for audio
-  /// playback and not when nothing is playing at all (which would otherwise let
-  /// the OS pop a PiP window as soon as the app is backgrounded).
-  bool get _hasVideoPlayback {
-    final model = ref.read(playBackModel);
-    return model != null && !model.isAudioPlayback;
-  }
-
-  void _apply(VideoPlayerState state, bool autoEnter) {
+  void _apply(
+    VideoPlayerState state,
+    bool autoEnter, {
+    required bool isAudioPlayback,
+  }) {
     final manager = ref.read(pipManagerProvider);
-    final isVideo = _hasVideoPlayback;
-    if (isVideo && (state == VideoPlayerState.fullScreen || state == VideoPlayerState.minimized)) {
-      manager.enable(aspectWidth: 16.0, aspectHeight: 9.0, autoEnter: autoEnter);
+    final autoEnterAllowed = autoEnter && !isAudioPlayback;
+    if (ref.read(playBackModel) != null &&
+        !isAudioPlayback &&
+        (state == VideoPlayerState.fullScreen || state == VideoPlayerState.minimized)) {
+      manager.enable(aspectWidth: 16.0, aspectHeight: 9.0, autoEnter: autoEnterAllowed);
     } else {
       manager.disable();
     }
@@ -62,7 +61,8 @@ class _PipLifecycleControllerState extends ConsumerState<PipLifecycleController>
       (previous, next) {
         if (previous == next) return;
         final autoEnter = ref.read(videoPlayerSettingsProvider).enablePictureInPicture;
-        _apply(next, autoEnter);
+        final isAudioPlayback = ref.read(playBackModel)?.isAudioPlayback ?? false;
+        _apply(next, autoEnter, isAudioPlayback: isAudioPlayback);
       },
     );
     ref.listen<bool>(
@@ -70,7 +70,8 @@ class _PipLifecycleControllerState extends ConsumerState<PipLifecycleController>
       (previous, next) {
         if (previous == next) return;
         final state = ref.read(mediaPlaybackProvider).state;
-        _apply(state, next);
+        final isAudioPlayback = ref.read(playBackModel)?.isAudioPlayback ?? false;
+        _apply(state, next, isAudioPlayback: isAudioPlayback);
       },
     );
     // Re-evaluate whenever the active item changes (video started, swapped for

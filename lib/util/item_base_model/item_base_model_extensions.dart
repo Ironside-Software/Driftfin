@@ -19,10 +19,14 @@ import 'package:driftfin/models/items/series_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/external_player_provider.dart';
 import 'package:driftfin/providers/settings/home_settings_provider.dart';
+import 'package:driftfin/models/playback/playback_queue_source.dart';
+import 'package:driftfin/providers/audio_lyrics_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/collections/add_to_collection.dart';
+import 'package:driftfin/screens/details_screens/tracks_detail_screen.dart';
 import 'package:driftfin/screens/metadata/edit_item.dart';
 import 'package:driftfin/screens/metadata/identifty_screen.dart';
 import 'package:driftfin/screens/metadata/info_screen.dart';
@@ -92,6 +96,7 @@ extension ItemBaseModelsBooleans on List<ItemBaseModel> {
 enum ItemActions {
   play,
   externalPlayer,
+  showLyrics,
   addToQueue,
   instantMix,
   openShow,
@@ -218,11 +223,25 @@ extension ItemBaseModelExtensions on ItemBaseModel {
       if (!exclude.contains(ItemActions.instantMix))
         if (this is AudioModel || this is AlbumModel || this is ArtistModel)
           ItemActionButton(
-            action: () => switch (this) {
-              AudioModel audio => audio.playInstantMix(context, ref),
-              AlbumModel album => album.playInstantMix(context, ref),
-              ArtistModel artist => artist.playInstantMix(context, ref),
-              _ => Future.value(),
+            action: () {
+              final limit = 200;
+              final queueSource = switch (this) {
+                AudioModel audio => AudioInstantMixQueueSource(audioId: audio.id, limit: limit),
+                AlbumModel album => AlbumInstantMixQueueSource(albumId: album.id, limit: limit),
+                ArtistModel artist => ArtistInstantMixQueueSource(artistId: artist.id, limit: limit),
+                _ => null,
+              };
+
+              if (queueSource != null) {
+                return showTracksDetailsScreen(
+                  context: context,
+                  item: this,
+                  ref: ref,
+                  queueSource: queueSource,
+                );
+              } else {
+                return Future.value();
+              }
             },
             icon: const Icon(IconsaxPlusLinear.blend_2),
             label: Text(context.localized.instantMix),
@@ -484,6 +503,12 @@ extension ItemBaseModelExtensions on ItemBaseModel {
           },
           label: Text(context.localized.identify),
         ),
+      if (!exclude.contains(ItemActions.showLyrics) && this is AudioModel)
+        ItemActionButton(
+          action: () => _showTrackLyricsPopup(context, ref, this as AudioModel),
+          icon: const Icon(IconsaxPlusLinear.musicnote),
+          label: Text(context.localized.lyrics),
+        ),
       if (!exclude.contains(ItemActions.mediaInfo))
         ItemActionButton(
           icon: const Icon(IconsaxPlusLinear.info_circle),
@@ -537,4 +562,117 @@ extension ItemBaseModelExtensions on ItemBaseModel {
     final parsed = int.tryParse(value.toString());
     return parsed;
   }
+}
+
+Future<void> _showTrackLyricsPopup(BuildContext context, WidgetRef ref, AudioModel track) {
+  final providerState = ref.read(audioLyricsProvider);
+  final isCurrentProviderTrack = providerState.itemId == track.id && providerState.hasLyrics;
+
+  if (isCurrentProviderTrack) {
+    return _showTrackLyricsPopupWithTimeline(context, providerState.lines);
+  }
+
+  return showDialog<void>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(context.localized.lyrics),
+        content: SizedBox(
+          width: 540,
+          child: FutureBuilder(
+            future: ref.read(jellyApiProvider).audioItemIdLyricsGet(itemId: track.id),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 24),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              final response = snapshot.data;
+              final trackDuration = ref.read(playBackModel)?.item.overview.runTime ?? track.overview.runTime;
+              final lyricsState = AudioLyricsState(
+                rawLines: AudioLyricsTimelineBuilder.parseSyncedLines(response?.body),
+                trackDuration: trackDuration,
+              );
+              final timeline = lyricsState.lines;
+
+              return _buildLyricsTimelineList(context, timeline);
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(context.localized.close),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<void> _showTrackLyricsPopupWithTimeline(
+  BuildContext context,
+  List<SyncedLyricLine> timeline,
+) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(context.localized.lyrics),
+        content: SizedBox(
+          width: 540,
+          child: _buildLyricsTimelineList(context, timeline),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(context.localized.close),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget _buildLyricsTimelineList(BuildContext context, List<SyncedLyricLine> timeline) {
+  if (timeline.isEmpty) {
+    return Text(
+      context.localized.noSyncedLyrics,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+    );
+  }
+
+  return Scrollbar(
+    thumbVisibility: true,
+    child: ListView.separated(
+      shrinkWrap: true,
+      itemCount: timeline.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
+      itemBuilder: (context, index) {
+        final line = timeline[index];
+        if (line.isInstrumentalGap) {
+          return Row(
+            spacing: 4,
+            children: List.generate(
+              4,
+              (index) => Icon(
+                Icons.music_note_rounded,
+                size: 18,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          );
+        }
+
+        return SelectableText(
+          line.text,
+          style: Theme.of(context).textTheme.bodyLarge,
+        );
+      },
+    ),
+  );
 }

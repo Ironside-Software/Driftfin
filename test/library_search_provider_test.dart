@@ -66,7 +66,7 @@ void main() {
       addTearDown(c.dispose);
       final n = notifier(c);
       n.setSearch('cappybara');
-      expect(n.state.searchQuery, 'cappybara');
+      expect(n.state.filters.searchQuery, 'cappybara');
     });
 
     test('empty query is a no-op for search history but still updates state', () {
@@ -74,31 +74,31 @@ void main() {
       addTearDown(c.dispose);
       final n = notifier(c);
       n.setSearch('');
-      expect(n.state.searchQuery, '');
+      expect(n.state.filters.searchQuery, '');
     });
   });
 
   group('simple filter toggles', () {
-    test('toggleFavourite flips from default false to true and back', () {
+    test('setFavourites switches between null, true and false', () {
       final c = container();
       addTearDown(c.dispose);
       final n = notifier(c);
-      expect(n.state.filters.favourites, false);
-      n.toggleFavourite();
+      expect(n.state.filters.favourites, isNull);
+      n.setFavourites(n.state.filters.favourites != true);
       expect(n.state.filters.favourites, true);
-      n.toggleFavourite();
+      n.setFavourites(n.state.filters.favourites != true);
       expect(n.state.filters.favourites, false);
     });
 
-    test('toggleRecursive flips from default true to false and back', () {
+    test('toggleRecursive flips from default false to true and back', () {
       final c = container();
       addTearDown(c.dispose);
       final n = notifier(c);
-      expect(n.state.filters.recursive, true);
-      n.toggleRecursive();
       expect(n.state.filters.recursive, false);
       n.toggleRecursive();
       expect(n.state.filters.recursive, true);
+      n.toggleRecursive();
+      expect(n.state.filters.recursive, false);
     });
 
     test('toggleType toggles a single type key without affecting others', () {
@@ -185,17 +185,17 @@ void main() {
   });
 
   group('setters', () {
-    test('setViews replaces the views map and resets filters to default', () {
+    test('setViews replaces the views map and preserves filters', () {
       final c = container();
       addTearDown(c.dispose);
       final n = notifier(c);
       n.setSearch('something');
-      n.toggleFavourite();
+      n.setFavourites(n.state.filters.favourites != true);
       final view = _view('v1');
       n.setViews({view: true});
       expect(n.state.views[view], true);
-      expect(n.state.searchQuery, '');
-      expect(n.state.filters.favourites, false);
+      expect(n.state.filters.searchQuery, 'something');
+      expect(n.state.filters.favourites, true);
       expect(n.loadedFilters, false);
     });
 
@@ -294,56 +294,12 @@ void main() {
       addTearDown(c.dispose);
       final n = notifier(c);
       n.setSearch('term');
-      n.toggleFavourite();
+      n.setFavourites(n.state.filters.favourites != true);
       n.setGenres({'Action': true});
       n.clearAllFilters();
-      expect(n.state.searchQuery, '');
-      expect(n.state.filters.favourites, false);
+      expect(n.state.filters.searchQuery, '');
+      expect(n.state.filters.favourites, isNull);
       expect(n.state.filters.genres['Action'], false);
-    });
-  });
-
-  group('folder navigation', () {
-    test('setFolderId appends a new folder to folderOverwrite', () {
-      final c = container();
-      addTearDown(c.dispose);
-      final n = notifier(c);
-      final item = _item('f1', type: BaseItemKind.folder);
-      n.setFolderId(item);
-      expect(n.state.folderOverwrite, [item]);
-    });
-
-    test('setFolderId is a no-op if the item is already present', () {
-      final c = container();
-      addTearDown(c.dispose);
-      final n = notifier(c);
-      final item = _item('f1', type: BaseItemKind.folder);
-      n.setFolderId(item);
-      n.setFolderId(item);
-      expect(n.state.folderOverwrite.length, 1);
-    });
-
-    test('backToFolder truncates the folderOverwrite stack to the given item', () {
-      final c = container();
-      addTearDown(c.dispose);
-      final n = notifier(c);
-      final a = _item('a', type: BaseItemKind.folder);
-      final b = _item('b', type: BaseItemKind.folder);
-      final d = _item('d', type: BaseItemKind.folder);
-      n.setFolderId(a);
-      n.setFolderId(b);
-      n.setFolderId(d);
-      n.backToFolder(a);
-      expect(n.state.folderOverwrite, [a]);
-    });
-
-    test('clearFolderOverWrite empties the folder stack', () {
-      final c = container();
-      addTearDown(c.dispose);
-      final n = notifier(c);
-      n.setFolderId(_item('a', type: BaseItemKind.folder));
-      n.clearFolderOverWrite();
-      expect(n.state.folderOverwrite, isEmpty);
     });
   });
 
@@ -424,20 +380,19 @@ void main() {
       final c = container();
       addTearDown(c.dispose);
       final n = notifier(c);
-      n.setFolderId(_item('a', type: BaseItemKind.folder));
+      n.state = n.state.copyWith(folderOverwrite: {_item('a', type: BaseItemKind.folder): true});
       n.updateUserDataMain(const UserData(isFavourite: true));
-      expect(n.state.folderOverwrite.single.userData.isFavourite, true);
+      expect(n.state.folderOverwrite.keys.single.userData.isFavourite, true);
     });
 
     test('updateParentItem replaces folderOverwrite with a single item', () {
       final c = container();
       addTearDown(c.dispose);
       final n = notifier(c);
-      n.setFolderId(_item('a', type: BaseItemKind.folder));
-      n.setFolderId(_item('b', type: BaseItemKind.folder));
+      n.state = n.state.copyWith(folderOverwrite: {_item('a', type: BaseItemKind.folder): true});
       final replacement = _item('c', type: BaseItemKind.folder);
       n.updateParentItem(replacement);
-      expect(n.state.folderOverwrite, [replacement]);
+      expect(n.state.folderOverwrite.keys, [replacement]);
     });
   });
 
@@ -447,7 +402,7 @@ void main() {
       addTearDown(c.dispose);
       final n = notifier(c);
       const incoming = LibraryFilterModel(favourites: true, sortingOption: SortingOptions.random);
-      n.loadModel(incoming);
+      n.loadModel(LibraryFiltersModel(id: 'saved', name: 'Saved', isFavourite: false, filter: incoming));
       expect(n.state.filters.favourites, true);
       expect(n.state.filters.sortingOption, SortingOptions.random);
     });
@@ -505,7 +460,7 @@ void main() {
       addTearDown(c.dispose);
       final key = const Key('test-key');
       c.read(librarySearchProvider(key).notifier).setSearch('via family');
-      expect(c.read(librarySearchProvider(key)).searchQuery, 'via family');
+      expect(c.read(librarySearchProvider(key)).filters.searchQuery, 'via family');
     });
   });
 }

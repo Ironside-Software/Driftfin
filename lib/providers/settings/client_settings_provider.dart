@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:driftfin/bootstrap/app_bootstrap.dart';
+import 'package:driftfin/models/settings/arguments_model.dart';
 import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/models/settings/key_combinations.dart';
+import 'package:driftfin/providers/arguments_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
 import 'package:driftfin/providers/update_notifications_provider.dart';
@@ -61,6 +64,8 @@ class ClientSettingsNotifier extends StateNotifier<ClientSettingsModel> {
   void setAmoledBlack(bool? value) => state = state.copyWith(amoledBlack: value ?? false);
 
   void setDerivedColorsFromItem(bool? value) => state = state.copyWith(deriveColorsFromItem: value ?? false);
+
+  void setDynamicPosterColors(bool? value) => state = state.copyWith(dynamicPosterColors: value ?? false);
 
   void useSystemIME(bool? value) => state = state.copyWith(useSystemIME: value ?? false);
 
@@ -120,4 +125,11 @@ class ClientSettingsNotifier extends StateNotifier<ClientSettingsModel> {
   void setEnableCrashReporting(bool value) => state = state.copyWith(enableCrashReporting: value);
 
   void setReduceAnimations(bool value) => state = state.copyWith(reduceAnimations: value);
+  Future<void> setForceLeanBackMode(bool value) async {
+    final leanBackIsAvailable = await resolveLeanBackEnabled();
+    final newLeanBackMode = leanBackIsAvailable ? true : value;
+    state = state.copyWith(forceLeanBackMode: newLeanBackMode);
+    leanBackMode = newLeanBackMode;
+    ref.read(argumentsStateProvider.notifier).update((state) => state.copyWith(leanBackMode: newLeanBackMode));
+  }
 }

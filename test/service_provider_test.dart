@@ -7,6 +7,7 @@ import 'package:driftfin/jellyfin/jellyfin_open_api.enums.swagger.dart' as enums
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/account_model.dart';
 import 'package:driftfin/models/credentials_model.dart';
+import 'package:driftfin/models/library_filters_model.dart';
 import 'package:driftfin/models/login_screen_model.dart';
 import 'package:driftfin/providers/auth_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
@@ -54,6 +55,21 @@ AccountModel _accountWithUrl(String url) {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  test('custom config retains legacy saved filters only when the server key is absent', () async {
+    final legacy = LibraryFiltersModel(id: 'legacy', name: 'Home shelf', isFavourite: false, showOnHome: true);
+    final container = _containerWith(user: _accountWithUrl('http://server.local').copyWith(libraryFilters: [legacy]));
+    addTearDown(container.dispose);
+    final rawApi = _FakeRawSessionsApi();
+    final service = JellyService(_refOf(container), rawApi);
+
+    final migrated = (await service.getCustomConfig()).body!;
+    expect(migrated.libraryFilters.single.id, 'legacy');
+    expect(migrated.libraryFilters.single.showOnHome, isTrue);
+
+    rawApi.customPrefs = {'libraryFilters': '[]'};
+    expect((await service.getCustomConfig()).body!.libraryFilters, isEmpty);
+  });
+
   group('ServerQueryResult.fromBaseQuery', () {
     test('maps items, totalRecordCount and startIndex from the base query', () {
       final container = ProviderContainer();
@@ -69,7 +85,6 @@ void main() {
 
       final result = ServerQueryResult.fromBaseQuery(baseQuery, _refOf(container));
 
-      expect(result.original, [dto1, dto2]);
       expect(result.items, hasLength(2));
       expect(result.items.map((e) => e.id), ['a', 'b']);
       expect(result.totalRecordCount, 42);
@@ -83,7 +98,6 @@ void main() {
       const baseQuery = BaseItemDtoQueryResult(items: null, totalRecordCount: null, startIndex: null);
       final result = ServerQueryResult.fromBaseQuery(baseQuery, _refOf(container));
 
-      expect(result.original, isEmpty);
       expect(result.items, isEmpty);
       expect(result.totalRecordCount, isNull);
       expect(result.startIndex, isNull);
@@ -93,7 +107,6 @@ void main() {
   group('ServerQueryResult.copyWith', () {
     test('overrides only the provided fields', () {
       final original = ServerQueryResult(
-        original: const [],
         items: const [],
         totalRecordCount: 1,
         startIndex: 0,
@@ -103,14 +116,11 @@ void main() {
 
       expect(copy.totalRecordCount, 99);
       expect(copy.startIndex, 0);
-      expect(copy.original, original.original);
       expect(copy.items, original.items);
     });
 
     test('with no arguments returns equivalent values', () {
-      final dto = const BaseItemDto(id: 'x');
       final original = ServerQueryResult(
-        original: [dto],
         items: const [],
         totalRecordCount: 3,
         startIndex: 1,
@@ -118,7 +128,6 @@ void main() {
 
       final copy = original.copyWith();
 
-      expect(copy.original, original.original);
       expect(copy.items, original.items);
       expect(copy.totalRecordCount, 3);
       expect(copy.startIndex, 1);
@@ -384,6 +393,16 @@ JellyfinOpenApi fakeJellyfinOpenApiStub() => JellyfinOpenApi.create();
 class _FakeRawSessionsApi extends JellyfinOpenApi {
   @override
   Type get definitionType => throw UnimplementedError();
+
+  Map<String, String> customPrefs = {};
+
+  @override
+  Future<Response<DisplayPreferencesDto>> displayPreferencesDisplayPreferencesIdGet({
+    required String? displayPreferencesId,
+    String? userId,
+    required String? $client,
+  }) async =>
+      Response(http.Response('', 200), DisplayPreferencesDto(customPrefs: customPrefs));
 
   List<SessionInfoDto> sessions = const [];
   String? capturedControllableByUserId;

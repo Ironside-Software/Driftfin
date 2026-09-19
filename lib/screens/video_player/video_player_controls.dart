@@ -9,6 +9,7 @@ import 'package:async/async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:screen_brightness/screen_brightness.dart';
+import 'package:volume_controller/volume_controller.dart';
 
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/media_segments_model.dart';
@@ -279,7 +280,7 @@ class _DesktopControlsState extends ConsumerState<DesktopControls> {
           child: Column(
             children: [
               const Align(
-                alignment: Alignment.topRight,
+                alignment: Alignment.topCenter,
                 child: DefaultTitleBar(),
               ),
               Padding(
@@ -921,7 +922,7 @@ class _DesktopControlsState extends ConsumerState<DesktopControls> {
     _deactivateSpeedBoost();
   }
 
-  void _handleVerticalDragStart(DragStartDetails details) {
+  Future<void> _handleVerticalDragStart(DragStartDetails details) async {
     final settings = ref.read(videoPlayerSettingsProvider);
     if (!settings.enableEdgeGestures) return;
 
@@ -941,7 +942,10 @@ class _DesktopControlsState extends ConsumerState<DesktopControls> {
     if (isBrightness) {
       _vDragStartValue = settings.screenBrightness ?? 1.0;
     } else {
-      _vDragStartValue = settings.volume / 100;
+      final currentVolume = ({TargetPlatform.android, TargetPlatform.iOS}.contains(defaultTargetPlatform))
+          ? (await VolumeController.instance.getVolume())
+          : settings.volume / 100;
+      _vDragStartValue = currentVolume;
     }
     _vDragLastValue = _vDragStartValue;
   }

@@ -24,6 +24,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 const _desktopAdaptiveModel = AdaptiveLayoutModel(
@@ -36,6 +37,7 @@ const _desktopAdaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 PhotoModel _photo({String id = 'photo-1', String name = 'A Photo', bool favourite = false}) => PhotoModel(
@@ -95,7 +97,8 @@ void main() {
     await tester.pump();
 
     expect(find.text('A Photo'), findsOneWidget);
-    expect(find.text('1 / 3 '), findsOneWidget);
+    expect(find.text('1 / '), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
   });
 
   testWidgets('renders on desktop layout with fullscreen button', (tester) async {
@@ -110,7 +113,7 @@ void main() {
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    expect(find.textContaining('-'), findsOneWidget);
+    expect(find.text('1 / '), findsOneWidget);
   });
 
   testWidgets('shows filled heart icon when the photo is a favourite', (tester) async {
