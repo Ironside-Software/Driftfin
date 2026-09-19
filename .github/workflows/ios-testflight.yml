@@ -2,8 +2,8 @@ name: iOS TestFlight
 
 # Builds the production iOS flavor, signs it with the Apple credentials stored
 # in the testflight environment, and uploads the IPA to App Store Connect.
-# This workflow is intentionally manual by default. A tag named ios-v* can be
-# used for a deliberate release once the first manual run is proven.
+# This workflow is intentionally manual-only. It uploads builds to TestFlight;
+# it never submits a build for App Review or releases the app to the App Store.
 
 on:
   workflow_dispatch:
@@ -17,9 +17,6 @@ on:
         description: Optional TestFlight What to Test notes
         required: false
         type: string
-  push:
-    tags:
-      - "ios-v*"
 
 permissions:
   contents: read
