@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.enums.swagger.dart' as enums;
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
@@ -35,10 +36,7 @@ class HomePreferencesNotifier extends StateNotifier<HomePreferencesModel> {
     final userConfig = user?.userConfiguration;
     final views = ref.read(viewsProvider).views;
 
-    final orderedLibraryIds = _buildOrderedLibraryIds(
-      userConfig?.orderedViews ?? [],
-      views.map((v) => v.id).toList(),
-    );
+    final orderedLibraryIds = _buildOrderedLibraryIds(userConfig?.orderedViews ?? [], views.map((v) => v.id).toList());
 
     final foldersResponse = await api.libraryMediaFolders();
     final allFolders = foldersResponse.body?.items ?? [];
@@ -66,10 +64,7 @@ class HomePreferencesNotifier extends StateNotifier<HomePreferencesModel> {
     _debouncer.run(save);
   }
 
-  List<String> _buildOrderedLibraryIds(
-    List<String> serverOrder,
-    List<String> availableIds,
-  ) {
+  List<String> _buildOrderedLibraryIds(List<String> serverOrder, List<String> availableIds) {
     final ordered = <String>[];
     for (final id in serverOrder) {
       if (availableIds.contains(id)) {

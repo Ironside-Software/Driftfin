@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -87,7 +88,7 @@ void main() {
     if (tempDir.existsSync()) tempDir.deleteSync(recursive: true);
   });
 
-  final credentials = CredentialsModel.internal(url: 'http://server', deviceId: 'device-1');
+  final credentials = CredentialsModel(url: 'http://server', deviceId: 'device-1');
   final user = AccountModel(
     name: 'Tester',
     id: 'user-1',
@@ -104,11 +105,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  Future<void> pumpPage(
-    WidgetTester tester,
-    Widget page, {
-    List<Override> overrides = const [],
-  }) async {
+  Future<void> pumpPage(WidgetTester tester, Widget page, {List<Override> overrides = const []}) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(
@@ -121,10 +118,7 @@ void main() {
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: AdaptiveLayout(
-            data: _adaptiveModel,
-            child: page,
-          ),
+          home: AdaptiveLayout(data: _adaptiveModel, child: page),
         ),
       ),
     );
@@ -175,9 +169,7 @@ void main() {
     await pumpPage(
       tester,
       const DownloadsSettingsPage(),
-      overrides: [
-        syncProvider.overrideWith((ref) => SyncNotifier(ref, tempDir)),
-      ],
+      overrides: [syncProvider.overrideWith((ref) => SyncNotifier(ref, tempDir))],
     );
 
     expect(find.text(l10n.settingsDownloadsOfflineTitle), findsWidgets);
@@ -188,9 +180,7 @@ void main() {
     await pumpPage(
       tester,
       const IntegrationsSettingsPage(),
-      overrides: [
-        seerrUserProvider.overrideWith(() => _FakeSeerrUser()),
-      ],
+      overrides: [seerrUserProvider.overrideWith(() => _FakeSeerrUser())],
     );
 
     expect(find.text(l10n.settingsIntegrationsTitle), findsWidgets);
@@ -206,9 +196,7 @@ void main() {
     await pumpPage(
       tester,
       const AccountDeviceSettingsPage(),
-      overrides: [
-        culturesProvider.overrideWith(() => _FakeCultures()),
-      ],
+      overrides: [culturesProvider.overrideWith(() => _FakeCultures())],
     );
 
     expect(find.text(l10n.settingsAccountDeviceTitle), findsWidgets);

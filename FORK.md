@@ -42,7 +42,7 @@ Tips that make merges painless:
 - If a merge conflict is *only* `package:fladder/` vs `package:driftfin/`, you can
   take **either** side and then run `tool/rebrand.sh` — it normalizes everything to
   `driftfin` regardless.
-- Always use **`fvm flutter`** (pinned 3.35.7 via `.fvmrc`), not a system `flutter`.
+- Always use **`fvm flutter`** (pinned 3.47.5 via `.fvmrc`), not a system `flutter`.
 
 ## Releasing
 

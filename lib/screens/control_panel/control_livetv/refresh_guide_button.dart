@@ -19,10 +19,7 @@ class RefreshGuideButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeTasks = ref.watch(controlActiveTasksProvider);
-    final refreshTask = activeTasks.firstWhere(
-      (task) => task.id == refreshGuideTaskId,
-      orElse: () => const TaskInfo(),
-    );
+    final refreshTask = activeTasks.firstWhere((task) => task.id == refreshGuideTaskId, orElse: () => const TaskInfo());
     final isRunning = refreshTask.state == TaskState.running;
     final progress = refreshTask.currentProgressPercentage;
 
@@ -84,17 +81,13 @@ class RefreshGuideButton extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    "${progress?.toStringAsFixed(1) ?? '0'}%",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  Text("${progress?.toStringAsFixed(1) ?? '0'}%", style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
               Text(
                 refreshTask.name ?? context.localized.refresh,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.65),
-                    ),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.65)),
               ),
             ],
           ),

@@ -21,10 +21,7 @@ import 'package:driftfin/util/size_formatting.dart';
 
 class SyncListItem extends ConsumerWidget {
   final SyncedItem syncedItem;
-  const SyncListItem({
-    required this.syncedItem,
-    super.key,
-  });
+  const SyncListItem({required this.syncedItem, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,9 +40,7 @@ class SyncListItem extends ConsumerWidget {
             color: Theme.of(context).colorScheme.errorContainer,
             child: const Padding(
               padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [Icon(IconsaxPlusBold.trash)],
-              ),
+              child: Row(children: [Icon(IconsaxPlusBold.trash)]),
             ),
           ),
           direction: DismissDirection.startToEnd,
@@ -54,19 +49,20 @@ class SyncListItem extends ConsumerWidget {
               await _showPlaylistDeleteDialog(context, ref, syncedItem);
             } else {
               await showDefaultAlertDialog(
-                  context,
-                  context.localized.deleteItem(baseItem?.detailedName(context.localized) ?? ""),
-                  context.localized.syncDeletePopupPermanent,
-                  (context) async {
-                    ref.read(syncProvider.notifier).removeSync(context, syncedItem);
-                    Navigator.of(context).pop();
-                    return true;
-                  },
-                  context.localized.delete,
-                  (context) async {
-                    Navigator.of(context).pop();
-                  },
-                  context.localized.cancel);
+                context,
+                context.localized.deleteItem(baseItem?.detailedName(context.localized) ?? ""),
+                context.localized.syncDeletePopupPermanent,
+                (context) async {
+                  ref.read(syncProvider.notifier).removeSync(context, syncedItem);
+                  Navigator.of(context).pop();
+                  return true;
+                },
+                context.localized.delete,
+                (context) async {
+                  Navigator.of(context).pop();
+                },
+                context.localized.cancel,
+              );
             }
             return false;
           },
@@ -88,11 +84,9 @@ class SyncListItem extends ConsumerWidget {
                       decoration: FladderTheme.defaultPosterDecoration,
                       clipBehavior: Clip.hardEdge,
                       child: AspectRatio(
-                          aspectRatio: baseItem?.primaryRatio ?? 0.67,
-                          child: DriftfinImage(
-                            image: baseItem?.getPosters?.primary,
-                            fit: BoxFit.cover,
-                          )),
+                        aspectRatio: baseItem?.primaryRatio ?? 0.67,
+                        child: DriftfinImage(image: baseItem?.getPosters?.primary, fit: BoxFit.cover),
+                      ),
                     ),
                     Expanded(
                       child: FutureBuilder(
@@ -120,22 +114,20 @@ class SyncListItem extends ConsumerWidget {
                                     ),
                                   ),
                                   IgnorePointer(
-                                    child: SyncSubtitle(
-                                      syncItem: syncedItem,
-                                      children: nestedChildren,
-                                    ),
+                                    child: SyncSubtitle(syncItem: syncedItem, children: nestedChildren),
                                   ),
                                   IgnorePointer(
                                     child: Consumer(
                                       builder: (context, ref, child) => SyncLabel(
                                         label: context.localized.totalSize(
-                                            ref.watch(syncSizeProvider(syncedItem, nestedChildren)).byteFormat ?? '--'),
+                                          ref.watch(syncSizeProvider(syncedItem, nestedChildren)).byteFormat ?? '--',
+                                        ),
                                         status: combinedStream?.status ?? TaskStatus.notFound,
                                       ),
                                     ),
                                   ),
                                   if (combinedStream != null && combinedStream.hasDownload == true)
-                                    SyncProgressBar(item: syncedItem, task: combinedStream)
+                                    SyncProgressBar(item: syncedItem, task: combinedStream),
                                 ],
                               );
                             },
@@ -149,7 +141,7 @@ class SyncListItem extends ConsumerWidget {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -162,11 +154,7 @@ class SyncListItem extends ConsumerWidget {
 ///
 /// The user can cancel, keep linked tracks (delete only the playlist entry),
 /// or remove linked tracks alongside the playlist entry.
-Future<void> _showPlaylistDeleteDialog(
-  BuildContext context,
-  WidgetRef ref,
-  SyncedItem item,
-) {
+Future<void> _showPlaylistDeleteDialog(BuildContext context, WidgetRef ref, SyncedItem item) {
   return showDialog(
     context: context,
     builder: (dialogContext) {

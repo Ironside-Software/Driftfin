@@ -25,12 +25,12 @@ enum MetaEditOptions {
   const MetaEditOptions();
 
   String label(BuildContext context) => switch (this) {
-        MetaEditOptions.general => context.localized.general,
-        MetaEditOptions.primary => context.localized.primary,
-        MetaEditOptions.logo => context.localized.logo(1),
-        MetaEditOptions.backdrops => context.localized.backdrop(1),
-        MetaEditOptions.advanced => context.localized.advanced
-      };
+    MetaEditOptions.general => context.localized.general,
+    MetaEditOptions.primary => context.localized.primary,
+    MetaEditOptions.logo => context.localized.logo(1),
+    MetaEditOptions.backdrops => context.localized.backdrop(1),
+    MetaEditOptions.advanced => context.localized.advanced,
+  };
 }
 
 Future<ItemBaseModel?> showEditItemPopup(
@@ -130,11 +130,10 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
                 ),
               ),
               IconButton(
-                  autofocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
-                  onPressed: () => refreshEditor(),
-                  icon: const Icon(
-                    IconsaxPlusLinear.refresh,
-                  ))
+                autofocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
+                onPressed: () => refreshEditor(),
+                icon: const Icon(IconsaxPlusLinear.refresh),
+              ),
             ],
           ),
         ),
@@ -142,12 +141,7 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: SegmentedButton(
             segments: widgets.keys
-                .map(
-                  (value) => ButtonSegment(
-                    value: value,
-                    label: Text(value.label(context)),
-                  ),
-                )
+                .map((value) => ButtonSegment(value: value, label: Text(value.label(context))))
                 .toList(),
             selected: {widgets.keys.elementAt(selectedTabIndex)},
             showSelectedIcon: false,
@@ -158,11 +152,7 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
             },
           ),
         ),
-        Flexible(
-          child: AnimatedFadeSize(
-            child: widgets.values.elementAt(selectedTabIndex),
-          ),
-        ),
+        Flexible(child: AnimatedFadeSize(child: widgets.values.elementAt(selectedTabIndex))),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 16),
           child: Row(
@@ -191,13 +181,15 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
                         width: 21,
                         height: 21,
                         child: CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).colorScheme.onPrimary, strokeCap: StrokeCap.round),
+                          backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                          strokeCap: StrokeCap.round,
+                        ),
                       )
                     : Text(context.localized.save),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

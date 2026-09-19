@@ -15,11 +15,7 @@ import 'package:driftfin/util/window_actions.dart';
 class GlobalHotkeys extends ConsumerWidget {
   final Widget child;
   final Set<GlobalHotKeys> enabledHotkeys;
-  const GlobalHotkeys({
-    required this.child,
-    required this.enabledHotkeys,
-    super.key,
-  });
+  const GlobalHotkeys({required this.child, required this.enabledHotkeys, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

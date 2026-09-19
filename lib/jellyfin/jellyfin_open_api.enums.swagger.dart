@@ -1,3 +1,6 @@
+// coverage:ignore-file
+// ignore_for_file: type=lint
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:collection/collection.dart';
 
@@ -2586,9 +2589,7 @@ enum AudioItemIdHls1PlaylistIdSegmentIdContainerGetSubtitleMethod {
 
   final String? value;
 
-  const AudioItemIdHls1PlaylistIdSegmentIdContainerGetSubtitleMethod(
-    this.value,
-  );
+  const AudioItemIdHls1PlaylistIdSegmentIdContainerGetSubtitleMethod(this.value);
 }
 
 enum AudioItemIdHls1PlaylistIdSegmentIdContainerGetContext {
@@ -2724,9 +2725,7 @@ enum VideosItemIdHls1PlaylistIdSegmentIdContainerGetSubtitleMethod {
 
   final String? value;
 
-  const VideosItemIdHls1PlaylistIdSegmentIdContainerGetSubtitleMethod(
-    this.value,
-  );
+  const VideosItemIdHls1PlaylistIdSegmentIdContainerGetSubtitleMethod(this.value);
 }
 
 enum VideosItemIdHls1PlaylistIdSegmentIdContainerGetContext {
@@ -3682,9 +3681,7 @@ enum ItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayed
 
   final String? value;
 
-  const ItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountGetFormat(
-    this.value,
-  );
+  const ItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountGetFormat(this.value);
 }
 
 enum ItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountHeadImageType {
@@ -3744,9 +3741,7 @@ enum ItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayed
 
   final String? value;
 
-  const ItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountHeadFormat(
-    this.value,
-  );
+  const ItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountHeadFormat(this.value);
 }
 
 enum ItemsItemIdImagesImageTypeImageIndexIndexPostImageType {

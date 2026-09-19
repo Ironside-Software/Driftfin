@@ -64,7 +64,7 @@ void main() {
     id: 'user-1',
     avatar: '',
     lastUsed: DateTime(2024),
-    credentials: CredentialsModel.internal(url: 'http://server', deviceId: 'device-1'),
+    credentials: CredentialsModel(url: 'http://server', deviceId: 'device-1'),
     userSettings: UserSettings(),
   );
 
@@ -75,11 +75,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  Future<void> pumpAndRefresh(
-    WidgetTester tester,
-    ServerIntegrationConfigStatus status, {
-    String? detail,
-  }) async {
+  Future<void> pumpAndRefresh(WidgetTester tester, ServerIntegrationConfigStatus status, {String? detail}) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(
@@ -88,8 +84,9 @@ void main() {
           sharedPreferencesProvider.overrideWithValue(prefs),
           userProvider.overrideWith(() => _FakeUser(user)),
           seerrUserProvider.overrideWith(() => _FakeSeerrUser()),
-          serverIntegrationConfigProvider
-              .overrideWith((ref) => _FakeDiagNotifier(ref, (status: status, detail: detail))),
+          serverIntegrationConfigProvider.overrideWith(
+            (ref) => _FakeDiagNotifier(ref, (status: status, detail: detail)),
+          ),
         ],
         // AdaptiveLayout above MaterialApp so the DriftfinSnack overlay resolves it.
         child: const AdaptiveLayout(

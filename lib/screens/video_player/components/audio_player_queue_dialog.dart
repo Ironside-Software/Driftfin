@@ -16,11 +16,7 @@ import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/wrappers/media_control_wrapper.dart';
 
-typedef QueueSectionReorderCallback = Future<void> Function(
-  AudioQueueSection section,
-  int oldIndex,
-  int newIndex,
-);
+typedef QueueSectionReorderCallback = Future<void> Function(AudioQueueSection section, int oldIndex, int newIndex);
 
 void showAudioQueueDialog(
   BuildContext context, {
@@ -33,10 +29,7 @@ void showAudioQueueDialog(
     context: context,
     builder: (context) {
       return Dialog(
-        child: AudioQueueDialog(
-          onSectionReorder: onSectionReorder,
-          playSelected: playSelected,
-        ),
+        child: AudioQueueDialog(onSectionReorder: onSectionReorder, playSelected: playSelected),
       );
     },
   );
@@ -46,11 +39,7 @@ class AudioQueueDialog extends ConsumerWidget {
   final QueueSectionReorderCallback onSectionReorder;
   final Function(ItemBaseModel item) playSelected;
 
-  const AudioQueueDialog({
-    super.key,
-    required this.onSectionReorder,
-    required this.playSelected,
-  });
+  const AudioQueueDialog({super.key, required this.onSectionReorder, required this.playSelected});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -102,23 +91,11 @@ class _AudioQueueDialogBodyState extends ConsumerState<_AudioQueueDialogBody> {
     Offset globalPosition, {
     required Future<void> Function() removeAction,
   }) async {
-    final itemActions = item.generateActions(
-      context,
-      ref,
-      exclude: {
-        ItemActions.play,
-        ItemActions.refreshMetaData,
-      },
-    );
+    final itemActions = item.generateActions(context, ref, exclude: {ItemActions.play, ItemActions.refreshMetaData});
 
     await showMenu(
       context: context,
-      position: RelativeRect.fromLTRB(
-        globalPosition.dx,
-        globalPosition.dy,
-        globalPosition.dx,
-        globalPosition.dy,
-      ),
+      position: RelativeRect.fromLTRB(globalPosition.dx, globalPosition.dy, globalPosition.dx, globalPosition.dy),
       items: [
         ItemActionButton(
           label: Text(context.localized.removeFromQueue),
@@ -184,18 +161,12 @@ class _AudioQueueDialogBodyState extends ConsumerState<_AudioQueueDialogBody> {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () => context.maybePop(),
-                  icon: const Icon(Icons.close_rounded),
-                ),
+                IconButton(onPressed: () => context.maybePop(), icon: const Icon(Icons.close_rounded)),
               ],
             ),
             const Divider(),
             if (nowPlaying != null) ...[
-              _QueueSectionHeader(
-                icon: IconsaxPlusBold.play,
-                title: context.localized.nowPlaying,
-              ),
+              _QueueSectionHeader(icon: IconsaxPlusBold.play, title: context.localized.nowPlaying),
               _QueueTile(
                 item: nowPlaying,
                 onTap: () {
@@ -239,11 +210,7 @@ class _AudioQueueDialogBodyState extends ConsumerState<_AudioQueueDialogBody> {
                           _QueueSortList(
                             items: nextUpItems,
                             onReorder: (oldIndex, newIndex) {
-                              widget.onSectionReorder(
-                                AudioQueueSection.nextUp,
-                                oldIndex,
-                                newIndex,
-                              );
+                              widget.onSectionReorder(AudioQueueSection.nextUp, oldIndex, newIndex);
                             },
                             onTapItem: (item) {
                               widget.playSelected(item);
@@ -260,19 +227,13 @@ class _AudioQueueDialogBodyState extends ConsumerState<_AudioQueueDialogBody> {
                       ),
                     ),
                   ],
-                  _QueueSectionHeader(
-                    icon: IconsaxPlusBold.row_vertical,
-                    title: context.localized.queue,
-                  ),
+                  _QueueSectionHeader(icon: IconsaxPlusBold.row_vertical, title: context.localized.queue),
                   if (existingItems.isEmpty)
                     Opacity(
                       opacity: 0.6,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        child: Text(
-                          context.localized.queueIsEmpty,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
+                        child: Text(context.localized.queueIsEmpty, style: Theme.of(context).textTheme.bodyMedium),
                       ),
                     )
                   else
@@ -286,14 +247,13 @@ class _AudioQueueDialogBodyState extends ConsumerState<_AudioQueueDialogBody> {
                         onShowActions: (globalPosition) => _showItemActionsMenu(
                           item,
                           globalPosition,
-                          removeAction: () => ref.read(videoPlayerProvider.notifier).removeAudioQueueSectionItem(
-                                AudioQueueSection.existing,
-                                index,
-                              ),
+                          removeAction: () => ref
+                              .read(videoPlayerProvider.notifier)
+                              .removeAudioQueueSectionItem(AudioQueueSection.existing, index),
                         ),
                         dragIndex: null,
                       ),
-                    )
+                    ),
                 ],
               ),
             ),
@@ -322,17 +282,10 @@ class _QueueSectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.8,
-                  ),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
             ),
           ),
-          if (trailing != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: trailing!,
-            ),
+          if (trailing != null) Padding(padding: const EdgeInsets.only(left: 8), child: trailing!),
         ],
       ),
     );
@@ -359,7 +312,8 @@ class _QueueSortList extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       buildDefaultDragHandles: false,
       itemCount: items.length,
-      onReorder: onReorder,
+      // Queue callbacks still use insertion indices from before the item is removed.
+      onReorderItem: (oldIndex, newIndex) => onReorder(oldIndex, newIndex > oldIndex ? newIndex + 1 : newIndex),
       itemBuilder: (context, index) {
         return _QueueTile(
           key: ValueKey('${items[index].id}-$index'),
@@ -416,23 +370,14 @@ class _QueueTile extends StatelessWidget {
           item.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: isCurrent ? FontWeight.bold : null,
-              ),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: isCurrent ? FontWeight.bold : null),
         ),
-        subtitle: Text(
-          item.subTextShort(context.localized) ?? '',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        subtitle: Text(item.subTextShort(context.localized) ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
         trailing: isCurrent
             ? Icon(Icons.play_arrow_rounded, color: Theme.of(context).colorScheme.primary)
             : dragIndex != null
-                ? ReorderableDragStartListener(
-                    index: dragIndex!,
-                    child: const Icon(Icons.drag_indicator_rounded),
-                  )
-                : null,
+            ? ReorderableDragStartListener(index: dragIndex!, child: const Icon(Icons.drag_indicator_rounded))
+            : null,
         onTap: onTap,
       ),
     );

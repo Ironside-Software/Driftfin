@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:driftfin/models/item_base_model.dart';
@@ -62,18 +63,12 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
     }
 
     settingsChanged?.close();
-    settingsChanged = ref.listen(
-      videoPlayerSettingsProvider,
-      (previous, next) {
-        final currentItem = ref.read(playBackModel)?.item;
-        if (currentItem != null) {
-          state.applyReplayGain(
-            currentItem,
-            settings: next,
-          );
-        }
-      },
-    );
+    settingsChanged = ref.listen(videoPlayerSettingsProvider, (previous, next) {
+      final currentItem = ref.read(playBackModel)?.item;
+      if (currentItem != null) {
+        state.applyReplayGain(currentItem, settings: next);
+      }
+    });
 
     final subscription = state.stateStream.listen((value) {
       updateBuffering(value.buffering);
@@ -104,7 +99,9 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
       final position = playbackState.position;
       final wasPlaying = playbackState.playing;
 
-      final newModel = await ref.read(playbackModelHelper).createPlaybackModel(
+      final newModel = await ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
             null,
             currentModel.item,
             oldModel: currentModel,
@@ -125,22 +122,12 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
       mediaState.update((state) => state.buffering == event ? state : state.copyWith(buffering: event));
 
   Future<void> updateBuffer(Duration buffer) async {
-    mediaState.update(
-      (state) => (state.buffer - buffer).inSeconds.abs() < 1
-          ? state
-          : state.copyWith(
-              buffer: buffer,
-            ),
-    );
+    mediaState.update((state) => (state.buffer - buffer).inSeconds.abs() < 1 ? state : state.copyWith(buffer: buffer));
   }
 
   Future<void> updateDuration(Duration duration) async {
     mediaState.update((state) {
-      return (state.duration - duration).inSeconds.abs() < 1
-          ? state
-          : state.copyWith(
-              duration: duration,
-            );
+      return (state.duration - duration).inSeconds.abs() < 1 ? state : state.copyWith(duration: duration);
     });
   }
 
@@ -148,9 +135,7 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
     final currentState = playbackState;
     if (!state.hasPlayer || currentState.playing == event) return;
     if (currentState.state == VideoPlayerState.disposed) return;
-    mediaState.update(
-      (state) => state.copyWith(playing: event),
-    );
+    mediaState.update((state) => state.copyWith(playing: event));
     ref.read(playBackModel)?.updatePlaybackPosition(currentState.position, event, ref);
   }
 
@@ -169,15 +154,10 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
     final diff = (position.inMilliseconds - lastPosition.inMilliseconds).abs();
 
     if (diff > const Duration(seconds: 10).inMilliseconds) {
-      mediaState.update((value) => value.copyWith(
-            position: event,
-            lastPosition: position,
-          ));
+      mediaState.update((value) => value.copyWith(position: event, lastPosition: position));
       ref.read(playBackModel)?.updatePlaybackPosition(position, playbackState.playing, ref);
     } else {
-      mediaState.update((value) => value.copyWith(
-            position: event,
-          ));
+      mediaState.update((value) => value.copyWith(position: event));
     }
   }
 
@@ -190,13 +170,15 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
     final useMinimizedPlayer =
         model.item.type == FladderItemType.audio || model.mediaStreams?.videoStreams.isEmpty == true;
 
-    mediaState.update((state) => state.copyWith(
-          state: useMinimizedPlayer ? VideoPlayerState.minimized : VideoPlayerState.fullScreen,
-          fullScreen: !useMinimizedPlayer,
-          buffering: true,
-          errorPlaying: false,
-          skippedSegments: {},
-        ));
+    mediaState.update(
+      (state) => state.copyWith(
+        state: useMinimizedPlayer ? VideoPlayerState.minimized : VideoPlayerState.fullScreen,
+        fullScreen: !useMinimizedPlayer,
+        buffering: true,
+        errorPlaying: false,
+        skippedSegments: {},
+      ),
+    );
 
     final media = model.media;
     PlaybackModel? newPlaybackModel = model;
@@ -210,12 +192,16 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
       await state.setAudioTrack(null, model);
       await state.setSubtitleTrack(null, model);
 
-      ref.read(mediaPlaybackProvider.notifier).update((state) => state.copyWith(
-            state: useMinimizedPlayer ? VideoPlayerState.minimized : VideoPlayerState.fullScreen,
-            buffering: true,
-            errorPlaying: false,
-            skippedSegments: {},
-          ));
+      ref
+          .read(mediaPlaybackProvider.notifier)
+          .update(
+            (state) => state.copyWith(
+              state: useMinimizedPlayer ? VideoPlayerState.minimized : VideoPlayerState.fullScreen,
+              buffering: true,
+              errorPlaying: false,
+              skippedSegments: {},
+            ),
+          );
 
       await state.play();
       return true;
@@ -248,32 +234,32 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
     ref.read(playBackModel.notifier).update((state) => queuedModel);
     ref.read(playbackRateProvider.notifier).state = 1.0;
 
-    mediaState.update((state) => state.copyWith(
-          state: keepFullScreenLayout ? VideoPlayerState.fullScreen : VideoPlayerState.minimized,
-          fullScreen: keepFullScreenLayout,
-          buffering: true,
-          errorPlaying: false,
-          skippedSegments: {},
-          duration: queuedModel.item.overview.runTime ?? Duration.zero,
-        ));
+    mediaState.update(
+      (state) => state.copyWith(
+        state: keepFullScreenLayout ? VideoPlayerState.fullScreen : VideoPlayerState.minimized,
+        fullScreen: keepFullScreenLayout,
+        buffering: true,
+        errorPlaying: false,
+        skippedSegments: {},
+        duration: queuedModel.item.overview.runTime ?? Duration.zero,
+      ),
+    );
 
     await state.loadAudioQueue(queue, currentIndex, effectiveStartPosition, true);
     await state.setVolume(ref.read(videoPlayerSettingsProvider).volume);
 
-    mediaState.update((state) => state.copyWith(
-          buffering: false,
-          playing: true,
-          position: effectiveStartPosition,
-          duration: queuedModel.item.overview.runTime ?? Duration.zero,
-        ));
+    mediaState.update(
+      (state) => state.copyWith(
+        buffering: false,
+        playing: true,
+        position: effectiveStartPosition,
+        duration: queuedModel.item.overview.runTime ?? Duration.zero,
+      ),
+    );
     return true;
   }
 
-  Future<void> reorderAudioQueueSection(
-    AudioQueueSection section,
-    int oldIndex,
-    int newIndex,
-  ) async {
+  Future<void> reorderAudioQueueSection(AudioQueueSection section, int oldIndex, int newIndex) async {
     await state.reorderAudioQueueSection(section, oldIndex, newIndex);
   }
 
@@ -289,10 +275,7 @@ class VideoPlayerNotifier extends StateNotifier<MediaControlsWrapper> {
     await state.removeAudioQueueItem(item.id);
   }
 
-  Future<void> removeAudioQueueSectionItem(
-    AudioQueueSection section,
-    int sectionIndex,
-  ) async {
+  Future<void> removeAudioQueueSectionItem(AudioQueueSection section, int sectionIndex) async {
     await state.removeAudioQueueSectionItem(section, sectionIndex);
   }
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:driftfin/models/server_integration_config.dart';
@@ -31,7 +32,8 @@ class RadarrCalendarItem {
   factory RadarrCalendarItem.fromJson(Map<String, dynamic> json) {
     DateTime? parse(String? v) => v == null ? null : DateTime.tryParse(v);
     // Prefer the most "watchable" date in range.
-    final release = parse(json['digitalRelease'] as String?) ??
+    final release =
+        parse(json['digitalRelease'] as String?) ??
         parse(json['physicalRelease'] as String?) ??
         parse(json['inCinemas'] as String?);
     return RadarrCalendarItem(
@@ -129,7 +131,7 @@ class RadarrApi {
           headers: _headers,
           body: jsonEncode({
             'name': 'MoviesSearch',
-            'movieIds': [existing]
+            'movieIds': [existing],
           }),
         );
         return (response.statusCode >= 200 && response.statusCode < 300)
@@ -159,19 +161,19 @@ class RadarrSettings {
   bool get isConfigured => enabled && baseUrl.trim().isNotEmpty && apiKey.trim().isNotEmpty;
 
   RadarrSettings copyWith({String? baseUrl, String? apiKey, bool? enabled, bool? managed}) => RadarrSettings(
-        baseUrl: baseUrl ?? this.baseUrl,
-        apiKey: apiKey ?? this.apiKey,
-        enabled: enabled ?? this.enabled,
-        managed: managed ?? this.managed,
-      );
+    baseUrl: baseUrl ?? this.baseUrl,
+    apiKey: apiKey ?? this.apiKey,
+    enabled: enabled ?? this.enabled,
+    managed: managed ?? this.managed,
+  );
 
   Map<String, dynamic> toJson() => {'baseUrl': baseUrl, 'apiKey': apiKey, 'enabled': enabled};
 
   factory RadarrSettings.fromJson(Map<String, dynamic> json) => RadarrSettings(
-        baseUrl: json['baseUrl'] as String? ?? '',
-        apiKey: json['apiKey'] as String? ?? '',
-        enabled: json['enabled'] as bool? ?? false,
-      );
+    baseUrl: json['baseUrl'] as String? ?? '',
+    apiKey: json['apiKey'] as String? ?? '',
+    enabled: json['enabled'] as bool? ?? false,
+  );
 }
 
 const String _radarrSettingsKey = 'radarrSettings';

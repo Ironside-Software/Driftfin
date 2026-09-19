@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:logging/logging.dart' as logging;
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
@@ -20,8 +21,10 @@ import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 
-final seriesDetailsProvider =
-    StateNotifierProvider.autoDispose.family<SeriesDetailViewNotifier, SeriesModel?, String>((ref, id) {
+final seriesDetailsProvider = StateNotifierProvider.autoDispose.family<SeriesDetailViewNotifier, SeriesModel?, String>((
+  ref,
+  id,
+) {
   return SeriesDetailViewNotifier(ref);
 });
 
@@ -51,63 +54,51 @@ class SeriesDetailViewNotifier extends StateNotifier<SeriesModel?> {
 
       state = newState;
 
-      final seasons = await api.showsSeriesIdSeasonsGet(
-        seriesId: seriesModel.id,
-        enableUserData: false,
-      );
+      final seasons = await api.showsSeriesIdSeasonsGet(seriesId: seriesModel.id, enableUserData: false);
 
       final episodes = await api.showsSeriesIdEpisodesGet(
         seriesId: seriesModel.id,
         enableUserData: true,
-        fields: [
-          ItemFields.mediastreams,
-          ItemFields.mediasources,
-          ItemFields.overview,
-          ItemFields.candownload,
-        ],
+        fields: [ItemFields.mediastreams, ItemFields.mediasources, ItemFields.overview, ItemFields.candownload],
       );
 
-      final newEpisodes = EpisodeModel.episodesFromDto(
-        episodes.body?.items,
-        ref,
-      );
+      final newEpisodes = EpisodeModel.episodesFromDto(episodes.body?.items, ref);
 
       List<BaseItemDto> specialFeatures;
       try {
         specialFeatures = (await api.itemsItemIdSpecialFeaturesGet(itemId: seriesModel.id)).body ?? [];
       } on Exception catch (e, s) {
         specialFeatures = [];
-        log("Failed to get special features for series id ${seriesModel.id} due to $e",
-            level: logging.Level.WARNING.value, error: e, stackTrace: s);
+        log(
+          "Failed to get special features for series id ${seriesModel.id} due to $e",
+          level: logging.Level.WARNING.value,
+          error: e,
+          stackTrace: s,
+        );
       }
 
       final episodesCanDownload = newEpisodes.any((episode) => episode.canDownload == true);
 
       newState = newState.copyWith(
-          seasons: SeasonModel.seasonsFromDto(seasons.body?.items, ref).map(
-            (element) {
-              final unPlayedCount = newEpisodes
-                  .where((episode) =>
-                      episode.season == element.season &&
-                      episode.status == EpisodeStatus.available &&
-                      episode.userData.played == false)
-                  .length;
-              return element.copyWith(
-                canDownload: true,
-                episodes: newEpisodes.where((episode) => episode.season == element.season).toList(),
-                userData: UserData(
-                  unPlayedItemCount: unPlayedCount,
-                  played: unPlayedCount == 0,
-                ),
-              );
-            },
-          ).toList(),
-          specialFeatures: SpecialFeatureModel.specialFeaturesFromDto(specialFeatures, ref));
-
-      newState = newState.copyWith(
-        canDownload: episodesCanDownload,
-        availableEpisodes: newEpisodes,
+        seasons: SeasonModel.seasonsFromDto(seasons.body?.items, ref).map((element) {
+          final unPlayedCount = newEpisodes
+              .where(
+                (episode) =>
+                    episode.season == element.season &&
+                    episode.status == EpisodeStatus.available &&
+                    episode.userData.played == false,
+              )
+              .length;
+          return element.copyWith(
+            canDownload: true,
+            episodes: newEpisodes.where((episode) => episode.season == element.season).toList(),
+            userData: UserData(unPlayedItemCount: unPlayedCount, played: unPlayedCount == 0),
+          );
+        }).toList(),
+        specialFeatures: SpecialFeatureModel.specialFeaturesFromDto(specialFeatures, ref),
       );
+
+      newState = newState.copyWith(canDownload: episodesCanDownload, availableEpisodes: newEpisodes);
 
       final related = await ref.read(relatedUtilityProvider).relatedContent(seriesModel.id);
       List<SeerrDashboardPosterModel> seerrRelated = const [];
@@ -122,10 +113,7 @@ class SeriesDetailViewNotifier extends StateNotifier<SeriesModel?> {
           final seerr = ref.read(seerrApiProvider);
           seerrRelated = await seerr.discoverRelatedSeries(tmdbId: tmdbId);
           seerrRecommended = await seerr.discoverRecommendedSeries(tmdbId: tmdbId);
-          final seerrPoster = await seerr.fetchDashboardPosterFromIds(
-            tmdbId: tmdbId,
-            mediaType: SeerrMediaType.tvshow,
-          );
+          final seerrPoster = await seerr.fetchDashboardPosterFromIds(tmdbId: tmdbId, mediaType: SeerrMediaType.tvshow);
           final status = seerrPoster?.mediaInfo?.mediaStatus;
           if (status != SeerrMediaStatus.unknown) {
             final seerrServerUrl = ref.read(userProvider.select((value) => value?.seerrCredentials?.serverUrl));
@@ -138,9 +126,7 @@ class SeriesDetailViewNotifier extends StateNotifier<SeriesModel?> {
         related: related.body,
         seerrRelated: seerrRelated,
         seerrRecommended: seerrRecommended,
-        overview: state?.overview.copyWith(
-          seerrUrl: seerrUrl,
-        ),
+        overview: state?.overview.copyWith(seerrUrl: seerrUrl),
       );
       return response;
     } catch (e) {
@@ -156,9 +142,7 @@ class SeriesDetailViewNotifier extends StateNotifier<SeriesModel?> {
     newList[index ?? 0] = episode;
 
     if (index != null) {
-      state = state?.copyWith(
-        availableEpisodes: newList,
-      );
+      state = state?.copyWith(availableEpisodes: newList);
     }
   }
 

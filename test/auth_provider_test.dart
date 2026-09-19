@@ -12,18 +12,13 @@ import 'package:driftfin/util/driftfin_config.dart';
 
 /// Builds a minimal [AccountModel] for a given server/user, optionally with
 /// Seerr credentials and a `lastUsed` timestamp (used to test recency sorting).
-AccountModel _account({
-  required String id,
-  required String serverId,
-  String? seerrUrl,
-  DateTime? lastUsed,
-}) {
+AccountModel _account({required String id, required String serverId, String? seerrUrl, DateTime? lastUsed}) {
   return AccountModel(
     name: id,
     id: id,
     avatar: '',
     lastUsed: lastUsed ?? DateTime.now(),
-    credentials: CredentialsModel.internal(serverId: serverId),
+    credentials: CredentialsModel(serverId: serverId),
     seerrCredentials: seerrUrl == null ? null : SeerrCredentialsModel(serverUrl: seerrUrl),
   );
 }
@@ -42,11 +37,7 @@ void main() {
   });
 
   ProviderContainer container() {
-    return ProviderContainer(
-      overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-      ],
-    );
+    return ProviderContainer(overrides: [sharedPreferencesProvider.overrideWithValue(prefs)]);
   }
 
   group('setTempSeerrUrl', () {
@@ -133,11 +124,10 @@ void main() {
       addTearDown(c.dispose);
       final notifier = c.read(authProvider.notifier);
 
-      final loginModel = ServerLoginModel(tempCredentials: CredentialsModel.internal(url: 'http://server'));
-      c.read(authProvider.notifier).state = c.read(authProvider).copyWith(
-            hasBaseUrl: true,
-            serverLoginModel: loginModel,
-          );
+      final loginModel = ServerLoginModel(tempCredentials: CredentialsModel(url: 'http://server'));
+      c.read(authProvider.notifier).state = c
+          .read(authProvider)
+          .copyWith(hasBaseUrl: true, serverLoginModel: loginModel);
 
       notifier.goUserSelect();
 

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/providers/api_provider.dart';
@@ -26,10 +27,7 @@ class AudioLyricsState {
   });
 
   List<SyncedLyricLine> get lines {
-    return AudioLyricsTimelineBuilder.injectInstrumentalGaps(
-      rawLines,
-      trackDuration: trackDuration,
-    );
+    return AudioLyricsTimelineBuilder.injectInstrumentalGaps(rawLines, trackDuration: trackDuration);
   }
 
   bool get hasLyrics => rawLines.isNotEmpty;
@@ -63,11 +61,7 @@ class SyncedLyricLine {
   final Duration start;
   final bool isInstrumentalGap;
 
-  const SyncedLyricLine({
-    required this.text,
-    required this.start,
-    this.isInstrumentalGap = false,
-  });
+  const SyncedLyricLine({required this.text, required this.start, this.isInstrumentalGap = false});
 }
 
 class AudioLyricsTimelineBuilder {
@@ -91,37 +85,23 @@ class AudioLyricsTimelineBuilder {
       return const <SyncedLyricLine>[];
     }
 
-    return _parseLines(
-      body?.lyrics ?? const <LyricLine>[],
-      offsetMs: body?.metadata?.offset ?? 0,
-    );
+    return _parseLines(body?.lyrics ?? const <LyricLine>[], offsetMs: body?.metadata?.offset ?? 0);
   }
 
-  static List<SyncedLyricLine> buildTimeline(
-    LyricDto? body, {
-    Duration? trackDuration,
-  }) {
+  static List<SyncedLyricLine> buildTimeline(LyricDto? body, {Duration? trackDuration}) {
     final parsed = parseSyncedLines(body);
-    return injectInstrumentalGaps(
-      parsed,
-      trackDuration: trackDuration,
-    );
+    return injectInstrumentalGaps(parsed, trackDuration: trackDuration);
   }
 
-  static List<SyncedLyricLine> _parseLines(
-    List<LyricLine> lines, {
-    required int offsetMs,
-  }) {
-    final parsed = lines
-        .map(
-          (line) => SyncedLyricLine(
-            text: (line.text ?? '').trim(),
-            start: _parseLyricStart(line.start, offsetMs),
-          ),
-        )
-        .where((line) => line.text.isNotEmpty)
-        .toList()
-      ..sort((a, b) => a.start.compareTo(b.start));
+  static List<SyncedLyricLine> _parseLines(List<LyricLine> lines, {required int offsetMs}) {
+    final parsed =
+        lines
+            .map(
+              (line) => SyncedLyricLine(text: (line.text ?? '').trim(), start: _parseLyricStart(line.start, offsetMs)),
+            )
+            .where((line) => line.text.isNotEmpty)
+            .toList()
+          ..sort((a, b) => a.start.compareTo(b.start));
 
     return parsed;
   }
@@ -136,10 +116,7 @@ class AudioLyricsTimelineBuilder {
     return adjusted.isNegative ? Duration.zero : adjusted;
   }
 
-  static List<SyncedLyricLine> injectInstrumentalGaps(
-    List<SyncedLyricLine> lyrics, {
-    Duration? trackDuration,
-  }) {
+  static List<SyncedLyricLine> injectInstrumentalGaps(List<SyncedLyricLine> lyrics, {Duration? trackDuration}) {
     if (lyrics.isEmpty) {
       return const <SyncedLyricLine>[];
     }
@@ -155,12 +132,7 @@ class AudioLyricsTimelineBuilder {
     final first = sourceLyrics.first;
 
     if (first.start > instrumentalGapThreshold) {
-      _addGapMarkers(
-        timeline,
-        from: Duration.zero,
-        to: first.start,
-        includeStart: true,
-      );
+      _addGapMarkers(timeline, from: Duration.zero, to: first.start, includeStart: true);
     }
 
     for (var i = 0; i < sourceLyrics.length; i++) {
@@ -172,20 +144,12 @@ class AudioLyricsTimelineBuilder {
       }
 
       final next = sourceLyrics[i + 1];
-      _addGapMarkers(
-        timeline,
-        from: current.start,
-        to: next.start,
-      );
+      _addGapMarkers(timeline, from: current.start, to: next.start);
     }
 
     final lastLyric = sourceLyrics.last;
     if (trackDuration != null) {
-      _addGapMarkers(
-        timeline,
-        from: lastLyric.start,
-        to: trackDuration,
-      );
+      _addGapMarkers(timeline, from: lastLyric.start, to: trackDuration);
     }
 
     timeline.sort((a, b) => a.start.compareTo(b.start));
@@ -204,23 +168,11 @@ class AudioLyricsTimelineBuilder {
     }
 
     if (includeStart) {
-      timeline.add(
-        const SyncedLyricLine(
-          text: '',
-          start: Duration.zero,
-          isInstrumentalGap: true,
-        ),
-      );
+      timeline.add(const SyncedLyricLine(text: '', start: Duration.zero, isInstrumentalGap: true));
       return;
     }
 
-    timeline.add(
-      SyncedLyricLine(
-        text: '',
-        start: from + instrumentalGapThreshold,
-        isInstrumentalGap: true,
-      ),
-    );
+    timeline.add(SyncedLyricLine(text: '', start: from + instrumentalGapThreshold, isInstrumentalGap: true));
   }
 }
 
@@ -244,14 +196,8 @@ class AudioLyricsNotifier extends StateNotifier<AudioLyricsState> {
     final cachedLines = _cache[itemId];
     final trackDuration = ref.read(playBackModel)?.item.overview.runTime;
     if (cachedLines != null) {
-      final timeline = AudioLyricsTimelineBuilder.injectInstrumentalGaps(
-        cachedLines,
-        trackDuration: trackDuration,
-      );
-      final activeIndex = _findActiveIndex(
-        ref.read(mediaPlaybackProvider).position,
-        timeline,
-      );
+      final timeline = AudioLyricsTimelineBuilder.injectInstrumentalGaps(cachedLines, trackDuration: trackDuration);
+      final activeIndex = _findActiveIndex(ref.read(mediaPlaybackProvider).position, timeline);
       state = AudioLyricsState(
         itemId: itemId,
         rawLines: cachedLines,

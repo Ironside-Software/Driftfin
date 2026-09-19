@@ -39,17 +39,17 @@ class SeerrSeasonsSection extends ConsumerWidget {
           context.localized.season(seasons.length),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        ...seasons.map(
-          (season) {
-            final seasonNumber = season.seasonNumber;
-            if (seasonNumber == null) return const SizedBox.shrink();
-            final locked = requestState.isRequestedAlready(seasonNumber);
-            final selected = requestState.selectedSeasons[seasonNumber] ?? false;
-            final status = seasonStatuses[seasonNumber];
-            final seasonDownloads =
-                model.mediaInfo?.downloadStatus?.where((d) => d.episode?.seasonNumber == seasonNumber).toList() ?? [];
+        ...seasons.map((season) {
+          final seasonNumber = season.seasonNumber;
+          if (seasonNumber == null) return const SizedBox.shrink();
+          final locked = requestState.isRequestedAlready(seasonNumber);
+          final selected = requestState.selectedSeasons[seasonNumber] ?? false;
+          final status = seasonStatuses[seasonNumber];
+          final seasonDownloads =
+              model.mediaInfo?.downloadStatus?.where((d) => d.episode?.seasonNumber == seasonNumber).toList() ?? [];
 
-            return Builder(builder: (context) {
+          return Builder(
+            builder: (context) {
               return FocusButton(
                 onTap: locked
                     ? null
@@ -74,13 +74,14 @@ class SeerrSeasonsSection extends ConsumerWidget {
                     children: [
                       ExcludeFocusTraversal(
                         child: Checkbox(
-                            value: selected,
-                            onChanged: locked
-                                ? null
-                                : (value) {
-                                    if (value == null) return;
-                                    notifier.toggleSeason(seasonNumber, value);
-                                  }),
+                          value: selected,
+                          onChanged: locked
+                              ? null
+                              : (value) {
+                                  if (value == null) return;
+                                  notifier.toggleSeason(seasonNumber, value);
+                                },
+                        ),
                       ),
                       Expanded(
                         child: Column(
@@ -96,10 +97,8 @@ class SeerrSeasonsSection extends ConsumerWidget {
                                 ),
                                 child: Text(
                                   status.label(context),
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                                 ),
                               ),
                             Column(
@@ -114,9 +113,8 @@ class SeerrSeasonsSection extends ConsumerWidget {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                            color:
-                                                Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                                          ),
+                                        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                                      ),
                                     ),
                                   ),
                               ],
@@ -148,13 +146,10 @@ class SeerrSeasonsSection extends ConsumerWidget {
                   ),
                 ),
               );
-            });
-          },
-        ),
-        FilledButton(
-          onPressed: () => notifier.selectAllSeasons(),
-          child: Text(context.localized.requestAll),
-        )
+            },
+          );
+        }),
+        FilledButton(onPressed: () => notifier.selectAllSeasons(), child: Text(context.localized.requestAll)),
       ],
     );
   }

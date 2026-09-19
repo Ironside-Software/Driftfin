@@ -68,10 +68,7 @@ class _ChannelProgramItemState extends State<ChannelProgramItem> with SingleTick
   @override
   Widget build(BuildContext context) {
     final program = widget.program;
-    final timeRemainingInPercentage = getTimeRemainingInPercentage(
-      program.startDate,
-      program.endDate,
-    );
+    final timeRemainingInPercentage = getTimeRemainingInPercentage(program.startDate, program.endDate);
 
     final isActive = timeRemainingInPercentage > 0.0 && timeRemainingInPercentage < 1.0;
 
@@ -127,16 +124,11 @@ class _ChannelProgramItemState extends State<ChannelProgramItem> with SingleTick
                           children: [
                             Row(
                               children: [
-                                Expanded(
-                                  child: Text(
-                                    program.name,
-                                    style: Theme.of(context).textTheme.bodyLarge,
-                                  ),
-                                ),
+                                Expanded(child: Text(program.name, style: Theme.of(context).textTheme.bodyLarge)),
                                 Text(
                                   "${DateFormat.Hm().format(program.startDate.toLocal())} - ${DateFormat.Hm().format(program.endDate.toLocal())}",
                                   style: Theme.of(context).textTheme.bodySmall,
-                                )
+                                ),
                               ],
                             ),
                             const SizedBox(height: 4),
@@ -168,10 +160,7 @@ class _ChannelProgramItemState extends State<ChannelProgramItem> with SingleTick
                                     clipBehavior: Clip.hardEdge,
                                     child: AspectRatio(
                                       aspectRatio: 0.75,
-                                      child: DriftfinImage(
-                                        image: program.images?.primary,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      child: DriftfinImage(image: program.images?.primary, fit: BoxFit.cover),
                                     ),
                                   ),
                                 ),
@@ -186,9 +175,7 @@ class _ChannelProgramItemState extends State<ChannelProgramItem> with SingleTick
                                       maxLines: 10,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    SimpleLabel(
-                                      label: Text(program.officialRating),
-                                    ),
+                                    SimpleLabel(label: Text(program.officialRating)),
                                   ],
                                 ),
                               ),

@@ -55,12 +55,7 @@ class MusicPlaylistRow extends ConsumerWidget {
         content: (scrollContext, scrollController) => ListView(
           shrinkWrap: true,
           controller: scrollController,
-          children: playlist
-              .generateActions(
-                context,
-                ref,
-              )
-              .listTileItems(scrollContext, useIcons: true),
+          children: playlist.generateActions(context, ref).listTileItems(scrollContext, useIcons: true),
         ),
       );
     }
@@ -70,12 +65,7 @@ class MusicPlaylistRow extends ConsumerWidget {
       await showMenu(
         context: context,
         position: position,
-        items: playlist
-            .generateActions(
-              context,
-              ref,
-            )
-            .popupMenuItems(useIcons: true),
+        items: playlist.generateActions(context, ref).popupMenuItems(useIcons: true),
       );
     }
 
@@ -86,11 +76,7 @@ class MusicPlaylistRow extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         spacing: 12,
         children: [
-          Flexible(
-            child: StickyHeaderText(
-              label: label,
-            ),
-          ),
+          Flexible(child: StickyHeaderText(label: label)),
           SizedBox(
             height: gridHeight,
             child: GridView.builder(
@@ -136,19 +122,13 @@ class MusicPlaylistRow extends ConsumerWidget {
                                   alignment: Alignment.center,
                                   child: IconButton.filledTonal(
                                     onPressed: () => onPlaylistPlayTap(playlist),
-                                    icon: const Icon(
-                                      IconsaxPlusBold.play,
-                                      size: 28,
-                                    ),
+                                    icon: const Icon(IconsaxPlusBold.play, size: 28),
                                   ),
                                 ),
                               ],
                               child: ClipRRect(
                                 borderRadius: FladderTheme.smallShape.borderRadius,
-                                child: DriftfinImage(
-                                  image: playlist.images?.primary,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: DriftfinImage(image: playlist.images?.primary, fit: BoxFit.cover),
                               ),
                             ),
                           ),
@@ -165,8 +145,8 @@ class MusicPlaylistRow extends ConsumerWidget {
                                     playlist.title,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                                    style: Theme.of(context).textTheme.titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.w700),
                                   ),
                                 ),
                               ),
@@ -174,7 +154,7 @@ class MusicPlaylistRow extends ConsumerWidget {
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                   child: Container(
                     decoration: BoxDecoration(

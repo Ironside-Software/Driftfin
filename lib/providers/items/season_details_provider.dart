@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:chopper/chopper.dart';
 import 'package:driftfin/models/items/special_feature_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/items/episode_model.dart';
@@ -11,8 +12,10 @@ import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:logging/logging.dart' as logging;
 
-final seasonDetailsProvider =
-    StateNotifierProvider.autoDispose.family<SeasonDetailsNotifier, SeasonModel?, String>((ref, id) {
+final seasonDetailsProvider = StateNotifierProvider.autoDispose.family<SeasonDetailsNotifier, SeasonModel?, String>((
+  ref,
+  id,
+) {
   return SeasonDetailsNotifier(ref);
 });
 
@@ -33,12 +36,7 @@ class SeasonDetailsNotifier extends StateNotifier<SeasonModel?> {
       seriesId: newState?.seriesId ?? "",
       seasonId: newState?.id,
       season: newState?.season,
-      fields: [
-        ItemFields.overview,
-        ItemFields.candelete,
-        ItemFields.candownload,
-        ItemFields.parentid,
-      ],
+      fields: [ItemFields.overview, ItemFields.candelete, ItemFields.candownload, ItemFields.parentid],
     );
 
     List<BaseItemDto> specialFeatures;
@@ -46,13 +44,18 @@ class SeasonDetailsNotifier extends StateNotifier<SeasonModel?> {
       specialFeatures = (await api.itemsItemIdSpecialFeaturesGet(itemId: seasonId)).body ?? [];
     } on Exception catch (e, s) {
       specialFeatures = [];
-      log("Failed to get special features for season id $seasonId due to $e",
-          level: logging.Level.WARNING.value, error: e, stackTrace: s);
+      log(
+        "Failed to get special features for season id $seasonId due to $e",
+        level: logging.Level.WARNING.value,
+        error: e,
+        stackTrace: s,
+      );
     }
 
     newState = newState?.copyWith(
-        episodes: EpisodeModel.episodesFromDto(episodes.body?.items, ref).toList(),
-        specialFeatures: SpecialFeatureModel.specialFeaturesFromDto(specialFeatures, ref).toList());
+      episodes: EpisodeModel.episodesFromDto(episodes.body?.items, ref).toList(),
+      specialFeatures: SpecialFeatureModel.specialFeaturesFromDto(specialFeatures, ref).toList(),
+    );
     state = newState;
     return season;
   }

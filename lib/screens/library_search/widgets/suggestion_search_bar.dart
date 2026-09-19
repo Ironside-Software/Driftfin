@@ -48,8 +48,9 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      textEditingController.text =
-          ref.read(librarySearchProvider(widget.key!).select((value) => value.filters.searchQuery));
+      textEditingController.text = ref.read(
+        librarySearchProvider(widget.key!).select((value) => value.filters.searchQuery),
+      );
     });
   }
 
@@ -63,19 +64,14 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
       }
     });
     return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
-      ),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerLow),
       child: TypeAheadField<ItemBaseModel>(
         controller: textEditingController,
         focusNode: focusNode,
         hideOnEmpty: isEmpty,
         emptyBuilder: (context) => Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            "${context.localized.noSuggestionsFound}...",
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          child: Text("${context.localized.noSuggestionsFound}...", style: Theme.of(context).textTheme.titleMedium),
         ),
         suggestionsController: suggestionsBoxController,
         decorationBuilder: (context, child) => DecoratedBox(
@@ -101,8 +97,9 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
           searchQuery: (query) async {
             if (query.isEmpty) return [];
             if (widget.key != null) {
-              final items =
-                  await ref.read(librarySearchProvider(widget.key!).notifier).fetchSuggestions(query, limit: 5);
+              final items = await ref
+                  .read(librarySearchProvider(widget.key!).notifier)
+                  .fetchSuggestions(query, limit: 5);
               return items.map((e) => e.name).toList();
             }
             return [];
@@ -122,7 +119,8 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
                         isEmpty = true;
                       });
                     },
-                    icon: const Icon(Icons.clear))
+                    icon: const Icon(Icons.clear),
+                  )
                 : null,
             border: InputBorder.none,
           ),
@@ -146,10 +144,7 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
             },
             contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             title: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: 50,
-                maxHeight: 65,
-              ),
+              constraints: const BoxConstraints(minHeight: 50, maxHeight: 65),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -158,10 +153,7 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       child: AspectRatio(
                         aspectRatio: 0.8,
-                        child: DriftfinImage(
-                          image: suggestion.images?.primary,
-                          fit: BoxFit.cover,
-                        ),
+                        child: DriftfinImage(image: suggestion.images?.primary, fit: BoxFit.cover),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -169,16 +161,14 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Flexible(
-                              child: Text(
-                            suggestion.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          )),
+                          Flexible(child: Text(suggestion.name, maxLines: 1, overflow: TextOverflow.ellipsis)),
                           if (suggestion.overview.yearAired.toString().isNotEmpty)
                             Flexible(
-                                child: Opacity(
-                                    opacity: 0.45, child: Text(suggestion.overview.yearAired?.toString() ?? ""))),
+                              child: Opacity(
+                                opacity: 0.45,
+                                child: Text(suggestion.overview.yearAired?.toString() ?? ""),
+                              ),
+                            ),
                         ],
                       ),
                     ),

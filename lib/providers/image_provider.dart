@@ -13,9 +13,7 @@ final imageUtilityProvider = Provider<ImageNotifier>((ref) {
 
 class ImageNotifier {
   final Ref ref;
-  ImageNotifier({
-    required this.ref,
-  });
+  ImageNotifier({required this.ref});
 
   String get currentServerUrl {
     return ref.read(serverUrlProvider) ?? "";
@@ -26,11 +24,13 @@ class ImageNotifier {
     return buildServerUrl(ref, pathSegments: ['Users', id, 'Images', typeValue]);
   }
 
-  String getItemsImageUrl(String? itemId,
-      {ImageType type = ImageType.primary,
-      int maxHeight = _defaultHeight,
-      int maxWidth = _defaultWidth,
-      int quality = _defaultQuality}) {
+  String getItemsImageUrl(
+    String? itemId, {
+    ImageType type = ImageType.primary,
+    int maxHeight = _defaultHeight,
+    int maxWidth = _defaultWidth,
+    int quality = _defaultQuality,
+  }) {
     try {
       if (itemId == null) return "";
       final typeValue = type.value ?? 'Primary';
@@ -59,18 +59,12 @@ class ImageNotifier {
     }
   }
 
-  String getBackdropOrigImage(
-    String itemId,
-    int index,
-    String hash,
-  ) {
+  String getBackdropOrigImage(String itemId, int index, String hash) {
     try {
       return buildServerUrl(
         ref,
         pathSegments: ['Items', itemId, 'Images', 'Backdrop', index.toString()],
-        queryParameters: {
-          'tag': hash,
-        },
+        queryParameters: {'tag': hash},
       );
     } catch (e) {
       return "";
@@ -101,8 +95,14 @@ class ImageNotifier {
     }
   }
 
-  String getChapterUrl(String itemId, int index,
-      {String? tag, int maxHeight = _defaultHeight, int maxWidth = _defaultWidth, int quality = _defaultQuality}) {
+  String getChapterUrl(
+    String itemId,
+    int index, {
+    String? tag,
+    int maxHeight = _defaultHeight,
+    int maxWidth = _defaultWidth,
+    int quality = _defaultQuality,
+  }) {
     try {
       return buildServerUrl(
         ref,
@@ -110,7 +110,7 @@ class ImageNotifier {
         queryParameters: {
           // The Jellyfin web client always sends the chapter's ImageTag; chapter
           // images can 404 without it, so pass it through when we have one.
-          if (tag != null) 'tag': tag,
+          'tag': ?tag,
           'fillHeight': maxHeight.toString(),
           'fillWidth': maxWidth.toString(),
           'quality': quality.toString(),

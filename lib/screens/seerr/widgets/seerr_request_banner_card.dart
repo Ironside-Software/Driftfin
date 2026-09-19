@@ -24,11 +24,7 @@ class SeerrRequestBannerCard extends ConsumerWidget {
   final SeerrDashboardPosterModel poster;
   final void Function(SeerrDashboardPosterModel poster)? onTap;
 
-  const SeerrRequestBannerCard({
-    required this.poster,
-    this.onTap,
-    super.key,
-  });
+  const SeerrRequestBannerCard({required this.poster, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,10 +91,7 @@ class SeerrRequestBannerCard extends ConsumerWidget {
         onLongPress: () => _showBottomSheet(context, itemActions, ref),
         onSecondaryTapDown: (tap) => _showContextMenu(context, itemActions, ref, tap.globalPosition),
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: radius,
-            color: Theme.of(context).colorScheme.surfaceContainer,
-          ),
+          decoration: BoxDecoration(borderRadius: radius, color: Theme.of(context).colorScheme.surfaceContainer),
           foregroundDecoration: BoxDecoration(
             borderRadius: radius,
             border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
@@ -108,24 +101,15 @@ class SeerrRequestBannerCard extends ConsumerWidget {
             fit: StackFit.expand,
             children: [
               if (backgroundImage != null)
-                DriftfinImage(
-                  image: backgroundImage,
-                  fit: BoxFit.cover,
-                )
+                DriftfinImage(image: backgroundImage, fit: BoxFit.cover)
               else
-                Container(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                ),
+                Container(color: Theme.of(context).colorScheme.surfaceContainer),
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
-                    colors: [
-                      overlayColor.withAlpha(220),
-                      overlayColor.withAlpha(100),
-                      overlayColor.withAlpha(50),
-                    ],
+                    colors: [overlayColor.withAlpha(220), overlayColor.withAlpha(100), overlayColor.withAlpha(50)],
                   ),
                 ),
               ),
@@ -144,18 +128,15 @@ class SeerrRequestBannerCard extends ConsumerWidget {
                           if (poster.releaseYear?.isNotEmpty == true)
                             Text(
                               poster.releaseYear ?? '',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
                             ),
                           Text(
                             poster.title,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.onSurface,
-                                ),
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
                           ),
                           if (poster.type == SeerrMediaType.tvshow && seasonsList.isNotEmpty)
                             Padding(
@@ -164,24 +145,23 @@ class SeerrRequestBannerCard extends ConsumerWidget {
                                 '${context.localized.season(seasonsList.length)}: ${seasonsList.join(', ')}',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Theme.of(context).colorScheme.onSurface,
-                                    ),
+                                style: Theme.of(context).textTheme.bodyMedium
+                                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface),
                               ),
                             ),
                           const Spacer(),
                           if (requestedByUser != null)
                             DefaultTextStyle(
                               child: SeerrUserLabel(user: requestedByUser),
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                    color: Theme.of(context).colorScheme.onSurface,
-                                  ),
+                              style: Theme.of(context).textTheme.bodyMedium!
+                                  .copyWith(color: Theme.of(context).colorScheme.onSurface),
                             ),
                           if (poster.hasDisplayStatus)
                             DownloadStatusLabel(
                               poster: poster,
-                              filterSeasons:
-                                  poster.type == SeerrMediaType.tvshow && seasonsList.isNotEmpty ? seasonsList : null,
+                              filterSeasons: poster.type == SeerrMediaType.tvshow && seasonsList.isNotEmpty
+                                  ? seasonsList
+                                  : null,
                             ),
                         ],
                       ),
@@ -201,11 +181,7 @@ class SeerrRequestBannerCard extends ConsumerWidget {
                           aspectRatio: 0.65,
                           child: SizedBox(
                             width: 105,
-                            child: DriftfinImage(
-                              image: posterImage,
-                              fit: BoxFit.cover,
-                              disableBlur: false,
-                            ),
+                            child: DriftfinImage(image: posterImage, fit: BoxFit.cover, disableBlur: false),
                           ),
                         ),
                       ),
@@ -231,14 +207,12 @@ class SeerrRequestBannerCard extends ConsumerWidget {
   }
 
   Future<void> _showContextMenu(
-      BuildContext context, List<ItemAction> itemActions, WidgetRef ref, Offset globalPos) async {
+    BuildContext context,
+    List<ItemAction> itemActions,
+    WidgetRef ref,
+    Offset globalPos,
+  ) async {
     final position = RelativeRect.fromLTRB(globalPos.dx, globalPos.dy, globalPos.dx, globalPos.dy);
-    await showMenu(
-      context: context,
-      position: position,
-      items: itemActions.popupMenuItems(
-        useIcons: true,
-      ),
-    );
+    await showMenu(context: context, position: position, items: itemActions.popupMenuItems(useIcons: true));
   }
 }

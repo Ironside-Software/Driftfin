@@ -10,10 +10,7 @@ import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/src/local_network_permission_pigeon.g.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
-enum LocalNetworkPermissionStatus {
-  granted,
-  denied,
-}
+enum LocalNetworkPermissionStatus { granted, denied }
 
 class LocalNetworkPermissionDeniedException implements Exception {}
 

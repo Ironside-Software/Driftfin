@@ -3,15 +3,15 @@ targets:
     sources:
       - lib/$lib$
       - "!lib/jellyseer/**"
-      - "**/models/**.dart"
-      - "**/models/**/**.dart"
-      - "**/providers/**.dart"
-      - "**/providers/**/**.dart"
+      - "lib/**/models/**.dart"
+      - "lib/**/models/**/**.dart"
+      - "lib/**/providers/**.dart"
+      - "lib/**/providers/**/**.dart"
       - lib/util/**.dart
       - lib/jellyfin/**.dart
       - lib/seerr/**.dart
-      - "**/**_screen.dart"
-      - "**/**_page.dart"
+      - "lib/**/**_screen.dart"
+      - "lib/**/**_page.dart"
       - swagger/jellyfin-open-api.json
       - lib/routes/auto_router.dart
       - $package$
@@ -25,16 +25,16 @@ targets:
         options:
           enable_cached_builds: true
           generate_for:
-            - "**/**_screen.dart"
-            - "**/**_page.dart"
+            - "lib/**/**_screen.dart"
+            - "lib/**/**_page.dart"
       freezed|freezed:
         options:
           copy_with: false
           equal: false
           tostring:
           generate_for:
-            - "**/**.f.dart"
-            - "**/**.g.dart"
+            - "lib/**/**.f.dart"
+            - "lib/**/**.g.dart"
       dart_mappable_builder:
         options:
           ignoreNull: true

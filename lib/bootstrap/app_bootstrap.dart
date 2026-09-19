@@ -28,11 +28,8 @@ const sentryDsn = String.fromEnvironment('SENTRY_DSN');
 /// var) over the compile-time [sentryDsn], since a single Web build is shared
 /// across deployments and can't bake in a deployment-specific value. Every
 /// other platform only ever has the compile-time value.
-String get resolvedSentryDsn => resolveSentryDsn(
-      isWeb: kIsWeb,
-      webConfiguredDsn: DriftfinConfig.sentryDsn,
-      buildTimeDsn: sentryDsn,
-    );
+String get resolvedSentryDsn =>
+    resolveSentryDsn(isWeb: kIsWeb, webConfiguredDsn: DriftfinConfig.sentryDsn, buildTimeDsn: sentryDsn);
 
 /// Pure form of [resolvedSentryDsn]. `kIsWeb` is a compile-time constant that
 /// gets folded to `false` on the VM, so its branch is unreachable in
@@ -54,11 +51,7 @@ bool computeCrashReportingEnabled({required String dsn, required ClientSettingsM
 
 bool get isDesktopPlatform {
   if (kIsWeb) return false;
-  return [
-    TargetPlatform.windows,
-    TargetPlatform.linux,
-    TargetPlatform.macOS,
-  ].contains(defaultTargetPlatform);
+  return [TargetPlatform.windows, TargetPlatform.linux, TargetPlatform.macOS].contains(defaultTargetPlatform);
 }
 
 class AppBootstrapResult {
@@ -119,11 +112,7 @@ Future<AppBootstrapResult> bootstrapApplication(List<String> args) async {
     platform: defaultTargetPlatform,
   );
 
-  final argumentsModel = ArgumentsModel.fromArguments(
-    args,
-    windowArguments,
-    leanBackEnabled,
-  );
+  final argumentsModel = ArgumentsModel.fromArguments(args, windowArguments, leanBackEnabled);
 
   final effectiveSentryDsn = resolvedSentryDsn;
   final crashReportingEnabled = computeCrashReportingEnabled(

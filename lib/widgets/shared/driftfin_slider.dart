@@ -152,27 +152,26 @@ class DriftfinSliderState extends State<DriftfinSlider> with SingleTickerProvide
                         ),
                       ),
                       if (widget.divisions != null && stepSize > divisionSize * 3)
-                        ...List.generate(
-                          widget.divisions! + 1,
-                          (index) {
-                            final offset =
-                                (stepSize * index).clamp(divisionSize / 1.2, constraints.maxWidth - divisionSize / 1.2);
-                            final active = (1.0 / widget.divisions!) * index > relativeValue;
-                            return Positioned(
-                              left: offset - divisionSize / 2,
-                              child: Container(
-                                width: divisionSize,
-                                height: divisionSize,
-                                decoration: BoxDecoration(
-                                  color: active
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.onPrimary,
-                                  shape: BoxShape.circle,
-                                ),
+                        ...List.generate(widget.divisions! + 1, (index) {
+                          final offset = (stepSize * index).clamp(
+                            divisionSize / 1.2,
+                            constraints.maxWidth - divisionSize / 1.2,
+                          );
+                          final active = (1.0 / widget.divisions!) * index > relativeValue;
+                          return Positioned(
+                            left: offset - divisionSize / 2,
+                            child: Container(
+                              width: divisionSize,
+                              height: divisionSize,
+                              decoration: BoxDecoration(
+                                color: active
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.onPrimary,
+                                shape: BoxShape.circle,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        }),
                       // Thumb
                       if (widget.showThumb)
                         Positioned(

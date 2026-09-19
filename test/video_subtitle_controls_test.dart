@@ -27,19 +27,12 @@ const _phoneModel = AdaptiveLayoutModel(
 
 Widget _harness(SharedPreferences prefs, {String? label}) {
   return ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-    ],
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => AdaptiveLayout(
-        data: _phoneModel,
-        child: child!,
-      ),
-      home: Scaffold(
-        body: VideoSubtitleControls(label: label),
-      ),
+      builder: (context, child) => AdaptiveLayout(data: _phoneModel, child: child!),
+      home: Scaffold(body: VideoSubtitleControls(label: label)),
     ),
   );
 }

@@ -7,6 +7,7 @@ import 'package:driftfin/models/library_search/library_search_options.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/book_model.dart';
@@ -16,10 +17,7 @@ import 'package:driftfin/providers/api_provider.dart';
 class BookProviderModel {
   final List<BookModel> chapters;
   final ItemBaseModel? parentModel;
-  BookProviderModel({
-    this.chapters = const [],
-    this.parentModel,
-  });
+  BookProviderModel({this.chapters = const [], this.parentModel});
 
   BookModel? get book => chapters.firstOrNull;
 
@@ -71,10 +69,7 @@ class BookProviderModel {
     return chapters[currentChapter - 1];
   }
 
-  BookProviderModel copyWith({
-    List<BookModel>? chapters,
-    ValueGetter<ItemBaseModel?>? parentModel,
-  }) {
+  BookProviderModel copyWith({List<BookModel>? chapters, ValueGetter<ItemBaseModel?>? parentModel}) {
     return BookProviderModel(
       chapters: chapters ?? this.chapters,
       parentModel: parentModel != null ? parentModel.call() : this.parentModel,
@@ -82,10 +77,10 @@ class BookProviderModel {
   }
 }
 
-final bookDetailsProvider =
-    StateNotifierProvider.autoDispose.family<BookDetailsProviderNotifier, BookProviderModel, String>((ref, id) {
-  return BookDetailsProviderNotifier(ref);
-});
+final bookDetailsProvider = StateNotifierProvider.autoDispose
+    .family<BookDetailsProviderNotifier, BookProviderModel, String>((ref, id) {
+      return BookDetailsProviderNotifier(ref);
+    });
 
 class BookDetailsProviderNotifier extends StateNotifier<BookProviderModel> {
   BookDetailsProviderNotifier(this.ref) : super(BookProviderModel());
@@ -97,9 +92,7 @@ class BookDetailsProviderNotifier extends StateNotifier<BookProviderModel> {
   late final JellyService api = ref.read(jellyApiProvider);
 
   Future<Response?> fetchDetails(BookModel book) async {
-    state = state.copyWith(
-      parentModel: () => state.book ?? book,
-    );
+    state = state.copyWith(parentModel: () => state.book ?? book);
     String bookId = state.book?.id ?? book.id;
 
     final response = await api.usersUserIdItemsItemIdGet(itemId: bookId);
@@ -129,9 +122,7 @@ class BookDetailsProviderNotifier extends StateNotifier<BookProviderModel> {
           ItemFields.originaltitle,
           ItemFields.primaryimageaspectratio,
         ],
-        includeItemTypes: [
-          BaseItemKind.book,
-        ],
+        includeItemTypes: [BaseItemKind.book],
       );
     } else {
       siblingsResponse = null;

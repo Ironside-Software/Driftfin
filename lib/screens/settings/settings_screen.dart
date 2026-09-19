@@ -47,15 +47,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             }
           },
           child: AdaptiveLayout.layoutModeOf(context) == LayoutMode.single
-              ? Card(
-                  elevation: 0,
-                  child: Stack(
-                    children: [
-                      _leftPane(context),
-                      content,
-                    ],
-                  ),
-                )
+              ? Card(elevation: 0, child: Stack(children: [_leftPane(context), content]))
               : Row(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,9 +56,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     Expanded(
                       flex: 3,
                       child: Padding(
-                        padding: EdgeInsets.only(
-                          left: MediaQuery.paddingOf(context).left,
-                        ),
+                        padding: EdgeInsets.only(left: MediaQuery.paddingOf(context).left),
                         child: content,
                       ),
                     ),
@@ -93,8 +83,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     bool containsRoute(PageRouteInfo route) =>
         AdaptiveLayout.layoutModeOf(context) == LayoutMode.dual && context.tabsRouter.current.name == route.routeName;
 
-    final quickConnectAvailable =
-        ref.watch(userProvider.select((value) => value?.serverConfiguration?.quickConnectAvailable ?? false));
+    final quickConnectAvailable = ref.watch(
+      userProvider.select((value) => value?.serverConfiguration?.quickConnectAvailable ?? false),
+    );
 
     final newRelease = ref.watch(updateProvider.select((value) => value.latestRelease));
 
@@ -183,17 +174,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               selected: containsRoute(const AboutSettingsRoute()),
               leading: Opacity(
                 opacity: 1,
-                child: DriftfinIconOutlined(
-                  size: 24,
-                  color: context.colors.onSurfaceVariant,
-                ),
+                child: DriftfinIconOutlined(size: 24, color: context.colors.onSurfaceVariant),
               ),
               onTap: () => navigateTo(const AboutSettingsRoute()),
             ),
-            const FractionallySizedBox(
-              widthFactor: 0.25,
-              child: Divider(),
-            ),
+            const FractionallySizedBox(widthFactor: 0.25, child: Divider()),
             if (quickConnectAvailable)
               SettingsListTile(
                 label: Text(context.localized.settingsQuickConnectTitle),
@@ -246,10 +231,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       context.localized.logoutUserPopupContent(user?.name ?? "", user?.credentials.url ?? ""),
                     ),
                     actions: [
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: Text(context.localized.cancel),
-                      ),
+                      ElevatedButton(onPressed: () => Navigator.pop(context), child: Text(context.localized.cancel)),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom().copyWith(
                           iconColor: WidgetStatePropertyAll(Theme.of(context).colorScheme.onErrorContainer),

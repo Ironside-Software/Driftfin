@@ -71,11 +71,7 @@ class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsP
     }
   }
 
-  String _seerrStatusLabel(
-    BuildContext context,
-    SeerrCredentialsModel? credentials,
-    SeerrUserModel? seerrUser,
-  ) {
+  String _seerrStatusLabel(BuildContext context, SeerrCredentialsModel? credentials, SeerrUserModel? seerrUser) {
     if (credentials == null || credentials.serverUrl.isEmpty) return context.localized.seerrNotConfigured;
 
     if (credentials.sessionCookie.isNotEmpty || credentials.apiKey.isNotEmpty) {
@@ -107,37 +103,33 @@ class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsP
               : const Icon(Icons.refresh),
         ),
         const SizedBox(height: 12),
-        ...settingsListGroup(
-          context,
-          const SettingsLabelDivider(label: "Seerr"),
-          [
-            SettingsListTile(
-              id: SettingId.seerrIntegration,
-              label: Text(context.localized.seerr),
-              subLabel: Text(_seerrStatusLabel(context, user?.seerrCredentials, seerrUser)),
-              onTap: () => showSeerrConnectionDialog(context),
+        ...settingsListGroup(context, const SettingsLabelDivider(label: "Seerr"), [
+          SettingsListTile(
+            id: SettingId.seerrIntegration,
+            label: Text(context.localized.seerr),
+            subLabel: Text(_seerrStatusLabel(context, user?.seerrCredentials, seerrUser)),
+            onTap: () => showSeerrConnectionDialog(context),
+          ),
+          if (seerrUser?.canManageRequests ?? false)
+            SettingsListTileCheckbox(
+              id: SettingId.seerrRequestNotifications,
+              label: Text(context.localized.seerrRequestNotifications),
+              value: user?.seerrRequestsEnabled ?? false,
+              onChanged: (val) async {
+                final current = ref.read(userProvider);
+                if (current == null || val == null) return;
+
+                ref.read(userProvider.notifier).userState = current.copyWith(seerrRequestsEnabled: val);
+
+                if (val) {
+                  await NotificationService.requestPermission();
+                  await ref.read(updateNotificationsProvider).registerBackgroundTask();
+                } else {
+                  await ref.read(updateNotificationsProvider).conditionallyUnregisterBackgroundTask();
+                }
+              },
             ),
-            if (seerrUser?.canManageRequests ?? false)
-              SettingsListTileCheckbox(
-                id: SettingId.seerrRequestNotifications,
-                label: Text(context.localized.seerrRequestNotifications),
-                value: user?.seerrRequestsEnabled ?? false,
-                onChanged: (val) async {
-                  final current = ref.read(userProvider);
-                  if (current == null || val == null) return;
-
-                  ref.read(userProvider.notifier).userState = current.copyWith(seerrRequestsEnabled: val);
-
-                  if (val) {
-                    await NotificationService.requestPermission();
-                    await ref.read(updateNotificationsProvider).registerBackgroundTask();
-                  } else {
-                    await ref.read(updateNotificationsProvider).conditionallyUnregisterBackgroundTask();
-                  }
-                },
-              ),
-          ],
-        ),
+        ]),
         const SizedBox(height: 12),
         ...buildIntegrationSettings(context, ref),
       ],

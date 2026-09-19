@@ -32,24 +32,23 @@ const _adaptiveModel = AdaptiveLayoutModel(
   statusBarHeight: 0,
 );
 
-/// A scriptable FilePicker: records the bytes handed to `saveFile` (so tests
-/// can prove export always passes them — required on Android/iOS) and returns
-/// whatever `saveFileReturn` / `pickFilesReturn` are set to.
-class _FakeFilePicker extends FilePicker with MockPlatformInterfaceMixin {
+class _FakeFilePicker extends FilePickerPlatform with MockPlatformInterfaceMixin {
   Uint8List? saveFileBytes;
   bool saveFileCalled = false;
-  String? saveFileReturn;
-  FilePickerResult? pickFilesReturn;
+  Uri? saveFileReturn;
+  PlatformFile? pickFilesReturn;
 
   @override
-  Future<String?> saveFile({
+  Future<Uri?> saveFile({
+    required String fileName,
+    required Uint8List bytes,
+    String? mimeType,
     String? dialogTitle,
-    String? fileName,
     String? initialDirectory,
-    FileType type = FileType.any,
-    List<String>? allowedExtensions,
-    Uint8List? bytes,
-    bool lockParentWindow = false,
+    Function(FilePickerStatus)? onFileSaving,
+    WindowsOptions windowsOptions = const WindowsOptions(),
+    LinuxOptions linuxOptions = const LinuxOptions(),
+    WebOptions webOptions = const WebOptions(),
   }) async {
     saveFileCalled = true;
     saveFileBytes = bytes;
@@ -57,21 +56,38 @@ class _FakeFilePicker extends FilePicker with MockPlatformInterfaceMixin {
   }
 
   @override
-  Future<FilePickerResult?> pickFiles({
+  Future<PlatformFile?> pickFile({
     String? dialogTitle,
     String? initialDirectory,
     FileType type = FileType.any,
     List<String>? allowedExtensions,
     Function(FilePickerStatus)? onFileLoading,
-    bool allowCompression = false,
     int compressionQuality = 0,
-    bool allowMultiple = false,
-    bool withData = false,
-    bool withReadStream = false,
-    bool lockParentWindow = false,
-    bool readSequential = false,
-  }) async =>
-      pickFilesReturn;
+    AndroidOptions androidOptions = const AndroidOptions(),
+    DarwinOptions darwinOptions = const DarwinOptions(),
+    WindowsOptions windowsOptions = const WindowsOptions(),
+    LinuxOptions linuxOptions = const LinuxOptions(),
+    WebOptions webOptions = const WebOptions(),
+  }) async => pickFilesReturn;
+}
+
+final class _MemoryFile extends PlatformFile {
+  _MemoryFile(this.bytes);
+  final Uint8List bytes;
+  @override
+  String get name => 'driftfin-settings.json';
+  @override
+  Uri get uri => Uri.parse('memory:settings.json');
+  @override
+  Never get xFile => throw UnimplementedError();
+  @override
+  int lengthSync() => bytes.length;
+  @override
+  Future<int> length() async => bytes.length;
+  @override
+  Future<Uint8List> readAsBytes() async => bytes;
+  @override
+  Stream<Uint8List> readAsByteStream() => Stream.value(bytes);
 }
 
 class _FakeUser extends User {
@@ -93,7 +109,7 @@ void main() {
     // No real platform plugin is registered under `flutter test`, so install a
     // fake for the whole file (each test file runs in its own isolate).
     fakePicker = _FakeFilePicker();
-    FilePicker.platform = fakePicker;
+    FilePickerPlatform.instance = fakePicker;
   });
 
   setUp(() {
@@ -151,9 +167,7 @@ void main() {
   testWidgets('export always passes bytes to saveFile', (tester) async {
     // Regression guard: Android & iOS throw if saveFile is called without
     // bytes, so export must supply them on every platform (not just web).
-    // saveFileReturn stays null (user cancels the save dialog) — the picker
-    // still receives the bytes first, and the null return skips the desktop
-    // File write (real disk I/O would need tester.runAsync) and the snackbar.
+    // Cancelling skips the success snackbar; the picker still receives the bytes.
     await pump(tester);
     await tileFor(tester, l10n.settingsExportSettingsTitle).onTap!();
     await tester.pump();
@@ -165,11 +179,21 @@ void main() {
     expect(decoded, isA<Map<String, dynamic>>());
   });
 
+  testWidgets('export lets the picker persist bytes without a second file write', (tester) async {
+    fakePicker.saveFileReturn = Uri.parse('content://documents/settings.json');
+    await pump(tester);
+    await tileFor(tester, l10n.settingsExportSettingsTitle).onTap!();
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 350));
+    expect(fakePicker.saveFileBytes, isNotEmpty);
+    expect(find.text(l10n.saved), findsOneWidget);
+    expect(tester.takeException(), isNull);
+    await drainSnack(tester);
+  });
+
   testWidgets('import reads a chosen JSON file and applies it', (tester) async {
     final payload = utf8.encode(jsonEncode(UserSettings().toJson()));
-    fakePicker.pickFilesReturn = FilePickerResult([
-      PlatformFile(name: 'driftfin-settings.json', size: payload.length, bytes: Uint8List.fromList(payload)),
-    ]);
+    fakePicker.pickFilesReturn = _MemoryFile(Uint8List.fromList(payload));
 
     await pump(tester);
     await tileFor(tester, l10n.settingsImportSettingsTitle).onTap!();

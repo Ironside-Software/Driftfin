@@ -22,12 +22,7 @@ class MediaBanner extends ConsumerStatefulWidget {
   final List<ItemBaseModel> items;
   final double maxHeight;
 
-  const MediaBanner({
-    this.controller,
-    required this.items,
-    this.maxHeight = 250,
-    super.key,
-  });
+  const MediaBanner({this.controller, required this.items, this.maxHeight = 250, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MediaBannerState();
@@ -128,21 +123,17 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
                           child: Container(
                             key: Key(currentItem.id),
                             clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(14)),
                             foregroundDecoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.10),
-                                  strokeAlign: BorderSide.strokeAlignInside),
+                                color: Colors.white.withValues(alpha: 0.10),
+                                strokeAlign: BorderSide.strokeAlignInside,
+                              ),
                               gradient: LinearGradient(
                                 begin: Alignment.bottomLeft,
                                 end: Alignment.topCenter,
-                                colors: [
-                                  overlayColor.withValues(alpha: 0.85),
-                                  Colors.transparent,
-                                ],
+                                colors: [overlayColor.withValues(alpha: 0.85), Colors.transparent],
                               ),
                             ),
                             child: FocusButton(
@@ -171,7 +162,11 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
                                   : (details) async {
                                       Offset localPosition = details.globalPosition;
                                       RelativeRect position = RelativeRect.fromLTRB(
-                                          localPosition.dx - 320, localPosition.dy, localPosition.dx, localPosition.dy);
+                                        localPosition.dx - 320,
+                                        localPosition.dy,
+                                        localPosition.dx,
+                                        localPosition.dy,
+                                      );
                                       final poster = currentItem;
 
                                       await showMenu(
@@ -185,10 +180,7 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
                                 height: double.infinity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(1),
-                                  child: DriftfinImage(
-                                    fit: BoxFit.cover,
-                                    image: currentItem.bannerImage,
-                                  ),
+                                  child: DriftfinImage(fit: BoxFit.cover, image: currentItem.bannerImage),
                                 ),
                               ),
                             ),
@@ -215,9 +207,8 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
                                           child: Text(
                                             currentItem.title,
                                             maxLines: 2,
-                                            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                                  color: Colors.white,
-                                                ),
+                                            style: Theme.of(context).textTheme.headlineMedium
+                                                ?.copyWith(color: Colors.white),
                                           ),
                                         ),
                                         if (currentItem.label(context.localized) != null || currentItem.subText != null)
@@ -225,9 +216,8 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
                                             child: Text(
                                               currentItem.label(context.localized) ?? currentItem.subText ?? "",
                                               maxLines: 2,
-                                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                    color: Colors.white.withValues(alpha: 0.75),
-                                                  ),
+                                              style: Theme.of(context).textTheme.titleMedium
+                                                  ?.copyWith(color: Colors.white.withValues(alpha: 0.75)),
                                             ),
                                           ),
                                       ].addInBetween(const SizedBox(height: 6)),
@@ -249,7 +239,7 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
                                 IconButton.filledTonal(
                                   onPressed: () => nextSlide(),
                                   icon: const Icon(IconsaxPlusLinear.arrow_right_3),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -277,7 +267,7 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
               ),
             )
           else
-            const SizedBox(height: 24)
+            const SizedBox(height: 24),
         ],
       ),
     );
@@ -304,25 +294,31 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
 
 class RoundedTrackShape extends RoundedRectSliderTrackShape {
   @override
-  void paint(PaintingContext context, Offset offset,
-      {required RenderBox parentBox,
-      required SliderThemeData sliderTheme,
-      required Animation<double> enableAnimation,
-      required TextDirection textDirection,
-      required Offset thumbCenter,
-      Offset? secondaryOffset,
-      bool isDiscrete = false,
-      bool isEnabled = false,
-      double additionalActiveTrackHeight = 0}) {
-    super.paint(context, offset,
-        parentBox: parentBox,
-        sliderTheme: sliderTheme,
-        enableAnimation: enableAnimation,
-        textDirection: textDirection,
-        thumbCenter: thumbCenter,
-        secondaryOffset: secondaryOffset,
-        isDiscrete: isDiscrete,
-        isEnabled: isEnabled,
-        additionalActiveTrackHeight: additionalActiveTrackHeight);
+  void paint(
+    PaintingContext context,
+    Offset offset, {
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
+    Offset? secondaryOffset,
+    bool isDiscrete = false,
+    bool isEnabled = false,
+    double additionalActiveTrackHeight = 0,
+  }) {
+    super.paint(
+      context,
+      offset,
+      parentBox: parentBox,
+      sliderTheme: sliderTheme,
+      enableAnimation: enableAnimation,
+      textDirection: textDirection,
+      thumbCenter: thumbCenter,
+      secondaryOffset: secondaryOffset,
+      isDiscrete: isDiscrete,
+      isEnabled: isEnabled,
+      additionalActiveTrackHeight: additionalActiveTrackHeight,
+    );
   }
 }

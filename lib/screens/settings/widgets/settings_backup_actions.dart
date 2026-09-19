@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -36,36 +34,24 @@ class SettingsBackupActions extends ConsumerWidget {
     final bytes = Uint8List.fromList(utf8.encode(jsonString));
 
     if (kIsWeb) {
-      await FilePicker.platform.saveFile(fileName: _fileName(), bytes: bytes);
+      await FilePicker.saveFile(fileName: _fileName(), bytes: bytes);
       return;
     }
 
-    // `bytes` is *required* on Android & iOS — saveFile throws an ArgumentError
-    // without it — and there the picker writes the file itself. On desktop
-    // saveFile only returns the chosen path, so we persist the bytes ourselves
-    // below. Passing bytes on every platform keeps one code path that works on
-    // mobile, desktop and web alike.
-    final path = await FilePicker.platform.saveFile(
+    // The picker writes the supplied bytes on every platform.
+    final path = await FilePicker.saveFile(
       dialogTitle: context.localized.settingsExportSettingsTitle,
       fileName: _fileName(),
-      type: FileType.custom,
-      allowedExtensions: const ['json'],
+      mimeType: 'application/json',
       bytes: bytes,
     );
     if (path == null) return;
-    if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
-      await File(path).writeAsBytes(bytes);
-    }
     if (context.mounted) DriftfinSnack.show(context.localized.saved, context: context);
   }
 
   Future<void> _import(BuildContext context, WidgetRef ref) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['json'],
-      withData: true,
-    );
-    final bytes = result?.files.singleOrNull?.bytes;
+    final result = await FilePicker.pickFile(type: FileType.custom, allowedExtensions: const ['json']);
+    final bytes = await result?.readAsBytes();
     if (bytes == null) return;
 
     try {
@@ -95,10 +81,7 @@ class SettingsBackupActions extends ConsumerWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  FilledButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(context.localized.cancel),
-                  ),
+                  FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.cancel)),
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () async {

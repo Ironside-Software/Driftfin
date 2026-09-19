@@ -6,20 +6,47 @@ part of 'seerr_api_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(SeerrApi)
+final seerrApiProvider = SeerrApiProvider._();
+
+final class SeerrApiProvider extends $NotifierProvider<SeerrApi, SeerrService> {
+  SeerrApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'seerrApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$seerrApiHash();
+
+  @$internal
+  @override
+  SeerrApi create() => SeerrApi();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SeerrService value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<SeerrService>(value));
+  }
+}
+
 String _$seerrApiHash() => r'57b39e9af4926a0b255b94ff257c738ffbd91d32';
 
-/// See also [SeerrApi].
-@ProviderFor(SeerrApi)
-final seerrApiProvider =
-    AutoDisposeNotifierProvider<SeerrApi, SeerrService>.internal(
-  SeerrApi.new,
-  name: r'seerrApiProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$seerrApiHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$SeerrApi = AutoDisposeNotifier<SeerrService>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$SeerrApi extends $Notifier<SeerrService> {
+  SeerrService build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<SeerrService, SeerrService>;
+    final element =
+        ref.element as $ClassProviderElement<AnyNotifier<SeerrService, SeerrService>, SeerrService, Object?, Object?>;
+    return element.handleCreate(ref, build);
+  }
+}

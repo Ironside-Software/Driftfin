@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,12 +23,12 @@ enum ConnectionState {
   vpn;
 
   bool get homeInternet => switch (this) {
-        ConnectionState.offline => false,
-        ConnectionState.mobile => false,
-        ConnectionState.wifi => true,
-        ConnectionState.ethernet => true,
-        ConnectionState.vpn => true,
-      };
+    ConnectionState.offline => false,
+    ConnectionState.mobile => false,
+    ConnectionState.wifi => true,
+    ConnectionState.ethernet => true,
+    ConnectionState.vpn => true,
+  };
 }
 
 final offlineStateProvider = Provider<bool>((ref) {
@@ -45,14 +46,11 @@ class ConnectivityStatus extends _$ConnectivityStatus {
 
   @override
   ConnectionState build() {
-    ref.listen(
-      userProvider.select((value) => value?.credentials.localUrl),
-      (previous, next) {
-        if (previous != next) {
-          checkConnectivity(immediate: true);
-        }
-      },
-    );
+    ref.listen(userProvider.select((value) => value?.credentials.localUrl), (previous, next) {
+      if (previous != next) {
+        checkConnectivity(immediate: true);
+      }
+    });
 
     final subscription = Connectivity().onConnectivityChanged.listen((results) {
       _handleHardwareChange(results);

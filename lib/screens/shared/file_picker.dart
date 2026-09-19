@@ -15,19 +15,9 @@ class FladderFile {
   final String name;
   final String? path;
   final Uint8List? data;
-  FladderFile({
-    required this.name,
-    this.path,
-    this.data,
-  });
+  FladderFile({required this.name, this.path, this.data});
 
-  static final Set<String> imageTypes = {
-    "png",
-    "jpg",
-    "jpeg",
-    "webp",
-    "gif",
-  };
+  static final Set<String> imageTypes = {"png", "jpg", "jpeg", "webp", "gif"};
 
   @override
   String toString() => 'FladderFile(name: $name, path: $path, data: ${data?.length})';
@@ -70,26 +60,14 @@ class _FilePickerBarState extends ConsumerState<FilePickerBar> {
           List<FladderFile> newFiles = [];
           await Future.forEach(details.files, (element) async {
             if (widget.extensions.contains(p.extension(element.path).substring(1))) {
-              newFiles.add(
-                FladderFile(
-                  name: element.name,
-                  path: element.path,
-                  data: await element.readAsBytes(),
-                ),
-              );
+              newFiles.add(FladderFile(name: element.name, path: element.path, data: await element.readAsBytes()));
             }
           });
           widget.onFilesPicked?.call(newFiles);
         } else {
           final file = details.files.lastOrNull;
           if (file != null) {
-            widget.onFilesPicked?.call([
-              FladderFile(
-                name: file.name,
-                path: file.path,
-                data: await file.readAsBytes(),
-              )
-            ]);
+            widget.onFilesPicked?.call([FladderFile(name: file.name, path: file.path, data: await file.readAsBytes())]);
           }
         }
       },
@@ -131,10 +109,7 @@ class _FilePickerBarState extends ConsumerState<FilePickerBar> {
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: contentColor),
                           ),
                           const SizedBox(width: 12),
-                          Icon(
-                            IconsaxPlusBold.folder_add,
-                            color: contentColor,
-                          )
+                          Icon(IconsaxPlusBold.folder_add, color: contentColor),
                         ],
                       ),
                     TextButton(
@@ -148,32 +123,33 @@ class _FilePickerBarState extends ConsumerState<FilePickerBar> {
                       onPressed: dragStart
                           ? null
                           : () async {
-                              FilePickerResult? result = await FilePicker.platform.pickFiles(
-                                allowMultiple: widget.multipleFiles,
-                                allowedExtensions: widget.extensions.toList(),
-                                type: FileType.custom,
-                                withData: true,
-                              );
-                              if (result != null && result.count != 0) {
-                                List<FladderFile> newFiles = [];
-                                await Future.forEach(result.files, (element) async {
-                                  newFiles.add(
-                                    FladderFile(
-                                      name: element.name,
-                                      path: element.path,
-                                      data: element.bytes,
-                                    ),
-                                  );
-                                });
+                              final single = widget.multipleFiles
+                                  ? null
+                                  : await FilePicker.pickFile(
+                                      allowedExtensions: widget.extensions.toList(),
+                                      type: FileType.custom,
+                                    );
+                              final files = widget.multipleFiles
+                                  ? await FilePicker.pickFiles(
+                                      allowedExtensions: widget.extensions.toList(),
+                                      type: FileType.custom,
+                                    )
+                                  : [?single];
+                              if (files.isNotEmpty) {
+                                final newFiles = await Future.wait(
+                                  files.map(
+                                    (file) async =>
+                                        FladderFile(name: file.name, path: file.path, data: await file.readAsBytes()),
+                                  ),
+                                );
                                 widget.onFilesPicked?.call(newFiles);
                               }
-                              FilePicker.platform.clearTemporaryFiles();
+                              await FilePicker.clearTemporaryFiles();
                             },
                       child: Text(
                         widget.multipleFiles ? "file(s) picker" : "file picker",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
+                        style: Theme.of(context).textTheme.bodyLarge
+                            ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                     ),
                   ],

@@ -26,12 +26,7 @@ class SeerrPosterCard extends ConsumerWidget {
   final double? aspectRatio;
   final Function(bool value)? onFocusChanged;
 
-  const SeerrPosterCard({
-    required this.poster,
-    this.aspectRatio,
-    this.onFocusChanged,
-    super.key,
-  });
+  const SeerrPosterCard({required this.poster, this.aspectRatio, this.onFocusChanged, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -92,10 +87,7 @@ class SeerrPosterCard extends ConsumerWidget {
             onTap: handleTapAction,
             onFocusChanged: onFocusChanged,
             child: Container(
-              decoration: BoxDecoration(
-                borderRadius: radius,
-                color: Theme.of(context).colorScheme.surfaceContainer,
-              ),
+              decoration: BoxDecoration(borderRadius: radius, color: Theme.of(context).colorScheme.surfaceContainer),
               foregroundDecoration: BoxDecoration(
                 borderRadius: radius,
                 border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
@@ -129,9 +121,7 @@ class SeerrPosterCard extends ConsumerWidget {
                         Expanded(
                           child: FilledButton(
                             style: FilledButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(6),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                               padding: const EdgeInsets.symmetric(vertical: 6),
                               textStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                             ),
@@ -147,9 +137,8 @@ class SeerrPosterCard extends ConsumerWidget {
                                 const SizedBox(width: 6),
                                 Text(
                                   context.localized.request,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                        color: Theme.of(context).colorScheme.onPrimary,
-                                      ),
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                                 ),
                               ],
                             ),
@@ -173,18 +162,15 @@ class SeerrPosterCard extends ConsumerWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(3.0),
-                        child: Icon(
-                          switch (poster.mediaStatus) {
-                            SeerrMediaStatus.available => Icons.check_rounded,
-                            SeerrMediaStatus.partiallyAvailable => Icons.download_done_rounded,
-                            SeerrMediaStatus.processing => Icons.downloading_rounded,
-                            SeerrMediaStatus.pending => Icons.hourglass_top_rounded,
-                            SeerrMediaStatus.blacklisted => Icons.block_rounded,
-                            SeerrMediaStatus.deleted => Icons.delete_outline_rounded,
-                            _ => Icons.remove_rounded,
-                          },
-                          size: 18,
-                        ),
+                        child: Icon(switch (poster.mediaStatus) {
+                          SeerrMediaStatus.available => Icons.check_rounded,
+                          SeerrMediaStatus.partiallyAvailable => Icons.download_done_rounded,
+                          SeerrMediaStatus.processing => Icons.downloading_rounded,
+                          SeerrMediaStatus.pending => Icons.hourglass_top_rounded,
+                          SeerrMediaStatus.blacklisted => Icons.block_rounded,
+                          SeerrMediaStatus.deleted => Icons.delete_outline_rounded,
+                          _ => Icons.remove_rounded,
+                        }, size: 18),
                       ),
                     ),
                   ),
@@ -203,13 +189,12 @@ class SeerrPosterCard extends ConsumerWidget {
                       poster.type == SeerrMediaType.movie
                           ? context.localized.mediaTypeMovie(1)
                           : context.localized.mediaTypeSeries(1),
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onPrimaryContainer,
-                          ),
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -263,14 +248,12 @@ class SeerrPosterCard extends ConsumerWidget {
   }
 
   Future<void> _showContextMenu(
-      BuildContext context, List<ItemAction> itemActions, WidgetRef ref, Offset globalPos) async {
+    BuildContext context,
+    List<ItemAction> itemActions,
+    WidgetRef ref,
+    Offset globalPos,
+  ) async {
     final position = RelativeRect.fromLTRB(globalPos.dx, globalPos.dy, globalPos.dx, globalPos.dy);
-    await showMenu(
-      context: context,
-      position: position,
-      items: itemActions.popupMenuItems(
-        useIcons: true,
-      ),
-    );
+    await showMenu(context: context, position: position, items: itemActions.popupMenuItems(useIcons: true));
   }
 }

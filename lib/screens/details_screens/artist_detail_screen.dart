@@ -63,11 +63,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
       onRefresh: () async {
         await provider.fetchDetails(widget.item);
       },
-      actions: (context) => current.generateActions(
-        context,
-        ref,
-        exclude: {ItemActions.details},
-      ),
+      actions: (context) => current.generateActions(context, ref, exclude: {ItemActions.details}),
       content: (detailsContext, padding) {
         final tracks = current.tracks;
         final albums = current.albums;
@@ -124,10 +120,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                           context: detailsContext,
                           item: current,
                           ref: ref,
-                          queueSource: ArtistInstantMixQueueSource(
-                            artistId: current.id,
-                            limit: 200,
-                          ),
+                          queueSource: ArtistInstantMixQueueSource(artistId: current.id, limit: 200),
                         ),
                         icon: IconsaxPlusLinear.blend_2,
                         label: context.localized.instantMix,
@@ -146,9 +139,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
               ),
               Container(
                 color: Theme.of(detailsContext).colorScheme.surface,
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.sizeOf(detailsContext).height,
-                ),
+                constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(detailsContext).height),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 8,
@@ -181,11 +172,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                                   }
                                 },
                                 onTrackSecondaryTap: (track, details) {
-                                  track.showDetailsMenu(
-                                    context,
-                                    ref,
-                                    details.globalPosition,
-                                  );
+                                  track.showDetailsMenu(context, ref, details.globalPosition);
                                 },
                               ),
                             ),
@@ -209,10 +196,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                             context: detailsContext,
                             item: current,
                             ref: ref,
-                            queueSource: ArtistFavoriteQueueSource(
-                              artistId: current.id,
-                              limit: 300,
-                            ),
+                            queueSource: ArtistFavoriteQueueSource(artistId: current.id, limit: 300),
                           );
                         },
                         contentPadding: padding,

@@ -7,32 +7,31 @@ import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/modal_side_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 Future<void> showBookViewerChapters(
-    BuildContext context, AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider,
-    {Function(BookModel book)? onPressed}) async {
+  BuildContext context,
+  StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider, {
+  Function(BookModel book)? onPressed,
+}) async {
   if (AdaptiveLayout.of(context).isDesktop) {
-    return showModalSideSheet(context,
-        content: BookViewerChapters(
-          provider: provider,
-          onPressed: onPressed,
-        ));
+    return showModalSideSheet(
+      context,
+      content: BookViewerChapters(provider: provider, onPressed: onPressed),
+    );
   } else {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
       useSafeArea: true,
-      builder: (context) => BookViewerChapters(
-        provider: provider,
-        onPressed: onPressed,
-      ),
+      builder: (context) => BookViewerChapters(provider: provider, onPressed: onPressed),
     );
   }
 }
 
 class BookViewerChapters extends ConsumerWidget {
-  final AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider;
+  final StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider;
   final Function(BookModel book)? onPressed;
   const BookViewerChapters({required this.provider, this.onPressed, super.key});
 
@@ -48,10 +47,7 @@ class BookViewerChapters extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              context.localized.chapter(chapters.length),
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            child: Text(context.localized.chapter(chapters.length), style: Theme.of(context).textTheme.titleLarge),
           ),
         ),
         const Divider(),
@@ -59,57 +55,44 @@ class BookViewerChapters extends ConsumerWidget {
           child: ListView(
             shrinkWrap: true,
             children: [
-              ...chapters.map(
-                (book) {
-                  final bool current = currentBook == book;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Card(
-                        elevation: current ? 10 : 3,
-                        child: Container(
-                          constraints: const BoxConstraints(minHeight: 80),
-                          alignment: Alignment.center,
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            leading: AspectRatio(
-                              aspectRatio: 1,
-                              child: Card(
-                                child: DriftfinImage(
-                                  image: book.getPosters?.primary,
-                                ),
-                              ),
-                            ),
-                            title: Text(book.name),
-                            trailing: current
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                    child: Icon(
-                                      Icons.visibility_rounded,
-                                      color: Theme.of(context).colorScheme.primary,
-                                    ),
-                                  )
-                                : FilledButton(
-                                    onPressed: () => onPressed?.call(book),
-                                    style: ElevatedButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                    ),
-                                    child: const Icon(Icons.read_more_rounded),
-                                  ),
+              ...chapters.map((book) {
+                final bool current = currentBook == book;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: Card(
+                      elevation: current ? 10 : 3,
+                      child: Container(
+                        constraints: const BoxConstraints(minHeight: 80),
+                        alignment: Alignment.center,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          leading: AspectRatio(
+                            aspectRatio: 1,
+                            child: Card(child: DriftfinImage(image: book.getPosters?.primary)),
                           ),
+                          title: Text(book.name),
+                          trailing: current
+                              ? Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                  child: Icon(Icons.visibility_rounded, color: Theme.of(context).colorScheme.primary),
+                                )
+                              : FilledButton(
+                                  onPressed: () => onPressed?.call(book),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                  ),
+                                  child: const Icon(Icons.read_more_rounded),
+                                ),
                         ),
                       ),
                     ),
-                  );
-                },
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).padding.bottom,
-              ),
+                  ),
+                );
+              }),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
             ],
           ),
         ),

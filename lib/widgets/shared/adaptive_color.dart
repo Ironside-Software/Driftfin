@@ -9,6 +9,7 @@ import 'package:material_color_utilities/material_color_utilities.dart';
 
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/theme.dart';
+import 'package:driftfin/theme/dynamic_color_scheme.dart';
 import 'package:driftfin/util/themes_data.dart';
 
 class AdaptiveColor extends ConsumerStatefulWidget {
@@ -23,6 +24,8 @@ class AdaptiveColorState extends ConsumerState<AdaptiveColor> with WidgetsBindin
   ColorScheme? _light;
   ColorScheme? _dark;
 
+  // dynamic_color still exposes CorePalette in its public API.
+  // ignore: deprecated_member_use
   CorePalette? _corePalette;
 
   @override
@@ -54,8 +57,8 @@ class AdaptiveColorState extends ConsumerState<AdaptiveColor> with WidgetsBindin
       _corePalette = corePalette;
       if (corePalette != null && mounted) {
         setState(() {
-          _light = corePalette.toColorScheme(brightness: Brightness.light);
-          _dark = corePalette.toColorScheme(brightness: Brightness.dark);
+          _light = fromDynamicColorScheme(corePalette.toColorScheme(brightness: Brightness.light));
+          _dark = fromDynamicColorScheme(corePalette.toColorScheme(brightness: Brightness.dark));
         });
         return;
       }
@@ -101,10 +104,6 @@ class AdaptiveColorState extends ConsumerState<AdaptiveColor> with WidgetsBindin
 
     final darkTheme = isLinux ? baseDarkTheme : FladderTheme.applyChineseFontToDarkTheme(darkTheme: baseDarkTheme);
 
-    return ThemesData(
-      light: lightTheme,
-      dark: darkTheme,
-      child: widget.child(darkTheme, lightTheme),
-    );
+    return ThemesData(light: lightTheme, dark: darkTheme, child: widget.child(darkTheme, lightTheme));
   }
 }

@@ -46,12 +46,12 @@ late SharedPreferences _prefs;
 class _User extends User {
   @override
   AccountModel build() => AccountModel(
-        name: 'Test',
-        id: 'user',
-        avatar: '',
-        lastUsed: DateTime(2026),
-        credentials: CredentialsModel.internal(serverId: 'server'),
-      );
+    name: 'Test',
+    id: 'user',
+    avatar: '',
+    lastUsed: DateTime(2026),
+    credentials: CredentialsModel(serverId: 'server'),
+  );
 }
 
 final _availablePoster = SeerrDashboardPosterModel(
@@ -93,11 +93,7 @@ Widget _harness(SeerrDashboardPosterModel poster, {SeerrUserModel? user}) {
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: Center(
-            child: SizedBox(
-              width: 200,
-              height: 300,
-              child: SeerrPosterCard(poster: poster),
-            ),
+            child: SizedBox(width: 200, height: 300, child: SeerrPosterCard(poster: poster)),
           ),
         ),
       ),

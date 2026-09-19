@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'dart:developer';
 
 import 'package:chopper/chopper.dart';
@@ -48,13 +50,19 @@ class MovieDetails extends _$MovieDetails {
         specialFeatures = (await api.itemsItemIdSpecialFeaturesGet(itemId: item.id)).body ?? [];
       } on Exception catch (e, s) {
         specialFeatures = [];
-        log("Failed to get special features for movie id ${item.id} due to $e",
-            level: logging.Level.WARNING.value, error: e, stackTrace: s);
+        log(
+          "Failed to get special features for movie id ${item.id} due to $e",
+          level: logging.Level.WARNING.value,
+          error: e,
+          stackTrace: s,
+        );
       }
 
       final related = await ref.read(relatedUtilityProvider).relatedContent(item.id);
-      final List<SpecialFeatureModel> specialFeatureModel =
-          SpecialFeatureModel.specialFeaturesFromDto(specialFeatures, ref).toList();
+      final List<SpecialFeatureModel> specialFeatureModel = SpecialFeatureModel.specialFeaturesFromDto(
+        specialFeatures,
+        ref,
+      ).toList();
 
       List<SeerrDashboardPosterModel> seerrRelated = const [];
       List<SeerrDashboardPosterModel> seerrRecommended = const [];
@@ -68,10 +76,7 @@ class MovieDetails extends _$MovieDetails {
           final seerr = ref.read(seerrApiProvider);
           seerrRelated = await seerr.discoverRelatedMovies(tmdbId: tmdbId);
           seerrRecommended = await seerr.discoverRecommendedMovies(tmdbId: tmdbId);
-          final seerrPoster = await seerr.fetchDashboardPosterFromIds(
-            tmdbId: tmdbId,
-            mediaType: SeerrMediaType.movie,
-          );
+          final seerrPoster = await seerr.fetchDashboardPosterFromIds(tmdbId: tmdbId, mediaType: SeerrMediaType.movie);
           final status = seerrPoster?.mediaInfo?.mediaStatus;
           if (status != SeerrMediaStatus.unknown) {
             final seerrServerUrl = ref.read(userProvider.select((value) => value?.seerrCredentials?.serverUrl));
@@ -81,13 +86,12 @@ class MovieDetails extends _$MovieDetails {
       }
 
       state = newState.copyWith(
-          related: related.body,
-          seerrRelated: seerrRelated,
-          seerrRecommended: seerrRecommended,
-          overview: state?.overview.copyWith(
-            seerrUrl: seerrUrl,
-          ),
-          specialFeatures: specialFeatureModel);
+        related: related.body,
+        seerrRelated: seerrRelated,
+        seerrRecommended: seerrRecommended,
+        overview: state?.overview.copyWith(seerrUrl: seerrUrl),
+        specialFeatures: specialFeatureModel,
+      );
       return null;
     } catch (e) {
       return null;

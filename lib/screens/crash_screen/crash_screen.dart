@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/models/error_log_model.dart';
 import 'package:driftfin/providers/crash_log_provider.dart';
@@ -20,8 +21,9 @@ class CrashScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.read(crashLogProvider.notifier);
     final selectedType = ref.watch(_selectedWarningProvider);
-    final crashLogs =
-        ref.watch(crashLogProvider).where((value) => selectedType == null ? true : value.type == selectedType);
+    final crashLogs = ref
+        .watch(crashLogProvider)
+        .where((value) => selectedType == null ? true : value.type == selectedType);
     return Dialog.fullscreen(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,15 +32,9 @@ class CrashScreen extends ConsumerWidget {
             Row(
               spacing: 8,
               children: [
-                Text(
-                  "Error logs",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text("Error logs", style: Theme.of(context).textTheme.titleLarge),
                 const Spacer(),
-                ElevatedButton(
-                  onPressed: provider.clearLogs,
-                  child: Text(context.localized.clear),
-                ),
+                ElevatedButton(onPressed: provider.clearLogs, child: Text(context.localized.clear)),
                 EnumBox(
                   current: selectedType == null ? context.localized.all : selectedType.name.capitalize(),
                   itemBuilder: (context) => [
@@ -51,7 +47,7 @@ class CrashScreen extends ConsumerWidget {
                         label: Text(entry.name.capitalize()),
                         action: () => ref.read(_selectedWarningProvider.notifier).update((state) => entry),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const CloseButton(),
@@ -88,8 +84,8 @@ class CrashScreen extends ConsumerWidget {
                                                 padding: const EdgeInsets.all(4.0),
                                                 child: Text(
                                                   e.label,
-                                                  style:
-                                                      Theme.of(context).textTheme.titleLarge?.copyWith(color: e.color),
+                                                  style: Theme.of(context).textTheme.titleLarge
+                                                      ?.copyWith(color: e.color),
                                                 ),
                                               ),
                                             ),
@@ -114,7 +110,7 @@ class CrashScreen extends ConsumerWidget {
                 ),
               )
             else
-              const Text("No crash-logs")
+              const Text("No crash-logs"),
           ].addInBetween(const SizedBox(height: 12)),
         ),
       ),

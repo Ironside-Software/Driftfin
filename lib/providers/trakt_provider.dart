@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:driftfin/models/item_base_model.dart';
@@ -38,25 +39,25 @@ class TraktTokens {
   bool expiredAt(int nowSeconds) => nowSeconds >= (createdAt + expiresIn - 3600);
 
   Map<String, dynamic> toJson() => {
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-        'createdAt': createdAt,
-        'expiresIn': expiresIn,
-      };
+    'accessToken': accessToken,
+    'refreshToken': refreshToken,
+    'createdAt': createdAt,
+    'expiresIn': expiresIn,
+  };
 
   factory TraktTokens.fromJson(Map<String, dynamic> json) => TraktTokens(
-        accessToken: json['accessToken'] as String? ?? '',
-        refreshToken: json['refreshToken'] as String? ?? '',
-        createdAt: (json['createdAt'] as num?)?.toInt() ?? 0,
-        expiresIn: (json['expiresIn'] as num?)?.toInt() ?? 0,
-      );
+    accessToken: json['accessToken'] as String? ?? '',
+    refreshToken: json['refreshToken'] as String? ?? '',
+    createdAt: (json['createdAt'] as num?)?.toInt() ?? 0,
+    expiresIn: (json['expiresIn'] as num?)?.toInt() ?? 0,
+  );
 
   factory TraktTokens.fromOauth(Map<String, dynamic> json) => TraktTokens(
-        accessToken: json['access_token'] as String? ?? '',
-        refreshToken: json['refresh_token'] as String? ?? '',
-        createdAt: (json['created_at'] as num?)?.toInt() ?? 0,
-        expiresIn: (json['expires_in'] as num?)?.toInt() ?? 0,
-      );
+    accessToken: json['access_token'] as String? ?? '',
+    refreshToken: json['refresh_token'] as String? ?? '',
+    createdAt: (json['created_at'] as num?)?.toInt() ?? 0,
+    expiresIn: (json['expires_in'] as num?)?.toInt() ?? 0,
+  );
 }
 
 /// Result of starting the device flow.
@@ -76,12 +77,12 @@ class TraktDeviceCode {
   });
 
   factory TraktDeviceCode.fromJson(Map<String, dynamic> json) => TraktDeviceCode(
-        deviceCode: json['device_code'] as String? ?? '',
-        userCode: json['user_code'] as String? ?? '',
-        verificationUrl: json['verification_url'] as String? ?? 'https://trakt.tv/activate',
-        expiresIn: (json['expires_in'] as num?)?.toInt() ?? 600,
-        interval: (json['interval'] as num?)?.toInt() ?? 5,
-      );
+    deviceCode: json['device_code'] as String? ?? '',
+    userCode: json['user_code'] as String? ?? '',
+    verificationUrl: json['verification_url'] as String? ?? 'https://trakt.tv/activate',
+    expiresIn: (json['expires_in'] as num?)?.toInt() ?? 600,
+    interval: (json['interval'] as num?)?.toInt() ?? 5,
+  );
 }
 
 enum TraktPollStatus { pending, success, slowDown, expired, denied, invalid, error }
@@ -96,12 +97,8 @@ enum TraktScrobbleAction { start, pause, stop }
 
 /// Thin, dependency-free Trakt client. Injectable [http.Client] for testing.
 class TraktApi {
-  TraktApi({
-    required this.clientId,
-    required this.clientSecret,
-    this.accessToken,
-    http.Client? client,
-  }) : _client = client ?? http.Client();
+  TraktApi({required this.clientId, required this.clientSecret, this.accessToken, http.Client? client})
+    : _client = client ?? http.Client();
 
   final String clientId;
   final String clientSecret;
@@ -109,11 +106,11 @@ class TraktApi {
   final http.Client _client;
 
   Map<String, String> get _headers => {
-        'Content-Type': 'application/json',
-        'trakt-api-version': '2',
-        'trakt-api-key': clientId,
-        if (accessToken != null && accessToken!.isNotEmpty) 'Authorization': 'Bearer $accessToken',
-      };
+    'Content-Type': 'application/json',
+    'trakt-api-version': '2',
+    'trakt-api-key': clientId,
+    if (accessToken != null && accessToken!.isNotEmpty) 'Authorization': 'Bearer $accessToken',
+  };
 
   Future<TraktDeviceCode?> requestDeviceCode() async {
     final response = await _client.post(
@@ -134,7 +131,9 @@ class TraktApi {
     switch (response.statusCode) {
       case 200:
         return TraktPollResult(
-            TraktPollStatus.success, TraktTokens.fromOauth(jsonDecode(response.body) as Map<String, dynamic>));
+          TraktPollStatus.success,
+          TraktTokens.fromOauth(jsonDecode(response.body) as Map<String, dynamic>),
+        );
       case 400:
         return const TraktPollResult(TraktPollStatus.pending);
       case 429:
@@ -246,41 +245,46 @@ class TraktSettings {
   /// so the user still authorizes the device flow even when managed.
   final bool managed;
 
-  const TraktSettings(
-      {this.clientId = '', this.clientSecret = '', this.enabled = false, this.tokens, this.managed = false});
+  const TraktSettings({
+    this.clientId = '',
+    this.clientSecret = '',
+    this.enabled = false,
+    this.tokens,
+    this.managed = false,
+  });
 
   bool get hasCredentials => clientId.trim().isNotEmpty && clientSecret.trim().isNotEmpty;
   bool get isAuthenticated => tokens != null && tokens!.accessToken.isNotEmpty;
   bool get isActive => enabled && hasCredentials && isAuthenticated;
 
-  TraktSettings copyWith(
-          {String? clientId,
-          String? clientSecret,
-          bool? enabled,
-          TraktTokens? tokens,
-          bool? managed,
-          bool clearTokens = false}) =>
-      TraktSettings(
-        clientId: clientId ?? this.clientId,
-        clientSecret: clientSecret ?? this.clientSecret,
-        enabled: enabled ?? this.enabled,
-        tokens: clearTokens ? null : (tokens ?? this.tokens),
-        managed: managed ?? this.managed,
-      );
+  TraktSettings copyWith({
+    String? clientId,
+    String? clientSecret,
+    bool? enabled,
+    TraktTokens? tokens,
+    bool? managed,
+    bool clearTokens = false,
+  }) => TraktSettings(
+    clientId: clientId ?? this.clientId,
+    clientSecret: clientSecret ?? this.clientSecret,
+    enabled: enabled ?? this.enabled,
+    tokens: clearTokens ? null : (tokens ?? this.tokens),
+    managed: managed ?? this.managed,
+  );
 
   Map<String, dynamic> toJson() => {
-        'clientId': clientId,
-        'clientSecret': clientSecret,
-        'enabled': enabled,
-        'tokens': tokens?.toJson(),
-      };
+    'clientId': clientId,
+    'clientSecret': clientSecret,
+    'enabled': enabled,
+    'tokens': tokens?.toJson(),
+  };
 
   factory TraktSettings.fromJson(Map<String, dynamic> json) => TraktSettings(
-        clientId: json['clientId'] as String? ?? '',
-        clientSecret: json['clientSecret'] as String? ?? '',
-        enabled: json['enabled'] as bool? ?? false,
-        tokens: json['tokens'] == null ? null : TraktTokens.fromJson(json['tokens'] as Map<String, dynamic>),
-      );
+    clientId: json['clientId'] as String? ?? '',
+    clientSecret: json['clientSecret'] as String? ?? '',
+    enabled: json['enabled'] as bool? ?? false,
+    tokens: json['tokens'] == null ? null : TraktTokens.fromJson(json['tokens'] as Map<String, dynamic>),
+  );
 }
 
 const String _traktSettingsKey = 'traktSettings';
@@ -304,7 +308,11 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
     if (server != null && server.isManaged) {
       // Overlay server credentials but keep the user's local OAuth tokens.
       return local.copyWith(
-          clientId: server.clientId.trim(), clientSecret: server.clientSecret.trim(), enabled: true, managed: true);
+        clientId: server.clientId.trim(),
+        clientSecret: server.clientSecret.trim(),
+        enabled: true,
+        managed: true,
+      );
     }
     return local;
   }
@@ -324,7 +332,11 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
   void _applyServer(TraktServerConfig? server) {
     if (server != null && server.isManaged) {
       state = state.copyWith(
-          clientId: server.clientId.trim(), clientSecret: server.clientSecret.trim(), enabled: true, managed: true);
+        clientId: server.clientId.trim(),
+        clientSecret: server.clientSecret.trim(),
+        enabled: true,
+        managed: true,
+      );
     } else if (state.managed) {
       state = _load(ref);
     }

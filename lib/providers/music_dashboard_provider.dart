@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.enums.swagger.dart';
 import 'package:driftfin/models/home_model.dart';
@@ -15,11 +16,7 @@ final musicDashboardProvider = StateNotifierProvider<MusicDashboardNotifier, Mus
   return MusicDashboardNotifier(ref);
 });
 
-enum MusicTrackSection {
-  recentlyAdded,
-  recentlyPlayed,
-  recentlyFavorited,
-}
+enum MusicTrackSection { recentlyAdded, recentlyPlayed, recentlyFavorited }
 
 class MusicDashboardModel {
   final bool loading;
@@ -71,16 +68,12 @@ class MusicDashboardModel {
 
 class MusicDashboardNotifier extends StateNotifier<MusicDashboardModel> {
   MusicDashboardNotifier(this.ref) : super(const MusicDashboardModel()) {
-    ref.listen(
-      libraryFiltersByKeyProvider(FilterSortKey.musicDashboard),
-      (previous, next) {
-        const listEquality = ListEquality<LibraryFiltersModel>();
-        if (!listEquality.equals(previous, next)) {
-          fetchMusicHome();
-        }
-      },
-      fireImmediately: false,
-    );
+    ref.listen(libraryFiltersByKeyProvider(FilterSortKey.musicDashboard), (previous, next) {
+      const listEquality = ListEquality<LibraryFiltersModel>();
+      if (!listEquality.equals(previous, next)) {
+        fetchMusicHome();
+      }
+    }, fireImmediately: false);
   }
 
   final Ref ref;
@@ -118,23 +111,14 @@ class MusicDashboardNotifier extends StateNotifier<MusicDashboardModel> {
 
   Future<List<DashboardFilterModel>> _fetchDashboardFilters() async {
     final filters = ref.read(libraryFiltersByKeyProvider(FilterSortKey.musicDashboard));
-    return Future.wait(
-      filters.map(
-        (e) => e.fetchDashboardFilter(ref, limit: _dashboardFilterLimit),
-      ),
-    );
+    return Future.wait(filters.map((e) => e.fetchDashboardFilter(ref, limit: _dashboardFilterLimit)));
   }
 
   Future<void> fetchMusicHome() async {
     if (state.loading) return;
     state = state.copyWith(loading: true);
 
-    final enableImageTypes = [
-      ImageType.primary,
-      ImageType.backdrop,
-      ImageType.thumb,
-      ImageType.logo,
-    ];
+    final enableImageTypes = [ImageType.primary, ImageType.backdrop, ImageType.thumb, ImageType.logo];
 
     final fields = {
       ItemFields.parentid,

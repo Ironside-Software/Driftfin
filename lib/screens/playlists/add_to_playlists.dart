@@ -15,7 +15,10 @@ import 'package:driftfin/widgets/shared/alert_content.dart';
 import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
 
 Future<void> addItemToPlaylist(BuildContext context, List<ItemBaseModel> item) {
-  return showDialogAdaptive(context: context, builder: (context) => AddToPlaylist(items: item));
+  return showDialogAdaptive(
+    context: context,
+    builder: (context) => AddToPlaylist(items: item),
+  );
 }
 
 class AddToPlaylist extends ConsumerStatefulWidget {
@@ -46,10 +49,7 @@ class _AddToPlaylistState extends ConsumerState<AddToPlaylist> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (widget.items.length == 1)
-                Text(
-                  context.localized.addToPlaylist,
-                  style: Theme.of(context).textTheme.titleLarge,
-                )
+                Text(context.localized.addToPlaylist, style: Theme.of(context).textTheme.titleLarge)
               else
                 Text(
                   context.localized.addItemsToPlaylist(widget.items.length),
@@ -58,7 +58,7 @@ class _AddToPlaylistState extends ConsumerState<AddToPlaylist> {
               IconButton(
                 onPressed: () => ref.read(provider.notifier).setItems(widget.items),
                 icon: const Icon(IconsaxPlusLinear.refresh),
-              )
+              ),
             ],
           ),
           if (widget.items.length == 1) ItemBottomSheetPreview(item: widget.items.first),
@@ -77,22 +77,22 @@ class _AddToPlaylistState extends ConsumerState<AddToPlaylist> {
               ),
               const SizedBox(width: 32),
               IconButton(
-                  onPressed: controller.text.isNotEmpty
-                      ? () async {
-                          final response = await ref.read(provider.notifier).addToNewPlaylist(
-                                name: controller.text,
-                              );
-                          if (context.mounted) {
-                            DriftfinSnack.show(
-                                response.isSuccessful
-                                    ? context.localized.addedToPlaylist(controller.text)
-                                    : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
-                                context: context);
-                          }
-                          setState(() => controller.text = '');
+                onPressed: controller.text.isNotEmpty
+                    ? () async {
+                        final response = await ref.read(provider.notifier).addToNewPlaylist(name: controller.text);
+                        if (context.mounted) {
+                          DriftfinSnack.show(
+                            response.isSuccessful
+                                ? context.localized.addedToPlaylist(controller.text)
+                                : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
+                            context: context,
+                          );
                         }
-                      : null,
-                  icon: const Icon(Icons.add_rounded)),
+                        setState(() => controller.text = '');
+                      }
+                    : null,
+                icon: const Icon(Icons.add_rounded),
+              ),
             ],
           ),
           if (playListProvider.isLoading && playListProvider.collections.isEmpty) const CircularProgressIndicator(),
@@ -101,100 +101,93 @@ class _AddToPlaylistState extends ConsumerState<AddToPlaylist> {
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(vertical: 12),
               children: [
-                ...playListProvider.collections.entries.map(
-                  (e) {
-                    final containsItem = e.value == true;
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: FocusButton(
-                        onTap: () async {
-                          if (containsItem) {
-                            final response = await ref.read(provider.notifier).removeFromPlaylist(playlist: e.key);
-                            if (context.mounted) {
-                              DriftfinSnack.show(
-                                  response.isSuccessful
-                                      ? context.localized.removedFromPlaylist(e.key.name)
-                                      : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
-                                  context: context);
-                            }
-                          } else {
-                            final response = await ref.read(provider.notifier).addToPlaylist(playlist: e.key);
-                            if (context.mounted) {
-                              DriftfinSnack.show(
-                                  response.isSuccessful
-                                      ? context.localized.addedToPlaylist(controller.text)
-                                      : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
-                                  context: context);
-                            }
+                ...playListProvider.collections.entries.map((e) {
+                  final containsItem = e.value == true;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: FocusButton(
+                      onTap: () async {
+                        if (containsItem) {
+                          final response = await ref.read(provider.notifier).removeFromPlaylist(playlist: e.key);
+                          if (context.mounted) {
+                            DriftfinSnack.show(
+                              response.isSuccessful
+                                  ? context.localized.removedFromPlaylist(e.key.name)
+                                  : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
+                              context: context,
+                            );
                           }
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: containsItem
-                                ? Theme.of(context).colorScheme.primaryContainer
-                                : Theme.of(context).colorScheme.surfaceContainer,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                    child: Text(
-                                  e.key.name,
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                )),
-                                SquareProgressIndicator(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  value: e.value == null && playListProvider.isLoading ? null : 0,
-                                  child: Checkbox(
-                                    value: containsItem,
-                                    onChanged: (value) async {
-                                      if (value == null) return;
-                                      if (containsItem) {
-                                        final response =
-                                            await ref.read(provider.notifier).removeFromPlaylist(playlist: e.key);
-                                        if (context.mounted) {
-                                          DriftfinSnack.show(
-                                              response.isSuccessful
-                                                  ? context.localized.removedFromPlaylist(e.key.name)
-                                                  : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
-                                              context: context);
-                                        }
-                                      } else {
-                                        final response =
-                                            await ref.read(provider.notifier).addToPlaylist(playlist: e.key);
-                                        if (context.mounted) {
-                                          DriftfinSnack.show(
-                                              response.isSuccessful
-                                                  ? context.localized.addedToPlaylist(controller.text)
-                                                  : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
-                                              context: context);
-                                        }
+                        } else {
+                          final response = await ref.read(provider.notifier).addToPlaylist(playlist: e.key);
+                          if (context.mounted) {
+                            DriftfinSnack.show(
+                              response.isSuccessful
+                                  ? context.localized.addedToPlaylist(controller.text)
+                                  : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
+                              context: context,
+                            );
+                          }
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: containsItem
+                              ? Theme.of(context).colorScheme.primaryContainer
+                              : Theme.of(context).colorScheme.surfaceContainer,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(child: Text(e.key.name, style: Theme.of(context).textTheme.bodyLarge)),
+                              SquareProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                                value: e.value == null && playListProvider.isLoading ? null : 0,
+                                child: Checkbox(
+                                  value: containsItem,
+                                  onChanged: (value) async {
+                                    if (value == null) return;
+                                    if (containsItem) {
+                                      final response = await ref
+                                          .read(provider.notifier)
+                                          .removeFromPlaylist(playlist: e.key);
+                                      if (context.mounted) {
+                                        DriftfinSnack.show(
+                                          response.isSuccessful
+                                              ? context.localized.removedFromPlaylist(e.key.name)
+                                              : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
+                                          context: context,
+                                        );
                                       }
-                                    },
-                                  ),
+                                    } else {
+                                      final response = await ref.read(provider.notifier).addToPlaylist(playlist: e.key);
+                                      if (context.mounted) {
+                                        DriftfinSnack.show(
+                                          response.isSuccessful
+                                              ? context.localized.addedToPlaylist(controller.text)
+                                              : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
+                                          context: context,
+                                        );
+                                      }
+                                    }
+                                  },
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                }),
               ],
             ),
           ),
         ],
       ),
-      actions: [
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(context.localized.close),
-        )
-      ],
+      actions: [FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.close))],
     );
   }
 }

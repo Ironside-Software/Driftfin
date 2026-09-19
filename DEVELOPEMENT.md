@@ -32,7 +32,7 @@ flutter pub get
 If you're on **Linux**, install the `mpv` and build dependencies:
 
 ```bash
-sudo apt install libmpv-dev clang cmake ninja-build pkg-config libgtk-3-dev libcurl4-openssl-dev
+sudo apt install libmpv-dev clang cmake ninja-build pkg-config libgtk-3-dev libcurl4-openssl-dev openjdk-17-jdk-headless
 ```
 
 ## 🛠️ Running the App

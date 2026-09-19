@@ -4,10 +4,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/media_playback_model.dart';
 import 'package:driftfin/util/list_extensions.dart';
 
-enum AudioQueueSection {
-  nextUp,
-  existing,
-}
+enum AudioQueueSection { nextUp, existing }
 
 class PlaybackQueueState {
   final List<ItemBaseModel> queue;
@@ -49,11 +46,7 @@ class PlaybackQueueState {
     );
   }
 
-  static List<ItemBaseModel> _shuffled(
-    List<ItemBaseModel> items,
-    String? anchorId,
-    Random random,
-  ) {
+  static List<ItemBaseModel> _shuffled(List<ItemBaseModel> items, String? anchorId, Random random) {
     final anchorIdx = anchorId != null ? items.indexWhere((e) => e.id == anchorId) : -1;
     final anchor = anchorIdx >= 0 ? items[anchorIdx] : items.first;
     final rest = List<ItemBaseModel>.from(items)..remove(anchor);
@@ -114,31 +107,17 @@ class PlaybackQueueState {
   ({ItemBaseModel item, PlaybackQueueState state})? nextTransition(String currentPlayingId) {
     final item = nextItem(currentPlayingId);
     if (item == null) return null;
-    return (
-      item: item,
-      state: advanceTo(
-        fromId: currentPlayingId,
-        toId: item.id,
-        fromNextUp: playingFromNextUp,
-      ),
-    );
+    return (item: item, state: advanceTo(fromId: currentPlayingId, toId: item.id, fromNextUp: playingFromNextUp));
   }
 
   ({ItemBaseModel item, PlaybackQueueState state})? previousTransition(String currentPlayingId) {
     final item = previousItem(currentPlayingId);
     if (item == null) return null;
-    return (
-      item: item,
-      state: advanceTo(fromId: null, toId: item.id),
-    );
+    return (item: item, state: advanceTo(fromId: null, toId: item.id));
   }
 
   PlaybackQueueState advanceFromCurrentTo(String currentPlayingId, String toId) {
-    return advanceTo(
-      fromId: currentPlayingId,
-      toId: toId,
-      fromNextUp: playingFromNextUp,
-    );
+    return advanceTo(fromId: currentPlayingId, toId: toId, fromNextUp: playingFromNextUp);
   }
 
   PlaybackQueueState advanceTo({required String? fromId, required String toId, bool fromNextUp = false}) {
@@ -149,9 +128,7 @@ class PlaybackQueueState {
       if (fromNextUp) {
         final fromNextUpIdx = state.nextUpQueue.indexWhere((e) => e.id == fromId);
         if (fromNextUpIdx >= 0) {
-          state = state.copyWith(
-            nextUpQueue: List.from(state.nextUpQueue)..removeAt(fromNextUpIdx),
-          );
+          state = state.copyWith(nextUpQueue: List.from(state.nextUpQueue)..removeAt(fromNextUpIdx));
         }
       } else if (state.queue.any((e) => e.id == fromId)) {
         newMainQueueCurrentId = fromId;
@@ -163,10 +140,7 @@ class PlaybackQueueState {
       newMainQueueCurrentId = toId;
     }
 
-    return state.copyWith(
-      mainQueueCurrentId: newMainQueueCurrentId,
-      playingFromNextUp: goingToNextUp,
-    );
+    return state.copyWith(mainQueueCurrentId: newMainQueueCurrentId, playingFromNextUp: goingToNextUp);
   }
 
   PlaybackQueueState addToNextUp(List<ItemBaseModel> items) {
@@ -177,25 +151,14 @@ class PlaybackQueueState {
   PlaybackQueueState appendToQueue(List<ItemBaseModel> items, {Random? random}) {
     if (items.isEmpty) return this;
 
-    final existingIds = {
-      ...queue.map((item) => item.id),
-      ...nextUpQueue.map((item) => item.id),
-    };
+    final existingIds = {...queue.map((item) => item.id), ...nextUpQueue.map((item) => item.id)};
     final uniqueItems = items.where((item) => !existingIds.contains(item.id)).toList();
     if (uniqueItems.isEmpty) return this;
 
     final updatedOriginalQueue = [...originalQueue, ...uniqueItems];
-    final updatedQueue = shuffleEnabled
-        ? [
-            ...queue,
-            ...uniqueItems..shuffle(),
-          ]
-        : [...queue, ...uniqueItems];
+    final updatedQueue = shuffleEnabled ? [...queue, ...uniqueItems..shuffle()] : [...queue, ...uniqueItems];
 
-    return copyWith(
-      queue: updatedQueue,
-      originalQueue: updatedOriginalQueue,
-    );
+    return copyWith(queue: updatedQueue, originalQueue: updatedOriginalQueue);
   }
 
   PlaybackQueueState clearNextUp() {
@@ -206,24 +169,14 @@ class PlaybackQueueState {
   PlaybackQueueState jumpToItem(String itemId) {
     final nextUpIdx = nextUpQueue.indexWhere((e) => e.id == itemId);
     if (nextUpIdx >= 0) {
-      return copyWith(
-        nextUpQueue: nextUpQueue.sublist(nextUpIdx),
-        playingFromNextUp: true,
-      );
+      return copyWith(nextUpQueue: nextUpQueue.sublist(nextUpIdx), playingFromNextUp: true);
     }
 
-    return copyWith(
-      nextUpQueue: _remainingNextUpQueue(),
-      mainQueueCurrentId: itemId,
-      playingFromNextUp: false,
-    );
+    return copyWith(nextUpQueue: _remainingNextUpQueue(), mainQueueCurrentId: itemId, playingFromNextUp: false);
   }
 
   List<ItemBaseModel> queueAheadForPrefetch() {
-    return [
-      ..._remainingNextUpQueue(),
-      ..._queueAfterMainAnchor(),
-    ];
+    return [..._remainingNextUpQueue(), ..._queueAfterMainAnchor()];
   }
 
   PlaybackQueueState withRepeatMode(AudioRepeatMode mode) => copyWith(repeatMode: mode);
@@ -312,12 +265,7 @@ class PlaybackQueueState {
     final queueAfter = queueIdx >= 0 ? queue.sublist(queueIdx + 1) : _queueAfterAnchor(currentPlayingId);
     final queueBefore = wrapAround && queueIdx > 0 ? queue.sublist(0, queueIdx) : const <ItemBaseModel>[];
 
-    return [
-      if (currentItem != null) currentItem,
-      ...remainingNextUp,
-      ...queueAfter,
-      ...queueBefore,
-    ];
+    return [?currentItem, ...remainingNextUp, ...queueAfter, ...queueBefore];
   }
 
   List<ItemBaseModel> _queueAfterAnchor(String? currentPlayingId) {

@@ -1,5 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/boxset_model.dart';
@@ -14,17 +15,9 @@ class _CollectionSetModel {
   final bool isLoading;
   final List<ItemBaseModel> items;
   final Map<BoxSetModel, bool?> collections;
-  _CollectionSetModel({
-    this.isLoading = false,
-    required this.items,
-    required this.collections,
-  });
+  _CollectionSetModel({this.isLoading = false, required this.items, required this.collections});
 
-  _CollectionSetModel copyWith({
-    bool? isLoading,
-    List<ItemBaseModel>? items,
-    Map<BoxSetModel, bool?>? collections,
-  }) {
+  _CollectionSetModel copyWith({bool? isLoading, List<ItemBaseModel>? items, Map<BoxSetModel, bool?>? collections}) {
     return _CollectionSetModel(
       isLoading: isLoading ?? this.isLoading,
       items: items ?? this.items,
@@ -55,12 +48,7 @@ class BoxSetNotifier extends StateNotifier<_CollectionSetModel> {
   }
 
   Future<void> _init() async {
-    final collections = await api.usersUserIdItemsGet(
-      recursive: true,
-      includeItemTypes: [
-        BaseItemKind.boxset,
-      ],
-    );
+    final collections = await api.usersUserIdItemsGet(recursive: true, includeItemTypes: [BaseItemKind.boxset]);
 
     final boxSets = collections.body?.items?.map((e) => BoxSetModel.fromBaseDto(e, ref)).toList();
 
@@ -71,20 +59,23 @@ class BoxSetNotifier extends StateNotifier<_CollectionSetModel> {
     );
 
     for (final boxSet in boxSets ?? []) {
-      final itemList = await api.usersUserIdItemsGet(
-        parentId: boxSet.id,
-      );
+      final itemList = await api.usersUserIdItemsGet(parentId: boxSet.id);
       state = state.copyWith(
-        collections: state.collections
-            .setKey(boxSet, itemList.body?.items?.map((e) => e.id).contains(state.items.firstOrNull?.id) ?? false),
+        collections: state.collections.setKey(
+          boxSet,
+          itemList.body?.items?.map((e) => e.id).contains(state.items.firstOrNull?.id) ?? false,
+        ),
       );
     }
 
     state = state.copyWith(isLoading: false);
   }
 
-  Future<Response> toggleCollection(
-      {required BoxSetModel boxSet, required bool value, required ItemBaseModel item}) async {
+  Future<Response> toggleCollection({
+    required BoxSetModel boxSet,
+    required bool value,
+    required ItemBaseModel item,
+  }) async {
     final Response response = value
         ? await api.collectionsCollectionIdItemsPost(collectionId: boxSet.id, ids: [item.id])
         : await api.collectionsCollectionIdItemsDelete(collectionId: boxSet.id, ids: [item.id]);
@@ -98,9 +89,13 @@ class BoxSetNotifier extends StateNotifier<_CollectionSetModel> {
   Future<Response> addToCollection({required BoxSetModel boxSet, required bool add}) async {
     final response = add
         ? await api.collectionsCollectionIdItemsPost(
-            collectionId: boxSet.id, ids: state.items.map((e) => e.id).toList())
+            collectionId: boxSet.id,
+            ids: state.items.map((e) => e.id).toList(),
+          )
         : await api.collectionsCollectionIdItemsDelete(
-            collectionId: boxSet.id, ids: state.items.map((e) => e.id).toList());
+            collectionId: boxSet.id,
+            ids: state.items.map((e) => e.id).toList(),
+          );
 
     if (response.isSuccessful) {
       state = state.copyWith(collections: state.collections.setKey(boxSet, response.isSuccessful ? add : !add));

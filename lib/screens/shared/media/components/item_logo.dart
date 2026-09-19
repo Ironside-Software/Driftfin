@@ -7,12 +7,7 @@ class ItemLogo extends StatelessWidget {
   final ItemBaseModel item;
   final Alignment imageAlignment;
   final TextStyle? textStyle;
-  const ItemLogo({
-    required this.item,
-    this.imageAlignment = Alignment.bottomCenter,
-    this.textStyle,
-    super.key,
-  });
+  const ItemLogo({required this.item, this.imageAlignment = Alignment.bottomCenter, this.textStyle, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +21,7 @@ class ItemLogo extends StatelessWidget {
         textAlign: TextAlign.start,
         maxLines: 2,
         overflow: TextOverflow.fade,
-        style: textStyle ??
-            Theme.of(context).textTheme.headlineLarge?.copyWith(
-                  fontSize: 55,
-                ),
+        style: textStyle ?? Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 55),
       ),
     );
     return logo != null

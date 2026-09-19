@@ -42,10 +42,7 @@ class ControlLiveTvPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (tunerHosts.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(context.localized.noTunerDevicesConfigured),
-                  )
+                  Padding(padding: const EdgeInsets.all(16.0), child: Text(context.localized.noTunerDevicesConfigured))
                 else
                   ...tunerHosts.map(
                     (tuner) => TunerHostCard(
@@ -71,10 +68,7 @@ class ControlLiveTvPage extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (listingProviders.isEmpty)
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(context.localized.noEpgProvidersConfigured),
-                  )
+                  Padding(padding: const EdgeInsets.all(16.0), child: Text(context.localized.noEpgProvidersConfigured))
                 else
                   ...listingProviders.map(
                     (provider) => ListingProviderCard(
@@ -83,10 +77,7 @@ class ControlLiveTvPage extends ConsumerWidget {
                       onDelete: () => _deleteListingProvider(context, ref, provider),
                     ),
                   ),
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: RefreshGuideButton(),
-                ),
+                const Padding(padding: EdgeInsets.all(16.0), child: RefreshGuideButton()),
               ],
             ),
           ),
@@ -96,10 +87,7 @@ class ControlLiveTvPage extends ConsumerWidget {
   }
 
   Future<void> _addTunerHost(BuildContext context, WidgetRef ref) async {
-    final result = await showDialog<TunerHostInfo>(
-      context: context,
-      builder: (context) => const TunerHostEditDialog(),
-    );
+    final result = await showDialog<TunerHostInfo>(context: context, builder: (context) => const TunerHostEditDialog());
 
     if (result != null && context.mounted) {
       final response = await DriftfinSnack.showResponse<TunerHostInfo>(
@@ -138,14 +126,8 @@ class ControlLiveTvPage extends ConsumerWidget {
         title: Text(context.localized.deleteTunerHost),
         content: Text(context.localized.deleteTunerHostConfirm(tunerHost.friendlyName ?? tunerHost.url ?? '')),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.localized.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.localized.delete),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(context.localized.cancel)),
+          TextButton(onPressed: () => Navigator.of(context).pop(true), child: Text(context.localized.delete)),
         ],
       ),
     );
@@ -163,7 +145,11 @@ class ControlLiveTvPage extends ConsumerWidget {
   }
 
   Future<void> _editListingProvider(
-      BuildContext context, WidgetRef ref, ListingsProviderInfo provider, List<TunerHostInfo> tunerHosts) async {
+    BuildContext context,
+    WidgetRef ref,
+    ListingsProviderInfo provider,
+    List<TunerHostInfo> tunerHosts,
+  ) async {
     final result = await showDialog<ListingsProviderInfo>(
       context: context,
       builder: (context) => ListingProviderEditDialog(provider: provider, availableTuners: tunerHosts),
@@ -188,14 +174,8 @@ class ControlLiveTvPage extends ConsumerWidget {
         title: Text(context.localized.deleteEpgProvider),
         content: Text(context.localized.deleteEpgProviderConfirm),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.localized.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.localized.delete),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(context.localized.cancel)),
+          TextButton(onPressed: () => Navigator.of(context).pop(true), child: Text(context.localized.delete)),
         ],
       ),
     );

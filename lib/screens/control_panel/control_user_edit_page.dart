@@ -18,20 +18,12 @@ import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/filled_button_await.dart';
 import 'package:driftfin/widgets/shared/pull_to_refresh.dart';
 
-enum EditOptions {
-  general,
-  access,
-  parentalControl,
-  password,
-}
+enum EditOptions { general, access, parentalControl, password }
 
 @RoutePage()
 class ControlUserEditPage extends ConsumerStatefulWidget {
   final String? userId;
-  const ControlUserEditPage({
-    @QueryParam('userId') this.userId,
-    super.key,
-  });
+  const ControlUserEditPage({@QueryParam('userId') this.userId, super.key});
 
   @override
   ConsumerState<ControlUserEditPage> createState() => _ControlUserEditPageState();
@@ -72,78 +64,65 @@ class _ControlUserEditPageState extends ConsumerState<ControlUserEditPage> {
                     }
                   },
                   child: Text(context.localized.save),
-                )
+                ),
               ],
         items: currentUser == null
             ? []
             : [
                 Row(
                   children: [
-                    SizedBox.square(
-                      dimension: 42,
-                      child: UserIcon(user: currentUser),
-                    ),
+                    SizedBox.square(dimension: 42, child: UserIcon(user: currentUser)),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            currentUser.name,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
+                        children: [Text(currentUser.name, style: Theme.of(context).textTheme.titleMedium)],
                       ),
                     ),
                     IconButton(
                       onPressed: () => context.tabsRouter.navigate(const ControlUsersRoute()),
                       icon: const Icon(IconsaxPlusBold.close_square),
-                    )
+                    ),
                   ],
                 ),
                 const Divider(),
                 SegmentedButton(
-                    segments: EditOptions.values
-                        .map(
-                          (e) => ButtonSegment<EditOptions>(
-                            value: e,
-                            label: Text(
-                              switch (e) {
-                                EditOptions.general => context.localized.general,
-                                EditOptions.access => context.localized.access,
-                                EditOptions.parentalControl => context.localized.parentalControl,
-                                EditOptions.password => context.localized.password,
-                              },
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    selected: {selectedOption},
-                    showSelectedIcon: false,
-                    multiSelectionEnabled: false,
-                    onSelectionChanged: (value) {
-                      setState(() {
-                        selectedOption = value.first;
-                      });
-                    }),
+                  segments: EditOptions.values
+                      .map(
+                        (e) => ButtonSegment<EditOptions>(
+                          value: e,
+                          label: Text(switch (e) {
+                            EditOptions.general => context.localized.general,
+                            EditOptions.access => context.localized.access,
+                            EditOptions.parentalControl => context.localized.parentalControl,
+                            EditOptions.password => context.localized.password,
+                          }),
+                        ),
+                      )
+                      .toList(),
+                  selected: {selectedOption},
+                  showSelectedIcon: false,
+                  multiSelectionEnabled: false,
+                  onSelectionChanged: (value) {
+                    setState(() {
+                      selectedOption = value.first;
+                    });
+                  },
+                ),
                 const Divider(),
                 switch (selectedOption) {
                   EditOptions.general => UserGeneralTab(
-                      nameController: nameController,
-                      currentUser: currentUser,
-                      currentPolicy: currentPolicy,
-                      views: views,
-                    ),
-                  EditOptions.access => UserAccessTab(
-                      currentPolicy: currentPolicy,
-                      views: views,
-                      devices: devices,
-                    ),
+                    nameController: nameController,
+                    currentUser: currentUser,
+                    currentPolicy: currentPolicy,
+                    views: views,
+                  ),
+                  EditOptions.access => UserAccessTab(currentPolicy: currentPolicy, views: views, devices: devices),
                   EditOptions.parentalControl => UserParentalControlTab(
-                      currentUser: currentUser,
-                      currentPolicy: currentPolicy,
-                      parentalRatings: parentalRatings,
-                    ),
+                    currentUser: currentUser,
+                    currentPolicy: currentPolicy,
+                    parentalRatings: parentalRatings,
+                  ),
                   EditOptions.password => const ControlUserEditPassword(),
                 },
               ],

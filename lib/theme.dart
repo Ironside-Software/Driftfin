@@ -16,19 +16,24 @@ ColorScheme? generateDynamicColourSchemes(ColorScheme? theme, DynamicSchemeVaria
 
   var newScheme = _insertAdditionalColours(base);
 
-  return newScheme.harmonized();
+  return newScheme.copyWith(
+    error: newScheme.error.harmonizeWith(newScheme.primary),
+    onError: newScheme.onError.harmonizeWith(newScheme.primary),
+    errorContainer: newScheme.errorContainer.harmonizeWith(newScheme.primary),
+    onErrorContainer: newScheme.onErrorContainer.harmonizeWith(newScheme.primary),
+  );
 }
 
 ColorScheme _insertAdditionalColours(ColorScheme scheme) => scheme.copyWith(
-      surface: scheme.surface,
-      surfaceDim: scheme.surfaceDim,
-      surfaceBright: scheme.surfaceBright,
-      surfaceContainerLowest: scheme.surfaceContainerLowest,
-      surfaceContainerLow: scheme.surfaceContainerLow,
-      surfaceContainer: scheme.surfaceContainer,
-      surfaceContainerHigh: scheme.surfaceContainerHigh,
-      surfaceContainerHighest: scheme.surfaceContainerHighest,
-    );
+  surface: scheme.surface,
+  surfaceDim: scheme.surfaceDim,
+  surfaceBright: scheme.surfaceBright,
+  surfaceContainerLowest: scheme.surfaceContainerLowest,
+  surfaceContainerLow: scheme.surfaceContainerLow,
+  surfaceContainer: scheme.surfaceContainer,
+  surfaceContainerHigh: scheme.surfaceContainerHigh,
+  surfaceContainerHighest: scheme.surfaceContainerHighest,
+);
 
 class FladderTheme {
   static RoundedRectangleBorder get smallShape => RoundedRectangleBorder(borderRadius: BorderRadius.circular(12));
@@ -36,26 +41,23 @@ class FladderTheme {
   static RoundedRectangleBorder get largeShape => RoundedRectangleBorder(borderRadius: BorderRadius.circular(32));
 
   static BoxDecoration get defaultPosterDecoration => BoxDecoration(
-        borderRadius: FladderTheme.smallShape.borderRadius,
-        border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
-      );
+    borderRadius: FladderTheme.smallShape.borderRadius,
+    border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
+  );
 
   static ThemeData theme(ColorScheme? colorScheme, DynamicSchemeVariant dynamicSchemeVariant) {
     final ColorScheme? scheme = generateDynamicColourSchemes(colorScheme, dynamicSchemeVariant);
 
-    final buttonSides = WidgetStateProperty.resolveWith(
-      (states) {
-        return BorderSide(
-          width: 3,
-          color: scheme?.onPrimaryContainer.withValues(alpha: states.contains(WidgetState.focused) ? 1.0 : 0.0) ??
-              Colors.transparent,
-        );
-      },
-    );
+    final buttonSides = WidgetStateProperty.resolveWith((states) {
+      return BorderSide(
+        width: 3,
+        color:
+            scheme?.onPrimaryContainer.withValues(alpha: states.contains(WidgetState.focused) ? 1.0 : 0.0) ??
+            Colors.transparent,
+      );
+    });
 
-    final textTheme = FladderFonts.rubikTextTheme(
-      const TextTheme(),
-    );
+    final textTheme = FladderFonts.rubikTextTheme(const TextTheme());
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
@@ -64,16 +66,9 @@ class FladderTheme {
         thumbColor: colorScheme?.onSurface,
         valueIndicatorColor: colorScheme?.primaryContainer,
         valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
-        valueIndicatorTextStyle: textTheme.bodyMedium?.copyWith(
-          color: colorScheme?.onPrimaryContainer,
-        ),
+        valueIndicatorTextStyle: textTheme.bodyMedium?.copyWith(color: colorScheme?.onPrimaryContainer),
       ),
-      cardTheme: CardThemeData(
-        elevation: 3,
-        clipBehavior: Clip.antiAlias,
-        margin: EdgeInsets.zero,
-        shape: smallShape,
-      ),
+      cardTheme: CardThemeData(elevation: 3, clipBehavior: Clip.antiAlias, margin: EdgeInsets.zero, shape: smallShape),
       expansionTileTheme: ExpansionTileThemeData(
         shape: RoundedRectangleBorder(borderRadius: FladderTheme.defaultShape.borderRadius),
         collapsedShape: RoundedRectangleBorder(borderRadius: FladderTheme.defaultShape.borderRadius),
@@ -93,13 +88,8 @@ class FladderTheme {
       tooltipTheme: TooltipThemeData(
         textAlign: TextAlign.center,
         waitDuration: const Duration(milliseconds: 500),
-        textStyle: TextStyle(
-          color: scheme?.onSurface,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: defaultShape.borderRadius,
-          color: scheme?.surface,
-        ),
+        textStyle: TextStyle(color: scheme?.onSurface),
+        decoration: BoxDecoration(borderRadius: defaultShape.borderRadius, color: scheme?.surface),
       ),
       switchTheme: SwitchThemeData(
         thumbIcon: WidgetStateProperty.resolveWith((states) {
@@ -113,21 +103,16 @@ class FladderTheme {
       navigationBarTheme: const NavigationBarThemeData(),
       dialogTheme: DialogThemeData(shape: defaultShape),
       scrollbarTheme: ScrollbarThemeData(
-          radius: const Radius.circular(16),
-          thumbColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.hovered)) {
-              return colorScheme?.primary;
-            }
-            return null;
-          })),
-      checkboxTheme: CheckboxThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
+        radius: const Radius.circular(16),
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.hovered)) {
+            return colorScheme?.primary;
+          }
+          return null;
+        }),
       ),
-      bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: scheme?.surface,
-      ),
+      checkboxTheme: CheckboxThemeData(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))),
+      bottomSheetTheme: BottomSheetThemeData(backgroundColor: scheme?.surface),
       buttonTheme: ButtonThemeData(shape: defaultShape),
       chipTheme: ChipThemeData(
         side: BorderSide(width: 1, color: scheme?.onSurface.withValues(alpha: 0.05) ?? Colors.white),
@@ -139,14 +124,8 @@ class FladderTheme {
         iconColor: scheme?.onSecondaryContainer,
         surfaceTintColor: scheme?.onSecondaryContainer,
       ),
-      listTileTheme: ListTileThemeData(
-        shape: defaultShape,
-      ),
-      dividerTheme: DividerThemeData(
-        indent: 6,
-        endIndent: 6,
-        color: scheme?.onSurface.withAlpha(30),
-      ),
+      listTileTheme: ListTileThemeData(shape: defaultShape),
+      dividerTheme: DividerThemeData(indent: 6, endIndent: 6, color: scheme?.onSurface.withAlpha(30)),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith((state) {
@@ -161,40 +140,21 @@ class FladderTheme {
         ),
       ),
       iconButtonTheme: IconButtonThemeData(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll(smallShape),
-          side: buttonSides,
-        ),
+        style: ButtonStyle(shape: WidgetStatePropertyAll(smallShape), side: buttonSides),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll(smallShape),
-          side: buttonSides,
-        ),
+        style: ButtonStyle(shape: WidgetStatePropertyAll(smallShape), side: buttonSides),
       ),
       filledButtonTheme: FilledButtonThemeData(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll(smallShape),
-          side: buttonSides,
-        ),
+        style: ButtonStyle(shape: WidgetStatePropertyAll(smallShape), side: buttonSides),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll(smallShape),
-          side: buttonSides,
-        ),
+        style: ButtonStyle(shape: WidgetStatePropertyAll(smallShape), side: buttonSides),
       ),
       textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          shape: WidgetStatePropertyAll(smallShape),
-          side: buttonSides,
-        ),
+        style: ButtonStyle(shape: WidgetStatePropertyAll(smallShape), side: buttonSides),
       ),
-      textTheme: textTheme.copyWith(
-        titleMedium: textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+      textTheme: textTheme.copyWith(titleMedium: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
     );
   }
 
@@ -203,15 +163,10 @@ class FladderTheme {
   }
 
   /// Apply Chinese system font to a light theme (for Windows, macOS, Android, iOS)
-  static ThemeData applyChineseFontToTheme({
-    required ThemeData lightTheme,
-    required ThemeData darkTheme,
-  }) {
+  static ThemeData applyChineseFontToTheme({required ThemeData lightTheme, required ThemeData darkTheme}) {
     return lightTheme.copyWith(
       textTheme: lightTheme.textTheme.useSystemChineseFont(Brightness.light),
-      primaryTextTheme: lightTheme.primaryTextTheme.useSystemChineseFont(
-        Brightness.light,
-      ),
+      primaryTextTheme: lightTheme.primaryTextTheme.useSystemChineseFont(Brightness.light),
     );
   }
 
@@ -219,9 +174,7 @@ class FladderTheme {
   static ThemeData applyChineseFontToDarkTheme({required ThemeData darkTheme}) {
     return darkTheme.copyWith(
       textTheme: darkTheme.textTheme.useSystemChineseFont(Brightness.dark),
-      primaryTextTheme: darkTheme.primaryTextTheme.useSystemChineseFont(
-        Brightness.dark,
-      ),
+      primaryTextTheme: darkTheme.primaryTextTheme.useSystemChineseFont(Brightness.dark),
     );
   }
 }

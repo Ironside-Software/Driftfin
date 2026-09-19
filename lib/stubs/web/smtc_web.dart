@@ -82,23 +82,10 @@ class MusicMetadata {
   final String? albumArtist;
   final String? thumbnail;
 
-  const MusicMetadata({
-    this.title,
-    this.artist,
-    this.album,
-    this.albumArtist,
-    this.thumbnail,
-  });
+  const MusicMetadata({this.title, this.artist, this.album, this.albumArtist, this.thumbnail});
 }
 
-enum PlaybackStatus {
-  closed,
-  changing,
-  stopped,
-  playing,
-  paused,
-  ;
-}
+enum PlaybackStatus { closed, changing, stopped, playing, paused }
 
 enum PressedButton {
   play,

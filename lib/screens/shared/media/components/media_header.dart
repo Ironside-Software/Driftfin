@@ -29,9 +29,7 @@ class MediaHeader extends ConsumerWidget {
       child: SelectableText(
         name,
         textAlign: textAlign,
-        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-              fontSize: 55,
-            ),
+        style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 55),
       ),
     );
 
@@ -52,12 +50,7 @@ class MediaHeader extends ConsumerWidget {
                   fit: BoxFit.contain,
                 )
               : textWidget,
-          if (onTap != null)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: onTap,
-              ),
-            ),
+          if (onTap != null) Positioned.fill(child: GestureDetector(onTap: onTap)),
         ],
       ),
     );

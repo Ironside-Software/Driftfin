@@ -73,10 +73,10 @@ class ConfigSync {
     });
 
     // Local changes -> push (debounced).
-    ref.listen(clientSettingsProvider, (_, __) => _schedulePush());
-    ref.listen(homeSettingsProvider, (_, __) => _schedulePush());
-    ref.listen(userProvider.select((account) => account?.seerrCredentials?.serverUrl), (_, __) => _schedulePush());
-    ref.listen(userProvider.select((account) => account?.seerrRequestsEnabled), (_, __) => _schedulePush());
+    ref.listen(clientSettingsProvider, (_, _) => _schedulePush());
+    ref.listen(homeSettingsProvider, (_, _) => _schedulePush());
+    ref.listen(userProvider.select((account) => account?.seerrCredentials?.serverUrl), (_, _) => _schedulePush());
+    ref.listen(userProvider.select((account) => account?.seerrRequestsEnabled), (_, _) => _schedulePush());
   }
 
   void _schedulePush() {
@@ -149,27 +149,35 @@ class ConfigSync {
   void _apply(UserSettings s) {
     _applying = true;
     try {
-      ref.read(clientSettingsProvider.notifier).update((c) => c.copyWith(
-            themeMode: _byName(ThemeMode.values, s.themeMode) ?? c.themeMode,
-            themeColor: _colorThemeByName(s.themeColor) ?? c.themeColor,
-            schemeVariant: _byName(DynamicSchemeVariant.values, s.schemeVariant) ?? c.schemeVariant,
-            amoledBlack: s.amoledBlack ?? c.amoledBlack,
-            deriveColorsFromItem: s.deriveColorsFromItem ?? c.deriveColorsFromItem,
-            backgroundImage: _byName(BackgroundType.values, s.backgroundImage) ?? c.backgroundImage,
-            enableBlurEffects: s.enableBlurEffects ?? c.enableBlurEffects,
-            blurPlaceHolders: s.blurPlaceHolders ?? c.blurPlaceHolders,
-            posterSize: s.posterSize ?? c.posterSize,
-            selectedLocale: s.locale != null ? const LocaleConvert().fromJson(s.locale) : c.selectedLocale,
-            showAllCollectionTypes: s.showAllCollectionTypes ?? c.showAllCollectionTypes,
-            usePosterForLibrary: s.usePosterForLibrary ?? c.usePosterForLibrary,
-          ));
+      ref
+          .read(clientSettingsProvider.notifier)
+          .update(
+            (c) => c.copyWith(
+              themeMode: _byName(ThemeMode.values, s.themeMode) ?? c.themeMode,
+              themeColor: _colorThemeByName(s.themeColor) ?? c.themeColor,
+              schemeVariant: _byName(DynamicSchemeVariant.values, s.schemeVariant) ?? c.schemeVariant,
+              amoledBlack: s.amoledBlack ?? c.amoledBlack,
+              deriveColorsFromItem: s.deriveColorsFromItem ?? c.deriveColorsFromItem,
+              backgroundImage: _byName(BackgroundType.values, s.backgroundImage) ?? c.backgroundImage,
+              enableBlurEffects: s.enableBlurEffects ?? c.enableBlurEffects,
+              blurPlaceHolders: s.blurPlaceHolders ?? c.blurPlaceHolders,
+              posterSize: s.posterSize ?? c.posterSize,
+              selectedLocale: s.locale != null ? const LocaleConvert().fromJson(s.locale) : c.selectedLocale,
+              showAllCollectionTypes: s.showAllCollectionTypes ?? c.showAllCollectionTypes,
+              usePosterForLibrary: s.usePosterForLibrary ?? c.usePosterForLibrary,
+            ),
+          );
 
-      ref.read(homeSettingsProvider.notifier).update((h) => h.copyWith(
-            homeBanner: _byName(HomeBanner.values, s.homeBanner) ?? h.homeBanner,
-            carouselSettings: _byName(HomeCarouselSettings.values, s.homeCarousel) ?? h.carouselSettings,
-            nextUp: _byName(HomeNextUp.values, s.homeNextUp) ?? h.nextUp,
-            pinnedCollectionIds: s.pinnedCollectionIds ?? h.pinnedCollectionIds,
-          ));
+      ref
+          .read(homeSettingsProvider.notifier)
+          .update(
+            (h) => h.copyWith(
+              homeBanner: _byName(HomeBanner.values, s.homeBanner) ?? h.homeBanner,
+              carouselSettings: _byName(HomeCarouselSettings.values, s.homeCarousel) ?? h.carouselSettings,
+              nextUp: _byName(HomeNextUp.values, s.homeNextUp) ?? h.nextUp,
+              pinnedCollectionIds: s.pinnedCollectionIds ?? h.pinnedCollectionIds,
+            ),
+          );
 
       if (s.seerrServerUrl != null && s.seerrServerUrl!.isNotEmpty) {
         ref.read(userProvider.notifier).setSeerrServerUrl(s.seerrServerUrl);

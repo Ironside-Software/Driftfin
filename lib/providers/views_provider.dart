@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/item_base_model.dart';
@@ -47,39 +48,41 @@ class ViewsNotifier extends StateNotifier<ViewsModel> {
       List<ViewModel> newList = [];
 
       if (createdViews != null) {
-        newList = await Future.wait(createdViews.map((e) async {
-          if (ref.read(userProvider)?.latestItemsExcludes.contains(e.id) == true) return e;
-          final recents = await api.usersUserIdItemsLatestGet(
-            parentId: e.id,
-            imageTypeLimit: 1,
-            limit: 16,
-            includeItemTypes:
-                (e.collectionType == CollectionType.books && !showAllCollections) ? [BaseItemKind.book] : null,
-            enableImageTypes: [
-              ImageType.primary,
-              ImageType.backdrop,
-              ImageType.thumb,
-            ],
-            fields: [
-              ItemFields.parentid,
-              ItemFields.mediastreams,
-              ItemFields.mediasources,
-              ItemFields.candelete,
-              ItemFields.candownload,
-              ItemFields.primaryimageaspectratio,
-              ItemFields.overview,
-            ],
-          );
-          return e.copyWith(recentlyAdded: recents.body?.map((e) => ItemBaseModel.fromBaseDto(e, ref)).toList());
-        }));
+        newList = await Future.wait(
+          createdViews.map((e) async {
+            if (ref.read(userProvider)?.latestItemsExcludes.contains(e.id) == true) return e;
+            final recents = await api.usersUserIdItemsLatestGet(
+              parentId: e.id,
+              imageTypeLimit: 1,
+              limit: 16,
+              includeItemTypes: (e.collectionType == CollectionType.books && !showAllCollections)
+                  ? [BaseItemKind.book]
+                  : null,
+              enableImageTypes: [ImageType.primary, ImageType.backdrop, ImageType.thumb],
+              fields: [
+                ItemFields.parentid,
+                ItemFields.mediastreams,
+                ItemFields.mediasources,
+                ItemFields.candelete,
+                ItemFields.candownload,
+                ItemFields.primaryimageaspectratio,
+                ItemFields.overview,
+              ],
+            );
+            return e.copyWith(recentlyAdded: recents.body?.map((e) => ItemBaseModel.fromBaseDto(e, ref)).toList());
+          }),
+        );
       }
 
       state = state.copyWith(
-          views: _applyLibraryOrdering(newList),
-          dashboardViews: _applyLibraryOrdering(newList
+        views: _applyLibraryOrdering(newList),
+        dashboardViews: _applyLibraryOrdering(
+          newList
               .where((element) => !(ref.read(userProvider)?.latestItemsExcludes.contains(element.id) ?? true))
-              .toList()),
-          loading: false);
+              .toList(),
+        ),
+        loading: false,
+      );
       return state;
     } catch (e) {
       return state.copyWith(loading: false);

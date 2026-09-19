@@ -6,21 +6,12 @@ import 'package:driftfin/screens/shared/global_hotkeys.dart';
 
 class RouteWrapper extends StatelessWidget {
   final Widget child;
-  const RouteWrapper({
-    required this.child,
-    super.key,
-  });
+  const RouteWrapper({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {
     return NotificationManagerInitializer(
-      child: GlobalHotkeys(
-        child: child,
-        enabledHotkeys: {
-          GlobalHotKeys.closeWindow,
-          GlobalHotKeys.exit,
-        },
-      ),
+      child: GlobalHotkeys(child: child, enabledHotkeys: {GlobalHotKeys.closeWindow, GlobalHotKeys.exit}),
     );
   }
 }

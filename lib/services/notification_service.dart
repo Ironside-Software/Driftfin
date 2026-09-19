@@ -37,13 +37,7 @@ class NotificationService {
     );
 
     await _plugin.initialize(
-      settings: InitializationSettings(
-        android: android,
-        iOS: darwin,
-        macOS: darwin,
-        linux: linux,
-        windows: windows,
-      ),
+      settings: InitializationSettings(android: android, iOS: darwin, macOS: darwin, linux: linux, windows: windows),
       onDidReceiveNotificationResponse: (NotificationResponse resp) {
         _selectNotificationController.add(resp.payload);
       },
@@ -185,18 +179,20 @@ class NotificationService {
       final iosChild = DarwinNotificationDetails(threadIdentifier: groupKey);
       final linuxChild = const LinuxNotificationDetails(defaultActionName: 'Open notification');
       final windowsChild = const WindowsNotificationDetails();
-      futures.add(_plugin.show(
-        id: childId,
-        title: notification.title,
-        body: notification.subtitle,
-        payload: notification.payLoad,
-        notificationDetails: NotificationDetails(
-          android: androidChild,
-          iOS: iosChild,
-          linux: linuxChild,
-          windows: windowsChild,
+      futures.add(
+        _plugin.show(
+          id: childId,
+          title: notification.title,
+          body: notification.subtitle,
+          payload: notification.payLoad,
+          notificationDetails: NotificationDetails(
+            android: androidChild,
+            iOS: iosChild,
+            linux: linuxChild,
+            windows: windowsChild,
+          ),
         ),
-      ));
+      );
     }
 
     await Future.wait(futures);

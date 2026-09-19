@@ -23,9 +23,7 @@ class DriftfinAppBar extends StatelessWidget implements PreferredSize {
         preferredSize: Size(double.infinity, height),
         child: SizedBox(
           height: height,
-          child: DefaultTitleBar(
-            label: label,
-          ),
+          child: DefaultTitleBar(label: label),
         ),
       );
     } else {

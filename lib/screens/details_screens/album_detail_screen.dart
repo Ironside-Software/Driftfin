@@ -80,13 +80,15 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
     final mainArtistLabel = artistLabel.split(',').first.trim();
     final hasArtistNavigation = current.parentBaseModel.id.isNotEmpty;
     final releaseYear = current.overview.yearAired?.toString();
-    final totalDuration =
-        tracks.fold<Duration>(Duration.zero, (duration, track) => duration + (track.overview.runTime ?? Duration.zero));
+    final totalDuration = tracks.fold<Duration>(
+      Duration.zero,
+      (duration, track) => duration + (track.overview.runTime ?? Duration.zero),
+    );
     final durationText = totalDuration > Duration.zero ? totalDuration.readAbleDuration : null;
     final albumMeta = [
-      if (releaseYear != null) releaseYear,
+      ?releaseYear,
       '${tracks.length} ${tracks.length == 1 ? 'track' : 'tracks'}',
-      if (durationText != null) durationText,
+      ?durationText,
     ].join(' • ');
 
     final radius = FladderTheme.smallShape.borderRadius;
@@ -118,14 +120,11 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
         await provider.fetchDetails(widget.item);
       },
       dominantColor: derivePosterColor ? (_posterColor ?? backgroundColor) : null,
-      actions: (context) => current.generateActions(
-        context,
-        ref,
-        exclude: {ItemActions.details},
-      ),
+      actions: (context) => current.generateActions(context, ref, exclude: {ItemActions.details}),
       content: (detailsContext, padding) {
-        final topGradientColor =
-            albumPoster == null ? backgroundColor : Theme.of(detailsContext).colorScheme.primaryContainer;
+        final topGradientColor = albumPoster == null
+            ? backgroundColor
+            : Theme.of(detailsContext).colorScheme.primaryContainer;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -137,10 +136,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      topGradientColor,
-                      Theme.of(detailsContext).colorScheme.surfaceContainerLow,
-                    ],
+                    colors: [topGradientColor, Theme.of(detailsContext).colorScheme.surfaceContainerLow],
                   ),
                   border: BoxBorder.fromLTRB(
                     top: BorderSide.none,
@@ -150,12 +146,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                   ),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    left: padding.left,
-                    right: padding.right,
-                    top: 120,
-                    bottom: 24,
-                  ),
+                  padding: EdgeInsets.only(left: padding.left, right: padding.right, top: 120, bottom: 24),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 24, bottom: 16),
                     child: Column(
@@ -177,10 +168,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                               child: AspectRatio(
                                 aspectRatio: 1,
                                 child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: radius,
-                                    color: backgroundColor,
-                                  ),
+                                  decoration: BoxDecoration(borderRadius: radius, color: backgroundColor),
                                   foregroundDecoration: BoxDecoration(
                                     borderRadius: radius,
                                     border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
@@ -253,14 +241,14 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                                           SelectableIconButton(
                                             onPressed: tracks.isNotEmpty
                                                 ? () => showTracksDetailsScreen(
-                                                      context: detailsContext,
-                                                      item: album!,
-                                                      ref: ref,
-                                                      queueSource: AlbumInstantMixQueueSource(
-                                                        albumId: album.id,
-                                                        limit: 200,
-                                                      ),
-                                                    )
+                                                    context: detailsContext,
+                                                    item: album!,
+                                                    ref: ref,
+                                                    queueSource: AlbumInstantMixQueueSource(
+                                                      albumId: album.id,
+                                                      limit: 200,
+                                                    ),
+                                                  )
                                                 : null,
                                             selected: false,
                                             icon: IconsaxPlusLinear.blend_2,
@@ -290,10 +278,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                             genres: album?.overview.genreItems.take(10).toList() ?? [],
                             onGenreClicked: (genre) {
                               final itemViewId = album?.parentId ?? "";
-                              LibrarySearchRoute(
-                                parentId: [itemViewId],
-                                genres: {genre.name: true},
-                              ).push(context);
+                              LibrarySearchRoute(parentId: [itemViewId], genres: {genre.name: true}).push(context);
                             },
                           ),
                       ],
@@ -304,9 +289,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
             ),
             Container(
               color: Theme.of(detailsContext).colorScheme.surface,
-              constraints: BoxConstraints(
-                minHeight: MediaQuery.sizeOf(detailsContext).height,
-              ),
+              constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(detailsContext).height),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 8,
@@ -334,11 +317,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                         }
                       },
                       onTrackSecondaryTap: (track, details) {
-                        track.showDetailsMenu(
-                          context,
-                          ref,
-                          details.globalPosition,
-                        );
+                        track.showDetailsMenu(context, ref, details.globalPosition);
                       },
                     ),
                   ],

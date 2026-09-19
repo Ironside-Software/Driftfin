@@ -18,14 +18,10 @@ class DriftfinIcon extends StatelessWidget {
       children: [
         ShaderMask(
           shaderCallback: (Rect bounds) {
-            return ui.Gradient.linear(
-              const Offset(30, 30),
-              const Offset(80, 80),
-              [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.secondary,
-              ],
-            );
+            return ui.Gradient.linear(const Offset(30, 30), const Offset(80, 80), [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.secondary,
+            ]);
           },
           child: SvgPicture.asset(
             "icons/driftfin_icon.svg",

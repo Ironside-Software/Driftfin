@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/account_model.dart';
@@ -42,13 +43,11 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
 
   Future<void> initModel() async {
     ref.read(userProvider.notifier).clear();
-    final currentAccounts = ref.read(authProvider.notifier).getSavedAccounts();
+    final currentAccounts = getSavedAccounts();
     ref.read(lockScreenActiveProvider.notifier).update((state) => true);
     if (DriftfinConfig.baseUrl != null) {
       final url = DriftfinConfig.baseUrl;
-      state = state.copyWith(
-        hasBaseUrl: true,
-      );
+      state = state.copyWith(hasBaseUrl: true);
       if (url != null) {
         await setServer(url);
       }
@@ -63,10 +62,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
     try {
       final newCredentials = CredentialsModel.createNewCredentials().copyWith(url: url);
       final newLoginModel = ServerLoginModel(tempCredentials: newCredentials);
-      state = state.copyWith(
-        serverLoginModel: newLoginModel,
-        loading: true,
-      );
+      state = state.copyWith(serverLoginModel: newLoginModel, loading: true);
       final publicUsers = (await getPublicUsers())?.body ?? [];
       final quickConnectStatus = (await api.quickConnectEnabled()).body ?? false;
       final branding = await api.getBranding();
@@ -90,10 +86,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
       final seerrUrl = _findSeerrUrlForServer(serverId);
       setTempSeerrUrl(seerrUrl);
     } catch (e) {
-      state = state.copyWith(
-        errorMessage: localContext?.localized.invalidUrl,
-        loading: false,
-      );
+      state = state.copyWith(errorMessage: localContext?.localized.invalidUrl, loading: false);
       DriftfinSnack.show(localContext?.localized.unableToConnectHost ?? "");
     }
   }
@@ -108,11 +101,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
         var models = response.body ?? [];
         return response.copyWith(body: models.toList());
       }
-      state = state.copyWith(
-        serverLoginModel: state.serverLoginModel?.copyWith(
-          accounts: response.body ?? [],
-        ),
-      );
+      state = state.copyWith(serverLoginModel: state.serverLoginModel?.copyWith(accounts: response.body ?? []));
       return response.copyWith(body: []);
     } catch (e) {
       return null;
@@ -157,11 +146,9 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
       // Driftfin server plugin's integration config) right away instead of
       // waiting for the dashboard's 120s poll to get around to it.
       await ref.read(userProvider.notifier).updateInformation();
-      final currentAccounts = ref.read(authProvider.notifier).getSavedAccounts();
+      final currentAccounts = getSavedAccounts();
 
-      state = state.copyWith(
-        accounts: currentAccounts,
-      );
+      state = state.copyWith(accounts: currentAccounts);
 
       return Response(response.base, newUser);
     }
@@ -224,9 +211,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
   }
 
   void addNewUser() {
-    state = state.copyWith(
-      screen: LoginScreenType.login,
-    );
+    state = state.copyWith(screen: LoginScreenType.login);
   }
 
   void goUserSelect() {

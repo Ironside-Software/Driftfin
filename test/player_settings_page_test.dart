@@ -88,7 +88,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  final credentials = CredentialsModel.internal(url: 'http://server', deviceId: 'device-1');
+  final credentials = CredentialsModel(url: 'http://server', deviceId: 'device-1');
   final user = AccountModel(
     name: 'Tester',
     id: 'user-1',
@@ -205,8 +205,9 @@ void main() {
     final widget = ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(prefs),
-        videoPlayerSettingsProvider
-            .overrideWith((ref) => _FakeVideoPlayerSettingsNotifier(ref, VideoPlayerSettingsModel())),
+        videoPlayerSettingsProvider.overrideWith(
+          (ref) => _FakeVideoPlayerSettingsNotifier(ref, VideoPlayerSettingsModel()),
+        ),
         userProvider.overrideWith(() => _FakeUser(user)),
         argumentsStateProvider.overrideWith((ref) => ArgumentsModel(leanBackMode: true, htpcMode: true)),
       ],

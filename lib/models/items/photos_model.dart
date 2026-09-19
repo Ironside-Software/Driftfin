@@ -92,27 +92,27 @@ class PhotoModel extends ItemBaseModel with PhotoModelMappable {
 
   @override
   PhotoAlbumModel get parentBaseModel => PhotoAlbumModel(
-        photos: [],
-        name: "",
-        id: parentId ?? "",
-        overview: overview,
-        parentId: parentId,
-        playlistId: playlistId,
-        images: images,
-        childCount: childCount,
-        primaryRatio: primaryRatio,
-        userData: userData,
-      );
+    photos: [],
+    name: "",
+    id: parentId ?? "",
+    overview: overview,
+    parentId: parentId,
+    playlistId: playlistId,
+    images: images,
+    childCount: childCount,
+    primaryRatio: primaryRatio,
+    userData: userData,
+  );
 
   @override
   ImagesData? get getPosters => thumbnail;
 
   @override
   bool get galleryItem => switch (internalType) {
-        FladderItemType.photo => albumId?.isNotEmpty == true,
-        FladderItemType.video => parentId?.isNotEmpty == true,
-        _ => false,
-      };
+    FladderItemType.photo => albumId?.isNotEmpty == true,
+    FladderItemType.video => parentId?.isNotEmpty == true,
+    _ => false,
+  };
 
   @override
   bool get unWatched => false;

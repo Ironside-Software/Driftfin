@@ -39,19 +39,19 @@ class SpecialFeatureModel extends ItemStreamModel with SpecialFeatureModelMappab
 
   @override
   SeriesModel get parentBaseModel => SeriesModel(
-        originalTitle: '',
-        sortName: '',
-        status: "",
-        name: "",
-        id: parentId ?? "",
-        playlistId: playlistId,
-        overview: overview,
-        parentId: parentId,
-        images: images,
-        childCount: childCount,
-        primaryRatio: primaryRatio,
-        userData: const UserData(),
-      );
+    originalTitle: '',
+    sortName: '',
+    status: "",
+    name: "",
+    id: parentId ?? "",
+    playlistId: playlistId,
+    overview: overview,
+    parentId: parentId,
+    images: images,
+    childCount: childCount,
+    primaryRatio: primaryRatio,
+    userData: const UserData(),
+  );
 
   @override
   String get streamId => parentId ?? "";
@@ -86,26 +86,25 @@ class SpecialFeatureModel extends ItemStreamModel with SpecialFeatureModelMappab
   @override
   bool get playAble => true;
 
-  @override
   factory SpecialFeatureModel.fromBaseDto(dto.BaseItemDto item, Ref? ref) => SpecialFeatureModel(
-        name: item.name ?? "",
-        id: item.id ?? "",
-        childCount: 0,
-        overview: OverviewModel.fromBaseItemDto(item, ref),
-        userData: UserData.fromDto(item.userData),
-        parentId: item.parentId ?? "",
-        playlistId: item.playlistItemId,
-        dateAired: item.premiereDate,
-        images: ref != null ? ImagesData.fromBaseItem(item, ref) : null,
-        primaryRatio: item.primaryImageAspectRatio,
-        parentImages: ref != null ? ImagesData.fromBaseItemParent(item, ref) : null,
-        canDelete: item.canDelete,
-        canDownload: item.canDownload,
-        mediaStreams: ref != null
-            ? MediaStreamsModel.fromMediaStreamsList(item.mediaSources, ref)
-            : MediaStreamsModel(versionStreams: []),
-        jellyType: item.type,
-      );
+    name: item.name ?? "",
+    id: item.id ?? "",
+    childCount: 0,
+    overview: OverviewModel.fromBaseItemDto(item, ref),
+    userData: UserData.fromDto(item.userData),
+    parentId: item.parentId ?? "",
+    playlistId: item.playlistItemId,
+    dateAired: item.premiereDate,
+    images: ref != null ? ImagesData.fromBaseItem(item, ref) : null,
+    primaryRatio: item.primaryImageAspectRatio,
+    parentImages: ref != null ? ImagesData.fromBaseItemParent(item, ref) : null,
+    canDelete: item.canDelete,
+    canDownload: item.canDownload,
+    mediaStreams: ref != null
+        ? MediaStreamsModel.fromMediaStreamsList(item.mediaSources, ref)
+        : MediaStreamsModel(versionStreams: []),
+    jellyType: item.type,
+  );
 
   static List<SpecialFeatureModel> specialFeaturesFromDto(List<dto.BaseItemDto>? dto, Ref? ref) {
     return dto?.map((e) => SpecialFeatureModel.fromBaseDto(e, ref)).toList() ?? [];

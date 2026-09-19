@@ -43,10 +43,7 @@ class _PasswordResetDialogState extends ConsumerState<PasswordResetDialog> {
             spacing: 16,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                context.localized.resetPassword,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
+              Text(context.localized.resetPassword, style: Theme.of(context).textTheme.headlineSmall),
               Flexible(
                 child: SingleChildScrollView(
                   child: Column(
@@ -58,33 +55,21 @@ class _PasswordResetDialogState extends ConsumerState<PasswordResetDialog> {
                           spacing: 8,
                           children: [
                             Expanded(child: Text(context.localized.currentPassword)),
-                            Flexible(
-                              child: OutlinedTextField(
-                                controller: currentPasswordController,
-                              ),
-                            )
+                            Flexible(child: OutlinedTextField(controller: currentPasswordController)),
                           ],
                         ),
                       Row(
                         spacing: 8,
                         children: [
                           Expanded(child: Text(context.localized.newPassword)),
-                          Flexible(
-                            child: OutlinedTextField(
-                              controller: newPasswordController,
-                            ),
-                          )
+                          Flexible(child: OutlinedTextField(controller: newPasswordController)),
                         ],
                       ),
                       Row(
                         spacing: 8,
                         children: [
                           Expanded(child: Text(context.localized.confirmPassword)),
-                          Flexible(
-                            child: OutlinedTextField(
-                              controller: confirmPasswordController,
-                            ),
-                          ),
+                          Flexible(child: OutlinedTextField(controller: confirmPasswordController)),
                         ],
                       ),
                     ],
@@ -95,17 +80,11 @@ class _PasswordResetDialogState extends ConsumerState<PasswordResetDialog> {
                 spacing: 12,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text(context.localized.cancel),
-                  ),
+                  TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.cancel)),
                   FilledButtonAwait(
                     onPressed: () async {
                       if (newPasswordController.text != confirmPasswordController.text) {
-                        DriftfinSnack.show(
-                          context.localized.passwordMismatch,
-                          context: context,
-                        );
+                        DriftfinSnack.show(context.localized.passwordMismatch, context: context);
                         return;
                       }
                       final responseMessage = await controlUserProvider.setUserPassword(
@@ -115,22 +94,16 @@ class _PasswordResetDialogState extends ConsumerState<PasswordResetDialog> {
                         confirmPassword: confirmPasswordController.text,
                       );
                       if (responseMessage == null) {
-                        DriftfinSnack.show(
-                          context.localized.passwordChangeSuccess,
-                          context: context,
-                        );
+                        DriftfinSnack.show(context.localized.passwordChangeSuccess, context: context);
                         Navigator.of(context).pop();
                       } else {
-                        DriftfinSnack.show(
-                          responseMessage,
-                          context: context,
-                        );
+                        DriftfinSnack.show(responseMessage, context: context);
                       }
                     },
                     child: Text(context.localized.savePassword),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

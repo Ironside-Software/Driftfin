@@ -34,10 +34,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         if (lastUsedAccount == null || ref.read(argumentsStateProvider).newWindow == true) {
           callBackOrNavigate(false);
         } else {
-          !await ensureLocalNetworkPermissions(
-            [lastUsedAccount.credentials.url, lastUsedAccount.credentials.localUrl],
-            context,
-          );
+          !await ensureLocalNetworkPermissions([
+            lastUsedAccount.credentials.url,
+            lastUsedAccount.credentials.localUrl,
+          ], context);
 
           switch (lastUsedAccount.authMethod) {
             case Authentication.autoLogin:
@@ -71,12 +71,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Widget build(BuildContext context) {
     return const RouteWrapper(
       child: Scaffold(
-        body: Center(
-          child: FractionallySizedBox(
-            heightFactor: 0.4,
-            child: DriftfinLogo(),
-          ),
-        ),
+        body: Center(child: FractionallySizedBox(heightFactor: 0.4, child: DriftfinLogo())),
       ),
     );
   }

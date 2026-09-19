@@ -10,10 +10,11 @@ import 'package:driftfin/util/themes_data.dart';
 import 'package:driftfin/util/throttler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 Future<void> openBookViewer(
   BuildContext context,
-  AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider, {
+  StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider, {
   int? initialPage,
 }) async {
   return showDialog(
@@ -21,17 +22,14 @@ Future<void> openBookViewer(
     useRootNavigator: true,
     useSafeArea: false,
     builder: (context) => Dialog.fullscreen(
-      child: BookViewerScreen(
-        initialPage: initialPage ?? 0,
-        provider: provider,
-      ),
+      child: BookViewerScreen(initialPage: initialPage ?? 0, provider: provider),
     ),
   );
 }
 
 class BookViewerScreen extends ConsumerStatefulWidget {
   final int initialPage;
-  final AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider;
+  final StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider;
   const BookViewerScreen({required this.provider, this.initialPage = 0, super.key});
 
   @override
@@ -66,14 +64,11 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
     final pages = bookViewerDetails.pages;
     final book = bookViewerDetails.book;
     final bookViewSettings = ref.watch(bookViewerSettingsProvider);
-    ref.listen(
-      bookViewerProvider.select((value) => value.loading),
-      (previous, next) {
-        if (previous == true && next == false) {
-          ref.read(bookViewerProvider.notifier).updatePlayback((widget.initialPage.toDouble()).toInt());
-        }
-      },
-    );
+    ref.listen(bookViewerProvider.select((value) => value.loading), (previous, next) {
+      if (previous == true && next == false) {
+        ref.read(bookViewerProvider.notifier).updatePlayback((widget.initialPage.toDouble()).toInt());
+      }
+    });
     return Theme(
       data: ThemesData.of(context).dark,
       child: PopScope(
@@ -93,8 +88,8 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
                   canScrollPage: (gestureDetails) {
                     return bookViewSettings.disableScrollOnZoom
                         ? gestureDetails != null
-                            ? !(gestureDetails.totalScale! > 1.0)
-                            : true
+                              ? !(gestureDetails.totalScale! > 1.0)
+                              : true
                         : true;
                   },
                   onPageChanged: (value) {
@@ -150,8 +145,9 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
                                           Text(
                                             details.nextChapter(bookViewerDetails.book)!.name,
                                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: Theme.of(context).colorScheme.onPrimary),
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).colorScheme.onPrimary,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -171,8 +167,8 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
                                         ],
                                       ),
                                     ),
-                                  )
-                                }
+                                  ),
+                                },
                               } else ...{
                                 Flexible(
                                   child: Text(
@@ -201,8 +197,9 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
                                           Text(
                                             details.previousChapter(bookViewerDetails.book)!.name,
                                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                fontWeight: FontWeight.bold,
-                                                color: Theme.of(context).colorScheme.onPrimary),
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).colorScheme.onPrimary,
+                                            ),
                                           ),
                                           const Icon(Icons.keyboard_arrow_right_rounded),
                                         ],
@@ -223,8 +220,8 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
                                         ],
                                       ),
                                     ),
-                                  )
-                                }
+                                  ),
+                                },
                               },
                             ],
                           ),
@@ -248,7 +245,7 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
                 provider: widget.provider,
                 viewController: viewController,
                 controller: extendedController,
-              )
+              ),
             ],
           ),
         ),
@@ -259,8 +256,9 @@ class _BookViewerScreenState extends ConsumerState<BookViewerScreen> {
   Future<void> nextPage() async =>
       throttler.run(() async => await extendedController.nextPage(duration: pageAnimDuration, curve: pageAnimCurve));
 
-  Future<void> previousPage() async => throttler
-      .run(() async => await extendedController.previousPage(duration: pageAnimDuration, curve: pageAnimCurve));
+  Future<void> previousPage() async => throttler.run(
+    () async => await extendedController.previousPage(duration: pageAnimDuration, curve: pageAnimCurve),
+  );
 
   Future<void> loadNextBook(BookModel? book) async {
     await ref.read(bookViewerProvider.notifier).fetchBook(book);

@@ -5,6 +5,7 @@ import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/natural_language_query_parser.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 final searchProvider = StateNotifierProvider<SearchNotifier, SearchModel>((ref) {
   return SearchNotifier(ref);

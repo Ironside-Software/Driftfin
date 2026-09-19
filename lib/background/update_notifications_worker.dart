@@ -22,30 +22,31 @@ const String updateWorkerPortName = 'driftfin_notification_update_worker_port';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {
-  Workmanager().executeTask(
-    (taskName, inputData) async {
-      log("Launching background task: $taskName with inputData: $inputData");
-      try {
-        switch (taskName) {
-          case updateTaskName:
-            return await performHeadlessUpdateCheck() != null;
-          case updateTaskNameDebug:
-            return await performHeadlessUpdateCheck(debug: true) != null;
-          default:
-            log("Unknown task: $taskName");
-            return false;
-        }
-      } catch (e) {
-        log("Error executing task '$taskName': $e");
-        return false;
+  Workmanager().executeTask((taskName, inputData) async {
+    log("Launching background task: $taskName with inputData: $inputData");
+    try {
+      switch (taskName) {
+        case updateTaskName:
+          return await performHeadlessUpdateCheck() != null;
+        case updateTaskNameDebug:
+          return await performHeadlessUpdateCheck(debug: true) != null;
+        default:
+          log("Unknown task: $taskName");
+          return false;
       }
-    },
-  );
+    } catch (e) {
+      log("Error executing task '$taskName': $e");
+      return false;
+    }
+  });
 }
 
 @pragma('vm:entry-point')
-Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck(
-    {int limit = 50, bool debug = false, bool includeHiddenViews = false}) async {
+Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck({
+  int limit = 50,
+  bool debug = false,
+  bool includeHiddenViews = false,
+}) async {
   try {
     final currentDate = DateTime.now();
     log("Starting background update check at $currentDate (debug: $debug, includeHiddenViews: $includeHiddenViews)");
@@ -72,8 +73,9 @@ Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck(
     var lastSeenStore = sharedHelper.lastSeenNotifications;
 
     for (final account in accounts) {
-      final baseUrl =
-          account.credentials.url.isNotEmpty ? account.credentials.url : (account.credentials.localUrl ?? '');
+      final baseUrl = account.credentials.url.isNotEmpty
+          ? account.credentials.url
+          : (account.credentials.localUrl ?? '');
       if (baseUrl.isEmpty && !(account.seerrRequestsEnabled && account.seerrCredentials?.isConfigured == true)) {
         continue;
       }
@@ -122,9 +124,7 @@ Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck(
       }
     }
 
-    lastSeenStore = lastSeenStore.copyWith(
-      updatedAt: currentDate,
-    );
+    lastSeenStore = lastSeenStore.copyWith(updatedAt: currentDate);
 
     await sharedHelper.setLastSeenNotifications(lastSeenStore);
 
@@ -171,18 +171,16 @@ Future<List<NotificationModel>> _fetchAndNotifyLatestItemsForAccount(
 
     final newNotifications = NotificationModel.createList(items, l10n);
 
-    final serverName =
-        account.credentials.serverName.isNotEmpty ? account.credentials.serverName : account.credentials.serverId;
+    final serverName = account.credentials.serverName.isNotEmpty
+        ? account.credentials.serverName
+        : account.credentials.serverId;
     final summaryText = l10n.notificationNewItems(newNotifications.length);
 
-    await NotificationService.showGroupedNotifications(
-      account.id,
-      serverName,
-      newNotifications,
-      summaryText,
-    );
+    await NotificationService.showGroupedNotifications(account.id, serverName, newNotifications, summaryText);
 
-    log("Fetched ${items.length} items for account ${account.id} (${account.credentials.serverName}), checking against last seen data");
+    log(
+      "Fetched ${items.length} items for account ${account.id} (${account.credentials.serverName}), checking against last seen data",
+    );
 
     return newNotifications;
   } catch (e) {

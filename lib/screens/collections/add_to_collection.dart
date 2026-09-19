@@ -18,9 +18,7 @@ import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
 Future<void> addItemToCollection(BuildContext context, List<ItemBaseModel> item) {
   return showDialogAdaptive(
     context: context,
-    builder: (context) => AddToCollection(
-      items: item,
-    ),
+    builder: (context) => AddToCollection(items: item),
   );
 }
 
@@ -52,10 +50,7 @@ class _AddToCollectionState extends ConsumerState<AddToCollection> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (widget.items.length == 1)
-                Text(
-                  context.localized.addToCollection,
-                  style: Theme.of(context).textTheme.titleLarge,
-                )
+                Text(context.localized.addToCollection, style: Theme.of(context).textTheme.titleLarge)
               else
                 Text(
                   context.localized.addItemsToCollection(widget.items.length),
@@ -64,7 +59,7 @@ class _AddToCollectionState extends ConsumerState<AddToCollection> {
               IconButton(
                 onPressed: () => ref.read(provider.notifier).setItems(widget.items),
                 icon: const Icon(IconsaxPlusLinear.refresh),
-              )
+              ),
             ],
           ),
           if (widget.items.length == 1) ItemBottomSheetPreview(item: widget.items.first),
@@ -83,15 +78,14 @@ class _AddToCollectionState extends ConsumerState<AddToCollection> {
               ),
               const SizedBox(width: 32),
               IconButton(
-                  onPressed: controller.text.isNotEmpty
-                      ? () async {
-                          await ref.read(provider.notifier).addToNewCollection(
-                                name: controller.text,
-                              );
-                          setState(() => controller.text = '');
-                        }
-                      : null,
-                  icon: const Icon(Icons.add_rounded)),
+                onPressed: controller.text.isNotEmpty
+                    ? () async {
+                        await ref.read(provider.notifier).addToNewCollection(name: controller.text);
+                        setState(() => controller.text = '');
+                      }
+                    : null,
+                icon: const Icon(Icons.add_rounded),
+              ),
             ],
           ),
           if (collectionProvider.isLoading && collectionProvider.collections.isEmpty) const CircularProgressIndicator(),
@@ -100,58 +94,46 @@ class _AddToCollectionState extends ConsumerState<AddToCollection> {
               shrinkWrap: true,
               padding: const EdgeInsets.symmetric(vertical: 12),
               children: [
-                ...collectionProvider.collections.entries.map(
-                  (e) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: FocusButton(
-                        onTap: () => toggleCollection(e.key, e.value == true),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: e.value == true
-                                ? Theme.of(context).colorScheme.primaryContainer
-                                : Theme.of(context).colorScheme.surfaceContainer,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    e.key.name,
-                                    style: Theme.of(context).textTheme.bodyLarge,
-                                  ),
+                ...collectionProvider.collections.entries.map((e) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: FocusButton(
+                      onTap: () => toggleCollection(e.key, e.value == true),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: e.value == true
+                              ? Theme.of(context).colorScheme.primaryContainer
+                              : Theme.of(context).colorScheme.surfaceContainer,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(child: Text(e.key.name, style: Theme.of(context).textTheme.bodyLarge)),
+                              SquareProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                                value: e.value == null && collectionProvider.isLoading ? null : 0,
+                                child: Checkbox(
+                                  value: e.value,
+                                  tristate: true,
+                                  onChanged: (value) async => toggleCollection(e.key, value ?? false),
                                 ),
-                                SquareProgressIndicator(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  value: e.value == null && collectionProvider.isLoading ? null : 0,
-                                  child: Checkbox(
-                                    value: e.value,
-                                    tristate: true,
-                                    onChanged: (value) async => toggleCollection(e.key, value ?? false),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                }),
               ],
             ),
           ),
         ],
       ),
-      actions: [
-        FilledButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(context.localized.close),
-        )
-      ],
+      actions: [FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.close))],
     );
   }
 
@@ -160,19 +142,21 @@ class _AddToCollectionState extends ConsumerState<AddToCollection> {
       final response = await ref.read(provider.notifier).addToCollection(boxSet: boxSet, add: false);
       if (context.mounted) {
         DriftfinSnack.show(
-            response.isSuccessful
-                ? context.localized.removedFromCollection(boxSet.name)
-                : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
-            context: context);
+          response.isSuccessful
+              ? context.localized.removedFromCollection(boxSet.name)
+              : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
+          context: context,
+        );
       }
     } else {
       final response = await ref.read(provider.notifier).addToCollection(boxSet: boxSet, add: true);
       if (context.mounted) {
         DriftfinSnack.show(
-            response.isSuccessful
-                ? context.localized.addedToCollection(boxSet.name)
-                : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
-            context: context);
+          response.isSuccessful
+              ? context.localized.addedToCollection(boxSet.name)
+              : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
+          context: context,
+        );
       }
     }
   }

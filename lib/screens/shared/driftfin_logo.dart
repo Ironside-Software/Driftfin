@@ -26,7 +26,7 @@ class DriftfinLogo extends ConsumerWidget {
             ref.read(applicationInfoProvider).name.capitalize(),
             style: context.textTheme.displayLarge,
             textAlign: TextAlign.center,
-          )
+          ),
         ],
       ),
     );

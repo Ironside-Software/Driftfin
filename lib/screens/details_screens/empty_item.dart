@@ -26,11 +26,7 @@ class EmptyItem extends ConsumerWidget {
       actions: (context) => item.generateActions(
         context,
         ref,
-        exclude: {
-          ItemActions.play,
-          ItemActions.playFromStart,
-          ItemActions.details,
-        },
+        exclude: {ItemActions.play, ItemActions.playFromStart, ItemActions.details},
         onDeleteSuccesFully: (item) {
           if (context.mounted) {
             context.router.popBack();
@@ -52,10 +48,7 @@ class EmptyItem extends ConsumerWidget {
                     elevation: 6,
                     color: Theme.of(context).colorScheme.secondaryContainer,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1.0,
-                        color: Colors.white.withValues(alpha: 0.10),
-                      ),
+                      side: BorderSide(width: 1.0, color: Colors.white.withValues(alpha: 0.10)),
                       borderRadius: FladderTheme.defaultShape.borderRadius,
                     ),
                     child: DriftfinImage(
@@ -65,10 +58,7 @@ class EmptyItem extends ConsumerWidget {
                   ),
                 ),
               ),
-              Text(
-                item.title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text(item.title, style: Theme.of(context).textTheme.titleLarge),
               Text("Type of (Jelly.${item.jellyType?.name.capitalize()}) has not been implemented yet."),
             ].addInBetween(const SizedBox(height: 32)),
           ),

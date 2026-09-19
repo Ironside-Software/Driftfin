@@ -77,8 +77,12 @@ class PosterListItem extends ConsumerWidget {
               },
               onSecondaryTapDown: (details) async {
                 Offset localPosition = details.globalPosition;
-                RelativeRect position =
-                    RelativeRect.fromLTRB(localPosition.dx, localPosition.dy, localPosition.dx, localPosition.dy);
+                RelativeRect position = RelativeRect.fromLTRB(
+                  localPosition.dx,
+                  localPosition.dy,
+                  localPosition.dx,
+                  localPosition.dy,
+                );
                 await showMenu(
                   context: context,
                   position: position,
@@ -146,25 +150,18 @@ class PosterListItem extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              poster.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            Text(poster.title, maxLines: 1, overflow: TextOverflow.ellipsis),
                             Row(
                               children: [
-                                if (subTitle != null) ...[
-                                  subTitle!,
-                                  const Spacer(),
-                                ],
+                                if (subTitle != null) ...[subTitle!, const Spacer()],
                                 if (poster.subText != null && poster.subText != poster.name)
                                   ClickableText(
                                     opacity: 0.45,
                                     text: poster.subText!,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                                    style: Theme.of(context).textTheme.titleSmall
+                                        ?.copyWith(fontWeight: FontWeight.bold),
                                   ),
                               ],
                             ),
@@ -180,24 +177,19 @@ class PosterListItem extends ConsumerWidget {
                               child: Text(
                                 context.localized.page((poster as BookModel).currentPage),
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onPrimary),
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                ),
                               ),
                             ),
                           ),
-                      if (poster.userData.isFavourite)
-                        const Icon(
-                          IconsaxPlusBold.heart,
-                          color: Colors.red,
-                        ),
+                      if (poster.userData.isFavourite) const Icon(IconsaxPlusBold.heart, color: Colors.red),
                       if (AdaptiveLayout.of(context).isDesktop)
                         Tooltip(
                           message: context.localized.options,
                           child: PopupMenuButton(
                             tooltip: context.localized.options,
-                            icon: const Icon(
-                              Icons.more_vert,
-                              color: Colors.white,
-                            ),
+                            icon: const Icon(Icons.more_vert, color: Colors.white),
                             itemBuilder: (context) => poster
                                 .generateActions(
                                   context,
@@ -210,10 +202,10 @@ class PosterListItem extends ConsumerWidget {
                                 )
                                 .popupMenuItems(useIcons: true),
                           ),
-                        )
+                        ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

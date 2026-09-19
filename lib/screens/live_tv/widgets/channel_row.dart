@@ -67,7 +67,10 @@ class ChannelRowState extends ConsumerState<ChannelRow> {
         alignment: AlignmentDirectional.centerStart,
         child: Padding(
           padding: const EdgeInsets.only(
-              left: GuideConstants.padding, right: GuideConstants.padding, top: GuideConstants.padding / 2),
+            left: GuideConstants.padding,
+            right: GuideConstants.padding,
+            top: GuideConstants.padding / 2,
+          ),
           child: FocusButton(
             onTap: () {},
             borderRadius: BorderRadius.circular(8.0),
@@ -79,16 +82,12 @@ class ChannelRowState extends ConsumerState<ChannelRow> {
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(
-                  color: Colors.white.withAlpha(45),
-                  width: 1,
-                ),
+                border: Border.all(color: Colors.white.withAlpha(45), width: 1),
               ),
               child: Text(
                 context.localized.noPrograms,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
           ),
@@ -104,132 +103,120 @@ class ChannelRowState extends ConsumerState<ChannelRow> {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        ...channel.programs.mapIndexed(
-          (index, program) {
-            final visibleStart = program.startDate.isBefore(timelineStart) ? timelineStart : program.startDate;
-            final visibleEnd = program.endDate.isAfter(timelineEnd) ? timelineEnd : program.endDate;
+        ...channel.programs.mapIndexed((index, program) {
+          final visibleStart = program.startDate.isBefore(timelineStart) ? timelineStart : program.startDate;
+          final visibleEnd = program.endDate.isAfter(timelineEnd) ? timelineEnd : program.endDate;
 
-            if (!visibleEnd.isAfter(visibleStart)) return const SizedBox.shrink();
+          if (!visibleEnd.isAfter(visibleStart)) return const SizedBox.shrink();
 
-            final startOffset = (visibleStart.difference(timelineStart).inSeconds * secondsPerPixel).toDouble();
-            final rawWidth = (visibleEnd.difference(visibleStart).inSeconds * secondsPerPixel).toDouble();
+          final startOffset = (visibleStart.difference(timelineStart).inSeconds * secondsPerPixel).toDouble();
+          final rawWidth = (visibleEnd.difference(visibleStart).inSeconds * secondsPerPixel).toDouble();
 
-            final minWidth = GuideConstants.padding;
-            final width = rawWidth < minWidth ? minWidth : rawWidth;
+          final minWidth = GuideConstants.padding;
+          final width = rawWidth < minWidth ? minWidth : rawWidth;
 
-            final clampedStart = startOffset.clamp(0.0, timelineWidth);
-            final clampedWidth = ((clampedStart + width) > timelineWidth) ? (timelineWidth - clampedStart) : width;
+          final clampedStart = startOffset.clamp(0.0, timelineWidth);
+          final clampedWidth = ((clampedStart + width) > timelineWidth) ? (timelineWidth - clampedStart) : width;
 
-            final endDateIsAfterNow = program.endDate.isAfter(DateTime.now());
+          final endDateIsAfterNow = program.endDate.isAfter(DateTime.now());
 
-            final isSelected = widget.selectedProgram?.id == program.id;
+          final isSelected = widget.selectedProgram?.id == program.id;
 
-            return PositionedDirectional(
-              start: clampedStart,
-              top: GuideConstants.padding / 2,
-              height: GuideConstants.channelRowHeight - GuideConstants.padding / 2,
-              width: clampedWidth,
-              child: Opacity(
-                opacity: endDateIsAfterNow ? 1.0 : 0.5,
-                child: Builder(
-                  builder: (context) {
-                    return FocusButton(
-                      onTap: () {
-                        if (widget.onProgramSelected != null) {
-                          widget.onProgramSelected!(program);
-                        }
-                      },
-                      onLongPress: () {
-                        if (widget.onLongPressProgram != null) {
-                          widget.onLongPressProgram!(program);
-                        }
-                      },
-                      autoFocus: isSelected && AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
-                      borderRadius: BorderRadius.circular(8.0),
-                      onFocusChanged: (focus) {
-                        if (focus) {
-                          widget.scrollToPosition(clampedStart - (GuideConstants.widthPerMinute * 10));
-                        }
-                      },
-                      child: Container(
-                        margin: const EdgeInsetsDirectional.only(end: GuideConstants.padding),
-                        decoration: BoxDecoration(
-                          color: colorFromString(
-                            program.name,
-                            inPast: endDateIsAfterNow,
-                            selectedProgram: isSelected,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        foregroundDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(
-                            color: Colors.white.withAlpha(endDateIsAfterNow ? 45 : 15),
-                            width: 1,
-                          ),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: clampedWidth >= 75
-                            ? Row(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  if (index == 0 ||
-                                      channel.programs[(index - 1).clamp(0, channel.programs.length)].name !=
-                                          program.name)
-                                    Container(
-                                      child: AspectRatio(
-                                        aspectRatio: 0.7,
-                                        child: DriftfinImage(
-                                          image: program.images?.primary?.copyWith(
-                                            key: 'program-${program.id}-${program.name}}',
-                                          ),
-                                          fit: BoxFit.fitWidth,
-                                        ),
-                                      ),
-                                    ),
-                                  Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            program.name,
-                                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            program.subLabel(context.localized),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            "${program.startDate.hour.toString().padLeft(2, '0')}:${program.startDate.minute.toString().padLeft(2, '0')} - ${program.endDate.hour.toString().padLeft(2, '0')}:${program.endDate.minute.toString().padLeft(2, '0')}",
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Colors.white70,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              )
-                            : null,
+          return PositionedDirectional(
+            start: clampedStart,
+            top: GuideConstants.padding / 2,
+            height: GuideConstants.channelRowHeight - GuideConstants.padding / 2,
+            width: clampedWidth,
+            child: Opacity(
+              opacity: endDateIsAfterNow ? 1.0 : 0.5,
+              child: Builder(
+                builder: (context) {
+                  return FocusButton(
+                    onTap: () {
+                      if (widget.onProgramSelected != null) {
+                        widget.onProgramSelected!(program);
+                      }
+                    },
+                    onLongPress: () {
+                      if (widget.onLongPressProgram != null) {
+                        widget.onLongPressProgram!(program);
+                      }
+                    },
+                    autoFocus: isSelected && AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
+                    borderRadius: BorderRadius.circular(8.0),
+                    onFocusChanged: (focus) {
+                      if (focus) {
+                        widget.scrollToPosition(clampedStart - (GuideConstants.widthPerMinute * 10));
+                      }
+                    },
+                    child: Container(
+                      margin: const EdgeInsetsDirectional.only(end: GuideConstants.padding),
+                      decoration: BoxDecoration(
+                        color: colorFromString(program.name, inPast: endDateIsAfterNow, selectedProgram: isSelected),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                    );
-                  },
-                ),
+                      foregroundDecoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: Colors.white.withAlpha(endDateIsAfterNow ? 45 : 15), width: 1),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: clampedWidth >= 75
+                          ? Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                if (index == 0 ||
+                                    channel.programs[(index - 1).clamp(0, channel.programs.length)].name !=
+                                        program.name)
+                                  Container(
+                                    child: AspectRatio(
+                                      aspectRatio: 0.7,
+                                      child: DriftfinImage(
+                                        image: program.images?.primary?.copyWith(
+                                          key: 'program-${program.id}-${program.name}}',
+                                        ),
+                                        fit: BoxFit.fitWidth,
+                                      ),
+                                    ),
+                                  ),
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          program.name,
+                                          style: Theme.of(context).textTheme.titleLarge
+                                              ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          program.subLabel(context.localized),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          "${program.startDate.hour.toString().padLeft(2, '0')}:${program.startDate.minute.toString().padLeft(2, '0')} - ${program.endDate.hour.toString().padLeft(2, '0')}:${program.endDate.minute.toString().padLeft(2, '0')}",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context).textTheme.bodyMedium
+                                              ?.copyWith(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : null,
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        }),
       ],
     );
   }

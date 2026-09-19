@@ -14,11 +14,7 @@ import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/models/playback/playback_queue_state.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
-typedef QueueSectionReorderCallback = Future<void> Function(
-  AudioQueueSection section,
-  int oldIndex,
-  int newIndex,
-);
+typedef QueueSectionReorderCallback = Future<void> Function(AudioQueueSection section, int oldIndex, int newIndex);
 
 void showFullScreenItemQueue(
   BuildContext context, {
@@ -68,23 +64,11 @@ class VideoPlayerQueue extends ConsumerWidget {
     Offset globalPosition, {
     required Future<void> Function() removeAction,
   }) async {
-    final itemActions = item.generateActions(
-      context,
-      ref,
-      exclude: {
-        ItemActions.play,
-        ItemActions.refreshMetaData,
-      },
-    );
+    final itemActions = item.generateActions(context, ref, exclude: {ItemActions.play, ItemActions.refreshMetaData});
 
     await showMenu(
       context: context,
-      position: RelativeRect.fromLTRB(
-        globalPosition.dx,
-        globalPosition.dy,
-        globalPosition.dx,
-        globalPosition.dy,
-      ),
+      position: RelativeRect.fromLTRB(globalPosition.dx, globalPosition.dy, globalPosition.dx, globalPosition.dy),
       items: [
         ItemActionButton(
           label: Text(context.localized.removeFromQueue),
@@ -167,10 +151,7 @@ class VideoPlayerQueue extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24).copyWith(bottom: 24),
                 children: [
                   if (nowPlaying != null) ...[
-                    _QueueSectionHeader(
-                      icon: Icons.play_arrow_rounded,
-                      title: context.localized.nowPlaying,
-                    ),
+                    _QueueSectionHeader(icon: Icons.play_arrow_rounded, title: context.localized.nowPlaying),
                     _QueueTile(
                       item: nowPlaying,
                       isCurrent: true,
@@ -211,27 +192,20 @@ class VideoPlayerQueue extends ConsumerWidget {
                         ref,
                         item,
                         globalPosition,
-                        removeAction: () => ref.read(videoPlayerProvider.notifier).removeAudioQueueSectionItem(
-                              AudioQueueSection.nextUp,
-                              index,
-                            ),
+                        removeAction: () => ref
+                            .read(videoPlayerProvider.notifier)
+                            .removeAudioQueueSectionItem(AudioQueueSection.nextUp, index),
                       ),
                     ),
                     const SizedBox(height: 8),
                   ],
-                  _QueueSectionHeader(
-                    icon: Icons.queue_music_rounded,
-                    title: context.localized.queue,
-                  ),
+                  _QueueSectionHeader(icon: Icons.queue_music_rounded, title: context.localized.queue),
                   if (existingItems.isEmpty)
                     Opacity(
                       opacity: 0.6,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        child: Text(
-                          context.localized.queueIsEmpty,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
+                        child: Text(context.localized.queueIsEmpty, style: Theme.of(context).textTheme.bodyMedium),
                       ),
                     )
                   else
@@ -248,10 +222,9 @@ class VideoPlayerQueue extends ConsumerWidget {
                         ref,
                         item,
                         globalPosition,
-                        removeAction: () => ref.read(videoPlayerProvider.notifier).removeAudioQueueSectionItem(
-                              AudioQueueSection.existing,
-                              index,
-                            ),
+                        removeAction: () => ref
+                            .read(videoPlayerProvider.notifier)
+                            .removeAudioQueueSectionItem(AudioQueueSection.existing, index),
                       ),
                     ),
                 ],
@@ -282,17 +255,10 @@ class _QueueSectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.8,
-                  ),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
             ),
           ),
-          if (trailing != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: trailing!,
-            ),
+          if (trailing != null) Padding(padding: const EdgeInsets.only(left: 8), child: trailing!),
         ],
       ),
     );
@@ -319,7 +285,8 @@ class _QueueSortList extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       buildDefaultDragHandles: false,
       itemCount: items.length,
-      onReorder: onReorder,
+      // Queue callbacks still use insertion indices from before the item is removed.
+      onReorderItem: (oldIndex, newIndex) => onReorder(oldIndex, newIndex > oldIndex ? newIndex + 1 : newIndex),
       itemBuilder: (context, index) {
         return _QueueTile(
           key: ValueKey('${items[index].id}-$index'),
@@ -374,21 +341,12 @@ class _QueueTile extends StatelessWidget {
           item.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: isCurrent ? FontWeight.bold : null,
-              ),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: isCurrent ? FontWeight.bold : null),
         ),
-        subtitle: Text(
-          item.subTextShort(context.localized) ?? '',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        subtitle: Text(item.subTextShort(context.localized) ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
         trailing: dragIndex == null
             ? Icon(Icons.play_arrow_rounded, color: Theme.of(context).colorScheme.primary)
-            : ReorderableDragStartListener(
-                index: dragIndex!,
-                child: const Icon(Icons.drag_indicator_rounded),
-              ),
+            : ReorderableDragStartListener(index: dragIndex!, child: const Icon(Icons.drag_indicator_rounded)),
         onTap: onTap,
       ),
     );

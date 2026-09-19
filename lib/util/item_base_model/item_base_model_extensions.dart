@@ -127,10 +127,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
     await showMenu(
       context: context,
       position: position,
-      items: generateActions(
-        context,
-        ref,
-      ).popupMenuItems(useIcons: true),
+      items: generateActions(context, ref).popupMenuItems(useIcons: true),
     );
   }
 
@@ -144,11 +141,8 @@ extension ItemBaseModelExtensions on ItemBaseModel {
     Function(ItemBaseModel item)? onDeleteSuccesFully,
   }) {
     final isAdmin = ref.read(userProvider)?.policy?.isAdministrator ?? false;
-    final downloadEnabled = ref.read(userProvider.select(
-          (value) => value?.canDownload ?? false,
-        )) &&
-        syncAble &&
-        (canDownload ?? false);
+    final downloadEnabled =
+        ref.read(userProvider.select((value) => value?.canDownload ?? false)) && syncAble && (canDownload ?? false);
     final downloadUrl = ref.read(userProvider.notifier).createDownloadUrl(this);
     final syncedItemFuture = ref.read(syncProvider.notifier).getSyncedItem(id);
     final hasSeerrData = overview.seerrUrl?.isNotEmpty == true;
@@ -158,35 +152,39 @@ extension ItemBaseModelExtensions on ItemBaseModel {
       _ => true,
     };
     final ItemAction? parentAction = switch (this) {
-      EpisodeModel _ => !exclude.contains(ItemActions.openShow)
-          ? ItemActionButton(
-              icon: Icon(FladderItemType.series.icon),
-              action: () => parentBaseModel.navigateTo(context),
-              label: Text(context.localized.openShow),
-            )
-          : null,
-      AudioModel _ => !exclude.contains(ItemActions.openParent)
-          ? ItemActionButton(
-              icon: Icon(FladderItemType.musicAlbum.icon),
-              action: () => parentBaseModel.navigateTo(context),
-              label: Text(context.localized.showAlbum),
-            )
-          : null,
-      AlbumModel album => !exclude.contains(ItemActions.openParent)
-          ? ItemActionButton(
-              icon: Icon(FladderItemType.musicArtist.icon),
-              action: () => album.parentBaseModel.navigateTo(context),
-              label: Text(context.localized.showArtist),
-            )
-          : null,
+      EpisodeModel _ =>
+        !exclude.contains(ItemActions.openShow)
+            ? ItemActionButton(
+                icon: Icon(FladderItemType.series.icon),
+                action: () => parentBaseModel.navigateTo(context),
+                label: Text(context.localized.openShow),
+              )
+            : null,
+      AudioModel _ =>
+        !exclude.contains(ItemActions.openParent)
+            ? ItemActionButton(
+                icon: Icon(FladderItemType.musicAlbum.icon),
+                action: () => parentBaseModel.navigateTo(context),
+                label: Text(context.localized.showAlbum),
+              )
+            : null,
+      AlbumModel album =>
+        !exclude.contains(ItemActions.openParent)
+            ? ItemActionButton(
+                icon: Icon(FladderItemType.musicArtist.icon),
+                action: () => album.parentBaseModel.navigateTo(context),
+                label: Text(context.localized.showArtist),
+              )
+            : null,
       SeriesModel _ => null,
-      _ => !exclude.contains(ItemActions.openParent) && !galleryItem
-          ? ItemActionButton(
-              icon: Icon(FladderItemType.folder.icon),
-              action: () => parentBaseModel.navigateTo(context),
-              label: Text(context.localized.openParent),
-            )
-          : null,
+      _ =>
+        !exclude.contains(ItemActions.openParent) && !galleryItem
+            ? ItemActionButton(
+                icon: Icon(FladderItemType.folder.icon),
+                action: () => parentBaseModel.navigateTo(context),
+                label: Text(context.localized.openParent),
+              )
+            : null,
     };
     return [
       if (!exclude.contains(ItemActions.play))
@@ -233,12 +231,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
               };
 
               if (queueSource != null) {
-                return showTracksDetailsScreen(
-                  context: context,
-                  item: this,
-                  ref: ref,
-                  queueSource: queueSource,
-                );
+                return showTracksDetailsScreen(context: context, item: this, ref: ref, queueSource: queueSource);
               } else {
                 return Future.value();
               }
@@ -246,7 +239,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
             icon: const Icon(IconsaxPlusLinear.blend_2),
             label: Text(context.localized.instantMix),
           ),
-      if (parentAction != null) parentAction,
+      ?parentAction,
       if (!galleryItem && !exclude.contains(ItemActions.details))
         ItemActionButton(
           action: () async => await navigateTo(context),
@@ -280,9 +273,11 @@ extension ItemBaseModelExtensions on ItemBaseModel {
             action: (this is BookModel)
                 ? () => ((this as BookModel).play(context, ref, currentPage: 0))
                 : () => play(context, ref, startPosition: Duration.zero),
-            label: Text((this is BookModel)
-                ? context.localized.readFromStart(name)
-                : context.localized.playFromStart(subTextShort(context.localized) ?? name)),
+            label: Text(
+              (this is BookModel)
+                  ? context.localized.readFromStart(name)
+                  : context.localized.playFromStart(subTextShort(context.localized) ?? name),
+            ),
           ),
       ItemActionDivider(),
       if (!exclude.contains(ItemActions.addCollection) && isAdmin)
@@ -363,9 +358,11 @@ extension ItemBaseModelExtensions on ItemBaseModel {
               final currentlyFavourite = series.body?.userData.isFavourite ?? false;
               await ref.read(userProvider.notifier).setAsFavorite(!currentlyFavourite, seriesId);
               if (context.mounted) {
-                DriftfinSnack.show(currentlyFavourite
-                    ? context.localized.removedShowFromFavorites
-                    : context.localized.addedShowToFavorites);
+                DriftfinSnack.show(
+                  currentlyFavourite
+                      ? context.localized.removedShowFromFavorites
+                      : context.localized.addedShowToFavorites,
+                );
               }
             } finally {
               context.refreshData();
@@ -379,16 +376,18 @@ extension ItemBaseModelExtensions on ItemBaseModel {
               type == FladderItemType.baseType) &&
           !exclude.contains(ItemActions.addToHome))
         ItemActionButton(
-          icon: Icon(ref.read(homeSettingsProvider).pinnedCollectionIds.contains(id)
-              ? Icons.home_filled
-              : Icons.home_outlined),
+          icon: Icon(
+            ref.read(homeSettingsProvider).pinnedCollectionIds.contains(id) ? Icons.home_filled : Icons.home_outlined,
+          ),
           action: () async {
             ref.read(homeSettingsProvider.notifier).toggleHomeCollection(id);
             context.refreshData();
           },
-          label: Text(ref.read(homeSettingsProvider).pinnedCollectionIds.contains(id)
-              ? context.localized.removeFromHome
-              : context.localized.addToHome),
+          label: Text(
+            ref.read(homeSettingsProvider).pinnedCollectionIds.contains(id)
+                ? context.localized.removeFromHome
+                : context.localized.addToHome,
+          ),
         ),
       ...otherActions,
       ItemActionDivider(),
@@ -419,7 +418,9 @@ extension ItemBaseModelExtensions on ItemBaseModel {
               builder: (context, snapshot) {
                 final syncedItem = snapshot.data;
                 if (syncedItem != null) {
-                  return IgnorePointer(child: SyncButton(item: this, syncedItem: syncedItem));
+                  return IgnorePointer(
+                    child: SyncButton(item: this, syncedItem: syncedItem),
+                  );
                 }
                 return const Icon(IconsaxPlusLinear.arrow_down_2);
               },
@@ -429,9 +430,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
               builder: (context, snapshot) {
                 final syncedItem = snapshot.data;
                 if (syncedItem != null) {
-                  return Text(
-                    context.localized.syncDetails,
-                  );
+                  return Text(context.localized.syncDetails);
                 }
                 return Text(context.localized.sync);
               },
@@ -456,31 +455,29 @@ extension ItemBaseModelExtensions on ItemBaseModel {
             icon: const Icon(IconsaxPlusLinear.link_21),
             action: () => context.copyToClipboard(downloadUrl),
             label: Text(context.localized.copyStreamUrl),
-          )
+          ),
         ],
       ],
       if (hasSeerrData && tmdbId != null)
         ItemActionButton(
           icon: const Icon(IconsaxPlusLinear.link_21),
           action: () {
-            context.pushRoute(SeerrDetailsRoute(
+            context.pushRoute(
+              SeerrDetailsRoute(
                 mediaType: switch (this) {
                   MovieModel() => SeerrMediaType.movie,
                   SeriesModel() => SeerrMediaType.tvshow,
                   _ => SeerrMediaType.movie,
-                }
-                    .name,
-                tmdbId: tmdbId!));
+                }.name,
+                tmdbId: tmdbId!,
+              ),
+            );
           },
           label: Text(context.localized.seerrDetails),
         ),
       if (canDelete == true)
         ItemActionButton(
-          icon: Container(
-            child: const Icon(
-              IconsaxPlusLinear.trash,
-            ),
-          ),
+          icon: Container(child: const Icon(IconsaxPlusLinear.trash)),
           action: () async {
             final response = await DriftfinSnack.showResponse(
               showDeleteDialog(context, this, ref),
@@ -528,11 +525,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
 
   Future<void> sharePhoto(PhotoModel photo, WidgetRef ref) async {
     final file = await CustomCacheManager.instance.getSingleFile(photo.downloadPath(ref));
-    await SharePlus.instance.share(ShareParams(files: [
-      XFile(
-        file.path,
-      ),
-    ]));
+    await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
     await file.delete();
   }
 
@@ -540,8 +533,8 @@ extension ItemBaseModelExtensions on ItemBaseModel {
     final providerIds = this is MovieModel
         ? (this as MovieModel).providerIds
         : this is SeriesModel
-            ? (this as SeriesModel).providerIds
-            : null;
+        ? (this as SeriesModel).providerIds
+        : null;
 
     if (providerIds == null || providerIds.isEmpty) return null;
 
@@ -554,8 +547,8 @@ extension ItemBaseModelExtensions on ItemBaseModel {
     final providerIds = this is MovieModel
         ? (this as MovieModel).providerIds
         : this is SeriesModel
-            ? (this as SeriesModel).providerIds
-            : null;
+        ? (this as SeriesModel).providerIds
+        : null;
 
     if (providerIds == null || providerIds.isEmpty) return null;
     final value = providerIds['Tvdb'];
@@ -584,10 +577,7 @@ Future<void> _showTrackLyricsPopup(BuildContext context, WidgetRef ref, AudioMod
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 24),
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: Padding(padding: EdgeInsets.symmetric(vertical: 24), child: CircularProgressIndicator()),
                 );
               }
 
@@ -603,36 +593,20 @@ Future<void> _showTrackLyricsPopup(BuildContext context, WidgetRef ref, AudioMod
             },
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.localized.close),
-          ),
-        ],
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.close))],
       );
     },
   );
 }
 
-Future<void> _showTrackLyricsPopupWithTimeline(
-  BuildContext context,
-  List<SyncedLyricLine> timeline,
-) {
+Future<void> _showTrackLyricsPopupWithTimeline(BuildContext context, List<SyncedLyricLine> timeline) {
   return showDialog<void>(
     context: context,
     builder: (context) {
       return AlertDialog(
         title: Text(context.localized.lyrics),
-        content: SizedBox(
-          width: 540,
-          child: _buildLyricsTimelineList(context, timeline),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(context.localized.close),
-          ),
-        ],
+        content: SizedBox(width: 540, child: _buildLyricsTimelineList(context, timeline)),
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.close))],
       );
     },
   );
@@ -659,19 +633,12 @@ Widget _buildLyricsTimelineList(BuildContext context, List<SyncedLyricLine> time
             spacing: 4,
             children: List.generate(
               4,
-              (index) => Icon(
-                Icons.music_note_rounded,
-                size: 18,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              (index) => Icon(Icons.music_note_rounded, size: 18, color: Theme.of(context).colorScheme.primary),
             ),
           );
         }
 
-        return SelectableText(
-          line.text,
-          style: Theme.of(context).textTheme.bodyLarge,
-        );
+        return SelectableText(line.text, style: Theme.of(context).textTheme.bodyLarge);
       },
     ),
   );

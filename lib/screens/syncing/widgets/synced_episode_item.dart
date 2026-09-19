@@ -21,11 +21,7 @@ import 'package:driftfin/util/size_formatting.dart';
 import 'package:driftfin/widgets/shared/icon_button_await.dart';
 
 class SyncedEpisodeItem extends ConsumerStatefulWidget {
-  const SyncedEpisodeItem({
-    super.key,
-    required this.episode,
-    required this.syncedItem,
-  });
+  const SyncedEpisodeItem({super.key, required this.episode, required this.syncedItem});
 
   final EpisodeModel episode;
   final SyncedItem syncedItem;
@@ -54,12 +50,7 @@ class _SyncedEpisodeItemState extends ConsumerState<SyncedEpisodeItem> {
                 },
                 child: SizedBox(
                   width: 175,
-                  child: EpisodePoster(
-                    episode: widget.episode,
-                    actions: [],
-                    showLabel: false,
-                    isCurrentEpisode: false,
-                  ),
+                  child: EpisodePoster(episode: widget.episode, actions: [], showLabel: false, isCurrentEpisode: false),
                 ),
               ),
             ),
@@ -75,12 +66,7 @@ class _SyncedEpisodeItemState extends ConsumerState<SyncedEpisodeItem> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(
-                        child: Text(
-                          widget.episode.name,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
+                      Flexible(child: Text(widget.episode.name, style: Theme.of(context).textTheme.titleMedium)),
                       Flexible(
                         child: Opacity(
                           opacity: 0.75,
@@ -100,19 +86,22 @@ class _SyncedEpisodeItemState extends ConsumerState<SyncedEpisodeItem> {
                 else
                   Flexible(
                     child: SyncLabel(
-                      label:
-                          context.localized.totalSize(ref.watch(syncSizeProvider(syncedItem, [])).byteFormat ?? '--'),
-                      status: ref.watch(syncDownloadStatusProvider(syncedItem, [])
-                          .select((value) => value?.status ?? TaskStatus.notFound)),
+                      label: context.localized.totalSize(
+                        ref.watch(syncSizeProvider(syncedItem, const [])).byteFormat ?? '--',
+                      ),
+                      status: ref.watch(
+                        syncDownloadStatusProvider(
+                          syncedItem,
+                          const [],
+                        ).select((value) => value?.status ?? TaskStatus.notFound),
+                      ),
                     ),
-                  )
+                  ),
               ],
             ),
           ),
           if (!hasFile && !downloadTask.hasDownload)
-            SyncFileButton(
-              syncedItem: syncedItem,
-            )
+            SyncFileButton(syncedItem: syncedItem)
           else if (hasFile)
             IconButtonAwait(
               color: Theme.of(context).colorScheme.error,
@@ -131,7 +120,7 @@ class _SyncedEpisodeItemState extends ConsumerState<SyncedEpisodeItem> {
                 );
               },
               icon: const Icon(IconsaxPlusLinear.trash),
-            )
+            ),
         ].addInBetween(const SizedBox(width: 16)),
       ),
     );

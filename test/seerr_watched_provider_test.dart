@@ -15,12 +15,12 @@ import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 
 AccountModel account(String id, {String server = 'server'}) => AccountModel(
-      name: id,
-      id: id,
-      avatar: '',
-      lastUsed: DateTime(2026),
-      credentials: CredentialsModel.internal(serverId: server),
-    );
+  name: id,
+  id: id,
+  avatar: '',
+  lastUsed: DateTime(2026),
+  credentials: CredentialsModel(serverId: server),
+);
 
 class TestUser extends User {
   TestUser(this.account);
@@ -56,11 +56,13 @@ void main() {
     prefs = await SharedPreferences.getInstance();
   });
   ProviderContainer containerFor(TestUser user) {
-    final container = ProviderContainer(overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-      userProvider.overrideWith(() => user),
-      jellyApiProvider.overrideWith(_Api.new),
-    ]);
+    final container = ProviderContainer(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        userProvider.overrideWith(() => user),
+        jellyApiProvider.overrideWith(_Api.new),
+      ],
+    );
     addTearDown(container.dispose);
     return container;
   }
@@ -70,19 +72,21 @@ void main() {
   test('external watched status survives recreation and is isolated by user, server and type', () async {
     final provider = seerrWatchedProvider(key);
     final container = containerFor(TestUser(account('one')));
-    container.listen(provider, (_, __) {});
+    container.listen(provider, (_, _) {});
     expect(await container.read(provider.future), isFalse);
     await container.read(provider.notifier).setWatched(true);
     final restored = containerFor(TestUser(account('one')));
-    restored.listen(provider, (_, __) {});
+    restored.listen(provider, (_, _) {});
     expect(await restored.read(provider.future), isTrue);
     for (final other in [account('two'), account('one', server: 'other')]) {
       final isolated = containerFor(TestUser(other));
-      isolated.listen(provider, (_, __) {});
+      isolated.listen(provider, (_, _) {});
       expect(await isolated.read(provider.future), isFalse);
     }
-    expect(await restored.read(seerrWatchedProvider((mediaType: 'tvshow', tmdbId: 42, jellyfinItemId: null)).future),
-        isFalse);
+    expect(
+      await restored.read(seerrWatchedProvider((mediaType: 'tvshow', tmdbId: 42, jellyfinItemId: null)).future),
+      isFalse,
+    );
     await restored.read(provider.notifier).setWatched(false);
     expect(await restored.read(provider.future), isFalse);
   });
@@ -91,7 +95,7 @@ void main() {
     final user = TestUser(account('one'));
     final container = containerFor(user);
     final provider = seerrWatchedProvider((mediaType: 'movie', tmdbId: 42, jellyfinItemId: 'jellyfin-id'));
-    container.listen(provider, (_, __) {});
+    container.listen(provider, (_, _) {});
     expect(await container.read(provider.future), isTrue);
     user.fail = true;
     await expectLater(container.read(provider.notifier).setWatched(false), throwsStateError);
