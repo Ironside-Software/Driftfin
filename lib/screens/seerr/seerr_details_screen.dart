@@ -17,6 +17,7 @@ import 'package:driftfin/screens/seerr/widgets/season_download_progress_widget.d
 import 'package:driftfin/screens/seerr/widgets/seerr_poster_row.dart';
 import 'package:driftfin/screens/seerr/widgets/seerr_request_popup.dart';
 import 'package:driftfin/screens/seerr/widgets/seerr_requests_sheet.dart';
+import 'package:driftfin/screens/seerr/widgets/seerr_watched_button.dart';
 import 'package:driftfin/screens/shared/detail_scaffold.dart';
 import 'package:driftfin/screens/shared/media/expanding_text.dart';
 import 'package:driftfin/screens/shared/media/external_urls.dart';
@@ -58,6 +59,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
     final notifier = ref.read(provider.notifier);
 
     final currentPoster = state.poster;
+    final canMarkWatched = currentPoster?.type == SeerrMediaType.movie;
     final wrapAlignment =
         AdaptiveLayout.viewSizeOf(context) != ViewSize.phone ? WrapAlignment.start : WrapAlignment.center;
 
@@ -246,7 +248,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                         );
                       },
                     ),
-                    centerButtons: (hasVisibleRequests || state.hasTrailerAction)
+                    centerButtons: (hasVisibleRequests || state.hasTrailerAction || canMarkWatched)
                         ? Builder(
                             builder: (context) {
                               return Wrap(
@@ -255,6 +257,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                 alignment: wrapAlignment,
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
+                                  if (canMarkWatched) SeerrWatchedButton(poster: currentPoster),
                                   if (hasVisibleRequests)
                                     FocusButton(
                                       autoFocus: false,
@@ -714,8 +717,7 @@ class _EpisodeCard extends ConsumerWidget {
                               value: progress,
                               strokeWidth: 2,
                               backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(50),
-                              valueColor:
-                                  AlwaysStoppedAnimation(Theme.of(context).colorScheme.onPrimaryContainer),
+                              valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.onPrimaryContainer),
                             ),
                           ),
                           Text(

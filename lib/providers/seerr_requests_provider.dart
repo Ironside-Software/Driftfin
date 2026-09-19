@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
@@ -25,6 +27,7 @@ class SeerrRequestsState {
   final bool loading;
   final bool loadingMore;
   final bool processing;
+  final bool hasError;
 
   const SeerrRequestsState({
     this.filter = RequestFilter.all,
@@ -37,6 +40,7 @@ class SeerrRequestsState {
     this.loading = false,
     this.loadingMore = false,
     this.processing = false,
+    this.hasError = false,
   });
 
   bool get canLoadMore => loadedPages < totalPages;
@@ -52,6 +56,7 @@ class SeerrRequestsState {
     bool? loading,
     bool? loadingMore,
     bool? processing,
+    bool? hasError,
   }) =>
       SeerrRequestsState(
         filter: filter ?? this.filter,
@@ -64,6 +69,7 @@ class SeerrRequestsState {
         loading: loading ?? this.loading,
         loadingMore: loadingMore ?? this.loadingMore,
         processing: processing ?? this.processing,
+        hasError: hasError ?? this.hasError,
       );
 }
 
@@ -84,7 +90,7 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
 
   // Posters are expensive (one lookup per request), so cache them across pages
   // and reloads to avoid re-hitting the server.
-  static final TimedCache<String, SeerrDashboardPosterModel> _posterCache =
+  final TimedCache<String, SeerrDashboardPosterModel> _posterCache =
       TimedCache(ttl: const Duration(minutes: 10), maxEntries: 256);
 
   void setFilter(RequestFilter value) {
@@ -112,11 +118,11 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
 
   Future<void> load() async {
     final generation = ++_loadGeneration;
-    state = state.copyWith(loading: true);
+    state = state.copyWith(loading: true, loadingMore: false, hasError: false);
     final page = await _fetchPage(0);
     if (!mounted || generation != _loadGeneration) return;
     if (!page.ok) {
-      state = state.copyWith(loading: false);
+      state = state.copyWith(loading: false, hasError: true);
       return;
     }
     state = state.copyWith(
@@ -125,17 +131,18 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
       loadedPages: 1,
       loading: false,
     );
+    _loadPosters(page.entries, generation);
   }
 
   Future<void> loadMore() async {
     if (state.loadingMore || state.loading || !state.canLoadMore) return;
     final generation = _loadGeneration;
-    state = state.copyWith(loadingMore: true);
+    state = state.copyWith(loadingMore: true, hasError: false);
     final page = await _fetchPage(state.loadedPages);
     if (!mounted || generation != _loadGeneration) return;
     if (!page.ok) {
       // Transient failure: keep loadedPages so we retry this same page next time.
-      state = state.copyWith(loadingMore: false);
+      state = state.copyWith(loadingMore: false, hasError: true);
       return;
     }
     state = state.copyWith(
@@ -144,40 +151,65 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
       loadedPages: state.loadedPages + 1,
       loadingMore: false,
     );
+    _loadPosters(page.entries, generation);
   }
 
   Future<({List<SeerrRequestEntry> entries, int totalPages, bool ok})> _fetchPage(int page) async {
-    final api = ref.read(seerrApiProvider);
     try {
+      final api = ref.read(seerrApiProvider);
       final currentUserId = ref.read(seerrUserProvider)?.id;
-      final response = await api.listRequests(
-        take: _pageSize,
-        skip: page * _pageSize,
-        filter: state.filter,
-        sort: state.sort,
-        sortDirection: state.sortDirection,
-        requestedBy: state.mineOnly ? currentUserId : null,
-      );
+      final response = await api
+          .listRequests(
+            take: _pageSize,
+            skip: page * _pageSize,
+            filter: state.filter,
+            sort: state.sort,
+            sortDirection: state.sortDirection,
+            requestedBy: state.mineOnly ? currentUserId : null,
+          )
+          .timeout(const Duration(seconds: 20));
+      if (!response.isSuccessful || response.body == null) {
+        throw StateError("Requests could not be loaded");
+      }
       final results = response.body?.results ?? const <SeerrMediaRequest>[];
       final totalPages = response.body?.pageInfo?.pages ?? 1;
-      final entries =
-          await Future.wait(results.map((request) async => SeerrRequestEntry(request, await _poster(request))));
+      final entries = results.map((request) => SeerrRequestEntry(request, null)).toList();
       return (entries: entries, totalPages: totalPages, ok: true);
     } catch (_) {
-      return (entries: const <SeerrRequestEntry>[], totalPages: state.totalPages, ok: false);
+      return (entries: const <SeerrRequestEntry>[], totalPages: 1, ok: false);
     }
   }
 
-  Future<SeerrDashboardPosterModel?> _poster(SeerrMediaRequest request) async {
-    final tmdbId = request.media?.tmdbId;
-    final tvdbId = request.media?.tvdbId;
-    if (tmdbId == null && tvdbId == null) return null;
-    final key = '$tmdbId:$tvdbId';
-    final cached = _posterCache.get(key);
-    if (cached != null) return cached;
-    final poster = await ref.read(seerrApiProvider).fetchDashboardPosterFromIds(tmdbId: tmdbId, tvdbId: tvdbId);
-    if (poster != null) _posterCache.set(key, poster);
-    return poster;
+  // Metadata must never hold the request list behind a loading spinner.
+  void _loadPosters(List<SeerrRequestEntry> entries, int generation) {
+    for (final entry in entries) {
+      unawaited(_loadPoster(entry, generation));
+    }
+  }
+
+  Future<void> _loadPoster(SeerrRequestEntry entry, int generation) async {
+    try {
+      final media = entry.request.media;
+      if (media == null || (media.tmdbId == null && media.tvdbId == null)) return;
+      final key = '${media.mediaType}:${media.tmdbId}:${media.tvdbId}';
+      final poster = _posterCache.get(key) ??
+          await ref
+              .read(seerrApiProvider)
+              .fetchDashboardPosterFromIds(
+                tmdbId: media.tmdbId,
+                tvdbId: media.tvdbId,
+                mediaType: media.mediaType == 'tv' ? SeerrMediaType.tvshow : SeerrMediaType.movie,
+              )
+              .timeout(const Duration(seconds: 20));
+      if (!mounted || generation != _loadGeneration || poster == null) return;
+      _posterCache.set(key, poster);
+      state = state.copyWith(entries: [
+        for (final current in state.entries)
+          if (identical(current.request, entry.request)) SeerrRequestEntry(entry.request, poster) else current,
+      ]);
+    } catch (_) {
+      // Keep the request and its actions usable when optional metadata fails.
+    }
   }
 
   Future<void> approve(int requestId) async {
