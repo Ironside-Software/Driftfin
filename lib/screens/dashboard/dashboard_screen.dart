@@ -181,11 +181,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     runSpacing: 4,
                     children: [
                       TextButton.icon(
-                        icon: const Icon(IconsaxPlusLinear.medal_star),
-                        label: Text(context.localized.tastePassport),
-                        onPressed: () => const TastePassportRoute().navigate(context),
-                      ),
-                      TextButton.icon(
                         icon: const Icon(IconsaxPlusLinear.moon),
                         label: Text(context.localized.tonight),
                         onPressed: () => const TonightRoute().navigate(context),

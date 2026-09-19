@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart' as dto;
 import 'package:driftfin/l10n/generated/app_localizations.dart';
+import 'package:driftfin/routes/auto_router.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/living_home_model.dart';
 import 'package:driftfin/models/recommended_model.dart';
@@ -116,14 +117,15 @@ class _Harness {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('shows Tonight and Taste Passport entry points in the app bar', (tester) async {
+  testWidgets('keeps Tonight and removes the Taste Passport entry point', (tester) async {
     final harness = _Harness();
     await tester.pumpWidget(harness.build());
     await tester.pumpAndSettle();
 
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
     expect(find.text(l10n.tonight), findsOneWidget);
-    expect(find.text(l10n.tastePassport), findsOneWidget);
+    expect(find.text(l10n.tastePassport), findsNothing);
+    expect(detailsRoutes.any((route) => route.path == 'taste-passport'), isFalse);
   });
 
   testWidgets('refreshes living home rails once on mount (PullToRefresh refreshOnStart)', (tester) async {
