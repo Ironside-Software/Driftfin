@@ -13,6 +13,16 @@ on:
         required: true
         default: false
         type: boolean
+      sign_ios:
+        description: Sign the iOS artifact without uploading (TestFlight also enables signing)
+        required: true
+        default: false
+        type: boolean
+      windows_only:
+        description: Build and verify only Windows (cannot combine with iOS options)
+        required: true
+        default: false
+        type: boolean
       ios_only:
         description: Build only iOS (can be combined with TestFlight)
         required: true
@@ -42,7 +52,13 @@ jobs:
       version: ${{ steps.v.outputs.version }}
       sha: ${{ steps.v.outputs.sha }}
       testflight: ${{ github.event_name == 'push' || inputs.testflight }}
+      signed_ios: ${{ github.event_name == 'push' || inputs.testflight || inputs.sign_ios }}
     steps:
+      - name: Validate platform selection
+        if: inputs.windows_only && (inputs.ios_only || inputs.testflight || inputs.sign_ios)
+        run: |
+          echo "::error::windows_only cannot be combined with iOS options"
+          exit 1
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref || github.ref }}
@@ -60,7 +76,7 @@ jobs:
 
   web:
     name: Build Web
-    if: ${{ !inputs.ios_only }}
+    if: ${{ !inputs.ios_only && !inputs.windows_only }}
     needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -95,6 +111,13 @@ jobs:
           flutter-version-file: .fvmrc
           cache: true
       - run: flutter pub get
+      - name: Verify Windows integration and search UI
+        run: >-
+          flutter test
+          test/unified_search_widget_test.dart
+          test/integration_settings_widget_test.dart
+          test/seerr_request_permissions_test.dart
+          test/managed_integrations_test.dart
       - run: flutter build windows --release --build-number=${{ github.run_number }}
       - name: Zip Windows bundle (portable)
         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "Driftfin-Windows-${{ needs.prepare.outputs.version }}.zip"
@@ -115,9 +138,10 @@ jobs:
 
   ios:
     name: Build iOS
+    if: ${{ !inputs.windows_only }}
     needs: prepare
     runs-on: blacksmith-6vcpu-macos-latest
-    environment: ${{ needs.prepare.outputs.testflight == 'true' && 'testflight' || '' }}
+    environment: ${{ needs.prepare.outputs.signed_ios == 'true' && 'testflight' || '' }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
       APPSTORE_BUNDLE_ID: app.driftfin.79758DD3NW
@@ -130,13 +154,13 @@ jobs:
           flutter-version-file: .fvmrc
           cache: true
       - name: Import App Store distribution certificate
-        if: needs.prepare.outputs.testflight == 'true'
+        if: needs.prepare.outputs.signed_ios == 'true'
         uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
           p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
       - name: Download App Store provisioning profile
-        if: needs.prepare.outputs.testflight == 'true'
+        if: needs.prepare.outputs.signed_ios == 'true'
         uses: apple-actions/download-provisioning-profiles@v6
         with:
           bundle-id: ${{ env.APPSTORE_BUNDLE_ID }}
@@ -146,17 +170,17 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
       - run: flutter pub get
       - name: Build iOS (unsigned)
-        if: needs.prepare.outputs.testflight != 'true'
+        if: needs.prepare.outputs.signed_ios != 'true'
         run: flutter build ios --release --no-codesign --flavor production --build-number=${{ github.run_number }}
       - name: Package unsigned .ipa
-        if: needs.prepare.outputs.testflight != 'true'
+        if: needs.prepare.outputs.signed_ios != 'true'
         run: |
           cd build/ios/iphoneos
           mkdir -p Payload
           cp -R Runner.app Payload/Runner.app
           zip -qr "../../../Driftfin-iOS-${{ needs.prepare.outputs.version }}-unsigned.ipa" Payload
       - name: Build signed production IPA
-        if: needs.prepare.outputs.testflight == 'true'
+        if: needs.prepare.outputs.signed_ios == 'true'
         run: >-
           flutter build ipa
           --release
@@ -164,7 +188,7 @@ jobs:
           --build-number=${{ github.run_number }}
           --export-options-plist=ios/exportOptions.plist
       - name: Collect signed IPA
-        if: needs.prepare.outputs.testflight == 'true'
+        if: needs.prepare.outputs.signed_ios == 'true'
         run: cp build/ios/ipa/*.ipa "Driftfin-iOS-${{ needs.prepare.outputs.version }}-signed.ipa"
       - uses: actions/upload-artifact@v4
         with:
@@ -174,7 +198,7 @@ jobs:
 
   android:
     name: Build Android (${{ matrix.mode }})
-    if: ${{ !inputs.ios_only }}
+    if: ${{ !inputs.ios_only && !inputs.windows_only }}
     needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     strategy:
@@ -236,7 +260,7 @@ jobs:
 
   macos_desktop:
     name: Build macOS
-    if: ${{ !inputs.ios_only }}
+    if: ${{ !inputs.ios_only && !inputs.windows_only }}
     needs: prepare
     runs-on: blacksmith-6vcpu-macos-latest
     env:
@@ -264,7 +288,7 @@ jobs:
 
   linux:
     name: Build Linux
-    if: ${{ !inputs.ios_only }}
+    if: ${{ !inputs.ios_only && !inputs.windows_only }}
     needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
