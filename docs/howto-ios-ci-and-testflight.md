@@ -45,10 +45,11 @@ protected if uploads should require approval.
 ## Running it
 
 Run **Release Driftfin** manually from the Actions tab, set `testflight` to
-`true`, and use `ref=develop` for a proof build. That dispatch runs only the
-signed TestFlight job; normal tag pushes continue to build and publish the
-cross-platform GitHub Release artifacts. The TestFlight path does not submit
-the build for App Review or release it to the App Store.
+`true`, and use `ref=develop` for a proof build. That dispatch runs all normal
+cross-platform build jobs and adds the signed TestFlight job. Normal tag pushes
+continue to build and publish the cross-platform GitHub Release artifacts. The
+TestFlight path does not submit the build for App Review or release it to the
+App Store.
 
 An upload is not the final acceptance check: wait for Apple processing, assign
 the build to the internal group, install it through TestFlight, and exercise
