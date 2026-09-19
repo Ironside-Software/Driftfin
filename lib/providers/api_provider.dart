@@ -35,7 +35,8 @@ final serverUrlProvider = StateProvider<String?>((ref) {
   return normalizeUrl(newUrl ?? "");
 });
 
-@riverpod
+// Long-lived notifiers cache this service via ref.read, so it must outlive idle frames.
+@Riverpod(keepAlive: true)
 class JellyApi extends _$JellyApi {
   @override
   JellyService build() => JellyService(

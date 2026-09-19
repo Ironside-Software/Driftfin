@@ -19,7 +19,7 @@ final class JellyApiProvider extends $NotifierProvider<JellyApi, JellyService> {
         argument: null,
         retry: null,
         name: r'jellyApiProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -37,7 +37,7 @@ final class JellyApiProvider extends $NotifierProvider<JellyApi, JellyService> {
   }
 }
 
-String _$jellyApiHash() => r'9bc824d28d17f88f40c768cefb637144e0fbf346';
+String _$jellyApiHash() => r'0b49b6ab698fbba9b57055c7ff4e3b38b78e66cd';
 
 abstract class _$JellyApi extends $Notifier<JellyService> {
   JellyService build();

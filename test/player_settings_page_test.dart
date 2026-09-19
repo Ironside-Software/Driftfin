@@ -111,6 +111,21 @@ void main() {
     expect(find.byType(Switch), findsWidgets);
   });
 
+  testWidgets('renders without account settings after logout', (tester) async {
+    useTallView(tester);
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+
+    await tester.pumpWidget(_harness(prefs, VideoPlayerSettingsModel()));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(find.text(l10n.settingsPlayerTitle), findsWidgets);
+    expect(find.text(l10n.skipBackLength), findsNothing);
+    expect(find.text(l10n.skipForwardLength), findsNothing);
+  });
+
   testWidgets('toggling fill screen and speed boost switches works', (tester) async {
     useTallView(tester);
     SharedPreferences.setMockInitialValues({});

@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:yaml/yaml.dart';
 
 import 'package:driftfin/bootstrap/app_bootstrap.dart';
 import 'package:driftfin/models/settings/arguments_model.dart';
@@ -28,6 +30,18 @@ void main() {
   PathProviderPlatform.instance = _FakePathProviderPlatform();
 
   tearDown(() => DriftfinConfig.sentryDsn = null);
+
+  test('Windows media controls use the Rust bridge runtime matching their generated code', () async {
+    final packageConfig = File('.dart_tool/package_config.json');
+    final packages = jsonDecode(packageConfig.readAsStringSync())['packages'] as List;
+    final smtc = packages.singleWhere((entry) => entry['name'] == 'smtc_windows');
+    final generated = packageConfig.absolute.uri.resolve('${smtc['rootUri']}/lib/src/rust/frb_generated.dart');
+    final source = await File.fromUri(generated).readAsString();
+    final codegenVersion = RegExp(r"String get codegenVersion => '([^']+)'").firstMatch(source)!.group(1);
+    final lock = loadYaml(File('pubspec.lock').readAsStringSync()) as YamlMap;
+
+    expect(lock['packages']['flutter_rust_bridge']['version'], codegenVersion);
+  });
 
   group('resolvedSentryDsn', () {
     // `flutter test` always runs on the VM (kIsWeb == false), so the

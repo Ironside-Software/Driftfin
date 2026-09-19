@@ -9,6 +9,7 @@ import 'package:driftfin/models/account_model.dart';
 import 'package:driftfin/models/credentials_model.dart';
 import 'package:driftfin/models/library_filters_model.dart';
 import 'package:driftfin/models/login_screen_model.dart';
+import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/auth_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
@@ -51,6 +52,17 @@ AccountModel _accountWithUrl(String url) {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  test('cached Jellyfin service survives idle frames without listeners', () async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final service = container.read(jellyApiProvider);
+
+    await container.pump();
+
+    expect(() => service.api, returnsNormally);
+    expect(container.read(jellyApiProvider), same(service));
+  });
 
   test('custom config retains legacy saved filters only when the server key is absent', () async {
     final legacy = LibraryFiltersModel(id: 'legacy', name: 'Home shelf', isFavourite: false, showOnHome: true);
