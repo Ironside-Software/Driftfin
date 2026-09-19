@@ -113,9 +113,15 @@ abstract class VideoPlayerSettingsModel with _$VideoPlayerSettingsModel {
     @Default(400) int crossfadeDurationMs,
     @Default(false) bool enableSmartDownmix,
     @Default(DialogueBoostLevel.off) DialogueBoostLevel dialogueBoost,
+    @Default(false) bool ambientBlur,
   }) = _VideoPlayerSettingsModel;
 
-  double get volume => internalVolume;
+  double get volume {
+    if ({TargetPlatform.android, TargetPlatform.iOS}.contains(defaultTargetPlatform)) {
+      return 100;
+    }
+    return internalVolume;
+  }
 
   factory VideoPlayerSettingsModel.fromJson(Map<String, dynamic> json) => _$VideoPlayerSettingsModelFromJson(json);
 
@@ -200,7 +206,7 @@ enum PlayerOptions {
 }
 
 double clampReplayGainDb(double gainDb) {
-  return gainDb.clamp(-60.0, 20.0).toDouble();
+  return gainDb.clamp(-60.0, 0.0).toDouble();
 }
 
 enum ReplayGainVolumeLevel {

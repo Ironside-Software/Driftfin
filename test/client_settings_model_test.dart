@@ -70,6 +70,35 @@ void main() {
     });
   });
 
+  group('ClientSettingsModel.smartDownloadBudgetBytes', () {
+    ClientSettingsModel baseModel() => ClientSettingsModel.internal(
+          transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
+        );
+
+    test('defaults to null (no budget, unlimited)', () {
+      expect(baseModel().smartDownloadBudgetBytes, isNull);
+      expect(ClientSettingsModel.defaultModel().smartDownloadBudgetBytes, isNull);
+    });
+
+    test('copyWith sets a budget', () {
+      final model = baseModel().copyWith(smartDownloadBudgetBytes: 1024);
+      expect(model.smartDownloadBudgetBytes, 1024);
+    });
+
+    test('round-trips through the persisted json', () {
+      final model = baseModel().copyWith(smartDownloadBudgetBytes: 2048);
+      final decoded = jsonDecode(jsonEncode(model.toJson())) as Map<String, dynamic>;
+      expect(ClientSettingsModel.fromJson(decoded).smartDownloadBudgetBytes, 2048);
+    });
+
+    test('missing key in stored json falls back to null', () {
+      final json =
+          jsonDecode(jsonEncode(baseModel().copyWith(smartDownloadBudgetBytes: 2048).toJson())) as Map<String, dynamic>;
+      json.remove('smartDownloadBudgetBytes');
+      expect(ClientSettingsModel.fromJson(json).smartDownloadBudgetBytes, isNull);
+    });
+  });
+
   group('ClientSettingsModel.currentShortcuts / defaultShortCuts', () {
     ClientSettingsModel baseModel() => ClientSettingsModel.internal(
           transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),

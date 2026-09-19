@@ -45,6 +45,7 @@ class OverviewHeader extends ConsumerWidget {
   final double? communityRating;
   final List<Studio> studios;
   final List<GenreItems> genres;
+  final Function(GenreItems value)? onGenreClicked;
   final MediaStreamHelper? mediaStreamHelper;
   const OverviewHeader({
     required this.name,
@@ -68,6 +69,7 @@ class OverviewHeader extends ConsumerWidget {
     this.genres = const [],
     this.studios = const [],
     this.mediaStreamHelper,
+    this.onGenreClicked,
     super.key,
   });
 
@@ -287,6 +289,7 @@ class OverviewHeader extends ConsumerWidget {
                 if (genres.isNotEmpty)
                   Genres(
                     genres: genres.take(6).toList(),
+                    onGenreClicked: onGenreClicked,
                   ),
                 if (additionalLabels.isNotEmpty)
                   Wrap(

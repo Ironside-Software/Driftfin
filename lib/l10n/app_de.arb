@@ -101,8 +101,8 @@
   "addToCollection": "Zu Sammlung hinzufügen",
   "addToPlaylist": "Zu Playlist hinzufügen",
   "addToQueue": "Zur Warteschlange hinzufügen",
-  "instantMix": "Instant-Mix",
-  "addedToQueue": "{count, plural, one{{count} Titel zur Warteschlange hinzugefügt} other{{count} Titel zur Warteschlange hinzugefügt}}",
+  "instantMix": "Sofortmix",
+  "addedToQueue": "{count, plural, one{ {count} Titel zur Warteschlange hinzugefügt} other{ {count} Titel zur Warteschlange hinzugefügt}}",
   "advanced": "Erweitert",
   "all": "Alles",
   "amoledBlack": "Amoled Schwarz",
@@ -114,10 +114,10 @@
   "audio": "{count, plural, one{Audio} other{Audio}}",
   "audioPlayerPlaybackOptionsTitle": "Wiedergabeoptionen",
   "audioPlayerRepeatAll": "Alle wiederholen",
-  "audioPlayerRepeatOff": "Wiederholung aus",
-  "audioPlayerRepeatOne": "Einen wiederholen",
-  "audioPlayerShuffle": "Zufallswiedergabe",
-  "showArtist": "Künstler anzeigen",
+  "audioPlayerRepeatOff": "Wiederholen aus",
+  "audioPlayerRepeatOne": "Wiederholen einmalig",
+  "audioPlayerShuffle": "Zufällige Wiedergabe",
+  "showArtist": "Interpret anzeigen",
   "track": "{count, plural, one{Titel} other{Titel}}",
   "autoPlay": "Autoplay",
   "backgroundBlur": "Hintergrundverschwommenheit",
@@ -154,7 +154,7 @@
   "dashboardContinueWatching": "Weiterschauen",
   "nextUp": "Als nächstes",
   "dashboardRecentlyAdded": "Zuletzt hinzugefügt in {name}",
-  "dashboardRecentlyAddedItems": "Kürzlich hinzugefügte {name}",
+  "dashboardRecentlyAddedItems": "{name} kürzlich hinzugefügt",
   "dateAdded": "Hinzugefügt am",
   "dateLastContentAdded": "Inhalt zuletzt hinzugefügt am",
   "datePlayed": "Abgespielt am",
@@ -231,7 +231,7 @@
   "mediaTypeFolder": "{count, plural, one{Ordner} other{Ordner}}",
   "mediaTypeMovie": "{count, plural, one{Film} other{Filme}}",
   "mediaTypePerson": "{count, plural, one{Person} other{Personen}}",
-  "mediaTypeArtists": "{count, plural, one{Künstler} other{Künstler}}",
+  "mediaTypeArtists": "{count, plural, one{Interpret} other{Interpreten}}",
   "mediaTypePhoto": "{count, plural, one{Foto} other{Fotos}}",
   "mediaTypePhotoAlbum": "{count, plural, one{Foto Album} other{Foto Alben}}",
   "mediaTypePlaylist": "{count, plural, one{Playlist} other{Playlists}}",
@@ -323,7 +323,7 @@
   "saved": "Gespreichert",
   "scanBiometricHint": "Identität überprüfen",
   "scanLibrary": "Bibliothek scannen",
-  "authenticateWithBiometrics": "Nutze biometrische Daten, um dich als {user} zu authentifizieren",
+  "authenticateWithBiometrics": "Biometrische Anmeldung aktivieren für {user}",
   "scanningName": "{name} wird gescannt…",
   "scrollToTop": "Zum Anfang scrollen",
   "search": "Suchen",
@@ -363,8 +363,8 @@
   "settingsPlayerNativeLibassAccelDesc": "Nutze den libass-Untertitel-Renderer im Videoplayer",
   "settingsPlayerNativeLibassAccelTitle": "Native libass-Untertitel",
   "settingsPlayerBufferSizeTitle": "Videopuffergröße",
-  "settingsPlayerPlayPauseFadeTitle": "Lautstärke-Fade bei Play/Pause",
-  "settingsPlayerPlayPauseFadeDesc": "Lautstärke beim Abspielen oder Pausieren ein- und ausblenden",
+  "settingsPlayerPlayPauseFadeTitle": "Play/Pause Lautsärkeabblendung",
+  "settingsPlayerPlayPauseFadeDesc": "Lautstärke beim starten und pausieren der Wiedergabe ein/abblenden",
   "settingsPlayerBufferSizeDesc": "Konfiguriere die Puffergröße für die Videowiedergabe und lege fest, wie viele Daten in den Cache geladen werden.",
   "settingsPlayerTitle": "Wiedergabe",
   "settingsPlayerVideoHWAccelDesc": "GPU zum Rendern von Videos verwenden (empfohlen)",
@@ -406,8 +406,8 @@
   "syncDeleteItemDesc": "Alle für {item} synchronisierten Daten löschen?",
   "syncDeleteItemTitle": "Synchronisiertes Element löschen",
   "syncDeletePopupPermanent": "Diese Aktion ist endgültig und entfernt alle lokal synchronisierten Dateien",
-  "syncPlaylistDeleteTitle": "Synchronisierte Playlist löschen",
-  "syncPlaylistDeleteContent": "Möchtest du auch die aus dieser Playlist synchronisierten Titel entfernen?",
+  "syncPlaylistDeleteTitle": "Synchronisierte Wiedergabelisten löschen",
+  "syncPlaylistDeleteContent": "Willst du ebenfalls alle Titel entfernen, die mit der Wiedergabeliste synchronisiert sind?",
   "syncPlaylistKeepTracks": "Titel behalten",
   "syncPlaylistRemoveTracks": "Titel entfernen",
   "syncDetails": "Details zur Synronsierung",
@@ -441,7 +441,7 @@
   "videoScalingFillScreenTitle": "Bildschirm ausfüllen",
   "pictureInPictureTitle": "Bild-in-Bild",
   "pictureInPictureAutoTitle": "Automatisches Bild-in-Bild",
-  "pictureInPictureSubtitle": "Wechselt automatisch in den Bild-in-Bild-Modus, wenn du den Player verlässt. Die PiP-Schaltfläche in den Steuerelementen funktioniert unabhängig von dieser Einstellung immer.",
+  "pictureInPictureSubtitle": "Automatisch Bild-in-Bild aktivieren, wenn der Player verlassen wird. Der PiP Knopf funktioniert weiterhin, unabhängig von dieser Einstellung.",
   "pictureInPictureNotSupported": "Bild-in-Bild ist auf diesem Gerät nicht verfügbar",
   "videoScalingFitHeight": "Passende Größe",
   "videoScalingFitWidth": "An Breite anpassen",
@@ -456,7 +456,7 @@
   "addToNewPlaylist": "Neue Playlist",
   "addItemsToPlaylist": "{itemLength} Artikel zur Wiedergabeliste hinzufügen",
   "addedToPlaylist": "Zu Playlist {playlistName} hinzugefügt",
-  "removedFromPlaylist": "Aus Playlist {playlistName} entfernt",
+  "removedFromPlaylist": "Aus Wiedergabeliste \"{playlistName}\" entfernt",
   "syncStatusEnqueued": "Zur Warteschlange hinzugefügt",
   "syncStatusRunning": "Läuft",
   "syncStatusNotFound": "Nicht gefunden",
@@ -555,9 +555,9 @@
   "playerSettingsBackendTitle": "Videoplayer-Backend",
   "playerSettingsBackendDesc": "Wählen Sie Ihren bevorzugten Mediaplayer für optimale Wiedergabeerfahrung",
   "playerSettingsReplayGainTitle": "ReplayGain",
-  "playerSettingsReplayGainDesc": "Normalisiert die Lautstärke von Musik mithilfe von ReplayGain-Tags.",
-  "playerSettingsReplayGainLevelTitle": "ReplayGain-Pegel",
-  "playerSettingsReplayGainLevelDesc": "Legt den Ziel-Lautstärkepegel für die ReplayGain-Normalisierung fest. Ein gängiger Standard ist -14 dB, du kannst ihn aber nach Belieben anpassen.",
+  "playerSettingsReplayGainDesc": "Musiklautstärke auf Basis der ReplayGain Tags angleichen.",
+  "playerSettingsReplayGainLevelTitle": "ReplayGain Niveau",
+  "playerSettingsReplayGainLevelDesc": "Setze das Zielniveau für die Lautsärkeanpassung mittels ReplayGain. Häufig wird ein Niveau von -14 dB gewählt, aber du kannst es nach deinen eigenen Vorlieben festlegen.",
   "playerSettingsSmartDownmixTitle": "Intelligentes Downmix",
   "playerSettingsSmartDownmixDesc": "Hebt Dialoge gegenüber Effekten und Rückkanälen hervor, wenn 5.1-/7.1-Audio auf Stereo heruntergemischt wird.",
   "playerSettingsDialogueBoostTitle": "Dialogverstärkung",
@@ -566,10 +566,10 @@
   "dialogueBoostLow": "Niedrig",
   "dialogueBoostMedium": "Mittel",
   "dialogueBoostHigh": "Hoch",
-  "settingsPlayerCrossfadeTitle": "Überblendung",
-  "settingsPlayerCrossfadeDesc": "Blendet zwischen Titeln über, die nicht aufeinanderfolgend im selben Album sind",
-  "settingsPlayerCrossfadeDurationTitle": "Überblendungsdauer",
-  "settingsPlayerCrossfadeDurationDesc": "Dauer der Überblendung",
+  "settingsPlayerCrossfadeTitle": "Crossfade",
+  "settingsPlayerCrossfadeDesc": "Blende zwischen Titel über, die im selben Album nicht aufeinander folgen",
+  "settingsPlayerCrossfadeDurationTitle": "Crossfade Dauer",
+  "settingsPlayerCrossfadeDurationDesc": "Dauer des Crossfades",
   "defaultLabel": "Standard",
   "noVideoPlayerOptions": "Das ausgewählte Backend hat keine Optionen",
   "mdkExperimental": "MDK ist noch in einer experimentellen Phase",
@@ -616,12 +616,14 @@
   "loading": "Wird geladen",
   "exitDriftfinTitle": "Driftfin Beenden",
   "exitDriftfinDesc": "Möchten Sie Driftfin wirklich beenden?",
-  "quitMultipleWindowsDesc": "Du hast {count} Fenster geöffnet. Wenn du Driftfin beendest, werden alle geschlossen. Möchtest du fortfahren?",
+  "quitMultipleWindowsDesc": "Du hast {count} Fenster geöffnet. Beim Beenden von Driftfin werden alle geschlossen. Willst du fortfahren ?",
   "closeWindow": "Fenster schließen",
   "castAndCrew": "Besetzung & Crew",
   "guestActor": "{count, plural, other{Gastschauspieler} one{Gastschauspieler}}",
   "maxConcurrentDownloadsTitle": "Maximale Anzahl gleichzeitiger Downloads",
   "maxConcurrentDownloadsDesc": "Legt die maximale Anzahl gleichzeitig laufender Downloads fest. Setze den Wert auf 0, um die Begrenzung zu deaktivieren.",
+  "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
+  "smartDownloadBudgetDesc": "Automatically reclaims watched downloads, oldest first, to stay under this storage limit. Unwatched downloads are never removed. Leave empty to disable.",
   "playbackTrackSelection": "Auswahl der Wiedergabespur",
   "rememberSubtitleSelections": "Untertitelspur basierend auf vorherigem Element einstellen",
   "rememberAudioSelections": "Audiospur basierend auf vorherigem Element einstellen",
@@ -704,7 +706,7 @@
   "quickConnectPostFailed": "Quick Connect-Code konnte nicht abgerufen werden",
   "quickConnectLoginUsingCode": "Quick Connect verwenden",
   "quickConnectEnterCodeDescription": "Gib den folgenden Code ein, um dich anzumelden",
-  "openJellyfinQuickConnect": "Jellyfin Quick Connect öffnen",
+  "openJellyfinQuickConnect": "Jellyfin QuickConnect öffnen",
   "showMore": "Mehr anzeigen",
   "showLess": "Weniger anzeigen",
   "itemColorsTitle": "Item Farben",
@@ -893,9 +895,9 @@
   "systemRootFolder": "System Wurzelordner",
   "selectedPath": "Ausgewählter Pfad: {path}",
   "recentlyAdded": "Kürzlich hinzugefügt",
-  "recentlyPlayed": "Kürzlich gespielt",
-  "recentlyFavorited": "Kürzlich favorisiert",
-  "mostPlayed": "Meistgespielt",
+  "recentlyPlayed": "Zuletzt wiedergegeben",
+  "recentlyFavorited": "Zuletzt favorisiert",
+  "mostPlayed": "Am häufigsten wiedergegeben",
   "recentRequests": "Kürzlich angefragt",
   "trending": "Im Trend",
   "popularMovies": "Beliebte Filme",
@@ -997,11 +999,11 @@
   "watch": "Schauen",
   "watchChannel": "{channel} schauen",
   "now": "Aktuell",
-  "nowPlaying": "Wird gerade abgespielt",
-  "upNext": "Als Nächstes",
+  "nowPlaying": "Derzeit wiedergegeben",
+  "upNext": "Als nächstes",
   "queue": "Warteschlange",
   "queueIsEmpty": "Warteschlange ist leer",
-  "queueItemCount": "{count} Elemente",
+  "queueItemCount": "{count} Einträge",
   "removeFromQueue": "Aus Warteschlange entfernen",
   "noPrograms": "Kein Programm verfügbar",
   "switchChannel": "Sender wechseln",
@@ -1117,8 +1119,8 @@
   "seerrMovies": "Filme entdecken",
   "seerrSeries": "Serien entdecken",
   "today": "Heute",
-  "musicDashboard": "Musik-Dashboard",
-  "quiet": "Leise",
+  "musicDashboard": "Musik Dashboard",
+  "quiet": "Ruhig",
   "loud": "Laut",
   "share": "Teilen",
   "setAs": "Festlegen als",
@@ -1155,5 +1157,187 @@
   "tastePassportEmpty": "Schau dir ein paar Dinge an, dann erscheint hier dein Geschmacksprofil",
   "livingHomeBecauseYouWatched": "Weil du {name} gesehen hast",
   "livingHomeHiddenGems": "Verborgene Schätze, die du besitzt",
-  "livingHomeMoreFromDirector": "Mehr von {name}"
+  "livingHomeMoreFromDirector": "Mehr von {name}",
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Music Video} other{Music Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Collection} other{Collections}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "posterColorsTitle": "Generated poster colors",
+  "posterColorsDesc": "Use generated colors for posters in place of the default color",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "selectRandom": "Select random",
+  "stopSelection": "Stop selecting {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Play items",
+  "shuffleItems": "Shuffle items",
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Incognito",
+  "incognitoModeGlobal": "Incognito mode (App)",
+  "incognitoModeLocal": "Incognito mode (Profile)",
+  "incognitoModeDesc": "Incognito mode disables sending playback status to the server",
+  "showInSideBar": "Show in sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "hideInSideBar": "Hide from sidebar",
+  "showInSideBarDesc": "Show this filter in the sidebar for quick access",
+  "applyFilter": "Apply filter",
+  "playerSettingsAmbientBlurTitle": "Enable ambient blur",
+  "playerSettingsAmbientBlurDesc": "Enable ambient blur in the player. This will blur the background behind the player to reduce distractions.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur can cause performance issues on lower-end devices.",
+  "openSelected": "Open selected",
+  "discography": "Discography",
+  "youLiked": "You liked",
+  "instantMixBy": "Instant Mix of {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Latest tracks by {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorites of {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back Mode",
+  "leanBackModeDesc": "Enable lean-back mode on Android devices, even if the device reports back as false.",
+  "leanBackModeInfo": "Lean-back mode is re-enabled by default on AndroidTV devices. Toggling this option on non-AndroidTV devices may cause unexpected behavior.",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

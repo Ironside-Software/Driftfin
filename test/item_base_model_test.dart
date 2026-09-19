@@ -252,9 +252,9 @@ void main() {
   });
 
   group('FladderItemType.dtoKind round trip', () {
-    test('video and musicVideo both map to the same dto BaseItemKind.video (lossy)', () {
-      expect(FladderItemType.video.dtoKind, dto.BaseItemKind.video);
-      expect(FladderItemType.musicVideo.dtoKind, dto.BaseItemKind.video);
+    test('video and musicVideo map to their distinct DTO kinds', () {
+      expect(FladderItemType.video.dtoKind, {dto.BaseItemKind.video});
+      expect(FladderItemType.musicVideo.dtoKind, {dto.BaseItemKind.musicvideo});
     });
 
     test('but dispatching BaseItemKind.video via fromBaseDto always yields a PhotoModel/video type, never musicVideo',

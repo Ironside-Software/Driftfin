@@ -15,6 +15,12 @@ class _FakeSeerrRequestsNotifier extends SeerrRequestsNotifier {
   _FakeSeerrRequestsNotifier(super.ref, SeerrRequestsState initial) {
     state = initial;
   }
+  int loads = 0;
+  @override
+  Future<void> load() async {
+    loads++;
+    state = state.copyWith(hasError: false, loadedPages: 1, totalPages: 1);
+  }
 }
 
 /// Test double that returns a fixed user instead of fetching from network.
@@ -63,6 +69,28 @@ Widget _harness(SeerrRequestsState requestsState, SeerrUserModel? user) {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('failed load shows retry and clears the spinner', (tester) async {
+    await tester.pumpWidget(_harness(const SeerrRequestsState(hasError: true), null));
+    await tester.pumpAndSettle();
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(find.text(l10n.somethingWentWrong), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+    await tester.tap(find.text(l10n.retry));
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(tester.element(find.byType(SeerrRequestsScreen)));
+    expect((container.read(seerrRequestsProvider.notifier) as _FakeSeerrRequestsNotifier).loads, 1);
+    expect(find.text(l10n.somethingWentWrong), findsNothing);
+  });
+
+  testWidgets('another page offers a load button until a request is running', (tester) async {
+    final entries = [SeerrRequestEntry(_request(id: 1, status: 2), _poster(id: '1', title: 'Movie'))];
+    await tester.pumpWidget(_harness(SeerrRequestsState(entries: entries, loadedPages: 1, totalPages: 2), null));
+    await tester.pumpAndSettle();
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(find.byTooltip(l10n.showMore), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+  });
 
   testWidgets('empty entries: shows the empty state and no FAB', (tester) async {
     await tester.pumpWidget(_harness(const SeerrRequestsState(), null));
@@ -137,11 +165,6 @@ void main() {
     await tester.pumpAndSettle();
 
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
-    // Tapping the "pending" filter chip triggers notifier.setFilter, which
-    // internally calls load() (a network call on the real notifier); the fake
-    // notifier's load() would hit seerrApiProvider without an override, but
-    // since this is fire-and-forget and errors are caught internally, the tap
-    // itself should not throw.
     await tester.tap(find.text(l10n.seerrRequestStatusPending).first);
     await tester.pump();
 

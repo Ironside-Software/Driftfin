@@ -32,7 +32,8 @@ mixin _$SubtitleSettingsModel implements DiagnosticableTreeMixin {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   $SubtitleSettingsModelCopyWith<SubtitleSettingsModel> get copyWith =>
-      _$SubtitleSettingsModelCopyWithImpl<SubtitleSettingsModel>(this as SubtitleSettingsModel, _$identity);
+      _$SubtitleSettingsModelCopyWithImpl<SubtitleSettingsModel>(
+          this as SubtitleSettingsModel, _$identity);
 
   /// Serializes this SubtitleSettingsModel to a JSON map.
   Map<String, dynamic> toJson();
@@ -59,7 +60,8 @@ mixin _$SubtitleSettingsModel implements DiagnosticableTreeMixin {
 
 /// @nodoc
 abstract mixin class $SubtitleSettingsModelCopyWith<$Res> {
-  factory $SubtitleSettingsModelCopyWith(SubtitleSettingsModel value, $Res Function(SubtitleSettingsModel) _then) =
+  factory $SubtitleSettingsModelCopyWith(SubtitleSettingsModel value,
+          $Res Function(SubtitleSettingsModel) _then) =
       _$SubtitleSettingsModelCopyWithImpl;
   @useResult
   $Res call(
@@ -74,7 +76,8 @@ abstract mixin class $SubtitleSettingsModelCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$SubtitleSettingsModelCopyWithImpl<$Res> implements $SubtitleSettingsModelCopyWith<$Res> {
+class _$SubtitleSettingsModelCopyWithImpl<$Res>
+    implements $SubtitleSettingsModelCopyWith<$Res> {
   _$SubtitleSettingsModelCopyWithImpl(this._self, this._then);
 
   final SubtitleSettingsModel _self;
@@ -239,8 +242,15 @@ extension SubtitleSettingsModelPatterns on SubtitleSettingsModel {
     final _that = this;
     switch (_that) {
       case _SubtitleSettingsModel() when $default != null:
-        return $default(_that.fontSize, _that.fontWeight, _that.verticalOffset, _that.color, _that.outlineColor,
-            _that.outlineSize, _that.backGroundColor, _that.shadow);
+        return $default(
+            _that.fontSize,
+            _that.fontWeight,
+            _that.verticalOffset,
+            _that.color,
+            _that.outlineColor,
+            _that.outlineSize,
+            _that.backGroundColor,
+            _that.shadow);
       case _:
         return orElse();
     }
@@ -275,8 +285,15 @@ extension SubtitleSettingsModelPatterns on SubtitleSettingsModel {
     final _that = this;
     switch (_that) {
       case _SubtitleSettingsModel():
-        return $default(_that.fontSize, _that.fontWeight, _that.verticalOffset, _that.color, _that.outlineColor,
-            _that.outlineSize, _that.backGroundColor, _that.shadow);
+        return $default(
+            _that.fontSize,
+            _that.fontWeight,
+            _that.verticalOffset,
+            _that.color,
+            _that.outlineColor,
+            _that.outlineSize,
+            _that.backGroundColor,
+            _that.shadow);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -310,8 +327,15 @@ extension SubtitleSettingsModelPatterns on SubtitleSettingsModel {
     final _that = this;
     switch (_that) {
       case _SubtitleSettingsModel() when $default != null:
-        return $default(_that.fontSize, _that.fontWeight, _that.verticalOffset, _that.color, _that.outlineColor,
-            _that.outlineSize, _that.backGroundColor, _that.shadow);
+        return $default(
+            _that.fontSize,
+            _that.fontWeight,
+            _that.verticalOffset,
+            _that.color,
+            _that.outlineColor,
+            _that.outlineSize,
+            _that.backGroundColor,
+            _that.shadow);
       case _:
         return null;
     }
@@ -320,18 +344,22 @@ extension SubtitleSettingsModelPatterns on SubtitleSettingsModel {
 
 /// @nodoc
 @JsonSerializable()
-class _SubtitleSettingsModel extends SubtitleSettingsModel with DiagnosticableTreeMixin {
+class _SubtitleSettingsModel extends SubtitleSettingsModel
+    with DiagnosticableTreeMixin {
   const _SubtitleSettingsModel(
       {this.fontSize = 60.0,
       @FontWeightConverter() this.fontWeight = FontWeight.normal,
       this.verticalOffset = 0.10,
       @SubtitleColorConverter() this.color = Colors.white,
-      @SubtitleColorConverter() this.outlineColor = const Color.fromRGBO(0, 0, 0, 0.85),
+      @SubtitleColorConverter()
+      this.outlineColor = const Color.fromRGBO(0, 0, 0, 0.85),
       this.outlineSize = 4.0,
-      @SubtitleColorConverter() this.backGroundColor = const Color.fromARGB(0, 0, 0, 0),
+      @SubtitleColorConverter()
+      this.backGroundColor = const Color.fromARGB(0, 0, 0, 0),
       this.shadow = 0.5})
       : super._();
-  factory _SubtitleSettingsModel.fromJson(Map<String, dynamic> json) => _$SubtitleSettingsModelFromJson(json);
+  factory _SubtitleSettingsModel.fromJson(Map<String, dynamic> json) =>
+      _$SubtitleSettingsModelFromJson(json);
 
   @override
   @JsonKey()
@@ -368,7 +396,8 @@ class _SubtitleSettingsModel extends SubtitleSettingsModel with DiagnosticableTr
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
   _$SubtitleSettingsModelCopyWith<_SubtitleSettingsModel> get copyWith =>
-      __$SubtitleSettingsModelCopyWithImpl<_SubtitleSettingsModel>(this, _$identity);
+      __$SubtitleSettingsModelCopyWithImpl<_SubtitleSettingsModel>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -398,8 +427,10 @@ class _SubtitleSettingsModel extends SubtitleSettingsModel with DiagnosticableTr
 }
 
 /// @nodoc
-abstract mixin class _$SubtitleSettingsModelCopyWith<$Res> implements $SubtitleSettingsModelCopyWith<$Res> {
-  factory _$SubtitleSettingsModelCopyWith(_SubtitleSettingsModel value, $Res Function(_SubtitleSettingsModel) _then) =
+abstract mixin class _$SubtitleSettingsModelCopyWith<$Res>
+    implements $SubtitleSettingsModelCopyWith<$Res> {
+  factory _$SubtitleSettingsModelCopyWith(_SubtitleSettingsModel value,
+          $Res Function(_SubtitleSettingsModel) _then) =
       __$SubtitleSettingsModelCopyWithImpl;
   @override
   @useResult
@@ -415,7 +446,8 @@ abstract mixin class _$SubtitleSettingsModelCopyWith<$Res> implements $SubtitleS
 }
 
 /// @nodoc
-class __$SubtitleSettingsModelCopyWithImpl<$Res> implements _$SubtitleSettingsModelCopyWith<$Res> {
+class __$SubtitleSettingsModelCopyWithImpl<$Res>
+    implements _$SubtitleSettingsModelCopyWith<$Res> {
   __$SubtitleSettingsModelCopyWithImpl(this._self, this._then);
 
   final _SubtitleSettingsModel _self;

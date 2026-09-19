@@ -9,6 +9,7 @@ import 'package:driftfin/models/items/movie_model.dart';
 import 'package:driftfin/models/items/series_model.dart';
 import 'package:driftfin/models/server_integration_config.dart';
 import 'package:driftfin/providers/api_provider.dart';
+import 'package:driftfin/providers/incognito_mode_provider.dart';
 import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 
@@ -397,7 +398,7 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
     required double progress,
     required int nowSeconds,
   }) async {
-    if (!state.isActive) return;
+    if (!state.isActive || ref.read(incognitoProvider)) return;
     final token = await _validAccessToken(nowSeconds);
     if (token == null) return;
     final api = _api(accessToken: token);

@@ -20,6 +20,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 CalendarEntry _episodeEntry(DateTime airDate) => CalendarEntry(

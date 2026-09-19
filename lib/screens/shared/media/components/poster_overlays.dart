@@ -6,6 +6,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/photos_model.dart';
 import 'package:driftfin/models/items/watched_state.dart';
+import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/humanize_duration.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/video_properties.dart';
@@ -182,8 +183,11 @@ class VideoDurationOverlay extends StatelessWidget {
       alignment: Alignment.topRight,
       child: Padding(
         padding: padding,
-        child: Card(
-          elevation: 5,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: FladderTheme.smallShape.borderRadius,
+          ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
             child: Row(

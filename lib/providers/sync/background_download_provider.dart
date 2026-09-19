@@ -51,6 +51,10 @@ class BackgroundDownloader extends _$BackgroundDownloader {
               .update((state) => state.where((element) => element.taskId != update.task.taskId).toList());
 
           ref.read(syncProvider.notifier).cleanupTemporaryFiles();
+
+          if (status == TaskStatus.complete) {
+            ref.read(syncProvider.notifier).checkAndReclaimStorage();
+          }
         }
       case TaskProgressUpdate():
         final progress = update.progress;

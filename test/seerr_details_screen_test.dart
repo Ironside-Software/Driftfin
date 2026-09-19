@@ -25,6 +25,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 /// Test double so we can drive the seerr details state directly, without the
@@ -185,6 +186,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('A Great Movie'), findsWidgets);
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(find.text(l10n.markAsWatched), findsOneWidget);
     expect(findRichTextContaining('A gripping tale of testing.'), findsOneWidget);
     // No season section for a movie.
     expect(find.byType(AnimatedRotation), findsNothing);

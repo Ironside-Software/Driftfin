@@ -29,6 +29,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 /// A scriptable FilePicker: records the bytes handed to `saveFile` (so tests

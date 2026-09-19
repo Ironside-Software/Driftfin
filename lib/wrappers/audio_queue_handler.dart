@@ -8,8 +8,14 @@ extension AudioQueueHandler on MediaControlsWrapper {
     unawaited(_syncMpvPlaylist());
   }
 
-  Future<void> _applyReplayGain(ItemBaseModel item) async {
-    if (_player is LibMPV) await (_player as LibMPV).applyReplayGainForItem(item);
+  Future<void> applyReplayGain(ItemBaseModel item, {VideoPlayerSettingsModel? settings}) async {
+    if (_player is LibMPV) {
+      final libMPV = _player as LibMPV;
+      if (settings != null) {
+        await libMPV.updateSettings(settings);
+      }
+      await libMPV.applyReplayGainForItem(item);
+    }
   }
 
   Future<void> _withQueueTransition(Future<void> Function() op) async {
@@ -32,10 +38,19 @@ extension AudioQueueHandler on MediaControlsWrapper {
   ) async {
     if (queue.isEmpty) return;
     if (!_isAudioQueueMode) {
-      _previousPlayer = _player;
-      await _player?.stop();
-      await setup(LibMPV());
-      _isAudioQueueMode = true;
+      _audioQueueTransitioning = true;
+      try {
+        _previousPlayer = _player;
+        await _player?.stop();
+        await setup(LibMPV());
+        _isAudioQueueMode = true;
+      } finally {
+        _audioQueueTransitioning = false;
+      }
+    }
+
+    if (_player is LibMPV) {
+      (_player as LibMPV).setMusicPlaybackMode(true);
     }
 
     _playlistIndexSub?.cancel();
@@ -55,7 +70,7 @@ extension AudioQueueHandler on MediaControlsWrapper {
     final firstUrl = await _prefetchBuffer!.getUrl(currentItem.id) ?? await AudioUrlResolver(ref).resolve(currentItem);
     _mpvPlaylistItems = [currentItem];
 
-    await _applyReplayGain(currentItem);
+    await applyReplayGain(currentItem);
     await _player?.loadVideo(firstUrl, false, startPosition: startPosition);
     _player?.applySubtitleSettings(ref.read(subtitleSettingsProvider));
 
@@ -68,6 +83,8 @@ extension AudioQueueHandler on MediaControlsWrapper {
     if (context != null) {
       ref.read(windowTitleProvider.notifier).setPlayTitle(currentItem.windowTitle(context.localized));
     }
+
+    unawaited(ref.read(audioLyricsProvider.notifier).loadForTrack(currentItem.id));
 
     final playbackModel = ref.read(playBackModel);
     if (playbackModel != null) {
@@ -127,7 +144,7 @@ extension AudioQueueHandler on MediaControlsWrapper {
 
     if (playbackModel.playbackQueue.repeatMode == AudioRepeatMode.one) {
       await _withQueueTransition(() async {
-        await _applyReplayGain(playbackModel.item);
+        await applyReplayGain(playbackModel.item);
         await _player?.loadVideo(await AudioUrlResolver(ref).resolve(playbackModel.item), true);
       });
       return;
@@ -238,7 +255,7 @@ extension AudioQueueHandler on MediaControlsWrapper {
         _playlistIndexSub?.cancel();
         _playlistIndexSub = mpvPlayer.playlistIndexStream.listen(_onMpvPlaylistIndexChanged);
       } else {
-        await _applyReplayGain(item);
+        await applyReplayGain(item);
         await _player?.loadVideo(url, true, startPosition: startPosition);
       }
       _player?.applySubtitleSettings(ref.read(subtitleSettingsProvider));
@@ -254,6 +271,7 @@ extension AudioQueueHandler on MediaControlsWrapper {
     }
 
     await updatedModel.playbackStarted(startPosition, ref);
+    unawaited(ref.read(audioLyricsProvider.notifier).loadForTrack(item.id));
     await _refreshMediaControls(model: updatedModel, playing: true);
   }
 

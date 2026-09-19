@@ -54,11 +54,13 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
       canDelete: apiState.canDelete,
       canDownload: apiState.canDownload,
       jellyType: apiState.jellyType,
+      favoriteTracks: current?.favoriteTracks ?? apiState.favoriteTracks,
     );
     state = newState;
     await fetchTracks();
     await fetchAlbums();
     await fetchSimilarArtists();
+    await fetchFavoriteTracks();
     return response;
   }
 
@@ -80,7 +82,7 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
         final tracksResponse = await api.itemsGet(
           parentId: state!.id,
           includeItemTypes: [BaseItemKind.audio],
-          enableUserData: false,
+          enableUserData: true,
           recursive: true,
           fields: [ItemFields.candownload],
           limit: 10,
@@ -105,6 +107,47 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
       }
     } catch (error, stack) {
       log('Failed to fetch albums for artist ${state?.id} due to $error',
+          level: logging.Level.WARNING.value, error: error, stackTrace: stack);
+    }
+  }
+
+  Future<void> fetchFavoriteTracks() async {
+    if (state == null) return;
+    if (ref.read(connectivityStatusProvider) == ConnectionState.offline) {
+      final syncedItem = await ref.read(syncProvider.notifier).getSyncedItem(state!.id);
+      if (syncedItem == null) return;
+
+      final favoriteTracks = (await ref.read(syncProvider.notifier).getNestedChildren(syncedItem))
+          .map((item) => item.itemModel)
+          .whereType<AudioModel>()
+          .where((element) => element.userData.isFavourite == true)
+          .toList();
+
+      state = state?.copyWith(favoriteTracks: favoriteTracks);
+      return;
+    }
+
+    try {
+      final response = await api.itemsGet(
+        parentId: state!.id,
+        includeItemTypes: [BaseItemKind.audio],
+        enableUserData: true,
+        recursive: true,
+        isFavorite: true,
+        sortBy: [
+          ItemSortBy.isfavoriteorliked,
+          ItemSortBy.sortname,
+        ],
+        fields: [
+          ItemFields.candownload,
+        ],
+      );
+
+      final favoriteTracks = response.body?.items.whereType<AudioModel>().toList() ?? [];
+
+      state = state?.copyWith(favoriteTracks: favoriteTracks);
+    } catch (error, stack) {
+      log('Failed to fetch favorite tracks for artist ${state?.id} due to $error',
           level: logging.Level.WARNING.value, error: error, stackTrace: stack);
     }
   }
@@ -141,7 +184,10 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
       enableUserData: true,
       enableImages: true,
       imageTypeLimit: 1,
-      fields: [ItemFields.primaryimageaspectratio],
+      fields: [
+        ItemFields.primaryimageaspectratio,
+        ItemFields.parentid,
+      ],
       sortBy: [
         ItemSortBy.airtime,
         ItemSortBy.productionyear,

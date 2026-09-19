@@ -22,6 +22,7 @@ const _adaptiveModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 Widget _harness(Widget child, {AdaptiveLayoutModel model = _adaptiveModel}) {
@@ -130,6 +131,7 @@ void main() {
       controller: <HomeTabs, ScrollController>{},
       sideBarWidth: 0,
       topBarHeight: 0,
+      statusBarHeight: 0,
     );
 
     await tester.pumpWidget(

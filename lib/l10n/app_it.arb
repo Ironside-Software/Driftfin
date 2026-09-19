@@ -114,9 +114,9 @@
   "audio": "{count, plural, one{Audio} other{Audio}}",
   "audioPlayerPlaybackOptionsTitle": "Opzioni di riproduzione",
   "audioPlayerRepeatAll": "Ripeti tutto",
-  "audioPlayerRepeatOff": "Ripetizione disattivata",
-  "audioPlayerRepeatOne": "Ripeti uno",
-  "audioPlayerShuffle": "Mescola",
+  "audioPlayerRepeatOff": "Ripetizione off",
+  "audioPlayerRepeatOne": "Ripeti una volta",
+  "audioPlayerShuffle": "Shuffle",
   "showArtist": "Mostra artista",
   "track": "{count, plural, one{Brano} other{Brani}}",
   "autoPlay": "Riproduzione automatica",
@@ -283,7 +283,7 @@
   "playFromStart": "Riproduci {name} dall'inizio",
   "playLabel": "Riproduci",
   "playVideos": "Riproduci video",
-  "playMusic": "Riproduci musica",
+  "playMusic": "Riproduci Musica",
   "played": "Riprodotto",
   "quickConnectAction": "Inserisci il codice di connessione rapida per",
   "quickConnectInputACode": "Inserisci un codice",
@@ -408,8 +408,8 @@
   "syncDeletePopupPermanent": "Questa azione è permanente e rimuoverà tutti i file sincronizzati localmente",
   "syncPlaylistDeleteTitle": "Elimina scaletta sincronizzata",
   "syncPlaylistDeleteContent": "Vuoi rimuovere anche i brani sincronizzati da questa scaletta?",
-  "syncPlaylistKeepTracks": "Mantieni i brani",
-  "syncPlaylistRemoveTracks": "Rimuovi i brani",
+  "syncPlaylistKeepTracks": "Mantieni tracce",
+  "syncPlaylistRemoveTracks": "Rimuovi tracce",
   "syncDetails": "Dettagli sincronizzazione",
   "syncOpenParent": "Apri superiore",
   "syncRemoveDataDesc": "Vuoi eliminare i dati video sincronizzati? Questa operazione è permanente e dovrai risincronizzare i file",
@@ -456,7 +456,7 @@
   "addToNewPlaylist": "Nuova scaletta",
   "addItemsToPlaylist": "Aggiungi {itemLength} elementi alla scaletta",
   "addedToPlaylist": "Aggiunto alla scaletta {playlistName}",
-  "removedFromPlaylist": "Rimosso dalla scaletta {playlistName}",
+  "removedFromPlaylist": "Rimosso dalla playlist {playlistName}",
   "syncStatusEnqueued": "In coda",
   "syncStatusRunning": "In corso",
   "syncStatusNotFound": "Non Trovato",
@@ -616,12 +616,14 @@
   "loading": "Caricamento in corso",
   "exitDriftfinTitle": "Esci da Driftfin",
   "exitDriftfinDesc": "Sei sicuro di voler chiudere Driftfin?",
-  "quitMultipleWindowsDesc": "Hai {count} finestre aperte. Chiudendo Driftfin verranno chiuse tutte. Vuoi continuare?",
+  "quitMultipleWindowsDesc": "Hai {count} finestre aperte. Uscire da Driftfin le chiuderà tutte. Sei sicuro di voler continuare?",
   "closeWindow": "Chiudi finestra",
   "castAndCrew": "Cast e troupe",
   "guestActor": "{count, plural, other{Attori ospiti} one{Attore ospite}}",
   "maxConcurrentDownloadsTitle": "Numero massimo di download contemporanei",
   "maxConcurrentDownloadsDesc": "Imposta il numero massimo di download che possono essere eseguiti contemporaneamente. Imposta su 0 per disabilitare il limite.",
+  "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
+  "smartDownloadBudgetDesc": "Automatically reclaims watched downloads, oldest first, to stay under this storage limit. Unwatched downloads are never removed. Leave empty to disable.",
   "playbackTrackSelection": "Selezione della traccia di riproduzione",
   "rememberSubtitleSelections": "Imposta la traccia dei sottotitoli in base all'elemento precedente",
   "rememberAudioSelections": "Imposta la traccia audio in base all'elemento precedente",
@@ -719,7 +721,7 @@
   "formattedTime": "{time}",
   "takeScreenshot": "Fai uno screenshot",
   "takeScreenshotClean": "Fai uno screenshot (senza sottotitoli)",
-  "toggleSubtitles": "Attiva/disattiva sottotitoli",
+  "toggleSubtitles": "Abilità sottotitoli",
   "screenshotTaken": "Screenshot salvato!",
   "screenshotCleanTaken": "Screenshot senza sottotitoli salvato!",
   "errorTakingScreenshot": "Si è verificato un errore durante l'acquisizione dello screenshot",
@@ -730,7 +732,7 @@
   "screensaverBlack": "Nero",
   "playerSettingsScreensaverTitle": "Salva schermo",
   "playerSettingsScreensaverDesc": "Seleziona un salvaschermo che verrà mostrato dopo un tempo di inattività",
-  "settingsLocalUrlTitle": "URL del server locale",
+  "settingsLocalUrlTitle": "URL del server jellyfin locale",
   "settingsLocalUrlSetTitle": "Configura URL locale",
   "settingsLocalUrlSetDesc": "Specifica l'indirizzo del server locale. Driftfin userà automaticamente questo URL quando il tuo dispositivo è nella stessa rete.",
   "regenerateTrickplayImages": "Rigenera anteprime",
@@ -894,8 +896,8 @@
   "selectedPath": "Percorso selezionato: {path}",
   "recentlyAdded": "Recentemente aggiunto",
   "recentlyPlayed": "Riprodotti di recente",
-  "recentlyFavorited": "Aggiunti di recente ai preferiti",
-  "mostPlayed": "Più riprodotti",
+  "recentlyFavorited": "Messo nei preferiti di recente",
+  "mostPlayed": "Riprodotto più volte",
   "recentRequests": "Richieste recenti",
   "trending": "In tendenza",
   "popularMovies": "Film popolari",
@@ -997,7 +999,7 @@
   "watch": "Guarda",
   "watchChannel": "Guarda {channel}",
   "now": "Ora",
-  "nowPlaying": "In riproduzione",
+  "nowPlaying": "Adesso in riproduzione",
   "upNext": "A seguire",
   "queue": "Coda",
   "queueIsEmpty": "La coda è vuota",
@@ -1155,5 +1157,126 @@
   "tastePassportEmpty": "Guarda qualcosa e il tuo profilo dei gusti apparirà qui",
   "livingHomeBecauseYouWatched": "Perché hai guardato {name}",
   "livingHomeHiddenGems": "Gemme nascoste che possiedi",
-  "livingHomeMoreFromDirector": "Altro da {name}"
+  "livingHomeMoreFromDirector": "Altro da {name}",
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Music Video} other{Music Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Collection} other{Collections}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "posterColorsTitle": "Generated poster colors",
+  "posterColorsDesc": "Use generated colors for posters in place of the default color",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "selectRandom": "Select random",
+  "stopSelection": "Stop selecting {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Play items",
+  "shuffleItems": "Shuffle items",
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Incognito",
+  "incognitoModeGlobal": "Incognito mode (App)",
+  "incognitoModeLocal": "Incognito mode (Profile)",
+  "incognitoModeDesc": "Incognito mode disables sending playback status to the server",
+  "showInSideBar": "Show in sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "hideInSideBar": "Hide from sidebar",
+  "showInSideBarDesc": "Show this filter in the sidebar for quick access",
+  "applyFilter": "Apply filter",
+  "playerSettingsAmbientBlurTitle": "Enable ambient blur",
+  "playerSettingsAmbientBlurDesc": "Enable ambient blur in the player. This will blur the background behind the player to reduce distractions.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur can cause performance issues on lower-end devices.",
+  "openSelected": "Open selected",
+  "discography": "Discography",
+  "youLiked": "You liked",
+  "instantMixBy": "Instant Mix of {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Latest tracks by {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorites of {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back Mode",
+  "leanBackModeDesc": "Enable lean-back mode on Android devices, even if the device reports back as false.",
+  "leanBackModeInfo": "Lean-back mode is re-enabled by default on AndroidTV devices. Toggling this option on non-AndroidTV devices may cause unexpected behavior.",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

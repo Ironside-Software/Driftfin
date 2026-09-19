@@ -4,7 +4,7 @@ import 'package:driftfin/models/items/item_shared_models.dart';
 
 /// Pure, on-device signal extraction over a user's own item history
 /// (favourites / watched items). No network calls, no external services -
-/// shared by the Living Home rails and the Taste Passport.
+/// used by the Living Home rails.
 class TasteSignals {
   const TasteSignals._();
 

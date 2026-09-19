@@ -100,9 +100,9 @@
   "syncedAtLabel": "Laatst gesynchroniseerd: {time}",
   "addToCollection": "Toevoegen aan collectie",
   "addToPlaylist": "Toevoegen aan afspeellijst",
-  "addToQueue": "Toevoegen aan wachtrij",
+  "addToQueue": "Aan wachtrij toevoegen",
   "instantMix": "Instant mix",
-  "addedToQueue": "{count, plural, one{{count} track toegevoegd aan wachtrij} other{{count} tracks toegevoegd aan wachtrij}}",
+  "addedToQueue": "{count, plural, one{{count} track toegevoegd aan wachtrij} other{{count} track toegevoegd aan wachtrij}}",
   "advanced": "Geavanceerd",
   "all": "Alles",
   "amoledBlack": "Amoled zwart",
@@ -112,13 +112,13 @@
   "appLockTitle": "Stel de inlogmethode in voor {userName}",
   "ascending": "Oplopend",
   "audio": "{count, plural, one{Audio} other{Audio}}",
-  "audioPlayerPlaybackOptionsTitle": "Afspeelopties",
-  "audioPlayerRepeatAll": "Alles herhalen",
+  "audioPlayerPlaybackOptionsTitle": "Afspeel opties",
+  "audioPlayerRepeatAll": "Herhaal alles",
   "audioPlayerRepeatOff": "Herhalen uit",
-  "audioPlayerRepeatOne": "Eén herhalen",
+  "audioPlayerRepeatOne": "Herhaal een",
   "audioPlayerShuffle": "Shuffle",
-  "showArtist": "Toon artiest",
-  "track": "{count, plural, one{Track} other{Tracks}}",
+  "showArtist": "Artiest tonen",
+  "track": "{count, plural, one{Nummer} other{Nummers}}",
   "autoPlay": "Automatisch afspelen",
   "backgroundBlur": "Achtergrond vervagen",
   "backgroundOpacity": "Achtergrond doorzichtigheid",
@@ -154,7 +154,7 @@
   "dashboardContinueWatching": "Doorgaan met kijken",
   "nextUp": "Volgende",
   "dashboardRecentlyAdded": "Onlangs toegevoegd in {name}",
-  "dashboardRecentlyAddedItems": "Onlangs toegevoegd {name}",
+  "dashboardRecentlyAddedItems": "Recent toegevoegd {name}",
   "dateAdded": "Datum toegevoegd",
   "dateLastContentAdded": "Datum laatste inhoud toegevoegd",
   "datePlayed": "Datum afgespeeld",
@@ -323,7 +323,7 @@
   "saved": "Opgeslagen",
   "scanBiometricHint": "Identiteit verifiëren",
   "scanLibrary": "Scan bibliotheek",
-  "authenticateWithBiometrics": "Gebruik biometrie om {user} te verifiëren",
+  "authenticateWithBiometrics": "Gebruik biometrie om {user} te authenticeren",
   "scanningName": "Scannen - {name}…",
   "scrollToTop": "Scroll naar boven",
   "search": "Zoeken",
@@ -363,8 +363,8 @@
   "settingsPlayerNativeLibassAccelDesc": "Gebruik videospeler libass ondertitel renderer",
   "settingsPlayerNativeLibassAccelTitle": "Native libass ondertiteling",
   "settingsPlayerBufferSizeTitle": "Video buffer grootte",
-  "settingsPlayerPlayPauseFadeTitle": "Volume-fade bij afspelen/pauzeren",
-  "settingsPlayerPlayPauseFadeDesc": "Vervaag het volume in en uit bij het afspelen of pauzeren",
+  "settingsPlayerPlayPauseFadeTitle": "Afspeel/pauze volumefade",
+  "settingsPlayerPlayPauseFadeDesc": "Vervaag het volume in en uit tijdens het spelen of pauzeren",
   "settingsPlayerBufferSizeDesc": "Configureer de buffergrootte voor het afspelen van video's en bepaal de hoeveelheid vooraf geladen data.",
   "settingsPlayerTitle": "Speler",
   "settingsPlayerVideoHWAccelDesc": "Gebruik de gpu om video weer te geven (aanbevolen)",
@@ -406,10 +406,10 @@
   "syncDeleteItemDesc": "Alle gesynchroniseerde gegevens verwijderen voor {item}?",
   "syncDeleteItemTitle": "Gesynchroniseerd item verwijderen",
   "syncDeletePopupPermanent": "Deze actie is permanent en verwijdert alle lokaal gesynchroniseerde bestanden",
-  "syncPlaylistDeleteTitle": "Gesynchroniseerde afspeellijst verwijderen",
-  "syncPlaylistDeleteContent": "Wil je ook de tracks verwijderen die vanuit deze afspeellijst zijn gesynchroniseerd?",
-  "syncPlaylistKeepTracks": "Tracks behouden",
-  "syncPlaylistRemoveTracks": "Tracks verwijderen",
+  "syncPlaylistDeleteTitle": "Verwijder gesynchroniseerde afspeellijst",
+  "syncPlaylistDeleteContent": "Wil je ook de gesynchroniseerde nummers uit deze afspeellijst verwijderen?",
+  "syncPlaylistKeepTracks": "Nummers bewaren",
+  "syncPlaylistRemoveTracks": "Nummers verwijderen",
   "syncDetails": "Details synchroniseren",
   "syncOpenParent": "Ouder openen",
   "syncRemoveDataDesc": "Gesynchroniseerde videogegevens verwijderen? Dit is permanent en je moet de bestanden opnieuw synchroniseren",
@@ -439,9 +439,9 @@
   "videoScalingFillScreenDesc": "Vul de navigatie- en statusbalk",
   "videoScalingFillScreenNotif": "Volledig scherm overschrijft videopasvorm, in horizontale rotatie",
   "videoScalingFillScreenTitle": "Vul scherm",
-  "pictureInPictureTitle": "Picture-in-Picture",
-  "pictureInPictureAutoTitle": "Automatische Picture-in-Picture",
-  "pictureInPictureSubtitle": "Schakel automatisch over naar Picture-in-Picture wanneer je de speler verlaat. De PiP-knop in de bediening werkt altijd, ongeacht deze instelling.",
+  "pictureInPictureTitle": "Picture-in-picture",
+  "pictureInPictureAutoTitle": "Auto Picture-in-Picture",
+  "pictureInPictureSubtitle": "Automatisch Picture-in-Picture openen wanneer je de speler verlaat. De PiP-knop in de bediening werkt altijd, ongeacht deze instelling.",
   "pictureInPictureNotSupported": "Picture-in-Picture is niet beschikbaar op dit apparaat",
   "videoScalingFitHeight": "Pas hoogte aan",
   "videoScalingFitWidth": "Pas breedte aan",
@@ -456,7 +456,7 @@
   "addToNewPlaylist": "Nieuwe afspeellijst",
   "addItemsToPlaylist": "Voeg {itemLength} item(s) toe aan afspeellijst",
   "addedToPlaylist": "Toegevoegd aan {playlistName} afspeellijst",
-  "removedFromPlaylist": "Verwijderd uit {playlistName} afspeellijst",
+  "removedFromPlaylist": "Verwijderd van {playlistName} afspeellijst",
   "syncStatusEnqueued": "In wachtrij",
   "syncStatusRunning": "Downloaden",
   "syncStatusNotFound": "Niet gevonden",
@@ -554,10 +554,10 @@
   "playNextVideo": "Volgend video afspelen",
   "playerSettingsBackendTitle": "Videospeler Backend",
   "playerSettingsBackendDesc": "Kies je mediaspeler backend voor een optimale afspeelervaring",
-  "playerSettingsReplayGainTitle": "ReplayGain",
-  "playerSettingsReplayGainDesc": "Normaliseer het volume van muziek met ReplayGain-tags.",
+  "playerSettingsReplayGainTitle": "AfpseelGain",
+  "playerSettingsReplayGainDesc": "Normaliseer muziek volume met behulp van ReplayGain-tags.",
   "playerSettingsReplayGainLevelTitle": "ReplayGain-niveau",
-  "playerSettingsReplayGainLevelDesc": "Stel het gewenste volumeniveau in voor ReplayGain-normalisatie. Een veelgebruikte standaard is -14 dB, maar je kunt dit naar wens aanpassen.",
+  "playerSettingsReplayGainLevelDesc": "Stel het streefvolume in voor ReplayGain-normalisatie. Een veelgebruikte standaard is -14 dB, maar je kunt het naar eigen voorkeur aanpassen.",
   "playerSettingsSmartDownmixTitle": "Slimme downmix",
   "playerSettingsSmartDownmixDesc": "Versterk dialoog ten opzichte van effecten en achterkanalen bij het downmixen van 5.1/7.1-audio naar stereo.",
   "playerSettingsDialogueBoostTitle": "Dialoogversterking",
@@ -567,7 +567,7 @@
   "dialogueBoostMedium": "Gemiddeld",
   "dialogueBoostHigh": "Hoog",
   "settingsPlayerCrossfadeTitle": "Crossfade",
-  "settingsPlayerCrossfadeDesc": "Vervaag tussen tracks die niet opeenvolgend zijn binnen hetzelfde album",
+  "settingsPlayerCrossfadeDesc": "Fade tussen nummers die niet opeenvolgend in hetzelfde album staan",
   "settingsPlayerCrossfadeDurationTitle": "Crossfade-duur",
   "settingsPlayerCrossfadeDurationDesc": "Duur van de crossfade",
   "defaultLabel": "Standaard",
@@ -616,12 +616,14 @@
   "loading": "Laden",
   "exitDriftfinTitle": "Driftfin sluiten",
   "exitDriftfinDesc": "Weet je zeker dat je Driftfin wilt sluiten?",
-  "quitMultipleWindowsDesc": "Je hebt {count} vensters open staan. Als je Driftfin afsluit, worden ze allemaal gesloten. Wil je doorgaan?",
+  "quitMultipleWindowsDesc": "Je hebt {count} vensters open. Als je Driftfin stopt, sluiten je ze allemaal af. Wil je doorgaan?",
   "closeWindow": "Venster sluiten",
   "castAndCrew": "Cast en crew",
   "guestActor": "{count, plural, other{Gastacteurs} one{Gastacteur}}",
   "maxConcurrentDownloadsTitle": "Maximum gelijktijdige downloads",
   "maxConcurrentDownloadsDesc": "Stelt het maximumaantal downloads in dat tegelijkertijd kan worden uitgevoerd. Stel in op 0 om de limiet uit te schakelen.",
+  "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
+  "smartDownloadBudgetDesc": "Automatically reclaims watched downloads, oldest first, to stay under this storage limit. Unwatched downloads are never removed. Leave empty to disable.",
   "playbackTrackSelection": "Selectie van afspeeltrack",
   "rememberSubtitleSelections": "Ondertitelspoor instellen op basis van vorig item",
   "rememberAudioSelections": "Audiotrack instellen op basis van vorig item",
@@ -704,7 +706,7 @@
   "quickConnectPostFailed": "Fout bij het verkrijgen van connect code",
   "quickConnectLoginUsingCode": "Gebruik quick connect",
   "quickConnectEnterCodeDescription": "Voer de code in om in te loggen",
-  "openJellyfinQuickConnect": "Open Jellyfin QuickConnect",
+  "openJellyfinQuickConnect": "Jellyfin QuickConnect openen",
   "showMore": "Meer laten zien",
   "showLess": "Minder laten zien",
   "itemColorsTitle": "Item kleuren",
@@ -719,7 +721,7 @@
   "formattedTime": "{time}",
   "takeScreenshot": "Schermafdruk maken",
   "takeScreenshotClean": "Schermafdruk maken (zonder ondertitels)",
-  "toggleSubtitles": "Ondertitels wisselen",
+  "toggleSubtitles": "Ondertitels aan of uit zetten",
   "screenshotTaken": "Schermafdruk opgeslagen!",
   "screenshotCleanTaken": "Schermafdruk zonder ondertitels opgeslagen!",
   "errorTakingScreenshot": "Er is een fout opgetreden bij het maken van de schermafdruk",
@@ -894,8 +896,8 @@
   "selectedPath": "Geselecteerd pad: {path}",
   "recentlyAdded": "Recent toegevoegd",
   "recentlyPlayed": "Recent afgespeeld",
-  "recentlyFavorited": "Recent favoriet gemaakt",
-  "mostPlayed": "Meest afgespeeld",
+  "recentlyFavorited": "Recente favoriet",
+  "mostPlayed": "Vaakst afgespeeld",
   "recentRequests": "Recente verzoeken",
   "trending": "Trending",
   "popularMovies": "Populaire films",
@@ -997,8 +999,8 @@
   "watch": "Bekijken",
   "watchChannel": "{channel} bekijken",
   "now": "Nu",
-  "nowPlaying": "Nu aan het afspelen",
-  "upNext": "Hierna",
+  "nowPlaying": "Nu aan het spelen",
+  "upNext": "Volgende",
   "queue": "Wachtrij",
   "queueIsEmpty": "Wachtrij is leeg",
   "queueItemCount": "{count} items",
@@ -1117,8 +1119,8 @@
   "seerrMovies": "Ontdek films",
   "seerrSeries": "Ontdek Series",
   "today": "Vandaag",
-  "musicDashboard": "Muziekdashboard",
-  "quiet": "Stil",
+  "musicDashboard": "Muziek Dashboard",
+  "quiet": "Still",
   "loud": "Luid",
   "share": "Delen",
   "setAs": "Instellen als",
@@ -1155,5 +1157,187 @@
   "tastePassportEmpty": "Bekijk een paar dingen en je smaakprofiel verschijnt hier",
   "livingHomeBecauseYouWatched": "Omdat je {name} hebt bekeken",
   "livingHomeHiddenGems": "Verborgen parels die je bezit",
-  "livingHomeMoreFromDirector": "Meer van {name}"
+  "livingHomeMoreFromDirector": "Meer van {name}",
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Muziek Video} other{Muziek Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Collectie} other{Collecties}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "posterColorsTitle": "Gegenereerde poster kleuren",
+  "posterColorsDesc": "Gebruik gegenereerde poster kleuren in plaats van de standaard kleur",
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectRandom": "Willekeurig selecteren",
+  "stopSelection": "Stop selecteren {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Items afspelen",
+  "shuffleItems": "Items shuffelen",
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Incognito",
+  "incognitoModeGlobal": "Incognito modus (App)",
+  "incognitoModeLocal": "Incognito modus (Profile)",
+  "incognitoModeDesc": "Incognitomodus schakelt het verzenden van afspeelstatus naar de server uit",
+  "showInSideBar": "In zijbalk tonen",
+  "hideInSideBar": "Verbergen uit zijbalk",
+  "showInSideBarDesc": "Toon deze filter in de zijbalk voor snelle toegang",
+  "applyFilter": "Filter toepassen",
+  "playerSettingsAmbientBlurTitle": "Ambient blur inschakelen",
+  "playerSettingsAmbientBlurDesc": "Zet ambient blur in de speler aan. Hierdoor vervaagt de achtergrond achter de speler om afleidingen te verminderen.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur kan prestatieproblemen veroorzaken bij oudere apparaten.",
+  "openSelected": "Geselecteerde items openen",
+  "discography": "Discografie",
+  "youLiked": "Je vond leuk",
+  "instantMixBy": "Instant Mix van {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Laatste tracks van {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorieten van {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back modus",
+  "leanBackModeDesc": "Schakel lean-back modus in op Android-apparaten, zelfs als het apparaat als onjuist wordt weergegeven.",
+  "leanBackModeInfo": "Lean-back modus wordt standaard weer ingeschakeld op AndroidTV-apparaten. Het aanzetten van deze optie op niet-AndroidTV-apparaten kan onverwacht gedrag veroorzaken.",
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "showOnDashboard": "Show on dashboard",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

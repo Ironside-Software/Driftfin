@@ -5,6 +5,7 @@ import 'package:background_downloader/background_downloader.dart' as dl;
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/items/chapters_model.dart';
 import 'package:driftfin/models/items/images_models.dart';
+import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/items/trick_play_model.dart';
 import 'package:driftfin/models/syncing/sync_item.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,7 @@ SyncedItem _syncedItem({
   int? fileSize,
   ImagesData? fImages,
   TrickPlayModel? fTrickPlayModel,
+  UserData? userData,
 }) =>
     SyncedItem(
       id: id,
@@ -35,6 +37,7 @@ SyncedItem _syncedItem({
       fileSize: fileSize,
       fImages: fImages,
       fTrickPlayModel: fTrickPlayModel,
+      userData: userData,
     );
 
 void main() {
@@ -278,6 +281,32 @@ void main() {
     test('is zero for an empty directory', () async {
       final item = _syncedItem(path: tempDir.path);
       expect(await item.getDirSize, 0);
+    });
+  });
+
+  group('usage', () {
+    test('maps id, fileSize, played and lastPlayed from userData', () {
+      final lastPlayed = DateTime(2026, 1, 1);
+      final item = _syncedItem(
+        path: tempDir.path,
+        id: 'item42',
+        fileSize: 500,
+        userData: UserData(played: true, lastPlayed: lastPlayed),
+      );
+
+      final usage = item.usage;
+      expect(usage.id, 'item42');
+      expect(usage.fileSizeBytes, 500);
+      expect(usage.played, isTrue);
+      expect(usage.lastPlayed, lastPlayed);
+    });
+
+    test('defaults fileSizeBytes to 0 and played to false when unset', () {
+      final item = _syncedItem(path: tempDir.path);
+      final usage = item.usage;
+      expect(usage.fileSizeBytes, 0);
+      expect(usage.played, isFalse);
+      expect(usage.lastPlayed, isNull);
     });
   });
 }

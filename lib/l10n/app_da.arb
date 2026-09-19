@@ -101,11 +101,11 @@
   "addToCollection": "Tilføj til samling",
   "addToPlaylist": "Tilføj til spilleliste",
   "addToQueue": "Tilføj til kø",
-  "instantMix": "Instant mix",
+  "instantMix": "Hurtigt mix",
   "addedToQueue": "{count, plural, one{Tilføjede {count} nummer til køen} other{Tilføjede {count} numre til køen}}",
   "advanced": "Avanceret",
   "all": "Alle",
-  "amoledBlack": "AMOLED sort",
+  "amoledBlack": "AMOLED-sort",
   "appLockAutoLogin": "Auto login",
   "appLockBiometrics": "Biometri",
   "appLockPasscode": "Pinkode",
@@ -114,10 +114,10 @@
   "audio": "{count, plural, one{Lyd} other{Lyd}}",
   "audioPlayerPlaybackOptionsTitle": "Afspilningsmuligheder",
   "audioPlayerRepeatAll": "Gentag alle",
-  "audioPlayerRepeatOff": "Gentag fra",
-  "audioPlayerRepeatOne": "Gentag én",
+  "audioPlayerRepeatOff": "Gentag slået fra",
+  "audioPlayerRepeatOne": "Gentag enkelt",
   "audioPlayerShuffle": "Bland",
-  "showArtist": "Vis kunstner",
+  "showArtist": "Vis artist",
   "track": "{count, plural, one{Nummer} other{Numre}}",
   "autoPlay": "Auto-afspil",
   "backgroundBlur": "Baggrundsslør",
@@ -134,11 +134,11 @@
   "clearSelection": "Fjern valg",
   "close": "Luk",
   "generateLoginLink": "Kode til {userName}",
-  "shareLoginLink": "Del login-link",
+  "shareLoginLink": "Del login link",
   "shareQRCode": "Del QR-kode",
   "copyLoginLink": "Kopier link",
   "includePassword": "Inkluder kodeord",
-  "invalidAuthLink": "Ugyldigt login-link",
+  "invalidAuthLink": "Ugyldigt login link",
   "code": "Kode",
   "collectionFolder": "{count, plural, one{Samlingsmappe} other{Samlingsmapper}}",
   "color": "Farve",
@@ -154,7 +154,7 @@
   "dashboardContinueWatching": "Fortsæt med at se",
   "nextUp": "Næste",
   "dashboardRecentlyAdded": "Nylig tilføjet i {name}",
-  "dashboardRecentlyAddedItems": "Nyligt tilføjet {name}",
+  "dashboardRecentlyAddedItems": "Senest tilføjet {name}",
   "dateAdded": "Dato tilføjet",
   "dateLastContentAdded": "Dato indhold sidst blev tilføjet",
   "datePlayed": "Dato afspillet",
@@ -231,13 +231,13 @@
   "mediaTypeFolder": "{count, plural, one{Mappe} other{Mapper}}",
   "mediaTypeMovie": "{count, plural, one{Film} other{Film}}",
   "mediaTypePerson": "{count, plural, one{Person} other{Personer}}",
-  "mediaTypeArtists": "{count, plural, one{Kunstner} other{Kunstnere}}",
+  "mediaTypeArtists": "{count, plural, one{Artist} other{Artister}}",
   "mediaTypePhoto": "{count, plural, one{Foto} other{Fotos}}",
   "mediaTypePhotoAlbum": "{count, plural, one{Fotoalbum} other{Fotoalbummer}}",
   "mediaTypePlaylist": "{count, plural, one{Spilleliste} other{Spillelister}}",
   "mediaTypeSeason": "{count, plural, one{Sæson} other{Sæsoner}}",
   "mediaTypeSeries": "{count, plural, one{Serie} other{Serier}}",
-  "mediaTypeTV": "{count, plural, one{TV-kanal} other{TV-kanaler}}",
+  "mediaTypeTV": "{count, plural, one{TV Kanal} other{TV Kanaler}}",
   "metaDataSavedFor": "Metadata gemt for {item}",
   "metadataRefreshDefault": "Skan efter nye og opdaterede filer",
   "metadataRefreshFull": "Erstat alle metadata",
@@ -287,7 +287,7 @@
   "played": "Afspillet",
   "quickConnectAction": "Indtast hurtig tilkoblingskoden for",
   "quickConnectInputACode": "Indtast en kode",
-  "quickConnectTitle": "Hurtig tilkobling",
+  "quickConnectTitle": "Hurtigtilslutning",
   "quickConnectWrongCode": "Forkert kode",
   "random": "Tilfældig",
   "rating": "{count, plural, other{Bedømmelser} one{Bedømmelse}}",
@@ -363,25 +363,25 @@
   "settingsPlayerNativeLibassAccelDesc": "Brug libass-rendering til undertekster",
   "settingsPlayerNativeLibassAccelTitle": "Native libass undertekster",
   "settingsPlayerBufferSizeTitle": "Videobuffer størrelse",
-  "settingsPlayerPlayPauseFadeTitle": "Lydudtoning ved afspil/pause",
-  "settingsPlayerPlayPauseFadeDesc": "Ton lydstyrken ind og ud ved afspilning eller pause",
+  "settingsPlayerPlayPauseFadeTitle": "Fade lydstyrke ved afspil/pause",
+  "settingsPlayerPlayPauseFadeDesc": "Fade lydstyrke ind og ud når der afspilles eller pauses",
   "settingsPlayerBufferSizeDesc": "Konfigurer bufferstørrelsen for videoafspilning, som bestemmer, hvor meget data der indlæses i cachen.",
   "settingsPlayerTitle": "Afspiller",
   "settingsPlayerVideoHWAccelDesc": "Brug GPU'en til videorendering (anbefalet)",
-  "settingsPlayerVideoHWAccelTitle": "Hardware acceleration",
+  "settingsPlayerVideoHWAccelTitle": "Hardwareacceleration",
   "settingsPosterPinch": "Knip-zoom for at skalere plakater",
   "settingsPosterSize": "Plakatstørrelse",
   "settingsProfileDesc": "Låseskærm, Lokal URL, Seerr",
   "settingsProfileTitle": "Profil",
   "settingsProfileSubtitleLanguage": "Foretrukket undertekstsprog",
-  "anyLanguage": "Alle sprog",
+  "anyLanguage": "Ethvert sprog",
   "settingsProfileSubtitleMode": "Underteksttilstand",
   "subtitlePlaybackModeDefault": "Standard",
   "subtitlePlaybackModeAlways": "Afspil altid",
   "subtitlePlaybackModeOnlyForced": "Kun tvunget",
   "subtitlePlaybackModeNone": "Ingen",
   "subtitlePlaybackModeSmart": "Smart",
-  "settingsQuickConnectTitle": "Hurtig tilkobling",
+  "settingsQuickConnectTitle": "Hurtigtilslutning",
   "settingsSecurity": "Sikkerhed",
   "settingsShowScaleSlider": "Vis plakatstørrelsesslider",
   "settingsVisual": "Visuelt",
@@ -407,7 +407,7 @@
   "syncDeleteItemTitle": "Slet synkroniserede elementer",
   "syncDeletePopupPermanent": "Denne handling er permanent og vil fjerne alle lokalt synkroniserede filer",
   "syncPlaylistDeleteTitle": "Slet synkroniseret spilleliste",
-  "syncPlaylistDeleteContent": "Vil du også fjerne numrene, der er synkroniseret fra denne spilleliste?",
+  "syncPlaylistDeleteContent": "Vil du også fjerne numrene synkroniseret fra denne spilleliste?",
   "syncPlaylistKeepTracks": "Behold numre",
   "syncPlaylistRemoveTracks": "Fjern numre",
   "syncDetails": "Synkroniser detaljer",
@@ -439,10 +439,10 @@
   "videoScalingFillScreenDesc": "Fyld navigations- og statusbaren",
   "videoScalingFillScreenNotif": "Fuldskærm overskriver videoens tilpasning ved horisontal rotation.”",
   "videoScalingFillScreenTitle": "Fuldskærm",
-  "pictureInPictureTitle": "Billede-i-billede",
-  "pictureInPictureAutoTitle": "Automatisk billede-i-billede",
-  "pictureInPictureSubtitle": "Skift automatisk til billede-i-billede, når du forlader afspilleren. PiP-knappen i kontrollerne virker altid uanset denne indstilling.",
-  "pictureInPictureNotSupported": "Billede-i-billede er ikke tilgængeligt på denne enhed",
+  "pictureInPictureTitle": "Billede-i-Billede",
+  "pictureInPictureAutoTitle": "Automatisk Billede-i-Billede",
+  "pictureInPictureSubtitle": "Gå automatisk til Billede-i-Billede når du forlader afspilleren. BiB knappen virker uafhængigt af denne indstilling.",
+  "pictureInPictureNotSupported": "Billede-i-Billede er ikke tilgængeligt på denne enhed",
   "videoScalingFitHeight": "Tilpas højden",
   "videoScalingFitWidth": "Tilpas bredden",
   "videoScalingScaleDown": "Skalér ned",
@@ -456,7 +456,7 @@
   "addToNewPlaylist": "Ny spilleliste",
   "addItemsToPlaylist": "Tilføj {itemLength} element(er) til spilleliste",
   "addedToPlaylist": "Tilføjet til {playlistName} spilleliste",
-  "removedFromPlaylist": "Fjernet fra spillelisten {playlistName}",
+  "removedFromPlaylist": "Fjernet fra {playlistName} spilleliste",
   "syncStatusEnqueued": "I kø",
   "syncStatusRunning": "Kører",
   "syncStatusNotFound": "Ikke fundet",
@@ -474,7 +474,7 @@
   "startedSyncingItem": "Synkronisering af {item} begyndt",
   "unableToSyncItem": "Kan ikke synkronisere {item}, noget gik galt",
   "aboutVersion": "Version: {version}",
-  "aboutBuild": "Build: {buildNumber}",
+  "aboutBuild": "Byg: {buildNumber}",
   "aboutCreatedBy": "Udviklet af DonutWare",
   "aboutSocials": "Sociale medier",
   "aboutLicenses": "Licenser",
@@ -499,9 +499,9 @@
   "off": "Fra",
   "screenBrightness": "Skærmlysstyrke",
   "enableEdgeGesturesTitle": "Aktiver kantbevægelser",
-  "enableEdgeGesturesDesc": "Styr lysstyrke og lydstyrke ved at glide op og ned på skærmens kanter",
+  "enableEdgeGesturesDesc": "Kontroller lyd- og lysstyrke ved at stryge fingeren op og ned langs kanten af skærmen",
   "reverseEdgeGesturesTitle": "Byt om på kantbevægelser",
-  "reverseEdgeGesturesDesc": "Byt om på siderne for lysstyrke- og lydstyrkekontrol",
+  "reverseEdgeGesturesDesc": "Byt sider for lyd- og lysstyrke styring",
   "scale": "Skala",
   "playBackSettings": "Afspilningsindstillinger",
   "settingsAutoNextTitle": "Forhåndsvisning af næste på listen",
@@ -552,12 +552,12 @@
   "resumeVideo": "Genoptag video",
   "closeVideo": "Luk video",
   "playNextVideo": "Afspil næste video",
-  "playerSettingsBackendTitle": "Videoafspiller Backend",
+  "playerSettingsBackendTitle": "Medieserver",
   "playerSettingsBackendDesc": "Vælg din foretrukne medieafspiller for optimal afspilningsoplevelse",
   "playerSettingsReplayGainTitle": "ReplayGain",
-  "playerSettingsReplayGainDesc": "Normaliser musikkens lydstyrke ved hjælp af ReplayGain-tags.",
-  "playerSettingsReplayGainLevelTitle": "ReplayGain-niveau",
-  "playerSettingsReplayGainLevelDesc": "Angiv målniveauet for lydstyrke ved ReplayGain-normalisering. En almindelig standard er -14 dB, men du kan justere den efter eget ønske.",
+  "playerSettingsReplayGainDesc": "Normaliser musik lydstyrke med ReplayGain tags.",
+  "playerSettingsReplayGainLevelTitle": "ReplayGain niveau",
+  "playerSettingsReplayGainLevelDesc": "Instil ønsket lydstyrke for ReplayGain normalisering. -14 dB er normalt, men du kan justere til dine præferencer.",
   "playerSettingsSmartDownmixTitle": "Smart downmix",
   "playerSettingsSmartDownmixDesc": "Fremhæv dialog i forhold til effekter og bagkanaler ved downmix af 5.1/7.1-lyd til stereo.",
   "playerSettingsDialogueBoostTitle": "Dialogforstærkning",
@@ -567,9 +567,9 @@
   "dialogueBoostMedium": "Mellem",
   "dialogueBoostHigh": "Høj",
   "settingsPlayerCrossfadeTitle": "Crossfade",
-  "settingsPlayerCrossfadeDesc": "Ton mellem numre, der ikke er på hinanden følgende i samme album",
-  "settingsPlayerCrossfadeDurationTitle": "Crossfade-varighed",
-  "settingsPlayerCrossfadeDurationDesc": "Varigheden af crossfaden",
+  "settingsPlayerCrossfadeDesc": "Fade mellem numre som ikke er fortløbende i det samme album",
+  "settingsPlayerCrossfadeDurationTitle": "Crossfade varighed",
+  "settingsPlayerCrossfadeDurationDesc": "Varigheden af crossfade",
   "defaultLabel": "Standard",
   "noVideoPlayerOptions": "Den valgte backend har ingen valgmuligheder",
   "mdkExperimental": "MDK er i et eksperimentelt stadie",
@@ -591,7 +591,7 @@
   "phone": "Telefon",
   "tablet": "Tablet",
   "desktop": "Stationær computer",
-  "television": "TV",
+  "television": "Fjernsyn",
   "layoutModeSingle": "Enkel",
   "layoutModeDual": "Dobbelt",
   "copiedToClipboard": "Kopieret til udklipsholder",
@@ -605,8 +605,8 @@
   "qualityOptionsTitle": "Kvalitetsvalgmuligheder",
   "qualityOptionsOriginal": "Original",
   "qualityOptionsAuto": "Auto",
-  "advancedVideoOptionsTitle": "Avancerede videoindstillinger",
-  "advancedVideoOptionsDesc": "Aktiver HDR, tone mapping og avanceret farvehåndtering (ustabilt på nogle enheder)",
+  "advancedVideoOptionsTitle": "Avancerede video muligheder",
+  "advancedVideoOptionsDesc": "Aktiver HDR, tone mapping og avanceret farvestyring (ustabilt på nogle enheder)",
   "version": "Version",
   "mediaSegmentActions": "Mediesegmenthandlinger",
   "segmentActionNone": "Ingen",
@@ -616,12 +616,14 @@
   "loading": "Indlæser",
   "exitDriftfinTitle": "Forlad Driftfin",
   "exitDriftfinDesc": "Er du sikker på du vil lukke Driftfin?",
-  "quitMultipleWindowsDesc": "Du har {count} vinduer åbne. Hvis du lukker Driftfin, lukkes de alle. Vil du fortsætte?",
+  "quitMultipleWindowsDesc": "Du her {count} vinduer åbne. Hvis du lukker Driftfin lukkes de alle. Vil du fortsætte?",
   "closeWindow": "Luk vindue",
   "castAndCrew": "Medvirkende & Hold",
   "guestActor": "{count, plural, other{Gæsteskuespillere} one{Gæsteskuespiller}}",
   "maxConcurrentDownloadsTitle": "Maks. samtidige overførsler",
   "maxConcurrentDownloadsDesc": "Sæt maksimalt antal af overførsler der kan køre på samme tid. Sæt til 0 for at slå grænsen fra.",
+  "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
+  "smartDownloadBudgetDesc": "Automatically reclaims watched downloads, oldest first, to stay under this storage limit. Unwatched downloads are never removed. Leave empty to disable.",
   "playbackTrackSelection": "Valg af afspilningsspor",
   "rememberSubtitleSelections": "Vælg undertekstspor baseret på forrige element",
   "rememberAudioSelections": "Vælg lydspor baseret på forrige element",
@@ -674,10 +676,10 @@
   "playPause": "Start/Pause",
   "seekForward": "Søg fremad",
   "seekBack": "Søg bagud",
-  "seekForwardInstant": "Spol frem (øjeblikkeligt)",
+  "seekForwardInstant": "Spol fremad (øjeblikkeligt)",
   "seekBackInstant": "Spol tilbage (øjeblikkeligt)",
-  "stepForward": "Trin frem",
-  "stepBack": "Trin tilbage",
+  "stepForward": "Hop fremad",
+  "stepBack": "Hop tilbage",
   "mute": "Lydløs",
   "volumeUp": "Lydniveau op",
   "volumeDown": "Lydniveau ned",
@@ -695,12 +697,12 @@
   "volumeIndicator": "Lydniveau: {volume}",
   "brightnessIndicator": "Lysstyrke: {brightness}",
   "speedIndicator": "Afspilningshastighed: {speed}",
-  "enableSpeedBoostTitle": "Aktiver hastighedsboost",
-  "enableSpeedBoostDesc": "Hold skærmen (mobil) eller mellemrumstasten (computer) nede for midlertidigt at øge afspilningshastigheden",
-  "speedBoostRateTitle": "Hastighedsboost-niveau",
-  "speedBoostRateDesc": "Afspilningshastighed når hastighedsboost er aktiveret",
-  "enableDoubleTapSeekTitle": "Dobbelttryk for at spole/afspille/pause",
-  "enableDoubleTapSeekDesc": "Dobbelttryk på venstre/højre side af skærmen for at spole tilbage/frem. Dobbelttryk i midten for at afspille/pause",
+  "enableSpeedBoostTitle": "Aktiver speed boost",
+  "enableSpeedBoostDesc": "Hold nede på din skærm (mobil) eller mellemrumstast (computer) for midlertidigt at øge afspilningshastigheden",
+  "speedBoostRateTitle": "Speed boost værdi",
+  "speedBoostRateDesc": "Afspilningshastighed når speed boost er aktiveret",
+  "enableDoubleTapSeekTitle": "Dobbeltklik for at spole/afspille/pause",
+  "enableDoubleTapSeekDesc": "Dobbeltklik venstre/højre side af skærmen for at spole tilbage/fremad. Dobbeltklik i midten for at afspille/pause",
   "quickConnectPostFailed": "Kunne ikke hente hurtig tilkoblingskode",
   "quickConnectLoginUsingCode": "Bruger hurtig tilkobling",
   "quickConnectEnterCodeDescription": "Indtast koden nedenfor for at logge ind",
@@ -719,7 +721,7 @@
   "formattedTime": "{time}",
   "takeScreenshot": "Tag skærmbillede",
   "takeScreenshotClean": "Tag skærmbillede (uden undertekster)",
-  "toggleSubtitles": "Slå undertekster til/fra",
+  "toggleSubtitles": "Tænd/sluk undertekster",
   "screenshotTaken": "Skærmbillede gemt!",
   "screenshotCleanTaken": "Skærmbillede uden undertekster gemt!",
   "errorTakingScreenshot": "Der skete en fejl, da der skulle tages et skærmbillede",
@@ -730,9 +732,9 @@
   "screensaverBlack": "Sort",
   "playerSettingsScreensaverTitle": "Pauseskærm",
   "playerSettingsScreensaverDesc": "Vælg pauseskærm, der vises efter ingen afspilningsaktivitet",
-  "settingsLocalUrlTitle": "Lokal Server URL",
-  "settingsLocalUrlSetTitle": "Konfigurer Lokal URL",
-  "settingsLocalUrlSetDesc": "Angiv den lokale serveradresse. Driftfin vil automatisk bruge denne URL, når din enhed er på samme netværk.",
+  "settingsLocalUrlTitle": "Lokal Jellyfin URL",
+  "settingsLocalUrlSetTitle": "Konfigurer lokal Jellyfin URL",
+  "settingsLocalUrlSetDesc": "Angiv den lokale Jellyfin serveradresse. Driftfin vil automatisk bruge denne URL, når din enhed er på samme netværk.",
   "regenerateTrickplayImages": "Genskab trickplay-billeder",
   "controlPanel": "Kontrolpanel",
   "controlPanelDesc": "Server, Aktivitet, Brugere, Bibliotek",
@@ -893,8 +895,8 @@
   "systemRootFolder": "Systemets rodmappe",
   "selectedPath": "Valgt sti: {path}",
   "recentlyAdded": "Senest tilføjet",
-  "recentlyPlayed": "Senest afspillet",
-  "recentlyFavorited": "Senest markeret som favorit",
+  "recentlyPlayed": "Nyligt afspillet",
+  "recentlyFavorited": "Nyligt favoriseret",
   "mostPlayed": "Mest afspillet",
   "recentRequests": "Seneste anmodninger",
   "trending": "Trending",
@@ -916,17 +918,17 @@
   "noOverviewAvailable": "Ingen oversigt tilgængelig.",
   "downloading": "downloader",
   "request": "Anmod",
-  "requestMore": "Anmod om mere",
+  "requestMore": "Forespørg mere",
   "viewRequest": "Vis anmodning",
   "email": "Email",
   "username": "Brugernavn",
   "ok": "OK",
-  "transcodeInfoTitle": "Transkodningsinfo",
-  "transcodeInfoNoMetadata": "Ingen transkodningsmetadata tilgængelig.",
-  "transcodeDetailsTitle": "Transkodningsdetaljer",
+  "transcodeInfoTitle": "Transcode Information",
+  "transcodeInfoNoMetadata": "Ingen transcoding metadata er tilgængeligt.",
+  "transcodeDetailsTitle": "Transcode Detaljer",
   "containerLabel": "Container",
-  "videoCodecLabel": "Video-codec",
-  "audioCodecLabel": "Lyd-codec",
+  "videoCodecLabel": "Video codec",
+  "audioCodecLabel": "Audio codec",
   "bitrateLabel": "Bitrate",
   "kbps": "kbps",
   "resolutionLabel": "Opløsning",
@@ -935,191 +937,191 @@
   "seerrLoadingUser": "Indlæser bruger",
   "seerrUnknownUser": "Ukendt bruger",
   "loggedInAs": "Logget ind som {displayName}",
-  "seerrServer": "Seerr-server",
-  "seerrAuthenticateLocal": "Seerr-login (lokal)",
+  "seerrServer": "Seerr server",
+  "seerrAuthenticateLocal": "Seerr autentificer (lokalt)",
   "rootFolderDefaultLabel": "{folder} (Standard)",
-  "seerrAnimeSeriesNote": "* Denne serie er en anime.",
-  "seerrAutoApproveNotice": "Anmodninger, du sender, bliver automatisk godkendt.",
-  "seerrPermissionDenied": "Du har ikke tilladelse til at anmode om denne medietype.",
-  "seerrRequestStatusPending": "Afventer",
+  "seerrAnimeSeriesNote": "* Dette er en anime-serie.",
+  "seerrAutoApproveNotice": "Forespørgsler du laver bliver automatisk godkendt.",
+  "seerrPermissionDenied": "Du har ikke tilladelse til at forespørge denne medietype.",
+  "seerrRequestStatusPending": "Venter",
   "seerrRequestStatusApproved": "Godkendt",
   "seerrRequestStatusDeclined": "Afvist",
   "seerrRequestStatusFailed": "Fejlet",
-  "seerrRequestStatusCompleted": "Fuldført",
-  "seerrMediaStatusProcessing": "Behandler",
+  "seerrRequestStatusCompleted": "Gennemført",
+  "seerrMediaStatusProcessing": "Behandles",
   "seerrMediaStatusPartiallyAvailable": "Delvist tilgængelig",
   "seerrMediaStatusAvailable": "Tilgængelig",
-  "seerrMediaStatusBlacklisted": "Sortlistet",
+  "seerrMediaStatusBlacklisted": "Blokeret",
   "seerrMediaStatusDeleted": "Slettet",
   "seerrAuthApiKey": "API-nøgle",
   "seerrAuthLocal": "Lokal",
   "seerrAuthJellyfin": "Jellyfin",
   "seerrUserFetchFailed": "Kunne ikke hente bruger fra Seerr",
-  "seerrEnterServerUrlFirst": "Indtast en Seerr-server-URL først",
-  "seerrUrlSchemeWarning": "Kunne ikke automatisk registrere URL-skema. Bruger https:// som standard. Tilføj http:// foran, hvis din server ikke bruger HTTPS.",
+  "seerrEnterServerUrlFirst": "Indtast en Seerr server URL først",
+  "seerrUrlSchemeWarning": "Kunne ikke detektere URL-skema automatisk. Bruger derfor https://. Begynd med http:// hvis din server ikke bruger HTTPS.",
   "seerrApiKeySaved": "API-nøgle gemt",
   "seerrLoggedIn": "Logget ind på Seerr",
-  "seerrConnectedToServer": "Forbundet til Seerr-server: {serverUrl}",
-  "seerrCustomHeaders": "Tilpassede headers",
-  "seerrHeader": "Header",
+  "seerrConnectedToServer": "Forbundet til Seerr server: {serverUrl}",
+  "seerrCustomHeaders": "Tilpassede overskrifter",
+  "seerrHeader": "Overskrift",
   "seerrHeaderValue": "Værdi",
-  "emailUsername": "Email/brugernavn",
+  "emailUsername": "Email/Brugernavn",
   "discover": "Opdag",
   "sponsor": "Sponsor",
-  "sponsorMessage": "Hvis du nyder at bruge Driftfin, så overvej at sponsorere projektet for at støtte den løbende udvikling og forbedringer. Tak for din støtte!",
-  "min": "min",
-  "max": "maks",
-  "manageRequest": "Administrer anmodning",
-  "requestAll": "Anmod om alle",
+  "sponsorMessage": "Hvis du nyder at bruge Driftfin bør du overveje at sponsorere projektet. Dette hjælper til løbende udvikling og forbedringer. Tak for din støtte!",
+  "min": "minimum",
+  "max": "maksimum",
+  "manageRequest": "Håndter forespørgsel",
+  "requestAll": "Forespørg alle",
   "openInSeerr": "Åbn i Seerr",
   "openInSonarr": "Åbn i Sonarr",
-  "openInRadarr": "Åbn i Radarr",
+  "openInRadarr": "Åben i Radarr",
   "removeFromSonarr": "Fjern fra Sonarr",
   "removeFromRadarr": "Fjern fra Radarr",
-  "markAllSeasonsAsAvailable": "Marker alle sæsoner som tilgængelige",
-  "markAsAvailable": "Marker som tilgængelig",
+  "markAllSeasonsAsAvailable": "Marker alle sæsoner tilgængelige",
+  "markAsAvailable": "Marker tilgængelig",
   "deleteData": "Slet data",
-  "removeSeriesFromSonarrConfirm": "Fjern denne serie fra Sonarr? Dette vil fjerne alle data, INKLUSIVE filer.",
-  "removeMovieFromRadarrConfirm": "Fjern denne film fra Radarr? Dette vil fjerne alle data, INKLUSIVE filer.",
+  "removeSeriesFromSonarrConfirm": "Du er ved at fjerne denne serie fra Sonarr. Dette fjerner alt data INKLUSIV filer.",
+  "removeMovieFromRadarrConfirm": "Du er ved at fjerne denne film fra Radarr. Dette fjerner alt data INKLUSIV filer.",
   "removedFromSonarr": "Fjernet fra Sonarr",
   "removedFromRadarr": "Fjernet fra Radarr",
-  "markAllSeasonsAsAvailableConfirm": "Marker alle sæsoner som tilgængelige?",
-  "markAsAvailableConfirm": "Marker som tilgængelig?",
-  "markedAsAvailable": "Markeret som tilgængelig",
-  "deleteSeerrDataConfirm": "Slet alle filer fra Seerr? Denne handling kan ikke fortrydes.\nHvis dataene stadig findes i {service}, kan de blive importeret igen.",
+  "markAllSeasonsAsAvailableConfirm": "Vil du markere alle sæsoner tilgængelige?",
+  "markAsAvailableConfirm": "Vil du markere tilgægelig?",
+  "markedAsAvailable": "Markeret tilgængelig",
+  "deleteSeerrDataConfirm": "Du er ved at slette alle filer fra Seerr. Dette kan ikke fortrydes.\nHvis data fortsat er tilgængeligt i {service} kan det importeres igen.",
   "dataDeleted": "Data slettet",
   "approve": "Godkend",
   "decline": "Afvis",
-  "pendingRequests": "{count, plural, other{Ingen afventende anmodninger} one{{count} afventende anmodning} two{{count} afventende anmodninger}}",
-  "processing": "Behandler",
-  "seerrDetails": "Seerr-detaljer",
+  "pendingRequests": "{count, plural, other{Ingen afventende forespørgsler} one{{count} afventende forespørgsel} two{{count} afventende forespørgsler}}",
+  "processing": "Bearbejder",
+  "seerrDetails": "Seerr detaljer",
   "viewTrailer": "Se trailer",
   "watch": "Se",
   "watchChannel": "Se {channel}",
   "now": "Nu",
-  "nowPlaying": "Afspiller nu",
-  "upNext": "Op næste",
+  "nowPlaying": "Spiller nu",
+  "upNext": "Næste",
   "queue": "Kø",
   "queueIsEmpty": "Køen er tom",
-  "queueItemCount": "{count} elementer",
+  "queueItemCount": "{count} genstande",
   "removeFromQueue": "Fjern fra kø",
-  "noPrograms": "Ingen programmer tilgængelige",
+  "noPrograms": "Ingen tilgængelige programmer",
   "switchChannel": "Skift kanal",
-  "switchChannelDesc": "Vil du se \"{programName}\" på {channelName}?",
-  "specialFeature": "{count, plural, other{Ekstramateriale} one{Ekstramateriale} }",
+  "switchChannelDesc": "Vil de se \"{programName}\" på {channelName}?",
+  "specialFeature": "{count, plural, other{Special Udgaver} one{Special Udgave} }",
   "activeTvChannels": "Aktive TV-kanaler",
-  "enableNewTVLayout": "Aktiver nyt TV-layout",
-  "liveTV": "Live-TV",
-  "liveTvManageTunersEpg": "Administrer tunerenheder og EPG-udbydere",
-  "tunerDevices": "Tunerenheder",
-  "epgGuideProviders": "EPG-udbydere",
-  "noTunerDevicesConfigured": "Ingen tunerenheder konfigureret",
-  "noEpgProvidersConfigured": "Ingen EPG-udbydere konfigureret",
-  "addTunerDevice": "Tilføj tunerenhed",
-  "addProvider": "Tilføj udbyder",
-  "tunerHostAddedSuccessfully": "Tunervært tilføjet",
-  "failedToAddTunerHost": "Kunne ikke tilføje tunervært: {error}",
-  "tunerHostUpdatedSuccessfully": "Tunervært opdateret",
-  "failedToUpdateTunerHost": "Kunne ikke opdatere tunervært: {error}",
-  "deleteTunerHost": "Slet tunervært",
-  "deleteTunerHostConfirm": "Er du sikker på, at du vil slette \"{name}\"?",
-  "tunerHostDeletedSuccessfully": "Tunervært slettet",
-  "failedToDeleteTunerHost": "Kunne ikke slette tunervært: {error}",
-  "epgProviderAddedSuccessfully": "EPG-udbyder tilføjet",
-  "failedToAddEpgProvider": "Kunne ikke tilføje EPG-udbyder: {error}",
-  "epgProviderUpdatedSuccessfully": "EPG-udbyder opdateret",
-  "failedToUpdateEpgProvider": "Kunne ikke opdatere EPG-udbyder: {error}",
-  "deleteEpgProvider": "Slet EPG-udbyder",
-  "deleteEpgProviderConfirm": "Er du sikker på, at du vil slette denne udbyder?",
-  "epgProviderDeletedSuccessfully": "EPG-udbyder slettet",
-  "failedToDeleteEpgProvider": "Kunne ikke slette EPG-udbyder: {error}",
-  "editTunerDevice": "Rediger tunerenhed",
+  "enableNewTVLayout": "Aktiver nyt TV-udseende",
+  "liveTV": "Live TV",
+  "liveTvManageTunersEpg": "Håndter tuner enheder og EPG leverandører",
+  "tunerDevices": "Tuner Enheder",
+  "epgGuideProviders": "EPG Guide Leverandører",
+  "noTunerDevicesConfigured": "Ingen tuner enhed konfigureret",
+  "noEpgProvidersConfigured": "Ingen EPG leverandør konfigureret",
+  "addTunerDevice": "Tilføj Tuner Enhed",
+  "addProvider": "Tilføj Leverandør",
+  "tunerHostAddedSuccessfully": "Tuner enhed tilføjet",
+  "failedToAddTunerHost": "Kunne ikke tilføje tuner enhed: {error}",
+  "tunerHostUpdatedSuccessfully": "Tuner enhed opdateret",
+  "failedToUpdateTunerHost": "Kunne ikke opdatere tuner enhed: {error}",
+  "deleteTunerHost": "Slet Tuner Enhed",
+  "deleteTunerHostConfirm": "Er du sikker på at du vil slette \"{name}\"?",
+  "tunerHostDeletedSuccessfully": "Tuner enhed slettet",
+  "failedToDeleteTunerHost": "Kunne ikke slette tuner enhed: {error}",
+  "epgProviderAddedSuccessfully": "EPG leverandør tilføjet",
+  "failedToAddEpgProvider": "Kunne ikke tilføje EPG leverandør: {error}",
+  "epgProviderUpdatedSuccessfully": "EPG leverandør opdateret",
+  "failedToUpdateEpgProvider": "Kunne ikke opdatere EPG leverandør: {error}",
+  "deleteEpgProvider": "Slet EPG Leverandør",
+  "deleteEpgProviderConfirm": "Er du sikker på at du vil slette denne leverandør?",
+  "epgProviderDeletedSuccessfully": "EPG leverandør slettet",
+  "failedToDeleteEpgProvider": "Kunne ikke slette EPG leverandør: {error}",
+  "editTunerDevice": "Rediger Tuner Enhed",
   "friendlyName": "Kaldenavn",
   "url": "URL",
-  "userAgent": "User Agent",
-  "userAgentOptional": "User Agent (valgfrit)",
-  "maxConcurrentStreams": "Maks. samtidige streams",
-  "addEpgProvider": "Tilføj EPG-udbyder",
-  "editEpgProvider": "Rediger EPG-udbyder",
-  "xmltvPathUrl": "XMLTV-sti/URL",
+  "userAgent": "Brugeragent",
+  "userAgentOptional": "Brugeragent (valgfri)",
+  "maxConcurrentStreams": "Maksimalt Samtidige Streams",
+  "addEpgProvider": "Tilføj EPG Leverandør",
+  "editEpgProvider": "Rediger EPG Leverandør",
+  "xmltvPathUrl": "XMLTV Sti/URL",
   "enableAllTuners": "Aktiver for alle tunere",
   "enabledTuners": "Aktiverede tunere",
   "selectTuners": "Vælg tunere",
   "moviePrefix": "Filmpræfiks",
-  "movieCategories": "Filmkategorier",
-  "newsCategories": "Nyhedskategorier",
-  "sportsCategories": "Sportskategorier",
-  "kidsCategories": "Børnekategorier",
+  "movieCategories": "Filmkatagorier",
+  "newsCategories": "Nyhedskatagorier",
+  "sportsCategories": "Sportskatagorier",
+  "kidsCategories": "Børnekatagorier",
   "fileOrUrl": "Fil eller URL",
-  "tunerIpAddress": "Tuner-IP-adresse",
-  "fallbackMaxBitrate": "Maksimal fallback-bitrate (Mbps)",
-  "concurrentStreams": "Maks. samtidige streams",
+  "tunerIpAddress": "Tuner IP-adresse",
+  "fallbackMaxBitrate": "Maksimal Fallback Bitrate (Mbps)",
+  "concurrentStreams": "Maks Samtidige Streams",
   "concurrentStreamsHint": "0 = Ubegrænset",
-  "allowFmp4Container": "Tillad fMP4-transkodningscontainer",
-  "allowStreamSharing": "Tillad deling af stream",
-  "enableStreamLooping": "Aktiver looping af stream",
-  "ignoreDts": "Ignorer DTS-tidsstempler",
-  "readAtNativeFramerate": "Læs med native billedhastighed",
+  "allowFmp4Container": "Tillad fMP4 transcoding container",
+  "allowStreamSharing": "Tillad deling",
+  "enableStreamLooping": "Tillad looping",
+  "ignoreDts": "Ignorer DTS tidsstempler",
+  "readAtNativeFramerate": "Afspil ved oprindelig framerate",
   "importFavoritesOnly": "Importer kun favoritkanaler",
-  "allowHWTranscoding": "Tillad hardware-transkodning",
-  "detectDevices": "Registrer enheder",
-  "discoveredDevices": "Fundne enheder",
+  "allowHWTranscoding": "Tillad hardware transcoding",
+  "detectDevices": "Detekter Enheder",
+  "discoveredDevices": "Fundne Enheder",
   "noDevicesFound": "Ingen enheder fundet",
-  "failedToDiscoverDevices": "Kunne ikke finde enheder: {error}",
+  "failedToDiscoverDevices": "Detektering af enheder fejlede: {error}",
   "path": "Sti",
-  "maxConcurrentStreamsLabel": "Maks. samtidige streams",
-  "noCategories": "Ingen kategorier",
-  "moviePrefixSubLabel": "Hvis der bruges et præfiks til filmtitler, skal du skrive det her, så serveren kan behandle det korrekt.",
-  "movieCategoriesSubLabel": "Kategorier, der skal tildeles kanaler, der matcher filmpræfikset",
-  "newsCategoriesSubLabel": "Kategorier, der skal tildeles kanaler, der matcher nyhedspræfikset",
-  "sportsCategoriesSubLabel": "Kategorier, der skal tildeles kanaler, der matcher sportspræfikset",
-  "kidsCategoriesSubLabel": "Kategorier, der skal tildeles kanaler, der matcher børnepræfikset",
-  "enableNewTVLayoutDesc": "Vis større bannere i TV-stil på kontrolpanelet. Dette bliver standardlayoutet i en fremtidig udgivelse.",
+  "maxConcurrentStreamsLabel": "Maksimal antal samtidige streams",
+  "noCategories": "Ingen katagorier",
+  "moviePrefixSubLabel": "Hvis filmtitlerne har et prefiks skriv det her så serveren kan processere det ordenligt.",
+  "movieCategoriesSubLabel": "Kategorier som skal tildeles kanaler som passer til film prefiks",
+  "newsCategoriesSubLabel": "Kategorier som skal tildeles kanaler som passer til nyheds prefiks",
+  "sportsCategoriesSubLabel": "Kategorier som skal tildeles kanaler som passer til sports prefiks",
+  "kidsCategoriesSubLabel": "Kategorier som skal tildeles kanaler som passer til børne prefiks",
+  "enableNewTVLayoutDesc": "Vis større TV-stil bannere på dashboardet. Dette bliver standard indstilling i fremtiden.",
   "notifications": "Notifikationer",
-  "showNewItemNotificationTitle": "Notifikationer for biblioteks-elementer",
-  "notificationChannelDescription": "Notifikationer for nyligt tilføjede elementer",
-  "seerrRequestNotifications": "Notifikationer for Seerr-anmodninger",
-  "notificationNewEpisodes": "Nye afsnit tilføjet",
-  "notificationNewItems": "{count, plural, one{{count} nyt element} other{{count} nye elementer}}",
-  "notificationNewRequests": "{count, plural, one{{count} ny anmodning} other{{count} nye anmodninger}}",
-  "notificationTimerIOSWarning": " iOS bestemmer, hvornår/om opdateringer rent faktisk kører; notifikationer kan blive forsinket eller slet ikke vises.",
-  "batteryOptimizationDesc": "Batterioptimeringer kan forsinke baggrundsnotifikationer for Driftfin.\nTryk for at åbne systemindstillinger og deaktivere optimeringer for Driftfin for at forbedre pålideligheden af notifikationer.",
-  "updateCheckInterval": "Interval for opdateringstjek",
-  "updateCheckIntervalDesc": "Hvor ofte baggrundsopgaven kører",
+  "showNewItemNotificationTitle": "Notifikation for biblioteksgenstande",
+  "notificationChannelDescription": "Notifikation for nyligt tilføjede genstande",
+  "seerrRequestNotifications": "Notifikation for Seerr forespørgsler",
+  "notificationNewEpisodes": "Nye episoder tilføjet",
+  "notificationNewItems": "{count, plural, one{{count} ny genstand} other{{count} nye genstande}}",
+  "notificationNewRequests": "{count, plural, one{{count} ny forespørgsel} other{{count} nye forespørgsler}}",
+  "notificationTimerIOSWarning": " iOS beslutter hvornår/om opdateringer faktisk køres, notifikationer kan blive forsinket eller ikke dukke op overhoved.",
+  "batteryOptimizationDesc": "Batterioptimeringer kan forsinke baggrundsnotifikationer fra Driftfin.\nTryk for at åbne systemindstillinger og slå batterioptimering fra for Driftfin for at øge notifikationstroværdighed.",
+  "updateCheckInterval": "Opdateringsintervaltjek",
+  "updateCheckIntervalDesc": "Hvor tit der søges efter opdateringer",
   "notificationsIntervalClientReminder": "Notifikationsinterval er sat for alle brugere.",
-  "lastUpdateAt": "Senest opdateret {date} kl. {time}",
+  "lastUpdateAt": "Sidst opdateret {date} klokken {time}",
   "includeHiddenItems": "Inkluder skjulte biblioteker",
-  "includeHiddenItemsDesc": "Inkluder biblioteker, der er skjult fra kontrolpanelet",
+  "includeHiddenItemsDesc": "Inkluder biblioteker skjult fra dashboardet",
   "settingsBlurEffectsTitle": "Aktiver sløringseffekter",
-  "settingsBlurEffectsDesc": "Aktiver sløringseffekter i brugerfladen. Deaktivering af dette kan forbedre ydeevnen på svagere enheder.",
-  "profileSettingsOpenAuthAtLaunch": "Vis login-metode ved app-lås",
-  "toggleSidebar": "Slå sidepanel til/fra",
-  "requestedSuccessForItem": "Anmodede om {itemName}",
-  "linkData": "Link-data",
-  "passwordNotRequired": "Ikke påkrævet, lad stå tomt for ikke at inkludere kodeord i linket",
-  "authLinkButtonToolTip": "Åbn dialog for login-link",
-  "connectWithAuthLink": "Forbind med login-link",
+  "settingsBlurEffectsDesc": "Aktiver sløringseffekter i brugerfladen. Det kan forbedre oplevelsen på langsommere enheder at deaktivere sløringseffekter.",
+  "profileSettingsOpenAuthAtLaunch": "Vis autentifikationsmetode på app låseskærm",
+  "toggleSidebar": "Tænd/sluk sidemenu",
+  "requestedSuccessForItem": "Forespørgsel af {itemName} gennemført",
+  "linkData": "Linkdata",
+  "passwordNotRequired": "Ikke påkrævet. Udfyld ikke for at udelade kodeordet fra linket",
+  "authLinkButtonToolTip": "Åbn autentifikationslink",
+  "connectWithAuthLink": "Forbind med autentifikationslink",
   "pasteDriftfinAuthLink": "Indsæt Driftfin login-link driftfin:///login?authLink=...",
   "connect": "Forbind",
-  "authLinkDesc": "Bed serveradministratoren om at give dig login-linket. Linket indeholder login-oplysninger, så sørg for at opbevare det sikkert.",
-  "deletedItem": "Slettet {itemName}",
-  "libraryOrderTitle": "Rækkefølge på forsiden",
-  "libraryOrderDescription": "Træk for at ændre rækkefølgen af biblioteker på forsiden. Umarkerede biblioteker viser ikke nyligt tilføjede elementer.",
-  "hidePlayedInLatestTitle": "Skjul set indhold",
-  "hidePlayedInLatestDescription": "Skjul set indhold fra 'Nyligt tilføjet medie'",
-  "groupedFoldersTitle": "Grupperede biblioteker",
-  "groupedFoldersDescription": "Grupper automatisk indhold fra følgende biblioteker i visninger såsom 'Film', 'Musik' og 'TV'.",
-  "downloadTranscoded": "Download transkoderet",
-  "downloadOriginal": "Download original",
+  "authLinkDesc": "Spørg serveradministratoren om et autentifikationslink. Linket indeholder autentifikationsinformation, så hold det hemmeligt.",
+  "deletedItem": "Slettede {itemName}",
+  "libraryOrderTitle": "Hovedskærm Rækkefølge",
+  "libraryOrderDescription": "Træk for at ændre rækkefølgen af biblioteker på hovedskærmen. Fravalgte biblioteker viser ikke nyligt tilføjede genstande.",
+  "hidePlayedInLatestTitle": "Skjul vist indhold",
+  "hidePlayedInLatestDescription": "Skjul vist indhold fra 'Nyligt Tilføjede Medier'",
+  "groupedFoldersTitle": "Grupperede Biblioteker",
+  "groupedFoldersDescription": "Grupper indhold automatisk fra de følgende biblioteker i visninger, så som 'Film', 'Musik' og 'TV'.",
+  "downloadTranscoded": "Hent transcoded",
+  "downloadOriginal": "Hent original",
   "personBirthday": "Fødselsdag: {date}",
   "personAge": "Alder: {age}",
   "personBirthPlace": "Født i {place}",
-  "seerrMovies": "Opdag film",
-  "seerrSeries": "Opdag serier",
-  "today": "I dag",
-  "musicDashboard": "Musikoversigt",
+  "seerrMovies": "Opdag Film",
+  "seerrSeries": "Opdag Serier",
+  "today": "Idag",
+  "musicDashboard": "Musik Dashboard",
   "quiet": "Stille",
-  "loud": "Høj",
+  "loud": "Højt",
   "share": "Del",
   "setAs": "Angiv som",
   "cast": "Cast",
@@ -1155,5 +1157,406 @@
   "tastePassportEmpty": "Se et par ting, så vises din smagsprofil her",
   "livingHomeBecauseYouWatched": "Fordi du så {name}",
   "livingHomeHiddenGems": "Skjulte perler du ejer",
-  "livingHomeMoreFromDirector": "Mere fra {name}"
+  "livingHomeMoreFromDirector": "Mere fra {name}",
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@generateLoginLink": {
+    "description": "Code for a user to share",
+    "placeholders": {
+      "userName": {
+        "type": "String"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@mediaTypeTV": {
+    "description": "TV Channel (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@brightnessIndicator": {
+    "placeholders": {
+      "brightness": {
+        "type": "int"
+      }
+    }
+  },
+  "@airsIn": {
+    "description": "airsIn",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      },
+      "duration": {
+        "type": "String",
+        "example": "days"
+      }
+    }
+  },
+  "@loggedInAs": {
+    "placeholders": {
+      "displayName": {
+        "type": "String"
+      }
+    }
+  },
+  "@rootFolderDefaultLabel": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
+  },
+  "@seerrConnectedToServer": {
+    "placeholders": {
+      "serverUrl": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteSeerrDataConfirm": {
+    "description": "Confirmation message for deleting Seerr data",
+    "placeholders": {
+      "service": {
+        "type": "String",
+        "example": "Sonarr/Radarr"
+      }
+    }
+  },
+  "@failedToDiscoverDevices": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@notificationNewItems": {
+    "description": "Plural for number of new items in a notification",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@notificationNewRequests": {
+    "description": "Plural for number of new Seerr requests in a notification",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@lastUpdateAt": {
+    "description": "lastUpdateAt",
+    "placeholders": {
+      "time": {
+        "type": "DateTime",
+        "format": "jm"
+      },
+      "date": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "@requestedSuccessForItem": {
+    "description": "Message shown when a media item is successfully requested",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "pasteFladderAuthLink": "Indsæt Driftfin autentifikationslink driftfin:///login?authLink=...",
+  "@deletedItem": {
+    "description": "Message shown when a item is deleted",
+    "placeholders": {
+      "itemName": {
+        "type": "String"
+      }
+    }
+  },
+  "@personBirthday": {
+    "description": "Birthday label with formatted date",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "@personAge": {
+    "description": "Age label with age number",
+    "placeholders": {
+      "age": {
+        "type": "int",
+        "example": "30"
+      }
+    }
+  },
+  "@personBirthPlace": {
+    "placeholders": {
+      "place": {
+        "type": "String"
+      }
+    }
+  },
+  "@pendingRequests": {
+    "description": "pendingRequests",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@watchChannel": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@switchChannelDesc": {
+    "placeholders": {
+      "programName": {
+        "type": "String"
+      },
+      "channelName": {
+        "type": "String"
+      }
+    }
+  },
+  "@specialFeature": {
+    "description": "special feature",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@failedToAddTunerHost": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToUpdateTunerHost": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@deleteTunerHostConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToDeleteTunerHost": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToAddEpgProvider": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToUpdateEpgProvider": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "@failedToDeleteEpgProvider": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Music Video} other{Music Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Collection} other{Collections}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "posterColorsTitle": "Generated poster colors",
+  "posterColorsDesc": "Use generated colors for posters in place of the default color",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "selectRandom": "Select random",
+  "stopSelection": "Stop selecting {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Play items",
+  "shuffleItems": "Shuffle items",
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Incognito",
+  "incognitoModeGlobal": "Incognito mode (App)",
+  "incognitoModeLocal": "Incognito mode (Profile)",
+  "incognitoModeDesc": "Incognito mode disables sending playback status to the server",
+  "showInSideBar": "Show in sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "hideInSideBar": "Hide from sidebar",
+  "showInSideBarDesc": "Show this filter in the sidebar for quick access",
+  "applyFilter": "Apply filter",
+  "playerSettingsAmbientBlurTitle": "Enable ambient blur",
+  "playerSettingsAmbientBlurDesc": "Enable ambient blur in the player. This will blur the background behind the player to reduce distractions.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur can cause performance issues on lower-end devices.",
+  "openSelected": "Open selected",
+  "discography": "Discography",
+  "youLiked": "You liked",
+  "instantMixBy": "Instant Mix of {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Latest tracks by {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorites of {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back Mode",
+  "leanBackModeDesc": "Enable lean-back mode on Android devices, even if the device reports back as false.",
+  "leanBackModeInfo": "Lean-back mode is re-enabled by default on AndroidTV devices. Toggling this option on non-AndroidTV devices may cause unexpected behavior.",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

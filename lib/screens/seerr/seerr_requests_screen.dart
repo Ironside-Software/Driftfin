@@ -98,6 +98,15 @@ class _SeerrRequestsScreenState extends ConsumerState<SeerrRequestsScreen> {
             : null,
         body: Column(
           children: [
+            if (state.hasError)
+              ListTile(
+                leading: const Icon(Icons.error_outline),
+                title: Text(context.localized.somethingWentWrong),
+                trailing: TextButton(
+                  onPressed: state.loading || state.loadingMore ? null : notifier.load,
+                  child: Text(context.localized.retry),
+                ),
+              ),
             if (canManage)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -134,12 +143,13 @@ class _SeerrRequestsScreenState extends ConsumerState<SeerrRequestsScreen> {
                 child: state.loading && state.entries.isEmpty
                     ? const Center(child: CircularProgressIndicator())
                     : state.entries.isEmpty
-                        ? ListView(children: [
+                        ? ListView(physics: const AlwaysScrollableScrollPhysics(), children: [
                             const SizedBox(height: 120),
-                            Center(child: Text(context.localized.noRequestsFound)),
+                            if (!state.hasError) Center(child: Text(context.localized.noRequestsFound)),
                           ])
                         : GridView.builder(
                             controller: _scroll,
+                            physics: const AlwaysScrollableScrollPhysics(),
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 480,
@@ -150,7 +160,16 @@ class _SeerrRequestsScreenState extends ConsumerState<SeerrRequestsScreen> {
                             itemCount: state.entries.length + (state.canLoadMore ? 1 : 0),
                             itemBuilder: (context, index) {
                               if (index >= state.entries.length) {
-                                return const Center(child: CircularProgressIndicator());
+                                return Center(
+                                  child: state.loadingMore
+                                      ? const CircularProgressIndicator()
+                                      : IconButton(
+                                          tooltip:
+                                              state.hasError ? context.localized.retry : context.localized.showMore,
+                                          onPressed: notifier.loadMore,
+                                          icon: const Icon(Icons.expand_more),
+                                        ),
+                                );
                               }
                               return _RequestCard(
                                 entry: state.entries[index],

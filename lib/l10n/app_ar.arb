@@ -100,8 +100,8 @@
   "syncedAtLabel": "آخر مزامنة: {time}",
   "addToCollection": "إضافة إلى المجموعة",
   "addToPlaylist": "إضافة إلى قائمة التشغيل",
-  "addToQueue": "الإضافة إلى قائمة الانتظار",
-  "instantMix": "مزيج فوري",
+  "addToQueue": "أضف إلى قائمة الانتظار",
+  "instantMix": "مزج فوري",
   "addedToQueue": "{count, plural, one{تمت إضافة {count} مقطع إلى قائمة الانتظار} other{تمت إضافة {count} مقاطع إلى قائمة الانتظار}}",
   "advanced": "متقدم",
   "all": "الكل",
@@ -116,7 +116,7 @@
   "audioPlayerRepeatAll": "تكرار الكل",
   "audioPlayerRepeatOff": "إيقاف التكرار",
   "audioPlayerRepeatOne": "تكرار واحد",
-  "audioPlayerShuffle": "خلط",
+  "audioPlayerShuffle": "تشغيل عشوائي",
   "showArtist": "عرض الفنان",
   "track": "{count, plural, one{مقطع} other{مقاطع}}",
   "autoPlay": "تشغيل تلقائي",
@@ -154,7 +154,7 @@
   "dashboardContinueWatching": "متابعة المشاهدة",
   "nextUp": "التالي",
   "dashboardRecentlyAdded": "تمت إضافته مؤخراً في {name}",
-  "dashboardRecentlyAddedItems": "أُضيف مؤخراً {name}",
+  "dashboardRecentlyAddedItems": "{name} المضافة حديثاً",
   "dateAdded": "تاريخ الإضافة",
   "dateLastContentAdded": "تاريخ آخر إضافة محتوى",
   "datePlayed": "تاريخ التشغيل",
@@ -323,7 +323,7 @@
   "saved": "تم الحفظ",
   "scanBiometricHint": "التحقق من الهوية",
   "scanLibrary": "مسح المكتبة",
-  "authenticateWithBiometrics": "استخدم المصادقة الحيوية للتحقق من هوية {user}",
+  "authenticateWithBiometrics": "استخدم البيانات الحيوية لمصادقة {user}",
   "scanningName": "جارٍ المسح - {name}…",
   "scrollToTop": "التمرير إلى الأعلى",
   "search": "البحث",
@@ -363,8 +363,8 @@
   "settingsPlayerNativeLibassAccelDesc": "استخدام محرك عرض الترجمة libass في مشغل الفيديو",
   "settingsPlayerNativeLibassAccelTitle": "ترجمات libass الأصلية",
   "settingsPlayerBufferSizeTitle": "حجم التخزين المؤقت للفيديو",
-  "settingsPlayerPlayPauseFadeTitle": "تلاشي الصوت عند التشغيل/الإيقاف",
-  "settingsPlayerPlayPauseFadeDesc": "تلاشي الصوت تدريجياً عند التشغيل أو الإيقاف المؤقت",
+  "settingsPlayerPlayPauseFadeTitle": "تدرج الصوت عند التشغيل/الإيقاف",
+  "settingsPlayerPlayPauseFadeDesc": "تدرج مستوى الصوت عند التشغيل أو الإيقاف",
   "settingsPlayerBufferSizeDesc": "قم بتهيئة حجم ذاكرة التخزين المؤقت لتشغيل الفيديو، مما يحدد كمية البيانات التي يتم تحميلها في الذاكرة المؤقتة.",
   "settingsPlayerTitle": "المشغل",
   "settingsPlayerVideoHWAccelDesc": "استخدام وحدة معالجة الرسومات لعرض الفيديو (موصى به)",
@@ -406,8 +406,8 @@
   "syncDeleteItemDesc": "حذف جميع البيانات التي تمت مزامنتها ل {item}؟",
   "syncDeleteItemTitle": "حذف العنصر الذي تمت مزامنته",
   "syncDeletePopupPermanent": "هذا الإجراء دائم وسيزيل جميع الملفات التي تمت مزامنتها محلياً",
-  "syncPlaylistDeleteTitle": "حذف قائمة التشغيل المُزامنة",
-  "syncPlaylistDeleteContent": "هل تريد أيضاً إزالة المقاطع المُزامنة من قائمة التشغيل هذه؟",
+  "syncPlaylistDeleteTitle": "حذف قائمة التشغيل المتزامنة",
+  "syncPlaylistDeleteContent": "هل تريد أيضاً إزالة المقاطع المتزامنة من هذه القائمة؟",
   "syncPlaylistKeepTracks": "الاحتفاظ بالمقاطع",
   "syncPlaylistRemoveTracks": "إزالة المقاطع",
   "syncDetails": "تفاصيل المزامنة",
@@ -440,9 +440,9 @@
   "videoScalingFillScreenNotif": "ملء الشاشة يتجاوز ملاءمة الفيديو، في الوضع الأفقي",
   "videoScalingFillScreenTitle": "ملء الشاشة",
   "pictureInPictureTitle": "صورة داخل صورة",
-  "pictureInPictureAutoTitle": "صورة داخل صورة تلقائية",
-  "pictureInPictureSubtitle": "الدخول تلقائياً في وضع الصورة داخل الصورة عند مغادرة المشغل. يعمل زر الصورة داخل الصورة في عناصر التحكم دائماً بغض النظر عن هذا الإعداد.",
-  "pictureInPictureNotSupported": "وضع الصورة داخل الصورة غير متاح على هذا الجهاز",
+  "pictureInPictureAutoTitle": "صورة داخل صورة تلقائياً",
+  "pictureInPictureSubtitle": "الدخول تلقائياً في وضع \"صورة داخل صورة\" عند مغادرة المشغّل. زر PiP في عناصر التحكم يعمل دائماً بغض النظر عن هذا الإعداد.",
+  "pictureInPictureNotSupported": "وضع \"صورة داخل صورة\" غير متاح على هذا الجهاز",
   "videoScalingFitHeight": "ملاءمة الارتفاع",
   "videoScalingFitWidth": "ملاءمة العرض",
   "videoScalingScaleDown": "تقليص العرض",
@@ -456,7 +456,7 @@
   "addToNewPlaylist": "قائمة تشغيل جديدة",
   "addItemsToPlaylist": "إضافة {itemLength} من العناصر إلى قائمة التشغيل",
   "addedToPlaylist": "تمت الإضافة إلى قائمة تشغيل {playlistName}",
-  "removedFromPlaylist": "تمت الإزالة من قائمة تشغيل {playlistName}",
+  "removedFromPlaylist": "تمت الإزالة من قائمة التشغيل {playlistName}",
   "syncStatusEnqueued": "في قائمة الانتظار",
   "syncStatusRunning": "قيد التشغيل",
   "syncStatusNotFound": "غير موجود",
@@ -518,7 +518,7 @@
   "unableToPlayMedia": "حدث خطأ في العثور على نوع وسائط متوافق",
   "errorOpeningMedia": "حدث خطأ ما أثناء محاولة تشغيل هذه الوسائط",
   "unableToPlayBooksOnWeb": "الكتب غير مدعومة على الويب في الوقت الحالي",
-  "defaultFilterForLibrary": "اعدادات الفلتر الافتراضي للمكتبة",
+  "defaultFilterForLibrary": "إعداد الفلتر الافتراضي للمكتبة",
   "updateFilterForLibrary": "تحديث الفلتر",
   "removeFilterForLibrary": "إزالة {filter}؟",
   "deleteFilterConfirmation": "هل أنت متأكد من أنك تريد حذف هذا الفلتر؟",
@@ -544,7 +544,7 @@
   "schemeSettingsFruitSalad": "سلطة فواكه",
   "clientSettingsRequireWifiTitle": "يتطلب اتصال Wi-Fi",
   "clientSettingsRequireWifiDesc": "التنزيل فقط عند الاتصال بشبكة Wi-Fi",
-  "libraryShuffleAndPlayItems": "تشغيل العناصر عشوائياً",
+  "libraryShuffleAndPlayItems": "تشغيل العناصر عشوائياً والبدء في التشغيل",
   "libraryPlayItems": "تشغيل العناصر",
   "clientSettingsShowAllCollectionsTitle": "عرض جميع أنواع المجموعات",
   "clientSettingsShowAllCollectionsDesc": "عند التمكين، يتم عرض جميع أنواع المجموعات، بما في ذلك تلك غير المدعومة بواسطة Driftfin",
@@ -552,12 +552,12 @@
   "resumeVideo": "استئناف الفيديو",
   "closeVideo": "إغلاق الفيديو",
   "playNextVideo": "تشغيل الفيديو التالي",
-  "playerSettingsBackendTitle": "الواجهة الخلفية لمُشغِّل الفيديو",
+  "playerSettingsBackendTitle": "الواجهة الخلفية لمُشغِّل الوسائط",
   "playerSettingsBackendDesc": "اختر مشغل الوسائط المفضل لديك لتجربة تشغيل مثالية",
-  "playerSettingsReplayGainTitle": "ReplayGain",
-  "playerSettingsReplayGainDesc": "توحيد مستوى صوت الموسيقى باستخدام علامات ReplayGain.",
+  "playerSettingsReplayGainTitle": "إعادة ضبط مستوى الصوت (ReplayGain)",
+  "playerSettingsReplayGainDesc": "موازنة مستوى صوت الموسيقى باستخدام وسوم ReplayGain.",
   "playerSettingsReplayGainLevelTitle": "مستوى ReplayGain",
-  "playerSettingsReplayGainLevelDesc": "حدد مستوى الصوت المستهدف لتوحيد ReplayGain. المعيار الشائع هو -14 ديسيبل، لكن يمكنك ضبطه حسب تفضيلك.",
+  "playerSettingsReplayGainLevelDesc": "تحديد مستوى الصوت المستهدف لتطبيع ReplayGain. المعيار الشائع هو ‎-14 dB، لكن يمكنك تعديله حسب تفضيلك.",
   "playerSettingsSmartDownmixTitle": "الدمج الذكي للقنوات",
   "playerSettingsSmartDownmixDesc": "تعزيز الحوار مقارنة بالمؤثرات والقنوات الخلفية عند دمج صوت 5.1/7.1 إلى ستيريو.",
   "playerSettingsDialogueBoostTitle": "تعزيز الحوار",
@@ -566,10 +566,10 @@
   "dialogueBoostLow": "منخفض",
   "dialogueBoostMedium": "متوسط",
   "dialogueBoostHigh": "مرتفع",
-  "settingsPlayerCrossfadeTitle": "التلاشي المتقاطع",
-  "settingsPlayerCrossfadeDesc": "التلاشي بين المقاطع غير المتتالية في نفس الألبوم",
-  "settingsPlayerCrossfadeDurationTitle": "مدة التلاشي المتقاطع",
-  "settingsPlayerCrossfadeDurationDesc": "مدة التلاشي المتقاطع",
+  "settingsPlayerCrossfadeTitle": "تدرج بين المقاطع (Crossfade)",
+  "settingsPlayerCrossfadeDesc": "تدرج بين المقاطع غير المتتالية في نفس الألبوم",
+  "settingsPlayerCrossfadeDurationTitle": "مدة التدرج",
+  "settingsPlayerCrossfadeDurationDesc": "مدة التدرج بين المقاطع",
   "defaultLabel": "افتراضي",
   "noVideoPlayerOptions": "الواجهة الخلفية المختارة ليس لديها خيارات",
   "mdkExperimental": "MDK لا يزال في مرحلة تجريبية",
@@ -616,12 +616,14 @@
   "loading": "جارٍ التحميل",
   "exitDriftfinTitle": "خروج فلادر",
   "exitDriftfinDesc": "هل أنت متأكد من أنك تريد إغلاق Driftfin؟",
-  "quitMultipleWindowsDesc": "لديك {count} نوافذ مفتوحة. سيؤدي إنهاء Driftfin إلى إغلاقها جميعاً. هل تريد المتابعة؟",
+  "quitMultipleWindowsDesc": "لديك {count} نوافذ مفتوحة. إغلاق Driftfin سيغلقها جميعاً. هل تريد المتابعة؟",
   "closeWindow": "إغلاق النافذة",
   "castAndCrew": "طاقم العمل والممثلون",
   "guestActor": "{count, plural, one{ممثل ضيف} other{ممثلون ضيوف}}",
   "maxConcurrentDownloadsTitle": "الحد الأقصى للتنزيلات المتزامنة",
   "maxConcurrentDownloadsDesc": "يحدد العدد الأقصى للتنزيلات التي يمكن أن تتم في نفس الوقت. اضبطه على 0 لتعطيل الحد.",
+  "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
+  "smartDownloadBudgetDesc": "Automatically reclaims watched downloads, oldest first, to stay under this storage limit. Unwatched downloads are never removed. Leave empty to disable.",
   "playbackTrackSelection": "اختيار مسار التشغيل",
   "rememberSubtitleSelections": "تذكر اختيارات الترجمة بناءً على العنصر السابق",
   "rememberAudioSelections": "تذكر اختيارات الصوت بناءً على العنصر السابق",
@@ -704,7 +706,7 @@
   "quickConnectPostFailed": "فشل الحصول على رمز الاتصال السريع",
   "quickConnectLoginUsingCode": "استخدام الاتصال السريع",
   "quickConnectEnterCodeDescription": "أدخل الرمز أدناه لتسجيل الدخول",
-  "openJellyfinQuickConnect": "فتح الاتصال السريع لـ Jellyfin",
+  "openJellyfinQuickConnect": "فتح Jellyfin QuickConnect",
   "showMore": "عرض المزيد",
   "showLess": "عرض أقل",
   "itemColorsTitle": "ألوان العناصر",
@@ -893,8 +895,8 @@
   "systemRootFolder": "مجلد النظام الجذري",
   "selectedPath": "المسار المحدد: {path}",
   "recentlyAdded": "تمت إضافته مؤخراً",
-  "recentlyPlayed": "تم تشغيله مؤخراً",
-  "recentlyFavorited": "أُضيف إلى المفضلة مؤخراً",
+  "recentlyPlayed": "شُغّل مؤخراً",
+  "recentlyFavorited": "أُضيف للمفضلة مؤخراً",
   "mostPlayed": "الأكثر تشغيلاً",
   "recentRequests": "الطلبات الأخيرة",
   "trending": "الشائع الآن",
@@ -997,11 +999,11 @@
   "watch": "شاهد",
   "watchChannel": "شاهد {channel}",
   "now": "الآن",
-  "nowPlaying": "قيد التشغيل الآن",
-  "upNext": "التالي",
+  "nowPlaying": "يُشغّل الآن",
+  "upNext": "يعرض تالياً",
   "queue": "قائمة الانتظار",
   "queueIsEmpty": "قائمة الانتظار فارغة",
-  "queueItemCount": "{count} عنصر",
+  "queueItemCount": "{count} عناصر",
   "removeFromQueue": "إزالة من قائمة الانتظار",
   "noPrograms": "لا توجد برامج متاحة",
   "switchChannel": "غيّر القناة",
@@ -1117,9 +1119,9 @@
   "seerrMovies": "استكشاف الأفلام",
   "seerrSeries": "استكشاف المسلسلات",
   "today": "اليوم",
-  "musicDashboard": "لوحة معلومات الموسيقى",
-  "quiet": "هادئ",
-  "loud": "صاخب",
+  "musicDashboard": "لوحة الموسيقى",
+  "quiet": "منخفض",
+  "loud": "مرتفع",
   "share": "مشاركة",
   "setAs": "تعيين كـ",
   "cast": "البث",
@@ -1155,5 +1157,185 @@
   "tastePassportEmpty": "شاهد بعض العناصر وسيظهر ملف تعريف ذوقك هنا",
   "livingHomeBecauseYouWatched": "لأنك شاهدت {name}",
   "livingHomeHiddenGems": "كنوز مخفية تملكها",
-  "livingHomeMoreFromDirector": "المزيد من {name}"
+  "livingHomeMoreFromDirector": "المزيد من {name}",
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "posterColorsTitle": "الألوان المُولَّدة للملصقات",
+  "posterColorsDesc": "استخدام الألوان المُولَّدة للملصقات بدلاً من اللون الافتراضي",
+  "selectRandom": "اختيار عشوائي",
+  "stopSelection": "إيقاف تحديد {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "تشغيل العناصر",
+  "shuffleItems": "تشغيل العناصر عشوائياً",
+  "disc": "القرص {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{مجموعة} other{مجموعات}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "incognitoMode": "وضع التخفي",
+  "incognitoModeDesc": "وضع التخفي يمنع إرسال حالة التشغيل إلى الخادم",
+  "incognito": "التخفي",
+  "incognitoModeGlobal": "وضع التخفي (التطبيق)",
+  "incognitoModeLocal": "وضع التخفي (الملف الشخصي)",
+  "showInSideBar": "إظهار في الشريط الجانبي",
+  "hideInSideBar": "إخفاء من الشريط الجانبي",
+  "showInSideBarDesc": "إظهار هذا الفلتر في الشريط الجانبي للوصول السريع",
+  "applyFilter": "تطبيق الفلتر",
+  "playerSettingsAmbientBlurTitle": "تفعيل التمويه المحيطي",
+  "playerSettingsAmbientBlurDesc": "تفعيل التمويه المحيطي في المشغّل. سيؤدي ذلك إلى تمويه الخلفية خلف المشغّل لتقليل التشتت.",
+  "playerSettingsAmbientBlurDescWarning": "قد يتسبب التمويه المحيطي في مشاكل بالأداء على الأجهزة ذات الإمكانيات المحدودة.",
+  "mediaTypeMusicVideo": "{count, plural, one{فيديو موسيقي} other{فيديوهات موسيقية}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "openSelected": "فتح العناصر المحددة",
+  "discography": "الأعمال الكاملة",
+  "youLiked": "أعجبتك",
+  "instantMixBy": "مزج فوري لـ {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "أحدث المقاطع لـ {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "مفضلات {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "وضع الاسترخاء",
+  "leanBackModeDesc": "تفعيل وضع الاسترخاء على أجهزة أندرويد، حتى إذا أبلغ الجهاز بعدم دعمه.",
+  "leanBackModeInfo": "وضع الاسترخاء مُفعّل افتراضياً على أجهزة AndroidTV. تفعيل هذا الخيار على أجهزة أخرى قد يسبب سلوكاً غير متوقع.",
+  "lyrics": "كلمات الأغنية",
+  "returnToSyncedLyrics": "العودة إلى الكلمات المتزامنة",
+  "noSyncedLyrics": "لا توجد كلمات متزامنة متاحة",
+  "localNetworkPermissionRequest": "السماح بالوصول إلى الشبكة المحلية لاكتشاف الخوادم.",
+  "requestPermission": "طلب الإذن",
+  "localNetworkPermissionDenied": "الوصول إلى الشبكة المحلية مطلوب. قم بتمكين إذن الأجهزة القريبة من إعدادات النظام.",
+  "openSettings": "فتح الإعدادات",
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

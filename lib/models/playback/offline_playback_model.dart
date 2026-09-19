@@ -11,6 +11,7 @@ import 'package:driftfin/models/items/trick_play_model.dart';
 import 'package:driftfin/models/playback/playback_model.dart';
 import 'package:driftfin/models/playback/playback_queue_state.dart';
 import 'package:driftfin/models/syncing/sync_item.dart';
+import 'package:driftfin/providers/incognito_mode_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
 import 'package:driftfin/util/duration_extensions.dart';
 import 'package:driftfin/util/list_extensions.dart';
@@ -71,6 +72,7 @@ class OfflinePlaybackModel extends PlaybackModel {
 
   @override
   Future<PlaybackModel?> playbackStopped(Duration position, Duration? totalDuration, Ref ref) async {
+    if (ref.read(incognitoProvider) == true) return null;
     final effectiveDuration = totalDuration ?? item.overview.runTime ?? Duration.zero;
     final effectivePosition = resolvedStopPosition(position, totalDuration);
     final progress = _progressFor(effectivePosition, effectiveDuration);
@@ -90,6 +92,7 @@ class OfflinePlaybackModel extends PlaybackModel {
 
   @override
   Future<PlaybackModel?> updatePlaybackPosition(Duration position, bool isPlaying, Ref ref) async {
+    if (ref.read(incognitoProvider) == true) return null;
     final effectiveDuration = item.overview.runTime ?? Duration.zero;
     final progress = _progressFor(position, effectiveDuration);
     final isPlayed = UserData.isPlayed(position, effectiveDuration);

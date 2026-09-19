@@ -179,6 +179,11 @@ class _PlayerSettingsPageState extends ConsumerState<PlayerSettingsPage> {
                 trailing: IntInputField(
                   suffix: context.localized.seconds(10),
                   controller: TextEditingController(text: userSettings.skipBackDuration.inSeconds.toString()),
+                  onChanged: (value) {
+                    if (value != null) {
+                      ref.read(userProvider.notifier).setBackwardSpeed(value);
+                    }
+                  },
                   onSubmitted: (value) {
                     if (value != null) {
                       ref.read(userProvider.notifier).setBackwardSpeed(value);
@@ -191,6 +196,11 @@ class _PlayerSettingsPageState extends ConsumerState<PlayerSettingsPage> {
               trailing: IntInputField(
                 suffix: context.localized.seconds(10),
                 controller: TextEditingController(text: userSettings!.skipForwardDuration.inSeconds.toString()),
+                onChanged: (value) {
+                  if (value != null) {
+                    ref.read(userProvider.notifier).setForwardSpeed(value);
+                  }
+                },
                 onSubmitted: (value) {
                   if (value != null) {
                     ref.read(userProvider.notifier).setForwardSpeed(value);
@@ -450,6 +460,24 @@ class _PlayerSettingsPageState extends ConsumerState<PlayerSettingsPage> {
                       ),
                     ),
                 ],
+                if (!kIsWeb && currentPlayer != PlayerOptions.nativePlayer)
+                  Column(children: [
+                    SettingsListTileCheckbox(
+                      label: Text(context.localized.playerSettingsAmbientBlurTitle),
+                      subLabel: Text(context.localized.playerSettingsAmbientBlurDesc),
+                      value: videoSettings.ambientBlur,
+                      onChanged: (value) =>
+                          ref.read(videoPlayerSettingsProvider.notifier).setAmbientBlur(value == true),
+                    ),
+                    AnimatedFadeSize(
+                      child: videoSettings.ambientBlur
+                          ? SettingsMessageBox(
+                              context.localized.playerSettingsAmbientBlurDescWarning,
+                              messageType: MessageType.warning,
+                            )
+                          : const SizedBox.shrink(),
+                    ),
+                  ]),
                 if (currentPlayer == PlayerOptions.nativePlayer)
                   SettingsListTile(
                     label: Text(context.localized.mediaTunnelingTitle),

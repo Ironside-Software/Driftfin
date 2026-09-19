@@ -9,7 +9,7 @@ on:
 jobs:
   linting:
     name: Lint, format & test
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     permissions:
       contents: write
       pull-requests: write
@@ -47,11 +47,18 @@ jobs:
         run: dart run tool/check_translations.dart
 
       - name: Analyze Flutter
+        if: github.event_name != 'workflow_dispatch'
         uses: ValentinVignal/action-dart-analyze@v2.0
         with:
           emojis: false
           fail-on: info
           line-length: 120
+
+      - name: Analyze Flutter (manual)
+        if: github.event_name == 'workflow_dispatch'
+        # The PR action checks changed files through GitHub's compare API;
+        # manual runs have no PR base, so analyze the full project locally.
+        run: flutter analyze --fatal-infos
 
       - name: Run unit & widget tests
         # Both run via `flutter test` (flutter_test, no device needed).

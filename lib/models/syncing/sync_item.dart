@@ -18,6 +18,7 @@ import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/items/media_segments_model.dart';
 import 'package:driftfin/models/items/media_streams_model.dart';
 import 'package:driftfin/models/items/trick_play_model.dart';
+import 'package:driftfin/models/syncing/smart_download_policy.dart';
 import 'package:driftfin/models/syncing/transcode_download_model.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
@@ -70,6 +71,7 @@ abstract class SyncedItem with _$SyncedItem {
 
   File get dataFile => File(joinAll(["$path", "data.json"]));
   File get overlayFile => File(joinAll(["$path", "overlay.json"]));
+  File get lyricsFile => File(joinAll(["$path", "lyrics.json"]));
 
   Future<List<String>> getPlaylistChildIdsAsync() async {
     if (!overlayFile.existsSync()) return [];
@@ -86,6 +88,15 @@ abstract class SyncedItem with _$SyncedItem {
     if (!overlayFile.existsSync()) return false;
     final overlay = jsonDecode(overlayFile.readAsStringSync()) as Map<String, dynamic>;
     return overlay['isTranscoded'] == true;
+  }
+
+  LyricDto? get lyrics {
+    if (!lyricsFile.existsSync()) return null;
+    try {
+      return LyricDto.fromJson(jsonDecode(lyricsFile.readAsStringSync()) as Map<String, dynamic>);
+    } catch (_) {
+      return null;
+    }
   }
 
   BaseItemDto? get data {
@@ -132,6 +143,7 @@ abstract class SyncedItem with _$SyncedItem {
     for (final entity in [
       videoFile,
       overlayFile,
+      lyricsFile,
       Directory(joinAll([directory.path, trickPlayPath])),
       Directory(joinAll([directory.path, chaptersPath])),
     ]) {
@@ -168,6 +180,17 @@ abstract class SyncedItem with _$SyncedItem {
       userData: userData,
     );
   }
+}
+
+/// Maps a downloaded item to the minimal view [SmartDownloadPolicy] reasons
+/// about, so the policy itself never needs to know about `SyncedItem`.
+extension SyncedItemUsageMapping on SyncedItem {
+  SyncedItemUsage get usage => SyncedItemUsage(
+        id: id,
+        fileSizeBytes: fileSize ?? 0,
+        played: userData?.played ?? false,
+        lastPlayed: userData?.lastPlayed,
+      );
 }
 
 extension StatusExtension on TaskStatus {

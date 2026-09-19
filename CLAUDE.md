@@ -70,7 +70,7 @@ l10n/       app_*.arb (+ gitignored generated/)
 
 ## Conventions
 
-- This fork has **diverged** from Fladder — no more upstream merges. Refactor freely; edits no longer need to be conflict-safe. (Origin/license credit stays in `README.md`.)
+- This fork has **diverged** from Fladder. Upstream merges are explicit maintenance tasks; preserve Driftfin features and branding when resolving conflicts. (Origin/license credit stays in `README.md`.)
 - **Conventional Commits.** No `Co-Authored-By: Claude` trailer (`includeCoAuthoredBy: false`).
 - Before pushing: `analyze` clean + `format --line-length 120`. CI (`.github/workflows/checks.yaml`) runs both on PRs (analyze `fail-on: info`).
 - Feature requests/bugs go through GitHub **Issues** (Discussions disabled); roadmap is a public Project board with milestones `v1` and `Store releases`.

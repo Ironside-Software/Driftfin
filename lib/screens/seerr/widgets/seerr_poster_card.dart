@@ -10,6 +10,7 @@ import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/seerr/widgets/seerr_request_popup.dart';
+import 'package:driftfin/screens/seerr/widgets/seerr_watched_button.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
@@ -212,27 +213,34 @@ class SeerrPosterCard extends ConsumerWidget {
             ],
           ),
         ),
-        ExcludeFocus(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                poster.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        Row(
+          children: [
+            Expanded(
+              child: ExcludeFocus(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      poster.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    ClickableText(
+                      opacity: 0.65,
+                      text: poster.releaseYear?.toString() ?? "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
-              ClickableText(
-                opacity: 0.65,
-                text: poster.releaseYear?.toString() ?? "",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+            if (poster.type == SeerrMediaType.movie) SeerrWatchedButton(poster: poster, compact: true),
+          ],
         ),
+        const SizedBox(height: 24),
       ],
     );
 

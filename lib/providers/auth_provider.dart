@@ -13,6 +13,7 @@ import 'package:driftfin/providers/dashboard_provider.dart';
 import 'package:driftfin/providers/favourites_provider.dart';
 import 'package:driftfin/providers/image_provider.dart';
 import 'package:driftfin/providers/library_screen_provider.dart';
+import 'package:driftfin/providers/music_dashboard_provider.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_dashboard_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
@@ -21,6 +22,7 @@ import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/views_provider.dart';
 import 'package:driftfin/screens/login/lock_screen.dart';
 import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
+import 'package:driftfin/services/local_network_permission.dart';
 import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/list_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -180,9 +182,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
     return null;
   }
 
-  Future<void> switchUser() async {
-    clearAllProviders();
-  }
+  Future<void> switchUser() async => clearAllProviders();
 
   void clearAllProviders() {
     ref.read(dashboardProvider.notifier).clear();
@@ -191,17 +191,24 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
     ref.read(userProvider.notifier).clear();
     ref.read(libraryScreenProvider.notifier).clear();
     ref.read(seerrDashboardProvider.notifier).clear();
+    ref.read(musicDashboardProvider.notifier).clear();
   }
 
   Future<void> setServer(String server) async {
     if (state.hasBaseUrl) {
+      if (!await _hasLocalNetworkPermission(DriftfinConfig.baseUrl!)) return;
       await _fetchServerInfo(DriftfinConfig.baseUrl!);
       return;
     }
     final trimmed = server.trim();
     if (trimmed.isEmpty) return;
+    if (!await _hasLocalNetworkPermission(trimmed)) return;
     final result = await probeAndNormalizeUrl(trimmed, probeJellyfinUrl);
     await _fetchServerInfo(result.url);
+  }
+
+  Future<bool> _hasLocalNetworkPermission(String url) async {
+    return ensureLocalNetworkPermission(url, localContext);
   }
 
   List<AccountModel> getSavedAccounts() {

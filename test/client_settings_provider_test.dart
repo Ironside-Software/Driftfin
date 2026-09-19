@@ -35,4 +35,33 @@ void main() {
       expect(container.read(clientSettingsProvider).enableCrashReporting, isFalse);
     });
   });
+
+  group('ClientSettingsNotifier.setSmartDownloadBudget', () {
+    test('has no budget by default', () {
+      expect(container.read(clientSettingsProvider).smartDownloadBudgetBytes, isNull);
+    });
+
+    test('sets a positive budget', () {
+      final notifier = container.read(clientSettingsProvider.notifier);
+
+      notifier.setSmartDownloadBudget(1024);
+      expect(container.read(clientSettingsProvider).smartDownloadBudgetBytes, 1024);
+    });
+
+    test('treats null and non-positive values as "no budget"', () {
+      final notifier = container.read(clientSettingsProvider.notifier);
+
+      notifier.setSmartDownloadBudget(1024);
+      notifier.setSmartDownloadBudget(0);
+      expect(container.read(clientSettingsProvider).smartDownloadBudgetBytes, isNull);
+
+      notifier.setSmartDownloadBudget(1024);
+      notifier.setSmartDownloadBudget(-5);
+      expect(container.read(clientSettingsProvider).smartDownloadBudgetBytes, isNull);
+
+      notifier.setSmartDownloadBudget(1024);
+      notifier.setSmartDownloadBudget(null);
+      expect(container.read(clientSettingsProvider).smartDownloadBudgetBytes, isNull);
+    });
+  });
 }

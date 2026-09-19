@@ -10,6 +10,7 @@ import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/shared/driftfin_logo.dart';
 import 'package:driftfin/screens/shared/route_wrapper.dart';
+import 'package:driftfin/services/local_network_permission.dart';
 
 @RoutePage()
 class SplashScreen extends ConsumerStatefulWidget {
@@ -33,6 +34,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         if (lastUsedAccount == null || ref.read(argumentsStateProvider).newWindow == true) {
           callBackOrNavigate(false);
         } else {
+          !await ensureLocalNetworkPermissions(
+            [lastUsedAccount.credentials.url, lastUsedAccount.credentials.localUrl],
+            context,
+          );
+
           switch (lastUsedAccount.authMethod) {
             case Authentication.autoLogin:
               callBackOrNavigate(true);

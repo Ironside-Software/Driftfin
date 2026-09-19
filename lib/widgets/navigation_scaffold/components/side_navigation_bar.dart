@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
-import 'package:driftfin/models/collection_types.dart';
 import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
-import 'package:driftfin/providers/views_provider.dart';
 import 'package:driftfin/routes/auto_router.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
-import 'package:driftfin/screens/metadata/refresh_metadata.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
-import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/adaptive_fab.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/background_image.dart';
@@ -24,14 +18,12 @@ import 'package:driftfin/widgets/navigation_scaffold/components/destination_mode
 import 'package:driftfin/widgets/navigation_scaffold/components/navigation_body.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/navigation_button.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/settings_user_icon.dart';
+import 'package:driftfin/widgets/navigation_scaffold/components/side_navigation_buttons.dart';
 import 'package:driftfin/widgets/shared/custom_tooltip.dart';
-import 'package:driftfin/widgets/shared/item_actions.dart';
-import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
-import 'package:driftfin/widgets/shared/simple_overflow_widget.dart';
 
 final navBarNode = FocusNode();
 
-class SideNavigationRail extends ConsumerStatefulWidget {
+class SideNavigationRail extends ConsumerWidget {
   final int currentIndex;
   final List<DestinationModel> destinations;
   final String currentLocation;
@@ -47,16 +39,9 @@ class SideNavigationRail extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SideNavigationRail();
-}
-
-class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textDirection = Directionality.of(context);
     final isRtl = textDirection == TextDirection.rtl;
-    final views = ref.watch(viewsProvider.select((value) => value.views));
-    final usePostersForLibrary = ref.watch(clientSettingsProvider.select((value) => value.usePosterForLibrary));
     final expandedSideBar = ref.watch(clientSettingsProvider.select((value) => value.expandSideBar));
 
     final expandedWidth = 200.0;
@@ -64,7 +49,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
     final padding = MediaQuery.paddingOf(context);
     final directionalPadding = EdgeInsetsDirectional.fromSTEB(
       padding.left,
-      padding.top + 8,
+      padding.top,
       padding.right,
       padding.bottom,
     );
@@ -109,7 +94,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
             // as a faint vertical hairline down the sidebar/content seam.
             sideBarWidth: (fullyExpanded ? expandedWidth : collapsedWidth).floorToDouble(),
           ),
-          child: widget.child,
+          child: child,
         ),
         Positioned.fill(
           child: Align(
@@ -187,7 +172,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                                     ),
                               ),
                               onPressed: !largeBar
-                                  ? () => widget.scaffoldKey.currentState?.openDrawer()
+                                  ? () => scaffoldKey.currentState?.openDrawer()
                                   : () => ref
                                       .read(clientSettingsProvider.notifier)
                                       .update((state) => state.copyWith(expandSideBar: !state.expandSideBar)),
@@ -204,196 +189,17 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                             ),
                           ],
                           Expanded(
-                            child: Column(
-                              mainAxisAlignment: !largeBar ? MainAxisAlignment.center : MainAxisAlignment.start,
-                              children: [
-                                ...widget.destinations.mapIndexed(
-                                  (index, destination) => CustomTooltip(
-                                    tooltipContent: expandedSideBar
-                                        ? null
-                                        : Card(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(12),
-                                              child: Text(
-                                                destination.label,
-                                                style: Theme.of(context).textTheme.titleSmall,
-                                              ),
-                                            ),
-                                          ),
-                                    position: tooltipPosition,
-                                    child: destination.toNavigationButton(
-                                      widget.currentIndex == index,
-                                      true,
-                                      navFocusNode: index == 0,
-                                      shouldExpand,
-                                    ),
-                                  ),
-                                ),
-                                if (views.isNotEmpty && largeBar) ...[
-                                  const Divider(
-                                    indent: 32,
-                                    endIndent: 32,
-                                  ),
-                                  Flexible(
-                                    child: SimpleOverflowWidget(
-                                      axis: Axis.vertical,
-                                      children: views.map(
-                                        (view) {
-                                          final selected = context.router.currentUrl.contains(view.id);
-                                          final actions = [
-                                            ItemActionButton(
-                                              label: Text(context.localized.scanLibrary),
-                                              icon: const Icon(IconsaxPlusLinear.refresh),
-                                              action: () => showRefreshPopup(context, view.id, view.name),
-                                            )
-                                          ];
-                                          return CustomTooltip(
-                                            tooltipContent: expandedSideBar
-                                                ? null
-                                                : Container(
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: FladderTheme.smallShape.borderRadius,
-                                                      color: Theme.of(context).colorScheme.surface,
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(12),
-                                                      child: Text(
-                                                        view.name,
-                                                        style: Theme.of(context).textTheme.titleSmall,
-                                                      ),
-                                                    ),
-                                                  ),
-                                            position: tooltipPosition,
-                                            child: view.toNavigationButton(
-                                              selected,
-                                              true,
-                                              shouldExpand,
-                                              () => view.navigateToView(context),
-                                              onSecondaryTapDown: (details) => _showContextMenu(
-                                                context,
-                                                ref,
-                                                details.globalPosition,
-                                                actions,
-                                              ),
-                                              onLongPress: () => showBottomSheetPill(
-                                                context: context,
-                                                content: (context, scrollController) => ListView(
-                                                  shrinkWrap: true,
-                                                  controller: scrollController,
-                                                  children: actions.listTileItems(context, useIcons: true),
-                                                ),
-                                              ),
-                                              customIcon: usePostersForLibrary
-                                                  ? Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: FladderTheme.smallShape.borderRadius,
-                                                      ),
-                                                      clipBehavior: Clip.hardEdge,
-                                                      child: SizedBox.square(
-                                                        dimension: 45,
-                                                        child: DriftfinImage(
-                                                          image: view.imageData?.primary,
-                                                          placeHolder: Card(
-                                                            child: Icon(
-                                                              selected
-                                                                  ? view.collectionType.icon
-                                                                  : view.collectionType.iconOutlined,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : null,
-                                              trailing: actions,
-                                            ),
-                                          );
-                                        },
-                                      ).toList(),
-                                      overflowBuilder: (remainingCount) => CustomTooltip(
-                                        tooltipContent: expandedSideBar
-                                            ? null
-                                            : Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius: FladderTheme.smallShape.borderRadius,
-                                                  color: Theme.of(context).colorScheme.surface,
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(12),
-                                                  child: Text(
-                                                    context.localized.moreOptions,
-                                                    style: Theme.of(context).textTheme.titleSmall,
-                                                  ),
-                                                ),
-                                              ),
-                                        position: tooltipPosition,
-                                        child: PopupMenuButton(
-                                          iconColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.45),
-                                          padding: EdgeInsets.zero,
-                                          tooltip: "",
-                                          icon: ExcludeFocus(
-                                            child: NavigationButton(
-                                              label: context.localized.other,
-                                              selectedIcon: const Icon(IconsaxPlusLinear.arrow_square_down),
-                                              icon: const Icon(IconsaxPlusLinear.arrow_square_down),
-                                              expanded: shouldExpand,
-                                              customIcon: usePostersForLibrary
-                                                  ? ClipRRect(
-                                                      borderRadius: FladderTheme.smallShape.borderRadius,
-                                                      child: const SizedBox.square(
-                                                        dimension: 50,
-                                                        child: Card(
-                                                          child: Icon(IconsaxPlusLinear.arrow_square_down),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : null,
-                                              horizontal: true,
-                                            ),
-                                          ),
-                                          itemBuilder: (context) => views
-                                              .sublist(views.length - remainingCount)
-                                              .map(
-                                                (e) => PopupMenuItem(
-                                                  onTap: () => e.navigateToView(context),
-                                                  child: Row(
-                                                    spacing: 8,
-                                                    children: [
-                                                      usePostersForLibrary
-                                                          ? Padding(
-                                                              padding: const EdgeInsets.symmetric(vertical: 4),
-                                                              child: ClipRRect(
-                                                                borderRadius: FladderTheme.smallShape.borderRadius,
-                                                                child: SizedBox.square(
-                                                                  dimension: 45,
-                                                                  child: DriftfinImage(
-                                                                    image: e.imageData?.primary,
-                                                                    placeHolder: Card(
-                                                                      child: Icon(
-                                                                        e.collectionType.iconOutlined,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            )
-                                                          : Icon(e.collectionType.iconOutlined),
-                                                      Text(e.name),
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                              .toList(),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ],
+                            child: SideNavigationButtons(
+                              largeBar: largeBar,
+                              destinations: destinations,
+                              tooltipPosition: tooltipPosition,
+                              currentIndex: currentIndex,
+                              shouldExpand: shouldExpand,
                             ),
                           ),
                           NavigationButton(
                             label: context.localized.calendarTitle,
-                            selected: widget.currentLocation.contains(const CalendarRoute().routeName),
+                            selected: currentLocation.contains(const CalendarRoute().routeName),
                             selectedIcon: const Icon(IconsaxPlusBold.calendar_1),
                             icon: const Icon(IconsaxPlusLinear.calendar_1),
                             horizontal: true,
@@ -402,7 +208,7 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
                           ),
                           NavigationButton(
                             label: context.localized.settings,
-                            selected: widget.currentLocation.contains(const SettingsRoute().routeName),
+                            selected: currentLocation.contains(const SettingsRoute().routeName),
                             selectedIcon: const Icon(IconsaxPlusBold.setting_3),
                             horizontal: true,
                             expanded: shouldExpand,
@@ -430,18 +236,9 @@ class _SideNavigationRail extends ConsumerState<SideNavigationRail> {
     );
   }
 
-  Future<void> _showContextMenu(BuildContext context, WidgetRef ref, Offset globalPos, List<ItemAction> actions) async {
-    final position = RelativeRect.fromLTRB(globalPos.dx, globalPos.dy, globalPos.dx, globalPos.dy);
-    await showMenu(
-      context: context,
-      position: position,
-      items: actions.popupMenuItems(useIcons: true),
-    );
-  }
-
   AdaptiveFab actionButton(BuildContext context) {
-    return ((widget.currentIndex >= 0 && widget.currentIndex < widget.destinations.length)
-            ? widget.destinations[widget.currentIndex].floatingActionButton
+    return ((currentIndex >= 0 && currentIndex < destinations.length)
+            ? destinations[currentIndex].floatingActionButton
             : null) ??
         AdaptiveFab(
           context: context,

@@ -6,6 +6,17 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/driftfin_image.dart';
+import 'package:driftfin/widgets/shared/item_actions.dart';
+
+Future<void> showItemContextMenu(
+    BuildContext context, WidgetRef ref, Offset globalPos, List<ItemAction> actions) async {
+  final position = RelativeRect.fromLTRB(globalPos.dx, globalPos.dy, globalPos.dx, globalPos.dy);
+  await showMenu(
+    context: context,
+    position: position,
+    items: actions.popupMenuItems(useIcons: true),
+  );
+}
 
 Future<void> showBottomSheetPill({
   ItemBaseModel? item,

@@ -113,5 +113,15 @@ void main() {
       expect(result.reclaimItemIds, ['oldest']);
       expect(result.bytesUsedAfterReclaim, 300);
     });
+
+    test('uses IDs to order two items that both have no lastPlayed', () {
+      const policy = SmartDownloadPolicy(storageBudgetBytes: 300);
+      final result = policy.evaluate([
+        const SyncedItemUsage(id: 'b', fileSizeBytes: 300, played: true),
+        const SyncedItemUsage(id: 'a', fileSizeBytes: 300, played: true),
+      ]);
+
+      expect(result.reclaimItemIds, ['a']);
+    });
   });
 }

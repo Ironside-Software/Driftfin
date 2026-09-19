@@ -30,6 +30,7 @@ import 'package:driftfin/models/items/season_model.dart';
 import 'package:driftfin/models/items/series_model.dart';
 import 'package:driftfin/models/syncing/database_item.dart';
 import 'package:driftfin/models/syncing/download_stream.dart';
+import 'package:driftfin/models/syncing/smart_download_policy.dart';
 import 'package:driftfin/models/syncing/sync_item.dart';
 import 'package:driftfin/models/syncing/sync_settings_model.dart';
 import 'package:driftfin/models/syncing/transcode_download_model.dart';
@@ -223,16 +224,22 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
   Directory get mainDirectory => Directory(path.joinAll([_savePath ?? "", subPath]));
 
   Directory? get saveDirectory {
-    if (kIsWeb) return null;
-    final directory = _savePath != null
-        ? Directory(path.joinAll([_savePath ?? "", subPath, ref.read(userProvider)?.id ?? "UnknownUser"]))
-        : null;
-    directory?.createSync(recursive: true);
-    if (directory?.existsSync() == true) {
-      final noMedia = File(path.joinAll([directory?.path ?? "", ".nomedia"]));
-      noMedia.writeAsString('');
+    try {
+      if (kIsWeb) return null;
+      final directory = _savePath != null
+          ? Directory(path.joinAll([_savePath ?? "", subPath, ref.read(userProvider)?.id ?? "UnknownUser"]))
+          : null;
+      directory?.createSync(recursive: true);
+      if (directory?.existsSync() == true) {
+        final noMedia = File(path.joinAll([directory?.path ?? "", ".nomedia"]));
+        noMedia.writeAsString('');
+        noMedia.createSync();
+      }
+      return directory;
+    } catch (e) {
+      log('Error accessing save directory: ${e.toString()}');
+      return null;
     }
-    return directory;
   }
 
   String? get syncPath => saveDirectory?.path;
@@ -252,7 +259,32 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
 
   Future<void> refresh() async => state = state.copyWith(items: _rootSyncItems(await _db.getAllItems.get()));
 
-  Future<List<SyncedItem>> getNestedChildren(SyncedItem item) async {
+  /// Reclaims watched Smart Downloads (oldest-first) until on-disk usage is
+  /// back within the user's configured storage budget. No-ops when no budget
+  /// is set. See [SmartDownloadPolicy] for the (conservative) selection rules.
+  Future<void> checkAndReclaimStorage() async {
+    final budget = ref.read(clientSettingsProvider.select((value) => value.smartDownloadBudgetBytes));
+    if (budget == null) return;
+
+    final allItems = await _db.getAllItems.get();
+    final downloadedItems = allItems.where((item) => !item.syncing && !item.markedForDelete && item.hasVideoFile);
+
+    final result =
+        SmartDownloadPolicy(storageBudgetBytes: budget).evaluate(downloadedItems.map((item) => item.usage).toList());
+
+    if (result.reclaimItemIds.isEmpty) return;
+
+    for (final id in result.reclaimItemIds) {
+      final item = await getSyncedItem(id);
+      if (item == null) continue;
+      await _deleteSyncedItemAndFiles(item);
+    }
+
+    await refresh();
+  }
+
+  Future<List<SyncedItem>> getNestedChildren(SyncedItem? item) async {
+    if (item == null) return [];
     if (item.itemModel?.type == FladderItemType.playlist) {
       return _getPlaylistChildrenFromOverlay(item);
     }
@@ -709,6 +741,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
 
     if (isAudioItem) {
       await writeMusicOverlayFile(syncItem, effectiveMusicTranscodeModel);
+      await _saveSyncedLyrics(syncItem);
     } else {
       await writeOverlayFile(syncItem, effectiveTranscodeModel, subtitles);
     }
@@ -727,7 +760,6 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
       final directOptions = {
         'Static': 'true',
         'mediaSourceId': mediaSource!.id,
-        'api_key': user.credentials.token,
       };
       downloadUrl = buildServerUrl(
         ref,
@@ -848,6 +880,10 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
             .toList();
       }
       await _db.insertMultipleEntries([updatedItem, ...children]);
+
+      if (played) {
+        await checkAndReclaimStorage();
+      }
     });
   }
 
@@ -861,6 +897,23 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
       final updatedItem = item.copyWith(userData: updatedUserData, unSyncedData: !responseSuccessful);
       await _db.insertItem(updatedItem);
     });
+  }
+
+  Future<void> _saveSyncedLyrics(SyncedItem syncItem) async {
+    try {
+      final response = await api.audioItemIdLyricsGet(itemId: syncItem.id);
+      final lyrics = response.body;
+      if (lyrics == null) {
+        if (syncItem.lyricsFile.existsSync()) {
+          await syncItem.lyricsFile.delete();
+        }
+        return;
+      }
+
+      await syncItem.lyricsFile.writeAsString(jsonEncode(lyrics.toJson()));
+    } catch (e) {
+      log('Error saving lyrics for item ${syncItem.id}: ${e.toString()}');
+    }
   }
 }
 
