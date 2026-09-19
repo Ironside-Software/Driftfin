@@ -73,7 +73,7 @@ namespace Jellyfin.Plugin.Driftfin
                         var needsEpisodes = type == "tv" && item["numberOfEpisodes"] is null
                             && hasLocalSeries?.Invoke(JsonSerializer.SerializeToElement(item)) == true;
                         if (!needsOwnership && !needsEpisodes) continue;
-                        var id = item["id"]?.GetValue<int>();
+                        var id = (item["tmdbId"] ?? item["id"])?.GetValue<int>();
                         if (id is null or <= 0) continue;
                         var route = $"api/v1/{type}/{id}";
                         if (!details.TryGetValue(route, out var detail))

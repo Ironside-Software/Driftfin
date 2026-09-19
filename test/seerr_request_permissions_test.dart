@@ -12,6 +12,7 @@ import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/models/items/images_models.dart';
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/screens/seerr/widgets/seerr_request_popup.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout_model.dart';
@@ -41,6 +42,13 @@ class _User extends User {
 
   @override
   set userState(AccountModel? account) => state = account;
+}
+
+class _Details extends SeerrDetails {
+  late Future<void> pending;
+
+  @override
+  Future<void> fetch() => pending = super.fetch();
 }
 
 final _movie = SeerrDashboardPosterModel(
@@ -168,6 +176,120 @@ void main() {
           return pending.future;
         }
         return _response(request, SeerrPermission.requestMovie.bit);
+      }),
+    );
+  });
+
+  test('details retain the latest media state after recommendations finish', () async {
+    final details = _Details();
+    final provider = seerrDetailsProvider(tmdbId: 550, mediaType: SeerrMediaType.movie);
+    var detailCalls = 0;
+    await http.runWithClient(
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            userProvider.overrideWith(_User.new),
+            offlineStateProvider.overrideWith((ref) => false),
+            provider.overrideWith(() => details),
+          ],
+        );
+        addTearDown(container.dispose);
+        final subscription = container.listen(provider, (_, _) {});
+        addTearDown(subscription.close);
+        await details.pending;
+        expect(container.read(provider).poster?.mediaInfo?.status, 2);
+        expect(container.read(provider).currentUser?.id, 42);
+      },
+      () => MockClient((request) async {
+        if (request.url.path.endsWith('/movie/550')) {
+          return http.Response(
+            jsonEncode({
+              'id': 550,
+              'title': 'Movie',
+              'mediaInfo': {'status': ++detailCalls},
+            }),
+            200,
+            headers: {'content-type': 'application/json'},
+          );
+        }
+        if (request.url.path.endsWith('/auth/me')) return _response(request, SeerrPermission.requestMovie.bit);
+        return http.Response('{}', 200, headers: {'content-type': 'application/json'});
+      }),
+    );
+  });
+
+  for (final fail in [false, true]) {
+    test('closing details ignores a late ${fail ? 'error' : 'response'}', () async {
+      final reachedDetails = Completer<void>();
+      final pending = Completer<http.Response>();
+      final details = _Details();
+      final provider = seerrDetailsProvider(tmdbId: 550, mediaType: SeerrMediaType.movie);
+      await http.runWithClient(
+        () async {
+          final container = ProviderContainer(
+            overrides: [
+              userProvider.overrideWith(_User.new),
+              offlineStateProvider.overrideWith((ref) => false),
+              provider.overrideWith(() => details),
+            ],
+          );
+          addTearDown(container.dispose);
+          final subscription = container.listen(provider, (_, _) {});
+          await reachedDetails.future;
+          subscription.close();
+          await container.pump();
+          expect(container.exists(provider), isFalse);
+          if (fail) {
+            pending.completeError(StateError('late failure'));
+          } else {
+            pending.complete(http.Response('{"id":550,"title":"Old account"}', 200));
+          }
+          await details.pending;
+          expect(container.exists(provider), isFalse);
+        },
+        () => MockClient((request) async {
+          reachedDetails.complete();
+          return pending.future;
+        }),
+      );
+    });
+  }
+
+  test('account change clears details and ignores the previous account response', () async {
+    final reachedDetails = Completer<void>();
+    final pending = Completer<http.Response>();
+    final details = _Details();
+    final provider = seerrDetailsProvider(tmdbId: 550, mediaType: SeerrMediaType.movie, poster: _movie);
+    var calls = 0;
+    await http.runWithClient(
+      () async {
+        final container = ProviderContainer(
+          overrides: [
+            userProvider.overrideWith(_User.new),
+            offlineStateProvider.overrideWith((ref) => false),
+            provider.overrideWith(() => details),
+          ],
+        );
+        addTearDown(container.dispose);
+        final subscription = container.listen(provider, (_, _) {});
+        addTearDown(subscription.close);
+        await reachedDetails.future;
+        final oldFetch = details.pending;
+        container.read(userProvider.notifier).userState = container.read(userProvider)!.copyWith(id: 'second');
+        await container.pump();
+        await details.pending;
+        expect(container.read(provider).poster, isNull);
+        pending.complete(http.Response('{"id":550,"title":"Old account"}', 200));
+        await oldFetch;
+        expect(container.read(provider).poster, isNull);
+        expect(container.read(provider).currentUser, isNull);
+      },
+      () => MockClient((request) async {
+        if (++calls == 1) {
+          reachedDetails.complete();
+          return pending.future;
+        }
+        return http.Response('{}', 404);
       }),
     );
   });

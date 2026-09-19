@@ -152,7 +152,7 @@ namespace Jellyfin.Plugin.Driftfin
                     if (CanSeeRequest(request)) requests.Add(Request(request));
             result["requests"] = requests;
             // Global Seerr availability cannot establish access to a Jellyfin item.
-            result["status"] = match?.Status ?? (requests.Any(r => r?["status"]?.GetValue<int>() == 2) ? 3 : requests.Count > 0 ? 2 : 1);
+            result["status"] = match?.Status ?? (requests.Any(r => r?["status"]?.GetValue<int>() == 2) ? 3 : requests.Any(r => r?["status"]?.GetValue<int>() == 1) ? 2 : 1);
             if (match?.Playable == true) result["jellyfinMediaId"] = match.ItemId;
             var seasonStates = new Dictionary<int, int>();
             var fourKSeasonStates = new Dictionary<int, int>();

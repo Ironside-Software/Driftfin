@@ -128,6 +128,10 @@ namespace Jellyfin.Plugin.Driftfin
             }
             foreach (var key in new[] { "serverId", "profileId" }) if (result[key] is not null) Number(result, key, 0);
             if (result["rootFolder"] is not null && !Matches(Text(result, "rootFolder"), "^folder:[0-9]+$")) Invalid();
+            // Seerr attributes requests to X-API-User but does not enforce advanced
+            // option permissions. Ordinary requests must use the server's defaults.
+            if (!identity.HasPermission(16 | 8192))
+                foreach (var key in new[] { "serverId", "profileId", "rootFolder", "tags" }) result.Remove(key);
             return result;
         }
 
