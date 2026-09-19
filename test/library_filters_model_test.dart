@@ -44,7 +44,8 @@ void main() {
 
     test('uses the provided id/isFavourite when given', () {
       final searchModel = const LibrarySearchModel(views: {}, filters: LibraryFilterModel());
-      final result = LibraryFiltersModel.fromLibrarySearch('Saved', searchModel, id: 'explicit-id', isFavourite: true);
+      final result =
+          LibraryFiltersModel.fromLibrarySearch('Saved', searchModel).copyWith(id: 'explicit-id', isFavourite: true);
       expect(result.id, 'explicit-id');
       expect(result.isFavourite, isTrue);
     });

@@ -1,6 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:driftfin/providers/shared_provider.dart';
+import 'package:driftfin/providers/incognito_mode_provider.dart';
+import 'package:driftfin/models/item_base_model.dart';
+import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
@@ -12,6 +18,44 @@ void main() {
 
   TraktApi api(http.Client client, {String? token}) =>
       TraktApi(clientId: id, clientSecret: secret, accessToken: token, client: client);
+
+  test('incognito mode suppresses Trakt scrobbles', () async {
+    SharedPreferences.setMockInitialValues({
+      'traktSettings': jsonEncode(const TraktSettings(
+        clientId: 'test-client',
+        clientSecret: 'test-secret',
+        enabled: true,
+        tokens: TraktTokens(accessToken: 'test-token', refreshToken: '', createdAt: 0, expiresIn: 10000),
+      ).toJson()),
+    });
+    final prefs = await SharedPreferences.getInstance();
+    var requests = 0;
+    await http.runWithClient(() async {
+      final container = ProviderContainer(overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        incognitoProvider.overrideWithValue(true),
+      ]);
+      addTearDown(container.dispose);
+      expect(container.read(traktProvider).isActive, isTrue);
+      await container.read(traktProvider.notifier).scrobbleItem(
+            item: ItemBaseModel.fromBaseDto(
+                const BaseItemDto(
+                  id: 'movie',
+                  type: BaseItemKind.movie,
+                  providerIds: {'Tmdb': '42'},
+                ),
+                null),
+            action: TraktScrobbleAction.start,
+            progress: 10,
+            nowSeconds: 1,
+          );
+      expect(requests, 0);
+    },
+        () => MockClient((request) async {
+              requests++;
+              return http.Response('{}', 200);
+            }));
+  });
 
   group('TraktApi auth', () {
     test('requestDeviceCode parses the device code + sends api key', () async {

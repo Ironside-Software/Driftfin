@@ -101,8 +101,8 @@
   "addToCollection": "Dodaj do kolekcji",
   "addToPlaylist": "Dodaj do playlisty",
   "addToQueue": "Dodaj do kolejki",
-  "instantMix": "Szybki mix",
-  "addedToQueue": "{count, plural, one{Dodano {count} utwór do kolejki} few{Dodano {count} utwory do kolejki} many{Dodano {count} utworów do kolejki} other{Dodano {count} utworów do kolejki}}",
+  "instantMix": "Mieszanka",
+  "addedToQueue": "{count, plural, one{Dodano {count} utwór do kolejki} few{Dodano {count} utwory do kolejki} other{Dodano {count} utworów do kolejki}}",
   "advanced": "Zaawansowane",
   "all": "Wszystkie",
   "amoledBlack": "Amoledowa czerń",
@@ -112,13 +112,13 @@
   "appLockTitle": "Ustaw metodę logowania dla {userName}",
   "ascending": "Rosnąco",
   "audio": "{count, plural, one{Dźwięki} few{Dźwięki} other{Dźwięków}}",
-  "audioPlayerPlaybackOptionsTitle": "Opcje odtwarzania",
-  "audioPlayerRepeatAll": "Powtarzaj wszystko",
+  "audioPlayerPlaybackOptionsTitle": "Ustawienia odtwarzania",
+  "audioPlayerRepeatAll": "Powtarzaj wszystkie",
   "audioPlayerRepeatOff": "Powtarzanie wyłączone",
   "audioPlayerRepeatOne": "Powtarzaj jeden",
-  "audioPlayerShuffle": "Losowo",
+  "audioPlayerShuffle": "Miksuj",
   "showArtist": "Pokaż artystę",
-  "track": "{count, plural, one{Utwór} few{Utwory} many{Utworów} other{Utworów}}",
+  "track": "{count, plural, one{Utwór} few {Utwory} other{Utworów}}",
   "autoPlay": "Odtwarzanie automatyczne",
   "backgroundBlur": "Rozmycie tła",
   "backgroundOpacity": "Przyciemnienie tła",
@@ -231,7 +231,7 @@
   "mediaTypeFolder": "{count, plural, one{Folder} few{Foldery} many{Folderów} other{Folderów}}",
   "mediaTypeMovie": "{count, plural, one{Film} few{Filmy} many{Filmów} other{Filmów}}",
   "mediaTypePerson": "{count, plural, one{Osoba} few{Osoby} many{Osób} other{Osób}}",
-  "mediaTypeArtists": "{count, plural, one{Artysta} few{Artyści} many{Artystów} other{Artystów}}",
+  "mediaTypeArtists": "{count, plural, one{Artysta} few {Artystów} other{Artystów}}",
   "mediaTypePhoto": "{count, plural, one{Zdjęcie} few{Zdjęcia} many{Zdjęć} other{Zdjęć}}",
   "mediaTypePhotoAlbum": "{count, plural, one{Album fotograficzny} few{Albumy fotograficzne} many{Albumów fotograficznych} other{Albumów fotograficznych}}",
   "mediaTypePlaylist": "{count, plural, one{Playlista} few{Playlisty} many{Playlist} other{Playlist}}",
@@ -323,7 +323,7 @@
   "saved": "Zapisano",
   "scanBiometricHint": "Zweryfikuj tożsamość",
   "scanLibrary": "Skanuj bibliotekę",
-  "authenticateWithBiometrics": "Użyj biometrii, aby uwierzytelnić {user}",
+  "authenticateWithBiometrics": "Użyj biometrii do uwierzytelnienia {user}",
   "scanningName": "Skanowanie - {name}…",
   "scrollToTop": "Przewiń do góry",
   "search": "Wyszukaj",
@@ -363,8 +363,8 @@
   "settingsPlayerNativeLibassAccelDesc": "Użyj w odtwarzaczu wideo renderowania za pomocą \"libass\" dla napisów",
   "settingsPlayerNativeLibassAccelTitle": "Natywne napisy \"libass\"",
   "settingsPlayerBufferSizeTitle": "Wielkość bufora wideo",
-  "settingsPlayerPlayPauseFadeTitle": "Płynne ściszanie przy odtwarzaniu/pauzie",
-  "settingsPlayerPlayPauseFadeDesc": "Płynnie zwiększaj i zmniejszaj głośność podczas odtwarzania lub pauzy",
+  "settingsPlayerPlayPauseFadeTitle": "Zanikanie głośności przy pauzie",
+  "settingsPlayerPlayPauseFadeDesc": "Zwiększanie i zmniejszanie głośności podczas odtwarzania lub pauzy",
   "settingsPlayerBufferSizeDesc": "Konfiguruje rozmiar bufora dla odtwarzania wideo, określając jak wiele danych jest załadowanych w pamięci cache.",
   "settingsPlayerTitle": "Odtwarzacz",
   "settingsPlayerVideoHWAccelDesc": "Użyj karty graficznej do renderowania wideo (zalecane)",
@@ -388,7 +388,7 @@
   "shadow": "Cień",
   "backgroundColor": "Kolor tła",
   "showAlbum": "Pokaż albumy",
-  "showDetails": "Pokaż detale",
+  "showDetails": "Pokaż szczegóły",
   "showEmpty": "Pokaż puste",
   "shuffleVideos": "Losuj wideo",
   "somethingWentWrong": "Coś poszło nie tak",
@@ -406,8 +406,8 @@
   "syncDeleteItemDesc": "Czy chcesz usunąć wszystkie pobrane dane dla {item}?",
   "syncDeleteItemTitle": "Usuń pobrany element",
   "syncDeletePopupPermanent": "Ta akcja jest nieodwracalna i usunie wszystkie lokalnie pobrane pliki",
-  "syncPlaylistDeleteTitle": "Usuń zsynchronizowaną playlistę",
-  "syncPlaylistDeleteContent": "Czy chcesz również usunąć utwory zsynchronizowane z tej playlisty?",
+  "syncPlaylistDeleteTitle": "Usuń zsynchronizowaną listę odtwarzania",
+  "syncPlaylistDeleteContent": "Czy chcesz również usunąć utwory zsynchronizowane z tą playlistą?",
   "syncPlaylistKeepTracks": "Zachowaj utwory",
   "syncPlaylistRemoveTracks": "Usuń utwory",
   "syncDetails": "Odśwież pobrane",
@@ -441,8 +441,8 @@
   "videoScalingFillScreenTitle": "Wypełnij ekran",
   "pictureInPictureTitle": "Obraz w obrazie",
   "pictureInPictureAutoTitle": "Automatyczny obraz w obrazie",
-  "pictureInPictureSubtitle": "Automatycznie włączaj tryb obrazu w obrazie po opuszczeniu odtwarzacza. Przycisk PiP w kontrolkach zawsze działa niezależnie od tego ustawienia.",
-  "pictureInPictureNotSupported": "Obraz w obrazie nie jest dostępny na tym urządzeniu",
+  "pictureInPictureSubtitle": "Automatycznie włączaj tryb obrazu w obrazie po wyjściu z odtwarzacza. Przycisk jednakże w elementach sterujących zawsze działa, niezależnie od tego ustawienia.",
+  "pictureInPictureNotSupported": "Funkcja obrazu w obrazie nie jest dostępna na tym urządzeniu",
   "videoScalingFitHeight": "Dopasuj Wysokość",
   "videoScalingFitWidth": "Dopasuj Szerokość",
   "videoScalingScaleDown": "Skaluj w Dół",
@@ -518,7 +518,7 @@
   "unableToPlayMedia": "Był błąd podczas wyszukiwania kompatybilnego typu mediów",
   "errorOpeningMedia": "Coś poszło nie tak z próbą odtworzenia",
   "unableToPlayBooksOnWeb": "Książki nie są wspierane w wersji przeglądarkowej",
-  "defaultFilterForLibrary": "Domyślny filtr dla tej biblioteki",
+  "defaultFilterForLibrary": "Ustaw domyślny filtr dla tej biblioteki",
   "updateFilterForLibrary": "Zaktualizuj filtr",
   "removeFilterForLibrary": "Usunąć {filter}?",
   "deleteFilterConfirmation": "Czy jesteś pewien, czy chcesz usunąć ten filtr?",
@@ -554,10 +554,10 @@
   "playNextVideo": "Odtwórz następne wideo",
   "playerSettingsBackendTitle": "Backend odtwarzacza wideo",
   "playerSettingsBackendDesc": "Wybierz twój preferowany odtwarzacz multimediów dla twojego optymalnego doświadczenia",
-  "playerSettingsReplayGainTitle": "ReplayGain",
-  "playerSettingsReplayGainDesc": "Normalizuj głośność muzyki przy użyciu tagów ReplayGain.",
-  "playerSettingsReplayGainLevelTitle": "Poziom ReplayGain",
-  "playerSettingsReplayGainLevelDesc": "Ustaw docelowy poziom głośności dla normalizacji ReplayGain. Powszechnym standardem jest -14 dB, ale możesz dostosować go według własnych preferencji.",
+  "playerSettingsReplayGainTitle": "Wyrównywanie głośności",
+  "playerSettingsReplayGainDesc": "Normalizuj głośność muzyki korzystając z tagów zdefiniowanych w utworze.",
+  "playerSettingsReplayGainLevelTitle": "Poziom wyrównywania głośności",
+  "playerSettingsReplayGainLevelDesc": "Ustaw docelowy poziom głośności dla normalizacji wyrównywania głośności. Typowym standardem jest -14 dB, ale możesz go dostosować do swoich preferencji.",
   "playerSettingsSmartDownmixTitle": "Inteligentny downmix",
   "playerSettingsSmartDownmixDesc": "Wzmocnij dialogi względem efektów i tylnych kanałów podczas miksowania dźwięku 5.1/7.1 do stereo.",
   "playerSettingsDialogueBoostTitle": "Wzmocnienie dialogów",
@@ -566,10 +566,10 @@
   "dialogueBoostLow": "Niski",
   "dialogueBoostMedium": "Średni",
   "dialogueBoostHigh": "Wysoki",
-  "settingsPlayerCrossfadeTitle": "Płynne przejście",
-  "settingsPlayerCrossfadeDesc": "Płynne przejście między utworami, które nie następują bezpośrednio po sobie w tym samym albumie",
-  "settingsPlayerCrossfadeDurationTitle": "Czas płynnego przejścia",
-  "settingsPlayerCrossfadeDurationDesc": "Czas trwania płynnego przejścia",
+  "settingsPlayerCrossfadeTitle": "Zanikanie",
+  "settingsPlayerCrossfadeDesc": "Zanikanie między utworami, które nie występują jeden po drugim na tym samym albumie",
+  "settingsPlayerCrossfadeDurationTitle": "Czas trwania zanikania",
+  "settingsPlayerCrossfadeDurationDesc": "Czas trwania przejścia między utworami",
   "defaultLabel": "Domyślny",
   "noVideoPlayerOptions": "Wybrany backend nie ma żadnych opcji",
   "mdkExperimental": "MDK jest dalej w fazie eksperymentalnej",
@@ -616,10 +616,10 @@
   "loading": "Ładowanie",
   "exitDriftfinTitle": "Wyjdź z Driftfina",
   "exitDriftfinDesc": "Czy jesteś pewien, że chcesz zamknąć Driftfina?",
-  "quitMultipleWindowsDesc": "Masz otwarte {count} okna. Zamknięcie Driftfina zamknie je wszystkie. Czy chcesz kontynuować?",
+  "quitMultipleWindowsDesc": "Masz otwartych {count} okien. Zamknięcie Driftfina spowoduje zamknięcie ich wszystkich. Czy chcesz kontynuować?",
   "closeWindow": "Zamknij okno",
   "castAndCrew": "Obsada i Ekipa",
-  "guestActor": "{count, plural, one{Gość-Aktor} few{Goście-Aktorzy} many{Gości-Aktorów} other{Gości-Aktorów}}",
+  "guestActor": "{count, plural, one{Aktor gościnny} few{Aktorzy gościnni} many{Aktorzy gościnni} other{Aktorzy gościnni}}",
   "maxConcurrentDownloadsTitle": "Maksymalne współbieżne pobierania",
   "maxConcurrentDownloadsDesc": "Ustawia maksymalną liczbę pobrań, które mogą być uruchamiane jednocześnie. Ustaw 0 aby wyłączyć limit.",
   "smartDownloadBudgetTitle": "Smart Downloads storage budget (MB)",
@@ -631,8 +631,8 @@
   "rememberAudioSelectionsDesc": "Spróbuj ustawić ścieżkę audio na najbliższe trafienie do ostatniego wideo.",
   "similarToRecentlyPlayed": "Po obejrzeniu",
   "similarToLikedItem": "Bo polubiono",
-  "hasDirectorFromRecentlyPlayed": "Ma reżysera z niedawno odtwarzanych",
-  "hasActorFromRecentlyPlayed": "Ma aktora z niedawno odtwarzanych",
+  "hasDirectorFromRecentlyPlayed": "Ma reżysera z ostatnio odtwarzanych",
+  "hasActorFromRecentlyPlayed": "Ma aktora z ostatnio odtwarzanych",
   "hasLikedDirector": "Ma polubionych reżyserów",
   "hasLikedActor": "Ma polubionych aktorów",
   "latest": "Ostatnie",
@@ -706,7 +706,7 @@
   "quickConnectPostFailed": "Nie udało się pobrać kodu szybkiego połączenia",
   "quickConnectLoginUsingCode": "Logowanie za pomocą szybkiego połączenia",
   "quickConnectEnterCodeDescription": "Wprowadź poniższy kod aby się zalogować",
-  "openJellyfinQuickConnect": "Otwórz Jellyfin Szybkie połączenie",
+  "openJellyfinQuickConnect": "Otwórz Jellyfin QuickConnect",
   "showMore": "Pokaż więcej",
   "showLess": "Pokaż mniej",
   "itemColorsTitle": "Kolory elementu",
@@ -894,9 +894,9 @@
   "selectFolderToAdd": "Wybierz folder aby dodać",
   "systemRootFolder": "Główny folder systemu",
   "selectedPath": "Wybrana ścieżka: {path}",
-  "recentlyAdded": "Niedawno dodane",
+  "recentlyAdded": "Ostatnio dodano",
   "recentlyPlayed": "Ostatnio odtwarzane",
-  "recentlyFavorited": "Ostatnio dodane do ulubionych",
+  "recentlyFavorited": "Ostatnio polubione",
   "mostPlayed": "Najczęściej odtwarzane",
   "recentRequests": "Ostatnie żądania",
   "trending": "Popularne",
@@ -999,8 +999,8 @@
   "watch": "Obejrzyj",
   "watchChannel": "Obejrzyj {channel}",
   "now": "Teraz",
-  "nowPlaying": "Teraz odtwarzane",
-  "upNext": "Następne",
+  "nowPlaying": "Teraz gra",
+  "upNext": "Za chwilę",
   "queue": "Kolejka",
   "queueIsEmpty": "Kolejka jest pusta",
   "queueItemCount": "{count} elementów",
@@ -1119,7 +1119,7 @@
   "seerrMovies": "Odkryj filmy",
   "seerrSeries": "Odkryj seriale",
   "today": "Dzisiaj",
-  "musicDashboard": "Kokpit muzyczny",
+  "musicDashboard": "Panel muzyczny",
   "quiet": "Cicho",
   "loud": "Głośno",
   "share": "Udostępnij",
@@ -1157,5 +1157,187 @@
   "tastePassportEmpty": "Obejrzyj kilka rzeczy, a Twój profil gustu pojawi się tutaj",
   "livingHomeBecauseYouWatched": "Bo obejrzałeś {name}",
   "livingHomeHiddenGems": "Ukryte perełki, które posiadasz",
-  "livingHomeMoreFromDirector": "Więcej od {name}"
+  "livingHomeMoreFromDirector": "Więcej od {name}",
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@quitMultipleWindowsDesc": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@pictureInPictureNotSupported": {
+    "description": "Snackbar shown when the user taps the PiP button and the OS reports it unsupported"
+  },
+  "@pictureInPictureSubtitle": {
+    "description": "Subtitle of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "applyFilter": "Zastosuj filtry",
+  "showInSideBar": "Pokaż w pasku bocznym",
+  "hideInSideBar": "Ukryj z paska bocznego",
+  "showInSideBarDesc": "Pokaż ten filtr w pasku bocznym dla szybkiego dostępu",
+  "mediaTypeCollection": "{count, plural, one{Kolekcja} other{Kolekcje}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "posterColorsTitle": "Generowane kolory okładek",
+  "posterColorsDesc": "Zamiast domyślnego koloru użyj wygenerowanych kolorów dla plakatów",
+  "selectRandom": "Wybierz losowo",
+  "stopSelection": "Przestań zaznaczać {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Odtwórz elementy",
+  "shuffleItems": "Miksuj elementy",
+  "disc": "Płyta {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Tryb incognito",
+  "incognitoModeGlobal": "Tryb incognito (Aplikacja)",
+  "incognitoModeLocal": "Tryb incognito (Profil)",
+  "incognitoModeDesc": "Tryb incognito wyłącza wysyłanie statusu odtwarzania do serwera",
+  "mediaTypeMusicVideo": "{count, plural, one{Music Video} other{Music Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "showOnDashboard": "Show on dashboard",
+  "playerSettingsAmbientBlurTitle": "Enable ambient blur",
+  "playerSettingsAmbientBlurDesc": "Enable ambient blur in the player. This will blur the background behind the player to reduce distractions.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur can cause performance issues on lower-end devices.",
+  "openSelected": "Open selected",
+  "discography": "Discography",
+  "youLiked": "You liked",
+  "instantMixBy": "Instant Mix of {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Latest tracks by {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorites of {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back Mode",
+  "leanBackModeDesc": "Enable lean-back mode on Android devices, even if the device reports back as false.",
+  "leanBackModeInfo": "Lean-back mode is re-enabled by default on AndroidTV devices. Toggling this option on non-AndroidTV devices may cause unexpected behavior.",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }

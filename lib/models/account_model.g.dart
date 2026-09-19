@@ -6,47 +6,35 @@ part of 'account_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_AccountModel _$AccountModelFromJson(Map<String, dynamic> json) =>
-    _AccountModel(
+_AccountModel _$AccountModelFromJson(Map<String, dynamic> json) => _AccountModel(
       name: json['name'] as String,
       id: json['id'] as String,
       avatar: json['avatar'] as String,
       lastUsed: DateTime.parse(json['lastUsed'] as String),
-      authMethod:
-          $enumDecodeNullable(_$AuthenticationEnumMap, json['authMethod']) ??
-              Authentication.autoLogin,
+      authMethod: $enumDecodeNullable(_$AuthenticationEnumMap, json['authMethod']) ?? Authentication.autoLogin,
       askForAuthOnLaunch: json['askForAuthOnLaunch'] as bool? ?? false,
       localPin: json['localPin'] as String? ?? "",
       credentials: const CredentialsConverter().fromJson(json['credentials']),
       seerrCredentials: json['seerrCredentials'] == null
           ? null
-          : SeerrCredentialsModel.fromJson(
-              json['seerrCredentials'] as Map<String, dynamic>),
-      latestItemsExcludes: (json['latestItemsExcludes'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
-      searchQueryHistory: (json['searchQueryHistory'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList() ??
-          const [],
+          : SeerrCredentialsModel.fromJson(json['seerrCredentials'] as Map<String, dynamic>),
+      latestItemsExcludes:
+          (json['latestItemsExcludes'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+      searchQueryHistory: (json['searchQueryHistory'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       quickConnectState: json['quickConnectState'] as bool? ?? false,
       libraryFilters: (json['libraryFilters'] as List<dynamic>?)
-              ?.map((e) =>
-                  LibraryFiltersModel.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => LibraryFiltersModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      updateNotificationsEnabled:
-          json['updateNotificationsEnabled'] as bool? ?? false,
+      updateNotificationsEnabled: json['updateNotificationsEnabled'] as bool? ?? false,
       seerrRequestsEnabled: json['seerrRequestsEnabled'] as bool? ?? false,
       includeHiddenViews: json['includeHiddenViews'] as bool? ?? false,
-      userSettings: json['userSettings'] == null
-          ? null
-          : UserSettings.fromJson(json['userSettings'] as Map<String, dynamic>),
+      incognitoMode: json['incognitoMode'] as bool?,
+      userSettings:
+          json['userSettings'] == null ? null : UserSettings.fromJson(json['userSettings'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$AccountModelToJson(_AccountModel instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$AccountModelToJson(_AccountModel instance) => <String, dynamic>{
       'name': instance.name,
       'id': instance.id,
       'avatar': instance.avatar,
@@ -63,6 +51,7 @@ Map<String, dynamic> _$AccountModelToJson(_AccountModel instance) =>
       'updateNotificationsEnabled': instance.updateNotificationsEnabled,
       'seerrRequestsEnabled': instance.seerrRequestsEnabled,
       'includeHiddenViews': instance.includeHiddenViews,
+      'incognitoMode': instance.incognitoMode,
       'userSettings': instance.userSettings,
     };
 
@@ -73,12 +62,10 @@ const _$AuthenticationEnumMap = {
   Authentication.none: 'none',
 };
 
-_UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) =>
-    _UserSettings(
+_UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) => _UserSettings(
       skipForwardDuration: json['skipForwardDuration'] == null
           ? const Duration(seconds: 30)
-          : Duration(
-              microseconds: (json['skipForwardDuration'] as num).toInt()),
+          : Duration(microseconds: (json['skipForwardDuration'] as num).toInt()),
       skipBackDuration: json['skipBackDuration'] == null
           ? const Duration(seconds: 10)
           : Duration(microseconds: (json['skipBackDuration'] as num).toInt()),
@@ -88,9 +75,7 @@ _UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) =>
       homeBanner: json['homeBanner'] as String?,
       homeCarousel: json['homeCarousel'] as String?,
       homeNextUp: json['homeNextUp'] as String?,
-      pinnedCollectionIds: (json['pinnedCollectionIds'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      pinnedCollectionIds: (json['pinnedCollectionIds'] as List<dynamic>?)?.map((e) => e as String).toList(),
       themeMode: json['themeMode'] as String?,
       themeColor: json['themeColor'] as String?,
       schemeVariant: json['schemeVariant'] as String?,
@@ -103,10 +88,17 @@ _UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) =>
       locale: json['locale'] as String?,
       showAllCollectionTypes: json['showAllCollectionTypes'] as bool?,
       usePosterForLibrary: json['usePosterForLibrary'] as bool?,
+      libraryFilters:
+          json['libraryFilters'] == null ? const [] : const LibraryFiltersConverter().fromJson(json['libraryFilters']),
+      filterSortOrder: json['filterSortOrder'] == null
+          ? const {}
+          : const FilterSortOrderConverter().fromJson(json['filterSortOrder']),
+      pDashboardSorting: json['pDashboardSorting'] == null
+          ? const {}
+          : const DashboardSortingConverter().fromJson(json['pDashboardSorting']),
     );
 
-Map<String, dynamic> _$UserSettingsToJson(_UserSettings instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$UserSettingsToJson(_UserSettings instance) => <String, dynamic>{
       'skipForwardDuration': instance.skipForwardDuration.inMicroseconds,
       'skipBackDuration': instance.skipBackDuration.inMicroseconds,
       'syncedAt': instance.syncedAt,
@@ -128,4 +120,7 @@ Map<String, dynamic> _$UserSettingsToJson(_UserSettings instance) =>
       'locale': instance.locale,
       'showAllCollectionTypes': instance.showAllCollectionTypes,
       'usePosterForLibrary': instance.usePosterForLibrary,
+      'libraryFilters': const LibraryFiltersConverter().toJson(instance.libraryFilters),
+      'filterSortOrder': const FilterSortOrderConverter().toJson(instance.filterSortOrder),
+      'pDashboardSorting': const DashboardSortingConverter().toJson(instance.pDashboardSorting),
     };

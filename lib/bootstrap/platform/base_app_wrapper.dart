@@ -11,6 +11,7 @@ import 'package:workmanager/workmanager.dart';
 import 'package:driftfin/background/update_notifications_worker.dart' as update_worker;
 import 'package:driftfin/models/account_model.dart';
 import 'package:driftfin/providers/arguments_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/update_notifications_provider.dart';
@@ -105,6 +106,7 @@ abstract class BaseAppWrapperState<T extends BaseAppWrapper> extends ConsumerSta
 
     switch (state) {
       case AppLifecycleState.resumed:
+        ref.read(connectivityStatusProvider.notifier).checkConnectivity();
         if (_hidden) {
           _enableTimeOut();
           _hidden = false;
@@ -129,7 +131,6 @@ abstract class BaseAppWrapperState<T extends BaseAppWrapper> extends ConsumerSta
 
     if (difference > timeOut && shouldLock) {
       _lastPaused = DateTime.now();
-      await ref.read(videoPlayerProvider).pause();
       autoRouter.push(const LockRoute());
     }
   }

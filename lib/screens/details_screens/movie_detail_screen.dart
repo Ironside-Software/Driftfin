@@ -7,6 +7,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/providers/items/movies_details_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/details_screens/components/media_stream_information.dart';
 import 'package:driftfin/screens/details_screens/components/overview_header.dart';
 import 'package:driftfin/screens/seerr/widgets/seerr_poster_row.dart';
@@ -142,6 +143,13 @@ class _ItemDetailScreenState extends ConsumerState<MovieDetailScreen> {
                     productionYear: details.premiereDate.year.toString(),
                     runTime: details.overview.runTime,
                     genres: details.overview.genreItems,
+                    onGenreClicked: (genre) {
+                      final itemViewId = details.parentId ?? "";
+                      LibrarySearchRoute(
+                        parentId: [itemViewId],
+                        genres: {genre.name: true},
+                      ).push(context);
+                    },
                     studios: details.overview.studios,
                     officialRating: details.overview.parentalRating,
                     communityRating: details.overview.communityRating,

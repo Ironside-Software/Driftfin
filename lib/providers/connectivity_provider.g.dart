@@ -6,18 +6,14 @@ part of 'connectivity_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$connectivityStatusHash() =>
-    r'f823d02c69d52232b53f205592a04f1542c28811';
+String _$connectivityStatusHash() => r'f2b5867c1d6d5e7a9cb510de4a50f10bd1cf326a';
 
 /// See also [ConnectivityStatus].
 @ProviderFor(ConnectivityStatus)
-final connectivityStatusProvider =
-    NotifierProvider<ConnectivityStatus, ConnectionState>.internal(
+final connectivityStatusProvider = NotifierProvider<ConnectivityStatus, ConnectionState>.internal(
   ConnectivityStatus.new,
   name: r'connectivityStatusProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$connectivityStatusHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$connectivityStatusHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

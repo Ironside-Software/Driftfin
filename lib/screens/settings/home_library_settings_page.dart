@@ -1,3 +1,11 @@
+import 'package:driftfin/models/settings/home_settings_model.dart';
+import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/screens/settings/filters/filters_dialog_popup.dart';
+import 'package:driftfin/screens/settings/settings_list_tile.dart';
+import 'package:driftfin/screens/settings/widgets/settings_label_divider.dart';
+import 'package:driftfin/screens/settings/widgets/settings_list_group.dart';
+import 'package:driftfin/util/map_bool_helper.dart';
+import 'package:driftfin/widgets/shared/sortable_item_list.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auto_route/auto_route.dart';
@@ -32,9 +40,33 @@ class _HomeLibrarySettingsPageState extends ConsumerState<HomeLibrarySettingsPag
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userProvider);
     return SettingsScaffold(
       label: context.localized.settingsHomeLibraryTitle,
       items: [
+        ...settingsListGroup(
+          context,
+          SettingsLabelDivider(label: context.localized.general),
+          [
+            SortableItemList(
+              items: user?.userSettings?.dashboardSorting.keys.toList() ?? DashboardSorting.values,
+              included: user?.userSettings?.dashboardSorting.included ?? <DashboardSorting>[],
+              itemBuilder: (filter) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  filter.label(context),
+                ),
+              ),
+              onReorder: (reordered) => ref.read(userProvider.notifier).setDashboardSorting(reordered),
+              onIncludeChange: (items) => ref.read(userProvider.notifier).setDashboardEnabled(items),
+            ),
+            SettingsListTile(
+              label: Text(context.localized.libraryFilters),
+              subLabel: Text(context.localized.editYourLibraryFilters),
+              onTap: () => showFiltersDialogue(context),
+            ),
+          ],
+        ),
         ...buildClientSettingsDashboard(context, ref),
         const SizedBox(height: 16),
         const LibraryOrderEditor(),

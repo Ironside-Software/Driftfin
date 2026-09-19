@@ -29,6 +29,7 @@ const _testLayoutModel = AdaptiveLayoutModel(
   controller: <HomeTabs, ScrollController>{},
   sideBarWidth: 0,
   topBarHeight: 0,
+  statusBarHeight: 0,
 );
 
 ItemBaseModel _poster(String id) {

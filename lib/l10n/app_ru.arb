@@ -101,8 +101,8 @@
   "addToCollection": "Добавить в коллекцию",
   "addToPlaylist": "Добавить в плейлист",
   "addToQueue": "Добавить в очередь",
-  "instantMix": "Мгновенный микс",
-  "addedToQueue": "{count, plural, one{Добавлен {count} трек в очередь} few{Добавлено {count} трека в очередь} many{Добавлено {count} треков в очередь} other{Добавлено {count} треков в очередь}}",
+  "instantMix": "Быстрый микс",
+  "addedToQueue": "{count, plural, one{Добавлен {count} трек в очередь} few{Добавлено {count} трека в очередь} many{Добавлено {count} треков в очередь} other{Добавлено {count} трека в очередь}}",
   "advanced": "Дополнительно",
   "all": "Все",
   "amoledBlack": "Матовый черный",
@@ -113,12 +113,12 @@
   "ascending": "Восходящий",
   "audio": "{count, plural, one{Аудио} few{Аудио} many{Аудио} other{Аудио}}",
   "audioPlayerPlaybackOptionsTitle": "Параметры воспроизведения",
-  "audioPlayerRepeatAll": "Повторять все",
-  "audioPlayerRepeatOff": "Повтор выключен",
-  "audioPlayerRepeatOne": "Повторять один",
+  "audioPlayerRepeatAll": "Повторить все",
+  "audioPlayerRepeatOff": "Повтор выкл",
+  "audioPlayerRepeatOne": "Повтор одного",
   "audioPlayerShuffle": "Перемешать",
-  "showArtist": "Показать исполнителя",
-  "track": "{count, plural, one{Трек} few{Трека} many{Треков} other{Треков}}",
+  "showArtist": "Показать персону",
+  "track": "{count, plural, one{Трек} few{Трека} many{Треков} other{Трека}}",
   "autoPlay": "Автоматическое воспроизведение",
   "backgroundBlur": "Размытие фона",
   "backgroundOpacity": "Непрозрачность фона",
@@ -154,7 +154,7 @@
   "dashboardContinueWatching": "Продолжить просмотр",
   "nextUp": "Следующее",
   "dashboardRecentlyAdded": "Недавно добавлено в {name}",
-  "dashboardRecentlyAddedItems": "Недавно добавлено: {name}",
+  "dashboardRecentlyAddedItems": "Недавно добавлено в {name}",
   "dateAdded": "Добавлено",
   "dateLastContentAdded": "Дата добавления",
   "datePlayed": "Дата воспроизведения",
@@ -231,7 +231,7 @@
   "mediaTypeFolder": "{count, plural, one{Папка} other{Папки}}",
   "mediaTypeMovie": "{count, plural, one{Фильм} other{Фильмы}}",
   "mediaTypePerson": "{count, plural, one{Персона} other{Персоны}}",
-  "mediaTypeArtists": "{count, plural, one{Артист} few{Артиста} many{Артистов} other{Артистов}}",
+  "mediaTypeArtists": "{count, plural, one{Исполнитель} few{Исполнителя} many{Исполнителей} other{Исполнителя}}",
   "mediaTypePhoto": "{count, plural, one{Фото} other{Фото}}",
   "mediaTypePhotoAlbum": "{count, plural, one{Фотоальбом} other{Фотоальбомы}}",
   "mediaTypePlaylist": "{count, plural, one{Плейлист} other{Плейлисты}}",
@@ -323,7 +323,7 @@
   "saved": "Сохранено",
   "scanBiometricHint": "Подтвердить личность",
   "scanLibrary": "Сканировать библиотеку",
-  "authenticateWithBiometrics": "Используйте биометрию для аутентификации {user}",
+  "authenticateWithBiometrics": "Использовать биометрию для аутентификации {user}",
   "scanningName": "Сканирование - {name}…",
   "scrollToTop": "Прокрутить к верху",
   "search": "Поиск",
@@ -363,8 +363,8 @@
   "settingsPlayerNativeLibassAccelDesc": "Использование видеоплеера libass для отображения субтитров",
   "settingsPlayerNativeLibassAccelTitle": "Наивные субтитры libass",
   "settingsPlayerBufferSizeTitle": "Размер видеобуфера",
-  "settingsPlayerPlayPauseFadeTitle": "Плавное изменение громкости при паузе и воспроизведении",
-  "settingsPlayerPlayPauseFadeDesc": "Плавно увеличивать и уменьшать громкость при воспроизведении и паузе",
+  "settingsPlayerPlayPauseFadeTitle": "Плавное изменение громкости",
+  "settingsPlayerPlayPauseFadeDesc": "Плавное увеличение и уменьшение громкости при воспроизведении и постановке на паузу",
   "settingsPlayerBufferSizeDesc": "Настроить размер буфера для воспроизведения видео, определяющий объем данных, загружаемых в кэш.",
   "settingsPlayerTitle": "Плеер",
   "settingsPlayerVideoHWAccelDesc": "Используйте GPU для рендеринга видео (рекомендуется)",
@@ -440,7 +440,7 @@
   "videoScalingFillScreenNotif": "Полноэкранный режим переопределяет заполнение видео при горизонтальном повороте",
   "videoScalingFillScreenTitle": "Заполнить экран",
   "pictureInPictureTitle": "Картинка в картинке",
-  "pictureInPictureAutoTitle": "Автоматическая картинка в картинке",
+  "pictureInPictureAutoTitle": "Включать \"картинку в картинке\" автоматически",
   "pictureInPictureSubtitle": "Автоматически включать режим «Картинка в картинке» при выходе из плеера. Кнопка PiP в панели управления работает независимо от этой настройки.",
   "pictureInPictureNotSupported": "Режим «Картинка в картинке» недоступен на этом устройстве",
   "videoScalingFitHeight": "Заполнить по высоте",
@@ -552,12 +552,12 @@
   "resumeVideo": "Продолжить видео",
   "closeVideo": "Закрыть видео",
   "playNextVideo": "Воспроизвести следующее видео",
-  "playerSettingsBackendTitle": "Бэкенд видеоплеера",
+  "playerSettingsBackendTitle": "Бэкенд медиаплеера",
   "playerSettingsBackendDesc": "Выберите предпочтительный медиаплеер для оптимального воспроизведения",
   "playerSettingsReplayGainTitle": "ReplayGain",
   "playerSettingsReplayGainDesc": "Выравнивать громкость музыки с помощью тегов ReplayGain.",
   "playerSettingsReplayGainLevelTitle": "Уровень ReplayGain",
-  "playerSettingsReplayGainLevelDesc": "Задайте целевой уровень громкости для нормализации ReplayGain. Распространённый стандарт — -14 дБ, но вы можете настроить его по своему вкусу.",
+  "playerSettingsReplayGainLevelDesc": "Задайте целевой уровень громкости для ReplayGain. Обычно используется значение −14 дБ, но его можно настроить.",
   "playerSettingsSmartDownmixTitle": "Умный даунмикс",
   "playerSettingsSmartDownmixDesc": "Усиливать диалоги относительно эффектов и тыловых каналов при сведении звука 5.1/7.1 в стерео.",
   "playerSettingsDialogueBoostTitle": "Усиление диалогов",
@@ -566,10 +566,10 @@
   "dialogueBoostLow": "Низкое",
   "dialogueBoostMedium": "Среднее",
   "dialogueBoostHigh": "Высокое",
-  "settingsPlayerCrossfadeTitle": "Плавный переход",
-  "settingsPlayerCrossfadeDesc": "Плавно переходить между треками, которые не идут подряд в одном альбоме",
-  "settingsPlayerCrossfadeDurationTitle": "Длительность плавного перехода",
-  "settingsPlayerCrossfadeDurationDesc": "Продолжительность плавного перехода",
+  "settingsPlayerCrossfadeTitle": "Crossfade",
+  "settingsPlayerCrossfadeDesc": "Плавно переходить между треками, которые не являются последовательными в одном альбоме",
+  "settingsPlayerCrossfadeDurationTitle": "Длительность Crossfade",
+  "settingsPlayerCrossfadeDurationDesc": "Длительность плавного перехода",
   "defaultLabel": "По умолчанию",
   "noVideoPlayerOptions": "Выбранный бэкэнд не имеет опций",
   "mdkExperimental": "MDK все еще находится на экспериментальной стадии",
@@ -897,7 +897,7 @@
   "recentlyAdded": "Недавно добавленное",
   "recentlyPlayed": "Недавно воспроизведённое",
   "recentlyFavorited": "Недавно добавлено в избранное",
-  "mostPlayed": "Часто воспроизводимое",
+  "mostPlayed": "Наиболее воспроизводимое",
   "recentRequests": "Последние запросы",
   "trending": "Смотрят сейчас",
   "popularMovies": "Популярные фильмы",
@@ -999,11 +999,11 @@
   "watch": "Смотреть",
   "watchChannel": "Смотреть {channel}",
   "now": "Сейчас",
-  "nowPlaying": "Сейчас играет",
+  "nowPlaying": "Воспроизводится сейчас",
   "upNext": "Далее",
   "queue": "Очередь",
   "queueIsEmpty": "Очередь пуста",
-  "queueItemCount": "Элементов: {count}",
+  "queueItemCount": "{count, plural, one{{count} элемент} few{{count} элемента} many{{count} элементов} other{{count} элемента}}",
   "removeFromQueue": "Удалить из очереди",
   "noPrograms": "Нет доступных программ",
   "switchChannel": "Переключить канал",
@@ -1119,7 +1119,7 @@
   "seerrMovies": "Найти новые фильмы",
   "seerrSeries": "Найти новые сериалы",
   "today": "Сегодня",
-  "musicDashboard": "Музыкальная панель",
+  "musicDashboard": "Обзор музыки",
   "quiet": "Тихо",
   "loud": "Громко",
   "share": "Поделиться",
@@ -1157,5 +1157,173 @@
   "tastePassportEmpty": "Посмотрите что-нибудь, и здесь появится ваш профиль вкуса",
   "livingHomeBecauseYouWatched": "Потому что вы смотрели {name}",
   "livingHomeHiddenGems": "Скрытые жемчужины в вашей библиотеке",
-  "livingHomeMoreFromDirector": "Ещё от {name}"
+  "livingHomeMoreFromDirector": "Ещё от {name}",
+  "@addedToQueue": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@track": {
+    "description": "track",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@dashboardRecentlyAddedItems": {
+    "description": "Recently added items on home screen",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "@mediaTypeArtists": {
+    "description": "Artist (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@removedFromPlaylist": {
+    "placeholders": {
+      "playlistName": {
+        "type": "String"
+      }
+    }
+  },
+  "@queueItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaTypeCollection": "{count, plural, one{Коллекция} two{Коллекции} other{Коллекций}}",
+  "@mediaTypeCollection": {
+    "description": "Collection (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "@authenticateWithBiometrics": {
+    "description": "Prompt shown to the user when biometric authentication is requested",
+    "placeholders": {
+      "user": {
+        "type": "String",
+        "example": "Jane"
+      }
+    }
+  },
+  "@pictureInPictureTitle": {
+    "description": "Tooltip on the in-player PiP button"
+  },
+  "@pictureInPictureAutoTitle": {
+    "description": "Title of the auto-enter Picture-in-Picture setting toggle"
+  },
+  "mediaTypeMusicVideo": "{count, plural, one{Music Video} other{Music Videos}}",
+  "@mediaTypeMusicVideo": {
+    "description": "Music Video (plural)",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "sideBar": "Sidebar",
+  "musicSideBar": "Music sidebar",
+  "posterColorsTitle": "Generated poster colors",
+  "posterColorsDesc": "Use generated colors for posters in place of the default color",
+  "localNetworkPermissionRequest": "Allow local network access to discover servers.",
+  "requestPermission": "Request Permission",
+  "localNetworkPermissionDenied": "Local network access is required. Enable devices nearby permission in system settings.",
+  "openSettings": "Open Settings",
+  "lyrics": "Lyrics",
+  "@lyrics": {},
+  "returnToSyncedLyrics": "Return to synced lyrics",
+  "@returnToSyncedLyrics": {},
+  "noSyncedLyrics": "No synced lyrics available",
+  "@noSyncedLyrics": {},
+  "selectRandom": "Select random",
+  "stopSelection": "Stop selecting {count}",
+  "@stopSelection": {
+    "description": "stopSelection",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playItems": "Play items",
+  "shuffleItems": "Shuffle items",
+  "disc": "Disc {number}",
+  "@disc": {
+    "description": "disc",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "incognito": "Incognito",
+  "incognitoModeGlobal": "Incognito mode (App)",
+  "incognitoModeLocal": "Incognito mode (Profile)",
+  "incognitoModeDesc": "Incognito mode disables sending playback status to the server",
+  "showInSideBar": "Show in sidebar",
+  "showOnDashboard": "Show on dashboard",
+  "hideInSideBar": "Hide from sidebar",
+  "showInSideBarDesc": "Show this filter in the sidebar for quick access",
+  "applyFilter": "Apply filter",
+  "playerSettingsAmbientBlurTitle": "Enable ambient blur",
+  "playerSettingsAmbientBlurDesc": "Enable ambient blur in the player. This will blur the background behind the player to reduce distractions.",
+  "playerSettingsAmbientBlurDescWarning": "Ambient blur can cause performance issues on lower-end devices.",
+  "openSelected": "Open selected",
+  "discography": "Discography",
+  "youLiked": "You liked",
+  "instantMixBy": "Instant Mix of {artist}",
+  "@instantMixBy": {
+    "description": "Instant Mix of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "latestTracksBy": "Latest tracks by {artist}",
+  "@latestTracksBy": {
+    "description": "Latest tracks by artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "favoritesOf": "Favorites of {artist}",
+  "@favoritesOf": {
+    "description": "Favorites of artist",
+    "placeholders": {
+      "artist": {
+        "type": "String"
+      }
+    }
+  },
+  "leanBackModeTitle": "Lean-back Mode",
+  "leanBackModeDesc": "Enable lean-back mode on Android devices, even if the device reports back as false.",
+  "leanBackModeInfo": "Lean-back mode is re-enabled by default on AndroidTV devices. Toggling this option on non-AndroidTV devices may cause unexpected behavior.",
+  "libraryFilters": "Library filters",
+  "editYourLibraryFilters": "Edit your library filters",
+  "libraryFiltersTitle": "Library filters",
+  "libraryFiltersDesc": "Library filters allow you to create custom views of your libraries based",
+  "libraryNoFiltersSaved": "No library filters saved",
+  "addTo": "Add to"
 }
