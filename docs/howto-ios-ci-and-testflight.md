@@ -1,9 +1,10 @@
 # iOS CI and TestFlight
 
 Driftfin's production iOS bundle identifier is `app.driftfin.79758DD3NW`.
-The GitHub Actions workflow at `.github/workflows/ios-testflight.yml` builds
-the `production` flavor on macOS, signs it, and uploads the IPA to App Store
-Connect.
+The GitHub Actions workflow at `.github/workflows/release.yml` contains the
+manual TestFlight path alongside the normal cross-platform release jobs. It
+builds the `production` flavor on macOS, signs it, and uploads the IPA to App
+Store Connect.
 
 ## One-time Apple setup
 
@@ -43,9 +44,11 @@ protected if uploads should require approval.
 
 ## Running it
 
-Run **iOS TestFlight** manually from the Actions tab with `ref=develop` for a
-proof build. The workflow has no tag trigger and does not submit the build for
-App Review or release it to the App Store.
+Run **Release Driftfin** manually from the Actions tab, set `testflight` to
+`true`, and use `ref=develop` for a proof build. That dispatch runs only the
+signed TestFlight job; normal tag pushes continue to build and publish the
+cross-platform GitHub Release artifacts. The TestFlight path does not submit
+the build for App Review or release it to the App Store.
 
 An upload is not the final acceptance check: wait for Apple processing, assign
 the build to the internal group, install it through TestFlight, and exercise
