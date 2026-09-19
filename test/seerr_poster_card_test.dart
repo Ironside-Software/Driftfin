@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:driftfin/models/account_model.dart';
+import 'package:driftfin/models/credentials_model.dart';
+import 'package:driftfin/providers/shared_provider.dart';
+import 'package:driftfin/providers/user_provider.dart';
 
 import 'package:driftfin/l10n/generated/app_localizations.dart';
 import 'package:driftfin/models/items/images_models.dart';
@@ -35,6 +40,19 @@ class _FakeSeerrUser extends SeerrUser {
   SeerrUserModel? build() => _value;
 }
 
+late SharedPreferences _prefs;
+
+class _User extends User {
+  @override
+  AccountModel build() => AccountModel(
+        name: 'Test',
+        id: 'user',
+        avatar: '',
+        lastUsed: DateTime(2026),
+        credentials: CredentialsModel.internal(serverId: 'server'),
+      );
+}
+
 final _availablePoster = SeerrDashboardPosterModel(
   id: 'req-1',
   type: SeerrMediaType.movie,
@@ -60,6 +78,8 @@ final _requestablePoster = SeerrDashboardPosterModel(
 Widget _harness(SeerrDashboardPosterModel poster, {SeerrUserModel? user}) {
   return ProviderScope(
     overrides: [
+      sharedPreferencesProvider.overrideWithValue(_prefs),
+      userProvider.overrideWith(_User.new),
       seerrUserProvider.overrideWith(() => _FakeSeerrUser(user)),
     ],
     // AdaptiveLayout must wrap MaterialApp (as it does in lib/main.dart) so
@@ -86,6 +106,24 @@ Widget _harness(SeerrDashboardPosterModel poster, {SeerrUserModel? user}) {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    _prefs = await SharedPreferences.getInstance();
+  });
+
+  testWidgets('movie card marks watched and unwatched without navigating', (tester) async {
+    await tester.pumpWidget(_harness(_availablePoster));
+    await tester.pumpAndSettle();
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    await tester.tap(find.byTooltip(RegExp(l10n.markAsWatched)));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip(RegExp(l10n.markAsUnwatched)), findsOneWidget);
+    expect(_prefs.getKeys().where((key) => key.startsWith('discoverWatched:')), hasLength(1));
+    await tester.tap(find.byTooltip(RegExp(l10n.markAsUnwatched)));
+    await tester.pumpAndSettle();
+    expect(find.byTooltip(RegExp(l10n.markAsWatched)), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
   testWidgets('renders a poster with a display status badge', (tester) async {
     await tester.pumpWidget(_harness(_availablePoster));
