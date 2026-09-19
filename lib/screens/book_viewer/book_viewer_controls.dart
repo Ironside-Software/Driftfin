@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -33,16 +34,11 @@ class BookViewController {
 }
 
 class BookViewerControls extends ConsumerStatefulWidget {
-  final AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider;
+  final StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> provider;
   final BookViewController viewController;
 
   final ExtendedPageController controller;
-  const BookViewerControls({
-    required this.provider,
-    required this.controller,
-    required this.viewController,
-    super.key,
-  });
+  const BookViewerControls({required this.provider, required this.controller, required this.viewController, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _BookViewerControlsState();
@@ -63,11 +59,13 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
       showControls = value ?? !showControls;
     });
     SystemChrome.setEnabledSystemUIMode(!showControls ? SystemUiMode.leanBack : SystemUiMode.edgeToEdge, overlays: []);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
+    );
   }
 
   @override
@@ -84,11 +82,13 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
     WakelockPlus.disable();
     ScreenBrightness().resetApplicationScreenBrightness();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
+    );
     super.dispose();
   }
 
@@ -159,31 +159,27 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                       ),
                     ),
                     child: Padding(
-                      padding:
-                          EdgeInsets.only(top: topPadding, left: leftPadding, right: rightPadding).copyWith(bottom: 8),
+                      padding: EdgeInsets.only(
+                        top: topPadding,
+                        left: leftPadding,
+                        right: rightPadding,
+                      ).copyWith(bottom: 8),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (AdaptiveLayout.of(context).isDesktop)
-                            const Flexible(
-                              child: DefaultTitleBar(
-                                height: 50,
-                                brightness: Brightness.dark,
-                              ),
-                            ),
+                            const Flexible(child: DefaultTitleBar(height: 50, brightness: Brightness.dark)),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const BackButton(),
-                              const SizedBox(
-                                width: 16,
-                              ),
+                              const SizedBox(width: 16),
                               Flexible(
                                 child: Text(
                                   bookViewerDetails.book?.name ?? "None",
                                   style: Theme.of(context).textTheme.titleLarge,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -212,10 +208,7 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                               bottom: bottomPadding,
                               left: leftPadding,
                               right: rightPadding,
-                            ).copyWith(
-                              top: 16,
-                              bottom: 16,
-                            ),
+                            ).copyWith(top: 16, bottom: 16),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -226,19 +219,19 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                                     Tooltip(
                                       message: bookViewerSettings.readDirection == ReadDirection.leftToRight
                                           ? previousChapter?.name != null
-                                              ? "Load ${previousChapter?.name}"
-                                              : ""
+                                                ? "Load ${previousChapter?.name}"
+                                                : ""
                                           : nextChapter?.name != null
-                                              ? "Load ${nextChapter?.name}"
-                                              : "",
+                                          ? "Load ${nextChapter?.name}"
+                                          : "",
                                       child: IconButton.filled(
                                         onPressed: bookViewerSettings.readDirection == ReadDirection.leftToRight
                                             ? previousChapter != null
-                                                ? () async => await loadNextBook(previousChapter)
-                                                : null
+                                                  ? () async => await loadNextBook(previousChapter)
+                                                  : null
                                             : nextChapter != null
-                                                ? () async => await loadNextBook(nextChapter)
-                                                : null,
+                                            ? () async => await loadNextBook(nextChapter)
+                                            : null,
                                         icon: const Icon(IconsaxPlusLinear.backward),
                                       ),
                                     ),
@@ -256,8 +249,11 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                                               if (bookViewerSettings.readDirection == ReadDirection.leftToRight)
                                                 ...controls(currentPage, bookViewerSettings, bookViewerDetails)
                                               else
-                                                ...controls(currentPage, bookViewerSettings, bookViewerDetails)
-                                                    .reversed,
+                                                ...controls(
+                                                  currentPage,
+                                                  bookViewerSettings,
+                                                  bookViewerDetails,
+                                                ).reversed,
                                             ],
                                           ),
                                         ),
@@ -267,19 +263,19 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                                     Tooltip(
                                       message: bookViewerSettings.readDirection == ReadDirection.leftToRight
                                           ? nextChapter?.name != null
-                                              ? "Load ${nextChapter?.name}"
-                                              : ""
+                                                ? "Load ${nextChapter?.name}"
+                                                : ""
                                           : previousChapter?.name != null
-                                              ? "Load ${previousChapter?.name}"
-                                              : "",
+                                          ? "Load ${previousChapter?.name}"
+                                          : "",
                                       child: IconButton.filled(
                                         onPressed: bookViewerSettings.readDirection == ReadDirection.leftToRight
                                             ? nextChapter != null
-                                                ? () async => await loadNextBook(nextChapter)
-                                                : null
+                                                  ? () async => await loadNextBook(nextChapter)
+                                                  : null
                                             : previousChapter != null
-                                                ? () async => await loadNextBook(previousChapter)
-                                                : null,
+                                            ? () async => await loadNextBook(previousChapter)
+                                            : null,
                                         icon: const Icon(IconsaxPlusLinear.forward),
                                       ),
                                     ),
@@ -294,9 +290,13 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                                     Transform.flip(
                                       flipX: bookViewerSettings.readDirection == ReadDirection.rightToLeft,
                                       child: IconButton(
-                                          onPressed: () => widget.controller
-                                              .animateToPage(1, duration: pageAnimDuration, curve: pageAnimCurve),
-                                          icon: const Icon(IconsaxPlusLinear.backward)),
+                                        onPressed: () => widget.controller.animateToPage(
+                                          1,
+                                          duration: pageAnimDuration,
+                                          curve: pageAnimCurve,
+                                        ),
+                                        icon: const Icon(IconsaxPlusLinear.backward),
+                                      ),
                                     ),
                                     IconButton(
                                       onPressed: () {
@@ -318,7 +318,7 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                                             }
                                           : () => DriftfinSnack.show("No other chapters", context: context),
                                       icon: const Icon(IconsaxPlusLinear.bookmark_2),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ],
@@ -341,7 +341,7 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                             ),
                           ),
                         ),
-                      )
+                      ),
                   },
                 ],
               ),
@@ -357,8 +357,10 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                     children: [
                       if (bookViewerDetails.book != null) ...{
                         Flexible(
-                          child: Text("${context.localized.loading} ${bookViewerDetails.book?.name}",
-                              style: Theme.of(context).textTheme.titleMedium),
+                          child: Text(
+                            "${context.localized.loading} ${bookViewerDetails.book?.name}",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
                         ),
                         const SizedBox(width: 16),
                       },
@@ -367,7 +369,7 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                   ),
                 ),
               ),
-            )
+            ),
         ],
       ),
     );
@@ -400,10 +402,7 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
           ),
         ),
       ),
-      Text(
-        details.pages.length.toString().padLeft(1).padRight(1),
-        style: Theme.of(context).textTheme.titleMedium,
-      ),
+      Text(details.pages.length.toString().padLeft(1).padRight(1), style: Theme.of(context).textTheme.titleMedium),
     ];
   }
 

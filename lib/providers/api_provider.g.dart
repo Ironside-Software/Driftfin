@@ -6,20 +6,47 @@ part of 'api_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(JellyApi)
+final jellyApiProvider = JellyApiProvider._();
+
+final class JellyApiProvider extends $NotifierProvider<JellyApi, JellyService> {
+  JellyApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'jellyApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$jellyApiHash();
+
+  @$internal
+  @override
+  JellyApi create() => JellyApi();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(JellyService value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<JellyService>(value));
+  }
+}
+
 String _$jellyApiHash() => r'9bc824d28d17f88f40c768cefb637144e0fbf346';
 
-/// See also [JellyApi].
-@ProviderFor(JellyApi)
-final jellyApiProvider =
-    AutoDisposeNotifierProvider<JellyApi, JellyService>.internal(
-  JellyApi.new,
-  name: r'jellyApiProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$jellyApiHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$JellyApi = AutoDisposeNotifier<JellyService>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+abstract class _$JellyApi extends $Notifier<JellyService> {
+  JellyService build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<JellyService, JellyService>;
+    final element =
+        ref.element as $ClassProviderElement<AnyNotifier<JellyService, JellyService>, JellyService, Object?, Object?>;
+    return element.handleCreate(ref, build);
+  }
+}

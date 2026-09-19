@@ -33,10 +33,7 @@ extension SyncMediaHelpers on SyncNotifier {
             final ext = subtitleExtension(element.codec);
             final file = File(path.joinAll([directory.path, "${element.displayTitle}.${element.language}.$ext"]));
             file.writeAsBytesSync(response.bodyBytes);
-            return element.copyWith(
-              url: () => file.path,
-              isExternal: true,
-            );
+            return element.copyWith(url: () => file.path, isExternal: true);
           }
         } catch (e) {
           log('Failed to download subtitle: ${element.displayTitle} - $e');
@@ -95,11 +92,7 @@ extension SyncMediaHelpers on SyncNotifier {
         .asyncMap((element) async => await urlDataToFileData(element, saveDirectory, "backdrop-${element.key}.jpg"))
         .toList();
 
-    return data.copyWith(
-      primary: () => primary,
-      logo: () => logo,
-      backDrop: () => backdrops.nonNulls.toList(),
-    );
+    return data.copyWith(primary: () => primary, logo: () => logo, backDrop: () => backdrops.nonNulls.toList());
   }
 
   Future<List<Chapter>?> saveChapterImages(List<Chapter>? data, Directory itemPath) async {
@@ -124,9 +117,7 @@ extension SyncMediaHelpers on SyncNotifier {
         await file.parent.create(recursive: true);
         await file.writeAsBytes(response.bodyBytes);
 
-        return event.copyWith(
-          imageUrl: path.joinAll([SyncedItem.chaptersPath, fileName]),
-        );
+        return event.copyWith(imageUrl: path.joinAll([SyncedItem.chaptersPath, fileName]));
       } catch (e, stackTrace) {
         DriftfinSnack.showException(e, stackTrace: stackTrace);
         return event;

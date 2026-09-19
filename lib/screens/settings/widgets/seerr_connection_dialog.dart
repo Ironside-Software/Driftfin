@@ -28,10 +28,7 @@ String _sanitizeErrorMessage(Object error) {
 }
 
 Future<void> showSeerrConnectionDialog(BuildContext context) {
-  return showDialogAdaptive(
-    context: context,
-    builder: (context) => const SeerrConnectionDialog(),
-  );
+  return showDialogAdaptive(context: context, builder: (context) => const SeerrConnectionDialog());
 }
 
 enum SeerrAuthTab {
@@ -40,10 +37,10 @@ enum SeerrAuthTab {
   apiKey;
 
   String label(BuildContext context) => switch (this) {
-        SeerrAuthTab.apiKey => context.localized.seerrAuthApiKey,
-        SeerrAuthTab.local => context.localized.seerrAuthLocal,
-        SeerrAuthTab.jellyfin => context.localized.seerrAuthJellyfin,
-      };
+    SeerrAuthTab.apiKey => context.localized.seerrAuthApiKey,
+    SeerrAuthTab.local => context.localized.seerrAuthLocal,
+    SeerrAuthTab.jellyfin => context.localized.seerrAuthJellyfin,
+  };
 }
 
 class SeerrConnectionDialog extends ConsumerStatefulWidget {
@@ -130,8 +127,8 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     final serverUrl = (DriftfinConfig.seerrBaseUrl?.trim().isNotEmpty == true)
         ? DriftfinConfig.seerrBaseUrl?.trim()
         : (serverController.text.trim().isNotEmpty
-            ? serverController.text.trim()
-            : ref.read(userProvider)?.seerrCredentials?.serverUrl.trim());
+              ? serverController.text.trim()
+              : ref.read(userProvider)?.seerrCredentials?.serverUrl.trim());
     if (serverUrl != null && serverUrl.isNotEmpty) {
       if (!_hasPresetSeerrBaseUrl) {
         ref.read(userProvider.notifier).setSeerrServerUrl(serverUrl);
@@ -245,7 +242,9 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     if (!await _beginProcessing()) return;
 
     try {
-      final cookie = await ref.read(seerrApiProvider).authenticateLocal(
+      final cookie = await ref
+          .read(seerrApiProvider)
+          .authenticateLocal(
             email: localEmailController.text.trim(),
             password: localPasswordController.text,
             headers: customHeaders.isEmpty ? null : customHeaders,
@@ -276,7 +275,9 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     if (!await _beginProcessing()) return;
 
     try {
-      final cookie = await ref.read(seerrApiProvider).authenticateJellyfin(
+      final cookie = await ref
+          .read(seerrApiProvider)
+          .authenticateJellyfin(
             username: jfUsernameController.text.trim(),
             password: jfPasswordController.text,
             headers: customHeaders.isEmpty ? null : customHeaders,
@@ -336,16 +337,8 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
   Widget _header(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: Text(
-            context.localized.seerr,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(IconsaxPlusBold.close_circle),
-        ),
+        Expanded(child: Text(context.localized.seerr, style: Theme.of(context).textTheme.titleLarge)),
+        IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(IconsaxPlusBold.close_circle)),
       ],
     );
   }
@@ -367,9 +360,8 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
               error!,
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onErrorContainer,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer),
             ),
           ),
         ],
@@ -403,21 +395,13 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
                 : CircleAvatar(child: Icon(FladderItemType.person.icon)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(displayName),
-                Text(seerrUser?.email ?? seerrUser?.username ?? ''),
-              ],
-            )
+              children: [Text(displayName), Text(seerrUser?.email ?? seerrUser?.username ?? '')],
+            ),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FilledButton(
-              onPressed: processing ? null : _logout,
-              child: Text(context.localized.logout),
-            ),
-          ],
+          children: [FilledButton(onPressed: processing ? null : _logout, child: Text(context.localized.logout))],
         ),
       ],
     );
@@ -447,10 +431,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                context.localized.seerrCustomHeaders,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              child: Text(context.localized.seerrCustomHeaders, style: Theme.of(context).textTheme.bodySmall),
             ),
             Row(
               children: [
@@ -475,10 +456,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                IconButton(
-                  onPressed: _addHeader,
-                  icon: const Icon(IconsaxPlusBold.add_circle),
-                ),
+                IconButton(onPressed: _addHeader, icon: const Icon(IconsaxPlusBold.add_circle)),
               ],
             ),
             const SizedBox(height: 8),
@@ -487,12 +465,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
                 spacing: 8,
                 runSpacing: 8,
                 children: customHeaders.entries
-                    .map(
-                      (e) => InputChip(
-                        label: Text('${e.key}: ${e.value}'),
-                        onDeleted: () => _removeHeader(e.key),
-                      ),
-                    )
+                    .map((e) => InputChip(label: Text('${e.key}: ${e.value}'), onDeleted: () => _removeHeader(e.key)))
                     .toList(),
               ),
           ],
@@ -501,12 +474,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: SegmentedButton<SeerrAuthTab>(
             segments: SeerrAuthTab.values
-                .map(
-                  (tab) => ButtonSegment(
-                    value: tab,
-                    label: Text(tab.label(context)),
-                  ),
-                )
+                .map((tab) => ButtonSegment(value: tab, label: Text(tab.label(context))))
                 .toList(),
             selected: {selectedTab},
             onSelectionChanged: (value) {
@@ -633,10 +601,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     // Rebuild when the plugin-managed state changes (used via [_seerrManaged]).
     ref.watch(serverIntegrationConfigProvider);
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 640,
-        maxHeight: MediaQuery.sizeOf(context).height * 0.85,
-      ),
+      constraints: BoxConstraints(maxWidth: 640, maxHeight: MediaQuery.sizeOf(context).height * 0.85),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

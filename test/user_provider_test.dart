@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,19 +17,19 @@ import 'package:driftfin/providers/sync_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 
 ItemBaseModel _item({required String id}) => ItemBaseModel(
-      name: 'Item',
-      id: id,
-      overview: const OverviewModel(),
-      parentId: null,
-      playlistId: null,
-      images: null,
-      childCount: null,
-      primaryRatio: null,
-      userData: const UserData(),
-      canDownload: null,
-      canDelete: null,
-      jellyType: null,
-    );
+  name: 'Item',
+  id: id,
+  overview: const OverviewModel(),
+  parentId: null,
+  playlistId: null,
+  images: null,
+  childCount: null,
+  primaryRatio: null,
+  userData: const UserData(),
+  canDownload: null,
+  canDelete: null,
+  jellyType: null,
+);
 
 /// Test double for [SyncNotifier] so `showSyncButtonProvider` can be driven
 /// without touching the database/background-downloader machinery the real
@@ -52,11 +53,7 @@ AccountModel _account({
     id: id,
     avatar: '',
     lastUsed: DateTime(2020),
-    credentials: CredentialsModel.internal(
-      token: 'token-123',
-      url: 'https://jellyfin.example.com',
-      deviceId: 'device-1',
-    ),
+    credentials: CredentialsModel(token: 'token-123', url: 'https://jellyfin.example.com', deviceId: 'device-1'),
     searchQueryHistory: searchQueryHistory,
     libraryFilters: libraryFilters,
     seerrCredentials: seerrCredentials,
@@ -72,11 +69,7 @@ void main() {
   late ProviderContainer container;
 
   ProviderContainer makeContainer({SharedPreferences? prefs}) {
-    return ProviderContainer(
-      overrides: [
-        if (prefs != null) sharedPreferencesProvider.overrideWithValue(prefs),
-      ],
-    );
+    return ProviderContainer(overrides: [if (prefs != null) sharedPreferencesProvider.overrideWithValue(prefs)]);
   }
 
   setUp(() async {
@@ -195,9 +188,7 @@ void main() {
     });
 
     test('setSeerrApiKey trims and preserves other seerr fields', () {
-      final account = _account(
-        seerrCredentials: const SeerrCredentialsModel(serverUrl: 'https://seerr.example.com'),
-      );
+      final account = _account(seerrCredentials: const SeerrCredentialsModel(serverUrl: 'https://seerr.example.com'));
       container.read(userProvider.notifier).loginUser(account);
       container.read(userProvider.notifier).setSeerrApiKey('  abc123  ');
       final creds = container.read(userProvider)?.seerrCredentials;
@@ -285,18 +276,12 @@ void main() {
     // so the "cap history at 50 items" intent would never be applied either.)
     test('throws because the underlying list is unmodifiable', () {
       container.read(userProvider.notifier).loginUser(_account(searchQueryHistory: ['a', 'b', 'c']));
-      expect(
-        () => container.read(userProvider.notifier).removeSearchQuery('b'),
-        throwsUnsupportedError,
-      );
+      expect(() => container.read(userProvider.notifier).removeSearchQuery('b'), throwsUnsupportedError);
     });
 
     test('still throws when the value is not present in the history', () {
       container.read(userProvider.notifier).loginUser(_account(searchQueryHistory: ['a', 'b']));
-      expect(
-        () => container.read(userProvider.notifier).removeSearchQuery('zzz'),
-        throwsUnsupportedError,
-      );
+      expect(() => container.read(userProvider.notifier).removeSearchQuery('zzz'), throwsUnsupportedError);
     });
 
     test('is a no-op (state stays null) when logged out', () {
@@ -460,9 +445,7 @@ void main() {
             final notifier = User();
             return notifier;
           }),
-          syncProvider.overrideWith((ref) => _FakeSyncNotifier(
-                SyncSettingsModel(items: hasSyncedItems ? [] : []),
-              )),
+          syncProvider.overrideWith((ref) => _FakeSyncNotifier(SyncSettingsModel(items: hasSyncedItems ? [] : []))),
         ],
       )..read(userProvider.notifier).loginUser(account);
     }

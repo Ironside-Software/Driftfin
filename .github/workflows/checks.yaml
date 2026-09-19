@@ -38,9 +38,6 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
-
       - name: Check translation completeness
         # Fails if any lib/l10n/app_*.arb file is missing or has an empty
         # value for a key that exists in the app_en.arb template.

@@ -54,11 +54,7 @@ class DriftfinImage extends ConsumerWidget {
         children: [
           if (!disableBlur && useBluredPlaceHolder && newImage.hash.isNotEmpty || blurOnly && newImage.hash.isNotEmpty)
             Image(
-              image: BlurHashImage(
-                newImage.hash,
-                decodingHeight: 16,
-                decodingWidth: 16,
-              ),
+              image: BlurHashImage(newImage.hash, decodingHeight: 16, decodingWidth: 16),
               fit: blurFit ?? fit,
               height: 16,
             ),
@@ -70,13 +66,9 @@ class DriftfinImage extends ConsumerWidget {
               alignment: alignment ?? Alignment.center,
               imageErrorBuilder: imageErrorBuilder,
               image: leanBackMode
-                  ? ResizeImage(
-                      imageProvider,
-                      policy: ResizeImagePolicy.fit,
-                      height: decodeHeight,
-                    )
+                  ? ResizeImage(imageProvider, policy: ResizeImagePolicy.fit, height: decodeHeight)
                   : imageProvider,
-            )
+            ),
         ],
       );
     }

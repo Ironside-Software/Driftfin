@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -33,11 +33,7 @@ class CrashLogNotifier extends StateNotifier<List<ErrorLogModel>> {
     FlutterError.onError = (FlutterErrorDetails details) => logFile(details);
 
     PlatformDispatcher.instance.onError = (error, stack) {
-      logFile(FlutterErrorDetails(
-        exception: error,
-        stack: stack,
-        library: 'Unhandled',
-      ));
+      logFile(FlutterErrorDetails(exception: error, stack: stack, library: 'Unhandled'));
       return false;
     };
 

@@ -7,12 +7,7 @@ class DriftfinScrollbar extends ConsumerWidget {
   final ScrollController controller;
   final Widget child;
   final bool visible;
-  const DriftfinScrollbar({
-    required this.controller,
-    required this.child,
-    this.visible = true,
-    super.key,
-  });
+  const DriftfinScrollbar({required this.controller, required this.child, this.visible = true, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

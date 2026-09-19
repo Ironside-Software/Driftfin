@@ -35,12 +35,12 @@ class _TonightScreenState extends ConsumerState<TonightScreen> {
   }
 
   String _moodLabel(TonightMood mood) => switch (mood) {
-        TonightMood.any => context.localized.tonightMoodAny,
-        TonightMood.cozy => context.localized.tonightMoodCozy,
-        TonightMood.thrilling => context.localized.tonightMoodThrilling,
-        TonightMood.funny => context.localized.tonightMoodFunny,
-        TonightMood.uplifting => context.localized.tonightMoodUplifting,
-      };
+    TonightMood.any => context.localized.tonightMoodAny,
+    TonightMood.cozy => context.localized.tonightMoodCozy,
+    TonightMood.thrilling => context.localized.tonightMoodThrilling,
+    TonightMood.funny => context.localized.tonightMoodFunny,
+    TonightMood.uplifting => context.localized.tonightMoodUplifting,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -58,21 +58,13 @@ class _TonightScreenState extends ConsumerState<TonightScreen> {
                 children: [
                   const BackButton(),
                   const SizedBox(width: 4),
-                  Expanded(
-                    child: Text(
-                      context.localized.tonight,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
+                  Expanded(child: Text(context.localized.tonight, style: Theme.of(context).textTheme.headlineSmall)),
                   IconButton(
                     tooltip: context.localized.refresh,
                     icon: const Icon(IconsaxPlusLinear.refresh),
                     onPressed: tonight.loading
                         ? null
-                        : () => notifier.fetchTonightPicks(
-                              timeAvailable: tonight.timeAvailable,
-                              mood: tonight.mood,
-                            ),
+                        : () => notifier.fetchTonightPicks(timeAvailable: tonight.timeAvailable, mood: tonight.mood),
                   ),
                 ],
               ),
@@ -82,7 +74,7 @@ class _TonightScreenState extends ConsumerState<TonightScreen> {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: _timeBudgets.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final duration = _timeBudgets[index];
                     return ChoiceChip(
@@ -99,7 +91,7 @@ class _TonightScreenState extends ConsumerState<TonightScreen> {
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: TonightMood.values.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final mood = TonightMood.values[index];
                     return ChoiceChip(
@@ -115,11 +107,11 @@ class _TonightScreenState extends ConsumerState<TonightScreen> {
                 child: tonight.loading
                     ? const Center(child: CircularProgressIndicator())
                     : !tonight.hasPicks
-                        ? Center(child: Text(context.localized.tonightEmpty))
-                        : ListView.builder(
-                            itemCount: tonight.picks.length,
-                            itemBuilder: (context, index) => PosterListItem(poster: tonight.picks[index]),
-                          ),
+                    ? Center(child: Text(context.localized.tonightEmpty))
+                    : ListView.builder(
+                        itemCount: tonight.picks.length,
+                        itemBuilder: (context, index) => PosterListItem(poster: tonight.picks[index]),
+                      ),
               ),
             ],
           ),

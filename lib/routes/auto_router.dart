@@ -9,21 +9,13 @@ import 'package:driftfin/widgets/navigation_scaffold/components/navigation_body.
 const settingsPageRoute = "settings";
 const controlPanelPageRoute = "control-panel";
 
-const fullScreenRoutes = {
-  PhotoViewerRoute.name,
-};
+const fullScreenRoutes = {PhotoViewerRoute.name};
 
-const topBarNoBlurRoutes = {
-  SettingsRoute.name,
-  ControlPanelRoute.name,
-  DetailsRoute.name,
-};
+const topBarNoBlurRoutes = {SettingsRoute.name, ControlPanelRoute.name, DetailsRoute.name};
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
 class AutoRouter extends RootStackRouter {
-  AutoRouter({
-    required this.ref,
-  });
+  AutoRouter({required this.ref});
 
   final WidgetRef ref;
 
@@ -34,26 +26,15 @@ class AutoRouter extends RootStackRouter {
   RouteType get defaultRouteType => const RouteType.adaptive();
 
   @override
-  List<AutoRoute> get routes => [
-        ..._defaultRoutes,
-        ...otherRoutes,
-      ];
+  List<AutoRoute> get routes => [..._defaultRoutes, ...otherRoutes];
 
   final List<AutoRoute> otherRoutes = [
     _homeRoute.copyWith(
       children: [
         ...homeRoutes,
         ...detailsRoutes,
-        AutoRoute(
-          page: SettingsRoute.page,
-          path: settingsPageRoute,
-          children: _settingsChildren,
-        ),
-        AutoRoute(
-          page: ControlPanelRoute.page,
-          path: controlPanelPageRoute,
-          children: _controlPanelRoutes,
-        ),
+        AutoRoute(page: SettingsRoute.page, path: settingsPageRoute, children: _settingsChildren),
+        AutoRoute(page: ControlPanelRoute.page, path: controlPanelPageRoute, children: _controlPanelRoutes),
       ],
     ),
     AutoRoute(page: LockRoute.page, path: '/locked'),
@@ -62,37 +43,17 @@ class AutoRouter extends RootStackRouter {
 
 final AutoRoute _homeRoute = AutoRoute(page: HomeRoute.page, path: '/');
 final List<AutoRoute> homeRoutes = [
-  AutoRoute(
-    page: DashboardRoute.page,
-    initial: true,
-    path: 'dashboard',
-  ),
-  AutoRoute(
-    page: SeerrRoute.page,
-    path: 'seerr',
-  ),
-  AutoRoute(
-    page: FavouritesRoute.page,
-    path: 'favourites',
-  ),
-  AutoRoute(
-    page: SyncedRoute.page,
-    path: 'synced',
-  ),
-  AutoRoute(
-    page: LibraryRoute.page,
-    path: 'libraries',
-  ),
+  AutoRoute(page: DashboardRoute.page, initial: true, path: 'dashboard'),
+  AutoRoute(page: SeerrRoute.page, path: 'seerr'),
+  AutoRoute(page: FavouritesRoute.page, path: 'favourites'),
+  AutoRoute(page: SyncedRoute.page, path: 'synced'),
+  AutoRoute(page: LibraryRoute.page, path: 'libraries'),
 ];
 
 final List<AutoRoute> detailsRoutes = [
   AutoRoute(page: DetailsRoute.page, path: 'details'),
   AutoRoute(page: PhotoViewerRoute.page, path: "album"),
-  AutoRoute(
-    page: LibrarySearchRoute.page,
-    path: 'library',
-    usesPathAsKey: true,
-  ),
+  AutoRoute(page: LibrarySearchRoute.page, path: 'library', usesPathAsKey: true),
   AutoRoute(page: TonightRoute.page, path: 'tonight'),
   AutoRoute(page: LiveTvRoute.page, path: 'live-tv'),
   AutoRoute(page: SeerrSearchRoute.page, path: 'seerr-search'),
@@ -169,13 +130,17 @@ class AuthGuard extends AutoRouteGuard {
       return resolver.next(true);
     }
 
-    resolver.redirectUntil<bool>(SplashRoute(loggedIn: (value) {
-      if (value) {
-        resolver.next(true);
-      } else {
-        router.replace(LoginRoute());
-      }
-    }));
+    resolver.redirectUntil(
+      SplashRoute(
+        loggedIn: (value) {
+          if (value) {
+            resolver.next(true);
+          } else {
+            router.replace(LoginRoute());
+          }
+        },
+      ),
+    );
 
     // We assume the last main focus is no longer active after navigating
     lastMainFocus = null;

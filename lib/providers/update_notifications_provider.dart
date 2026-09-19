@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'package:driftfin/background/update_notifications_worker.dart';
@@ -73,14 +74,9 @@ class UpdateNotifications {
         updateTaskName,
         frequency: interval,
         existingWorkPolicy: ExistingPeriodicWorkPolicy.replace,
-        constraints: Constraints(
-          networkType: NetworkType.connected,
-        ),
+        constraints: Constraints(networkType: NetworkType.connected),
         initialDelay: const Duration(seconds: 5),
-        inputData: <String, dynamic>{
-          'frequency': interval.inMinutes,
-          'timestamp': DateTime.now().toIso8601String(),
-        },
+        inputData: <String, dynamic>{'frequency': interval.inMinutes, 'timestamp': DateTime.now().toIso8601String()},
       );
     } catch (e) {
       log('Error registering background task: $e');
@@ -131,9 +127,7 @@ class UpdateNotifications {
           updateTaskNameDebug,
           updateTaskNameDebug,
           existingWorkPolicy: ExistingWorkPolicy.replace,
-          constraints: Constraints(
-            networkType: NetworkType.connected,
-          ),
+          constraints: Constraints(networkType: NetworkType.connected),
         );
       }
     } catch (e) {

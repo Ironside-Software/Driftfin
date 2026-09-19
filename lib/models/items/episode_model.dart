@@ -29,16 +29,16 @@ enum EpisodeStatus {
   const EpisodeStatus();
 
   Color get color => switch (this) {
-        EpisodeStatus.available => Colors.lightGreenAccent,
-        EpisodeStatus.unaired => Colors.indigoAccent,
-        EpisodeStatus.missing => Colors.redAccent,
-      };
+    EpisodeStatus.available => Colors.lightGreenAccent,
+    EpisodeStatus.unaired => Colors.indigoAccent,
+    EpisodeStatus.missing => Colors.redAccent,
+  };
 
   String label(AppLocalizations l10n, DateTime? airDate) => switch (this) {
-        EpisodeStatus.available => l10n.episodeAvailable,
-        EpisodeStatus.unaired => airDate.dateInDays(l10n) ?? l10n.episodeUnaired,
-        EpisodeStatus.missing => l10n.episodeMissing,
-      };
+    EpisodeStatus.available => l10n.episodeAvailable,
+    EpisodeStatus.unaired => airDate.dateInDays(l10n) ?? l10n.episodeUnaired,
+    EpisodeStatus.missing => l10n.episodeMissing,
+  };
 }
 
 @MappableClass()
@@ -78,7 +78,7 @@ class EpisodeModel extends ItemStreamModel with EpisodeModelMappable {
       ItemLocation.filesystem => EpisodeStatus.available,
       ItemLocation.virtual =>
         (dateAired?.isBefore(DateTime.now()) == true) ? EpisodeStatus.missing : EpisodeStatus.unaired,
-      _ => EpisodeStatus.missing
+      _ => EpisodeStatus.missing,
     };
   }
 
@@ -95,19 +95,19 @@ class EpisodeModel extends ItemStreamModel with EpisodeModelMappable {
 
   @override
   SeriesModel get parentBaseModel => SeriesModel(
-        originalTitle: '',
-        sortName: '',
-        status: "",
-        name: seriesName ?? "",
-        id: parentId ?? "",
-        playlistId: playlistId,
-        overview: overview,
-        parentId: parentId,
-        images: images,
-        childCount: childCount,
-        primaryRatio: primaryRatio,
-        userData: const UserData(),
-      );
+    originalTitle: '',
+    sortName: '',
+    status: "",
+    name: seriesName ?? "",
+    id: parentId ?? "",
+    playlistId: playlistId,
+    overview: overview,
+    parentId: parentId,
+    images: images,
+    childCount: childCount,
+    primaryRatio: primaryRatio,
+    userData: const UserData(),
+  );
 
   @override
   String get streamId => parentId ?? "";
@@ -132,9 +132,9 @@ class EpisodeModel extends ItemStreamModel with EpisodeModelMappable {
 
   @override
   bool get playAble => switch (status) {
-        EpisodeStatus.available => true,
-        _ => false,
-      };
+    EpisodeStatus.available => true,
+    _ => false,
+  };
 
   @override
   String playButtonLabel(AppLocalizations l10n) {
@@ -180,7 +180,6 @@ class EpisodeModel extends ItemStreamModel with EpisodeModelMappable {
   @override
   bool get syncAble => playAble;
 
-  @override
   factory EpisodeModel.fromBaseDto(dto.BaseItemDto item, Ref? ref) {
     if (ref == null) {
       return EpisodeModel(
@@ -254,10 +253,7 @@ extension EpisodeListExtensions on List<EpisodeModel> {
 
     String addPadding(int value) => value.toString().padLeft(6, '0');
 
-    return SplayTreeMap<int, List<EpisodeModel>>.from(
-      groupedItems,
-      (a, b) => addPadding(a).compareTo(addPadding(b)),
-    );
+    return SplayTreeMap<int, List<EpisodeModel>>.from(groupedItems, (a, b) => addPadding(a).compareTo(addPadding(b)));
   }
 
   EpisodeModel? get nextUp {
@@ -281,9 +277,9 @@ extension EpisodeListExtensions on List<EpisodeModel> {
           return next;
         }
 
-        final nextUnplayed = episodes.sublist(nextIndex).firstWhereOrNull(
-              (e) => e.status == EpisodeStatus.available && !e.userData.played,
-            );
+        final nextUnplayed = episodes
+            .sublist(nextIndex)
+            .firstWhereOrNull((e) => e.status == EpisodeStatus.available && !e.userData.played);
         if (nextUnplayed != null) return nextUnplayed;
       }
     }

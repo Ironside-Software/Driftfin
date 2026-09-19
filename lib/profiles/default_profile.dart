@@ -1,14 +1,17 @@
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/settings/video_player_settings.dart';
 import 'package:driftfin/profiles/web_profile.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
 
-final videoProfileProvider = StateProvider.autoDispose<DeviceProfile>((ref) =>
-    defaultProfile(ref.read(videoPlayerProvider.select((value) => value.backend)) ?? PlayerOptions.platformDefaults));
+final videoProfileProvider = StateProvider.autoDispose<DeviceProfile>(
+  (ref) =>
+      defaultProfile(ref.read(videoPlayerProvider.select((value) => value.backend)) ?? PlayerOptions.platformDefaults),
+);
 
 DeviceProfile defaultProfile(PlayerOptions player) => kIsWeb
     ? webProfile
@@ -17,12 +20,8 @@ DeviceProfile defaultProfile(PlayerOptions player) => kIsWeb
         maxStaticBitrate: 120000000,
         musicStreamingTranscodingBitrate: 384000,
         directPlayProfiles: [
-          DirectPlayProfile(
-            type: DlnaProfileType.video,
-          ),
-          DirectPlayProfile(
-            type: DlnaProfileType.audio,
-          )
+          DirectPlayProfile(type: DlnaProfileType.video),
+          DirectPlayProfile(type: DlnaProfileType.audio),
         ],
         transcodingProfiles: [
           TranscodingProfile(

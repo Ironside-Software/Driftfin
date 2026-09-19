@@ -16,25 +16,17 @@ import 'package:driftfin/util/map_bool_helper.dart';
 import 'package:driftfin/util/option_dialogue.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
-Future<void> showSavedFilters(
-  BuildContext context,
-  Key providerKey,
-) {
+Future<void> showSavedFilters(BuildContext context, Key providerKey) {
   return showDialog(
     context: context,
-    builder: (context) => LibrarySavedFiltersDialogue(
-      providerKey: providerKey,
-    ),
+    builder: (context) => LibrarySavedFiltersDialogue(providerKey: providerKey),
   );
 }
 
 class LibrarySavedFiltersDialogue extends ConsumerWidget {
   final Key providerKey;
 
-  const LibrarySavedFiltersDialogue({
-    super.key,
-    required this.providerKey,
-  });
+  const LibrarySavedFiltersDialogue({super.key, required this.providerKey});
 
   bool _isCurrentFilter(LibraryFilterModel filter, LibraryFilterModel currentFilters) {
     return filter == currentFilters;
@@ -53,41 +45,39 @@ class LibrarySavedFiltersDialogue extends ConsumerWidget {
     final filters = ref.watch(provider.filterProvider);
     final filterProvider = ref.watch(provider.filterProvider.notifier);
 
-    final anyFilterSelected = filters.any(
-      (element) => _isCurrentFilter(element.filter, currentFilters),
-    );
+    final anyFilterSelected = filters.any((element) => _isCurrentFilter(element.filter, currentFilters));
 
     final activeLibraries = views.map((e) => e.name).join(", ");
     final folderNames = folderOverwrite.included.map((e) => e.name).join(", ");
     final libraryNames = folderNames.isNotEmpty ? folderNames : activeLibraries;
 
     List<ItemActionButton> filterActions(LibraryFiltersModel filter, bool isCurrentFilter) => [
-          ItemActionButton(
-            label: Text(context.localized.applyFilter),
-            action: isCurrentFilter
-                ? null
-                : () {
-                    provider.loadModel(filter);
-                  },
-            icon: const Icon(IconsaxPlusBold.filter_add),
+      ItemActionButton(
+        label: Text(context.localized.applyFilter),
+        action: isCurrentFilter
+            ? null
+            : () {
+                provider.loadModel(filter);
+              },
+        icon: const Icon(IconsaxPlusBold.filter_add),
+      ),
+      if (views.length == 1 || folderOverwrite.included.length == 1)
+        ItemActionButton(
+          label: Text(context.localized.defaultFilterForLibrary),
+          backgroundColor: filter.isFavourite ? Colors.yellowAccent.shade700.withValues(alpha: 0.5) : null,
+          foregroundColor: filter.isFavourite ? Colors.yellowAccent : null,
+          action: () => filterProvider.saveFilter(filter.copyWith(isFavourite: !filter.isFavourite)),
+          icon: Icon(
+            color: filter.isFavourite ? Colors.yellowAccent : null,
+            filter.isFavourite ? IconsaxPlusBold.star_1 : IconsaxPlusLinear.star_1,
           ),
-          if (views.length == 1 || folderOverwrite.included.length == 1)
-            ItemActionButton(
-              label: Text(context.localized.defaultFilterForLibrary),
-              backgroundColor: filter.isFavourite ? Colors.yellowAccent.shade700.withValues(alpha: 0.5) : null,
-              foregroundColor: filter.isFavourite ? Colors.yellowAccent : null,
-              action: () => filterProvider.saveFilter(filter.copyWith(isFavourite: !filter.isFavourite)),
-              icon: Icon(
-                color: filter.isFavourite ? Colors.yellowAccent : null,
-                filter.isFavourite ? IconsaxPlusBold.star_1 : IconsaxPlusLinear.star_1,
-              ),
-            ),
-          ItemActionButton(
-            label: Text(context.localized.updateFilterForLibrary),
-            action: isCurrentFilter ? null : () => provider.updateFilter(filter),
-            icon: const Icon(IconsaxPlusBold.refresh),
-          ),
-        ];
+        ),
+      ItemActionButton(
+        label: Text(context.localized.updateFilterForLibrary),
+        action: isCurrentFilter ? null : () => provider.updateFilter(filter),
+        icon: const Icon(IconsaxPlusBold.refresh),
+      ),
+    ];
 
     return Dialog(
       child: Padding(
@@ -106,56 +96,55 @@ class LibrarySavedFiltersDialogue extends ConsumerWidget {
                 child: ListView(
                   shrinkWrap: true,
                   children: [
-                    ...filters.map(
-                      (filter) {
-                        final isCurrentFilter = _isCurrentFilter(filter.filter, currentFilters);
-                        return FilterListItem(
-                          filter: filter,
-                          isCurrentFilter: isCurrentFilter,
-                          moreActions: filterActions(filter, isCurrentFilter),
-                          showIcon: false,
-                        );
-                      },
-                    ),
+                    ...filters.map((filter) {
+                      final isCurrentFilter = _isCurrentFilter(filter.filter, currentFilters);
+                      return FilterListItem(
+                        filter: filter,
+                        isCurrentFilter: isCurrentFilter,
+                        moreActions: filterActions(filter, isCurrentFilter),
+                        showIcon: false,
+                      );
+                    }),
                   ],
                 ),
               ),
               const Divider(),
             ],
             if (!anyFilterSelected)
-              StatefulBuilder(builder: (context, setState) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 4),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                      child: Row(
-                        spacing: 8,
-                        children: [
-                          Expanded(
-                            child: OutlinedTextField(
-                              controller: controller,
-                              label: context.localized.name,
-                              onChanged: (value) => setState(() {}),
-                              onSubmitted: (value) => provider.saveFiltersNew(value),
+              StatefulBuilder(
+                builder: (context, setState) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                        child: Row(
+                          spacing: 8,
+                          children: [
+                            Expanded(
+                              child: OutlinedTextField(
+                                controller: controller,
+                                label: context.localized.name,
+                                onChanged: (value) => setState(() {}),
+                                onSubmitted: (value) => provider.saveFiltersNew(value),
+                              ),
                             ),
-                          ),
-                          FilledButton(
-                            onPressed: controller.text.isEmpty ? null : () => provider.saveFiltersNew(controller.text),
-                            child: Row(
-                              spacing: 8,
-                              children: [
-                                Text(context.localized.save),
-                                const Icon(IconsaxPlusLinear.save_2),
-                              ],
+                            FilledButton(
+                              onPressed: controller.text.isEmpty
+                                  ? null
+                                  : () => provider.saveFiltersNew(controller.text),
+                              child: Row(
+                                spacing: 8,
+                                children: [Text(context.localized.save), const Icon(IconsaxPlusLinear.save_2)],
+                              ),
                             ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              })
+                  );
+                },
+              ),
           ],
         ),
       ),
@@ -179,7 +168,7 @@ class FilterListItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final smallSize = AdaptiveLayout.viewSizeOf(context) <= ViewSize.phone;
-    final filterProvider = ref.read(libraryFiltersProvider([]).notifier);
+    final filterProvider = ref.watch(libraryFiltersProvider(const []).notifier);
 
     final views = ref.watch(viewsProvider).views;
 
@@ -214,22 +203,16 @@ class FilterListItem extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(type.icon, size: 16),
-                    Flexible(
-                      child: Text(type.label(context)),
-                    ),
+                    Flexible(child: Text(type.label(context))),
                   ],
                 ),
               ),
             );
-            filterProvider.saveFilter(filter.copyWith(
-              sortKeys: {
-                for (final key in FilterSortKey.values) key: newItems.contains(key),
-              },
-            ));
+            filterProvider.saveFilter(
+              filter.copyWith(sortKeys: {for (final key in FilterSortKey.values) key: newItems.contains(key)}),
+            );
           },
-          icon: const Icon(
-            IconsaxPlusBold.menu,
-          ),
+          icon: const Icon(IconsaxPlusBold.menu),
         ),
         ItemActionButton(
           label: Text(context.localized.delete),
@@ -282,9 +265,7 @@ class FilterListItem extends ConsumerWidget {
             Expanded(
               child: OutlinedTextField(
                 controller: TextEditingController(text: filter.name),
-                onSubmitted: (value) => filterProvider.saveFilter(
-                  filter.copyWith(name: value),
-                ),
+                onSubmitted: (value) => filterProvider.saveFilter(filter.copyWith(name: value)),
               ),
             ),
             if (smallSize)

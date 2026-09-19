@@ -46,10 +46,10 @@ enum BackgroundType {
   const BackgroundType();
 
   double get opacityValues => switch (this) {
-        BackgroundType.disabled => 1.0,
-        BackgroundType.enabled => 0.75,
-        BackgroundType.blurred => 0.75,
-      };
+    BackgroundType.disabled => 1.0,
+    BackgroundType.enabled => 0.75,
+    BackgroundType.blurred => 0.75,
+  };
 
   String label(BuildContext context) {
     return switch (this) {
@@ -64,7 +64,7 @@ enum BackgroundType {
 abstract class ClientSettingsModel with _$ClientSettingsModel {
   const ClientSettingsModel._();
 
-  factory ClientSettingsModel.internal({
+  factory ClientSettingsModel({
     String? syncPath,
     required TranscodeDownloadModel transcodeDownloadModel,
     @Default(TranscodeMusicDownloadModel()) TranscodeMusicDownloadModel transcodeMusicDownloadModel,
@@ -106,7 +106,7 @@ abstract class ClientSettingsModel with _$ClientSettingsModel {
   }) = _ClientSettingsModel;
 
   static ClientSettingsModel defaultModel() {
-    return ClientSettingsModel.internal(
+    return ClientSettingsModel(
       transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
       blurPlaceHolders: leanBackMode ? false : true,
       backgroundImage: leanBackMode ? BackgroundType.disabled : BackgroundType.blurred,
@@ -175,11 +175,7 @@ class LocaleConvert implements JsonConverter<Locale?, String?> {
       return null;
     }
 
-    return Locale.fromSubtags(
-      languageCode: languageCode,
-      scriptCode: scriptCode,
-      countryCode: countryCode,
-    );
+    return Locale.fromSubtags(languageCode: languageCode, scriptCode: scriptCode, countryCode: countryCode);
   }
 
   @override
@@ -191,33 +187,18 @@ class LocaleConvert implements JsonConverter<Locale?, String?> {
 class Vector2 {
   final double x;
   final double y;
-  const Vector2({
-    required this.x,
-    required this.y,
-  });
+  const Vector2({required this.x, required this.y});
 
-  Vector2 copyWith({
-    double? x,
-    double? y,
-  }) {
-    return Vector2(
-      x: x ?? this.x,
-      y: y ?? this.y,
-    );
+  Vector2 copyWith({double? x, double? y}) {
+    return Vector2(x: x ?? this.x, y: y ?? this.y);
   }
 
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'x': x,
-      'y': y,
-    };
+    return <String, dynamic>{'x': x, 'y': y};
   }
 
   factory Vector2.fromMap(Map<String, dynamic> map) {
-    return Vector2(
-      x: map['x'] as double,
-      y: map['y'] as double,
-    );
+    return Vector2(x: map['x'] as double, y: map['y'] as double);
   }
 
   String toJson() => json.encode(toMap());
@@ -243,27 +224,28 @@ class Vector2 {
 }
 
 Map<GlobalHotKeys, KeyCombination> get _defaultGlobalHotKeys => switch (defaultTargetPlatform) {
-      TargetPlatform.macOS => {
-          for (var hotKey in GlobalHotKeys.values)
-            hotKey: switch (hotKey) {
-              GlobalHotKeys.toggleSideBar => KeyCombination(key: LogicalKeyboardKey.keyQ),
-              GlobalHotKeys.search =>
-                KeyCombination(key: LogicalKeyboardKey.keyK, modifier: LogicalKeyboardKey.superKey),
-              GlobalHotKeys.closeWindow =>
-                KeyCombination(key: LogicalKeyboardKey.keyW, modifier: LogicalKeyboardKey.superKey),
-              GlobalHotKeys.exit => KeyCombination(key: LogicalKeyboardKey.keyQ, modifier: LogicalKeyboardKey.superKey),
-            },
-        },
-      _ => {
-          for (var hotKey in GlobalHotKeys.values)
-            hotKey: switch (hotKey) {
-              GlobalHotKeys.toggleSideBar => KeyCombination(key: LogicalKeyboardKey.keyQ),
-              GlobalHotKeys.search =>
-                KeyCombination(key: LogicalKeyboardKey.keyK, modifier: LogicalKeyboardKey.controlLeft),
-              GlobalHotKeys.closeWindow =>
-                KeyCombination(key: LogicalKeyboardKey.keyW, modifier: LogicalKeyboardKey.controlLeft),
-              GlobalHotKeys.exit =>
-                KeyCombination(key: LogicalKeyboardKey.keyQ, modifier: LogicalKeyboardKey.controlLeft),
-            },
-        }
-    };
+  TargetPlatform.macOS => {
+    for (var hotKey in GlobalHotKeys.values)
+      hotKey: switch (hotKey) {
+        GlobalHotKeys.toggleSideBar => KeyCombination(key: LogicalKeyboardKey.keyQ),
+        GlobalHotKeys.search => KeyCombination(key: LogicalKeyboardKey.keyK, modifier: LogicalKeyboardKey.superKey),
+        GlobalHotKeys.closeWindow => KeyCombination(
+          key: LogicalKeyboardKey.keyW,
+          modifier: LogicalKeyboardKey.superKey,
+        ),
+        GlobalHotKeys.exit => KeyCombination(key: LogicalKeyboardKey.keyQ, modifier: LogicalKeyboardKey.superKey),
+      },
+  },
+  _ => {
+    for (var hotKey in GlobalHotKeys.values)
+      hotKey: switch (hotKey) {
+        GlobalHotKeys.toggleSideBar => KeyCombination(key: LogicalKeyboardKey.keyQ),
+        GlobalHotKeys.search => KeyCombination(key: LogicalKeyboardKey.keyK, modifier: LogicalKeyboardKey.controlLeft),
+        GlobalHotKeys.closeWindow => KeyCombination(
+          key: LogicalKeyboardKey.keyW,
+          modifier: LogicalKeyboardKey.controlLeft,
+        ),
+        GlobalHotKeys.exit => KeyCombination(key: LogicalKeyboardKey.keyQ, modifier: LogicalKeyboardKey.controlLeft),
+      },
+  },
+};

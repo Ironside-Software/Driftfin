@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.enums.swagger.dart';
 import 'package:driftfin/models/home_model.dart';
@@ -20,16 +21,12 @@ final dashboardProvider = StateNotifierProvider<DashboardNotifier, HomeModel>((r
 
 class DashboardNotifier extends StateNotifier<HomeModel> {
   DashboardNotifier(this.ref) : super(HomeModel()) {
-    ref.listen(
-      libraryFiltersByKeyProvider(FilterSortKey.dashboard),
-      (previous, next) {
-        const listEquality = ListEquality<LibraryFiltersModel>();
-        if (!listEquality.equals(previous, next)) {
-          fetchNextUpAndResume();
-        }
-      },
-      fireImmediately: false,
-    );
+    ref.listen(libraryFiltersByKeyProvider(FilterSortKey.dashboard), (previous, next) {
+      const listEquality = ListEquality<LibraryFiltersModel>();
+      if (!listEquality.equals(previous, next)) {
+        fetchNextUpAndResume();
+      }
+    }, fireImmediately: false);
   }
 
   final Ref ref;
@@ -41,11 +38,7 @@ class DashboardNotifier extends StateNotifier<HomeModel> {
 
   Future<List<DashboardFilterModel>> _fetchDashboardFilters() async {
     final filters = ref.read(libraryFiltersByKeyProvider(FilterSortKey.dashboard));
-    return Future.wait(
-      filters.map(
-        (e) => e.fetchDashboardFilter(ref, limit: _dashboardFilterLimit),
-      ),
-    );
+    return Future.wait(filters.map((e) => e.fetchDashboardFilter(ref, limit: _dashboardFilterLimit)));
   }
 
   Future<void> fetchNextUpAndResume() async {
@@ -54,8 +47,11 @@ class DashboardNotifier extends StateNotifier<HomeModel> {
       return;
     }
     state = state.copyWith(loading: true);
-    final viewTypes =
-        ref.read(viewsProvider.select((value) => value.dashboardViews)).map((e) => e.collectionType).toSet().toList();
+    final viewTypes = ref
+        .read(viewsProvider.select((value) => value.dashboardViews))
+        .map((e) => e.collectionType)
+        .toSet()
+        .toList();
     final limit = 16;
 
     final imagesToFetch = {
@@ -78,22 +74,17 @@ class DashboardNotifier extends StateNotifier<HomeModel> {
     };
 
     if (viewTypes.containsAny([CollectionType.livetv])) {
-      List<ChannelModel> channels = (await api.liveTvChannelsGet(limit: limit))
-              .body
-              ?.items
+      List<ChannelModel> channels =
+          (await api.liveTvChannelsGet(limit: limit)).body?.items
               ?.map((e) => ChannelModel.fromBaseDto(e, ref))
               .toList() ??
           [];
 
       channels = await Future.wait(
-        channels.map(
-          (e) async {
-            final programs = await ref.read(liveTvProvider.notifier).fetchProgramsForChannel(e);
-            return e.copyChannelWith(
-              programs: programs,
-            );
-          },
-        ),
+        channels.map((e) async {
+          final programs = await ref.read(liveTvProvider.notifier).fetchProgramsForChannel(e);
+          return e.copyChannelWith(programs: programs);
+        }),
       );
 
       state = state.copyWith(activePrograms: channels);
@@ -145,18 +136,14 @@ class DashboardNotifier extends StateNotifier<HomeModel> {
 
     final nextResponse = await api.showsNextUpGet(
       nextUpDateCutoff: DateTime.now().subtract(
-          ref.read(clientSettingsProvider.select((value) => value.nextUpDateCutoff ?? const Duration(days: 28)))),
+        ref.read(clientSettingsProvider.select((value) => value.nextUpDateCutoff ?? const Duration(days: 28))),
+      ),
       fields: fieldsToFetch.toList(),
       enableImageTypes: imagesToFetch,
       imageTypeLimit: 1,
     );
 
-    final next = nextResponse.body?.items
-            ?.map(
-              (e) => ItemBaseModel.fromBaseDto(e, ref),
-            )
-            .toList() ??
-        [];
+    final next = nextResponse.body?.items?.map((e) => ItemBaseModel.fromBaseDto(e, ref)).toList() ?? [];
 
     final dashboardFilters = await _fetchDashboardFilters();
     state = state.copyWith(nextUp: next, dashboardFilters: dashboardFilters, loading: false);

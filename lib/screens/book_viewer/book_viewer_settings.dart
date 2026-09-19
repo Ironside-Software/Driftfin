@@ -10,9 +10,7 @@ import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/widgets/shared/modal_side_sheet.dart';
 
-Future<void> showBookViewerSettings(
-  BuildContext context,
-) async {
+Future<void> showBookViewerSettings(BuildContext context) async {
   if (AdaptiveLayout.of(context).isDesktop) {
     return showModalSideSheet(context, content: const BookViewerSettingsScreen());
   } else {
@@ -37,10 +35,7 @@ class BookViewerSettingsScreen extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              "Reader settings",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            child: Text("Reader settings", style: Theme.of(context).textTheme.titleLarge),
           ),
         ),
         const Divider(),
@@ -64,12 +59,9 @@ class BookViewerSettingsScreen extends ConsumerWidget {
                   onPressed: () => ref.read(bookViewerSettingsProvider.notifier).setScreenBrightness(null),
                   icon: Opacity(
                     opacity: settings.screenBrightness != null ? 0.5 : 1,
-                    child: Icon(
-                      Icons.brightness_auto_rounded,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    child: Icon(Icons.brightness_auto_rounded, color: Theme.of(context).colorScheme.primary),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -83,12 +75,14 @@ class BookViewerSettingsScreen extends ConsumerWidget {
                   label: const Text("Read direction"),
                   current: settings.readDirection.name.toUpperCaseSplit(),
                   itemBuilder: (context) => ReadDirection.values
-                      .map((value) => ItemActionButton(
-                            label: Text(value.name.toUpperCaseSplit()),
-                            action: () => ref
-                                .read(bookViewerSettingsProvider.notifier)
-                                .update((state) => state.copyWith(readDirection: value)),
-                          ))
+                      .map(
+                        (value) => ItemActionButton(
+                          label: Text(value.name.toUpperCaseSplit()),
+                          action: () => ref
+                              .read(bookViewerSettingsProvider.notifier)
+                              .update((state) => state.copyWith(readDirection: value)),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
@@ -104,12 +98,14 @@ class BookViewerSettingsScreen extends ConsumerWidget {
                   label: const Text("Init zoom"),
                   current: settings.initZoomState.name.toUpperCaseSplit(),
                   itemBuilder: (context) => InitZoomState.values
-                      .map((value) => ItemActionButton(
-                            label: Text(value.name.toUpperCaseSplit()),
-                            action: () => ref
-                                .read(bookViewerSettingsProvider.notifier)
-                                .update((state) => state.copyWith(initZoomState: value)),
-                          ))
+                      .map(
+                        (value) => ItemActionButton(
+                          label: Text(value.name.toUpperCaseSplit()),
+                          action: () => ref
+                              .read(bookViewerSettingsProvider.notifier)
+                              .update((state) => state.copyWith(initZoomState: value)),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
@@ -123,17 +119,14 @@ class BookViewerSettingsScreen extends ConsumerWidget {
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Expanded(
-                flex: 3,
-                child: Text("Disable slide page gestures when zoomed"),
-              ),
+              const Expanded(flex: 3, child: Text("Disable slide page gestures when zoomed")),
               const Spacer(),
               Switch(
                 value: settings.disableScrollOnZoom,
                 onChanged: (value) => ref
                     .read(bookViewerSettingsProvider.notifier)
                     .update((state) => state.copyWith(disableScrollOnZoom: value)),
-              )
+              ),
             ],
           ),
         ),
@@ -144,17 +137,14 @@ class BookViewerSettingsScreen extends ConsumerWidget {
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Expanded(
-                flex: 3,
-                child: Text("Cache page zoom state"),
-              ),
+              const Expanded(flex: 3, child: Text("Cache page zoom state")),
               const Spacer(),
               Switch(
                 value: settings.cachePageZoom,
                 onChanged: (value) => ref
                     .read(bookViewerSettingsProvider.notifier)
                     .update((incoming) => incoming.copyWith(cachePageZoom: value)),
-              )
+              ),
             ],
           ),
         ),
@@ -165,23 +155,18 @@ class BookViewerSettingsScreen extends ConsumerWidget {
           title: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Expanded(
-                flex: 3,
-                child: Text("Keep page zoom"),
-              ),
+              const Expanded(flex: 3, child: Text("Keep page zoom")),
               const Spacer(),
               Switch(
                 value: settings.keepPageZoom,
                 onChanged: (value) => ref
                     .read(bookViewerSettingsProvider.notifier)
                     .update((incoming) => incoming.copyWith(keepPageZoom: value)),
-              )
+              ),
             ],
           ),
         ),
-        SizedBox(
-          height: MediaQuery.of(context).padding.bottom,
-        )
+        SizedBox(height: MediaQuery.of(context).padding.bottom),
       ],
     );
   }

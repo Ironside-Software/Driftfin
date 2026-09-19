@@ -28,11 +28,7 @@ Future<void> showSeerrRequestsSheet({
   );
 
   if (AdaptiveLayout.viewSizeOf(context) != ViewSize.phone) {
-    await showModalSideSheet(
-      context,
-      header: Text(context.localized.manageRequest),
-      content: sheetContent,
-    );
+    await showModalSideSheet(context, header: Text(context.localized.manageRequest), content: sheetContent);
   } else {
     await showBottomSheetPill(
       context: context,
@@ -93,10 +89,7 @@ class _SeerrRequestsSheet extends ConsumerWidget {
             ExcludeFocus(
               child: IgnorePointer(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: 125,
-                    maxHeight: 225,
-                  ),
+                  constraints: const BoxConstraints(minHeight: 125, maxHeight: 225),
                   child: SeerrRequestBannerCard(poster: requestPoster),
                 ),
               ),
@@ -112,18 +105,19 @@ class _SeerrRequestsSheet extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                        icon: const Icon(IconsaxPlusBold.close_circle),
-                        label: Text(myRequest ? context.localized.delete : context.localized.decline),
-                        onPressed: requestId != null && isPending
-                            ? () {
-                                onDecline(requestId);
-                                Navigator.of(context).pop();
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                          foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
-                        )),
+                      icon: const Icon(IconsaxPlusBold.close_circle),
+                      label: Text(myRequest ? context.localized.delete : context.localized.decline),
+                      onPressed: requestId != null && isPending
+                          ? () {
+                              onDecline(requestId);
+                              Navigator.of(context).pop();
+                            }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                        foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
+                      ),
+                    ),
                   ),
                   if (!myRequest)
                     Expanded(
@@ -149,7 +143,7 @@ class _SeerrRequestsSheet extends ConsumerWidget {
           ],
         );
       },
-      separatorBuilder: (_, __) => const Divider(),
+      separatorBuilder: (_, _) => const Divider(),
       itemCount: requests.length,
     );
   }

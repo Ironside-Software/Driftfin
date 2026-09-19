@@ -38,10 +38,9 @@ class ControlLibrariesPage extends ConsumerWidget {
     final libraries = ref.watch(controlLibrariesProvider);
     final provider = ref.read(controlLibrariesProvider.notifier);
     final selectedLibrary = libraries.selectedLibrary;
-    final selectedFolder = libraries.newVirtualFolder ??
-        libraries.virtualFolders.firstWhereOrNull(
-          (folder) => folder.itemId == selectedLibrary?.id,
-        );
+    final selectedFolder =
+        libraries.newVirtualFolder ??
+        libraries.virtualFolders.firstWhereOrNull((folder) => folder.itemId == selectedLibrary?.id);
 
     final collectionType = libraries.currentCollectionType;
 
@@ -61,23 +60,12 @@ class ControlLibrariesPage extends ConsumerWidget {
                 onPressed: () {
                   provider.createNewLibrary();
                 },
-                child: Row(
-                  spacing: 8,
-                  children: [
-                    const Icon(IconsaxPlusLinear.add),
-                    Text(context.localized.create),
-                  ],
-                ),
+                child: Row(spacing: 8, children: [const Icon(IconsaxPlusLinear.add), Text(context.localized.create)]),
               )
             else ...[
               FilledButtonAwait.tonal(
                 onPressed: () => provider.fetchInfo(clearSelected: true),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(context.localized.cancel),
-                  ],
-                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [Text(context.localized.cancel)]),
               ),
               FilledButtonAwait(
                 onPressed: libraries.isSaveAble
@@ -118,11 +106,7 @@ class ControlLibrariesPage extends ConsumerWidget {
                   label: Text(context.localized.editMetadata),
                   icon: const Icon(IconsaxPlusLinear.gallery_edit),
                   action: () async {
-                    await showEditItemPopup(
-                      context,
-                      view.id,
-                      options: {MetaEditOptions.primary},
-                    );
+                    await showEditItemPopup(context, view.id, options: {MetaEditOptions.primary});
                   },
                 ),
                 ItemActionButton(
@@ -152,22 +136,14 @@ class ControlLibrariesPage extends ConsumerWidget {
             if (selectedFolder == null)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
-                child: Center(
-                  child: Text(context.localized.noLibrarySelected),
-                ),
+                child: Center(child: Text(context.localized.noLibrarySelected)),
               )
             else
               ...[
-                if (isNewFolder)
-                  NewLibrarySection(
-                    selectedFolder: selectedFolder,
-                  ),
+                if (isNewFolder) NewLibrarySection(selectedFolder: selectedFolder),
                 LocationEditorSection(selectedFolder: selectedFolder),
                 if (collectionType != null) ...[
-                  BasicOptionsSection(
-                    selectedFolder: selectedFolder,
-                    currentOptions: currentOptions,
-                  ),
+                  BasicOptionsSection(selectedFolder: selectedFolder, currentOptions: currentOptions),
                   MetadataSection(
                     currentOptions: currentOptions,
                     cultures: libraries.cultures,
@@ -177,10 +153,7 @@ class ControlLibrariesPage extends ConsumerWidget {
                     SaveMetadataSection(currentOptions: currentOptions),
                   FetchersSection(currentOptions: currentOptions),
                   if (collectionType.videos == true) ...[
-                    SegmentProvidersSection(
-                      currentOptions: currentOptions,
-                      availableOptions: availableOptions,
-                    ),
+                    SegmentProvidersSection(currentOptions: currentOptions, availableOptions: availableOptions),
                     TrickplaySection(currentOptions: currentOptions),
                     ChapterImagesSection(currentOptions: currentOptions),
                   ],

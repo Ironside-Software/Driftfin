@@ -33,16 +33,11 @@ const _dpadModel = AdaptiveLayoutModel(
   statusBarHeight: 0,
 );
 
-Widget _harness(
-  Widget slider, {
-  AdaptiveLayoutModel model = _touchModel,
-}) {
+Widget _harness(Widget slider, {AdaptiveLayoutModel model = _touchModel}) {
   return MaterialApp(
     home: AdaptiveLayout(
       data: model,
-      child: Scaffold(
-        body: SizedBox(width: 300, child: slider),
-      ),
+      child: Scaffold(body: SizedBox(width: 300, child: slider)),
     ),
   );
 }
@@ -65,11 +60,9 @@ void main() {
   testWidgets('tap invokes onChanged and onChangeEnd', (tester) async {
     double? changed;
     double? changedEnd;
-    await tester.pumpWidget(_harness(DriftfinSlider(
-      value: 0.2,
-      onChanged: (v) => changed = v,
-      onChangeEnd: (v) => changedEnd = v,
-    )));
+    await tester.pumpWidget(
+      _harness(DriftfinSlider(value: 0.2, onChanged: (v) => changed = v, onChangeEnd: (v) => changedEnd = v)),
+    );
     await tester.pumpAndSettle();
 
     await tester.tapAt(tester.getCenter(find.byType(DriftfinSlider)));
@@ -83,12 +76,16 @@ void main() {
     double? start;
     double? changed;
     double? end;
-    await tester.pumpWidget(_harness(DriftfinSlider(
-      value: 0.5,
-      onChangeStart: (v) => start = v,
-      onChanged: (v) => changed = v,
-      onChangeEnd: (v) => end = v,
-    )));
+    await tester.pumpWidget(
+      _harness(
+        DriftfinSlider(
+          value: 0.5,
+          onChangeStart: (v) => start = v,
+          onChanged: (v) => changed = v,
+          onChangeEnd: (v) => end = v,
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.drag(find.byType(DriftfinSlider), const Offset(50, 0));
@@ -114,22 +111,21 @@ void main() {
   testWidgets('renders as a FocusButton and handles dpad key input on dpad devices', (tester) async {
     double? changed;
     double? end;
-    await tester.pumpWidget(_harness(
-      DriftfinSlider(value: 0.5, onChanged: (v) => changed = v, onChangeEnd: (v) => end = v),
-      model: _dpadModel,
-    ));
+    await tester.pumpWidget(
+      _harness(
+        DriftfinSlider(value: 0.5, onChanged: (v) => changed = v, onChangeEnd: (v) => end = v),
+        model: _dpadModel,
+      ),
+    );
     await tester.pumpAndSettle();
 
     // DriftfinSlider builds its own internal FocusButton with its own Focus
     // widget/node as a descendant. Focus.of() searches ancestors, so it can't
     // resolve this node from any context in or under the tree; grab the
     // Focus widget itself and request focus on its node directly.
-    final focusWidget = tester.widget<Focus>(find
-        .descendant(
-          of: find.byType(DriftfinSlider),
-          matching: find.byType(Focus),
-        )
-        .first);
+    final focusWidget = tester.widget<Focus>(
+      find.descendant(of: find.byType(DriftfinSlider), matching: find.byType(Focus)).first,
+    );
     focusWidget.focusNode!.requestFocus();
     await tester.pumpAndSettle();
 

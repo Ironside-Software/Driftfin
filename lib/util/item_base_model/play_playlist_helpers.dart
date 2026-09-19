@@ -15,64 +15,66 @@ extension PlaylistModelPlayback on PlaylistModel? {
 
     await ref.read(videoPlayerProvider.notifier).init();
 
-    final op = CancelableOperation.fromFuture(Future(() async {
-      final previewItems = await _fetchPlaylistItems(playlist.id, ref, maxItems: 50);
-      final previewClassification = _classifyPlaylistItems(previewItems);
+    final op = CancelableOperation.fromFuture(
+      Future(() async {
+        final previewItems = await _fetchPlaylistItems(playlist.id, ref, maxItems: 50);
+        final previewClassification = _classifyPlaylistItems(previewItems);
 
-      if (!previewClassification.hasAny) return null;
+        if (!previewClassification.hasAny) return null;
 
-      final actionCount = [
-        previewClassification.hasPlayable,
-        previewClassification.hasMusic,
-        previewClassification.hasGallery,
-      ].where((value) => value).length;
+        final actionCount = [
+          previewClassification.hasPlayable,
+          previewClassification.hasMusic,
+          previewClassification.hasGallery,
+        ].where((value) => value).length;
 
-      if (actionCount > 1) {
-        return (
-          classification: previewClassification,
-          model: null,
-          queue: <ItemBaseModel>[],
-          isAudio: false,
-          photos: <PhotoModel>[]
-        );
-      }
+        if (actionCount > 1) {
+          return (
+            classification: previewClassification,
+            model: null,
+            queue: <ItemBaseModel>[],
+            isAudio: false,
+            photos: <PhotoModel>[],
+          );
+        }
 
-      if (previewClassification.hasMusic) {
-        final queueSource = PlaylistAudioQueueSource(
-          playlistId: playlist.id,
-          limit: _playlistAudioRefillLimit,
-          shuffle: false,
-        );
-        final initialQueue = await queueSource.fetchQueue(
-          ref.read,
-          limit: _playlistAudioInitialQueueLimit,
-          startIndex: 0,
-        );
-        if (initialQueue.isEmpty) return null;
-        final model = await ref.read(playbackModelHelper).createPlaybackModel(
-              context,
-              initialQueue.firstOrNull,
-              libraryQueue: initialQueue,
-              queueSource: queueSource,
-            );
-        return (classification: null, model: model, queue: initialQueue, isAudio: true, photos: <PhotoModel>[]);
-      }
+        if (previewClassification.hasMusic) {
+          final queueSource = PlaylistAudioQueueSource(
+            playlistId: playlist.id,
+            limit: _playlistAudioRefillLimit,
+            shuffle: false,
+          );
+          final initialQueue = await queueSource.fetchQueue(
+            ref.read,
+            limit: _playlistAudioInitialQueueLimit,
+            startIndex: 0,
+          );
+          if (initialQueue.isEmpty) return null;
+          final model = await ref
+              .read(playbackModelHelper)
+              .createPlaybackModel(
+                context,
+                initialQueue.firstOrNull,
+                libraryQueue: initialQueue,
+                queueSource: queueSource,
+              );
+          return (classification: null, model: model, queue: initialQueue, isAudio: true, photos: <PhotoModel>[]);
+        }
 
-      final fullItems = await _fetchPlaylistItems(playlist.id, ref);
-      final full = _classifyPlaylistItems(fullItems);
+        final fullItems = await _fetchPlaylistItems(playlist.id, ref);
+        final full = _classifyPlaylistItems(fullItems);
 
-      if (previewClassification.hasPlayable) {
-        if (full.playable.isEmpty) return null;
-        final model = await ref.read(playbackModelHelper).createPlaybackModel(
-              context,
-              full.playable.firstOrNull,
-              libraryQueue: full.playable,
-            );
-        return (classification: null, model: model, queue: full.playable, isAudio: false, photos: <PhotoModel>[]);
-      }
+        if (previewClassification.hasPlayable) {
+          if (full.playable.isEmpty) return null;
+          final model = await ref
+              .read(playbackModelHelper)
+              .createPlaybackModel(context, full.playable.firstOrNull, libraryQueue: full.playable);
+          return (classification: null, model: model, queue: full.playable, isAudio: false, photos: <PhotoModel>[]);
+        }
 
-      return (classification: null, model: null, queue: <ItemBaseModel>[], isAudio: false, photos: full.gallery);
-    }));
+        return (classification: null, model: null, queue: <ItemBaseModel>[], isAudio: false, photos: full.gallery);
+      }),
+    );
 
     _showLoadingIndicator(context, playlist, op);
 
@@ -144,27 +146,26 @@ extension PlaylistModelPlayback on PlaylistModel? {
 Future<void> _playPlaylistMusic(BuildContext context, WidgetRef ref, String playlistId) async {
   await ref.read(videoPlayerProvider.notifier).init();
 
-  final op = CancelableOperation.fromFuture(Future(() async {
-    final queueSource = PlaylistAudioQueueSource(
-      playlistId: playlistId,
-      limit: _playlistAudioRefillLimit,
-      shuffle: false,
-    );
-    final initialQueue = await queueSource.fetchQueue(
-      ref.read,
-      limit: _playlistAudioInitialQueueLimit,
-      startIndex: 0,
-    );
-    if (initialQueue.isEmpty) return null;
-    final model = await ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          initialQueue.firstOrNull,
-          libraryQueue: initialQueue,
-          queueSource: queueSource,
-        );
-    if (model == null) return null;
-    return (model, initialQueue);
-  }));
+  final op = CancelableOperation.fromFuture(
+    Future(() async {
+      final queueSource = PlaylistAudioQueueSource(
+        playlistId: playlistId,
+        limit: _playlistAudioRefillLimit,
+        shuffle: false,
+      );
+      final initialQueue = await queueSource.fetchQueue(
+        ref.read,
+        limit: _playlistAudioInitialQueueLimit,
+        startIndex: 0,
+      );
+      if (initialQueue.isEmpty) return null;
+      final model = await ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(context, initialQueue.firstOrNull, libraryQueue: initialQueue, queueSource: queueSource);
+      if (model == null) return null;
+      return (model, initialQueue);
+    }),
+  );
 
   _showLoadingIndicator(context, null, op);
 
@@ -192,18 +193,18 @@ Future<void> _playPlaylistMusic(BuildContext context, WidgetRef ref, String play
 Future<void> _playPlaylistVideos(BuildContext context, WidgetRef ref, String playlistId) async {
   await ref.read(videoPlayerProvider.notifier).init();
 
-  final op = CancelableOperation.fromFuture(Future(() async {
-    final items = await _fetchPlaylistItems(playlistId, ref);
-    final classified = _classifyPlaylistItems(items);
-    if (classified.playable.isEmpty) return null;
-    final model = await ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          classified.playable.firstOrNull,
-          libraryQueue: classified.playable,
-        );
-    if (model == null) return null;
-    return (model, classified.playable);
-  }));
+  final op = CancelableOperation.fromFuture(
+    Future(() async {
+      final items = await _fetchPlaylistItems(playlistId, ref);
+      final classified = _classifyPlaylistItems(items);
+      if (classified.playable.isEmpty) return null;
+      final model = await ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(context, classified.playable.firstOrNull, libraryQueue: classified.playable);
+      if (model == null) return null;
+      return (model, classified.playable);
+    }),
+  );
 
   _showLoadingIndicator(context, null, op);
 
@@ -237,10 +238,12 @@ Future<void> _playPlaylistVideos(BuildContext context, WidgetRef ref, String pla
 }
 
 Future<void> _playPlaylistGallery(BuildContext context, WidgetRef ref, String playlistId) async {
-  final op = CancelableOperation.fromFuture(Future(() async {
-    final items = await _fetchPlaylistItems(playlistId, ref);
-    return _classifyPlaylistItems(items).gallery;
-  }));
+  final op = CancelableOperation.fromFuture(
+    Future(() async {
+      final items = await _fetchPlaylistItems(playlistId, ref);
+      return _classifyPlaylistItems(items).gallery;
+    }),
+  );
 
   _showLoadingIndicator(context, null, op);
 
@@ -270,11 +273,7 @@ class _PlaylistClassification {
   final List<ItemBaseModel> music;
   final List<PhotoModel> gallery;
 
-  const _PlaylistClassification({
-    required this.playable,
-    required this.music,
-    required this.gallery,
-  });
+  const _PlaylistClassification({required this.playable, required this.music, required this.gallery});
 
   bool get hasPlayable => playable.isNotEmpty;
   bool get hasMusic => music.isNotEmpty;
@@ -300,21 +299,23 @@ Future<List<ItemBaseModel>> _fetchPlaylistItems(String playlistId, WidgetRef ref
     if (remaining <= 0) break;
 
     final requestLimit = min(pageSize, remaining);
-    final response = await ref.read(jellyApiProvider).playlistsPlaylistIdItemsGet(
-      playlistId: playlistId,
-      startIndex: startIndex,
-      limit: requestLimit,
-      enableUserData: true,
-      enableImages: true,
-      imageTypeLimit: 1,
-      fields: [
-        ItemFields.primaryimageaspectratio,
-        ItemFields.mediasources,
-        ItemFields.mediastreams,
-        ItemFields.parentid,
-        ItemFields.overview,
-      ],
-    );
+    final response = await ref
+        .read(jellyApiProvider)
+        .playlistsPlaylistIdItemsGet(
+          playlistId: playlistId,
+          startIndex: startIndex,
+          limit: requestLimit,
+          enableUserData: true,
+          enableImages: true,
+          imageTypeLimit: 1,
+          fields: [
+            ItemFields.primaryimageaspectratio,
+            ItemFields.mediasources,
+            ItemFields.mediastreams,
+            ItemFields.parentid,
+            ItemFields.overview,
+          ],
+        );
 
     final pageItems = response.body?.items ?? const <ItemBaseModel>[];
     if (pageItems.isEmpty) break;

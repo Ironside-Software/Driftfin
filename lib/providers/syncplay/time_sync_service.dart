@@ -23,13 +23,13 @@ class UtcMeasurement {
 /// a sliding window is used, which rejects offset noise from jittery requests.
 class TimeSyncService {
   TimeSyncService({
-    required Future<UtcMeasurement?> Function() fetchUtc,
+    required this._fetchUtc,
     this.onPing,
     this.windowSize = 8,
     this.fastSamples = 3,
     this.fastInterval = const Duration(seconds: 1),
     this.slowInterval = const Duration(seconds: 60),
-  }) : _fetchUtc = fetchUtc;
+  });
 
   final Future<UtcMeasurement?> Function() _fetchUtc;
 
@@ -104,10 +104,9 @@ class TimeSyncService {
     // round-trip = (T1 - T0) - (Tt - Tr)
     final rttMicros = t1.difference(t0).inMicroseconds - tt.difference(tr).inMicroseconds;
 
-    _samples.add(_TimeSample(
-      Duration(microseconds: offsetMicros),
-      Duration(microseconds: rttMicros < 0 ? 0 : rttMicros),
-    ));
+    _samples.add(
+      _TimeSample(Duration(microseconds: offsetMicros), Duration(microseconds: rttMicros < 0 ? 0 : rttMicros)),
+    );
     if (_samples.length > windowSize) _samples.removeAt(0);
 
     onPing?.call((rttMicros ~/ 2 ~/ 1000).clamp(0, 60000));

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
@@ -57,20 +58,19 @@ class SeerrRequestsState {
     bool? loadingMore,
     bool? processing,
     bool? hasError,
-  }) =>
-      SeerrRequestsState(
-        filter: filter ?? this.filter,
-        sort: sort ?? this.sort,
-        sortDirection: sortDirection ?? this.sortDirection,
-        mineOnly: mineOnly ?? this.mineOnly,
-        entries: entries ?? this.entries,
-        loadedPages: loadedPages ?? this.loadedPages,
-        totalPages: totalPages ?? this.totalPages,
-        loading: loading ?? this.loading,
-        loadingMore: loadingMore ?? this.loadingMore,
-        processing: processing ?? this.processing,
-        hasError: hasError ?? this.hasError,
-      );
+  }) => SeerrRequestsState(
+    filter: filter ?? this.filter,
+    sort: sort ?? this.sort,
+    sortDirection: sortDirection ?? this.sortDirection,
+    mineOnly: mineOnly ?? this.mineOnly,
+    entries: entries ?? this.entries,
+    loadedPages: loadedPages ?? this.loadedPages,
+    totalPages: totalPages ?? this.totalPages,
+    loading: loading ?? this.loading,
+    loadingMore: loadingMore ?? this.loadingMore,
+    processing: processing ?? this.processing,
+    hasError: hasError ?? this.hasError,
+  );
 }
 
 final seerrRequestsProvider = StateNotifierProvider.autoDispose<SeerrRequestsNotifier, SeerrRequestsState>((ref) {
@@ -90,8 +90,10 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
 
   // Posters are expensive (one lookup per request), so cache them across pages
   // and reloads to avoid re-hitting the server.
-  final TimedCache<String, SeerrDashboardPosterModel> _posterCache =
-      TimedCache(ttl: const Duration(minutes: 10), maxEntries: 256);
+  final TimedCache<String, SeerrDashboardPosterModel> _posterCache = TimedCache(
+    ttl: const Duration(minutes: 10),
+    maxEntries: 256,
+  );
 
   void setFilter(RequestFilter value) {
     if (value == state.filter) return;
@@ -106,7 +108,8 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
 
   void toggleSortDirection() {
     state = state.copyWith(
-        sortDirection: state.sortDirection == SortDirection.desc ? SortDirection.asc : SortDirection.desc);
+      sortDirection: state.sortDirection == SortDirection.desc ? SortDirection.asc : SortDirection.desc,
+    );
     load();
   }
 
@@ -125,12 +128,7 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
       state = state.copyWith(loading: false, hasError: true);
       return;
     }
-    state = state.copyWith(
-      entries: page.entries,
-      totalPages: page.totalPages,
-      loadedPages: 1,
-      loading: false,
-    );
+    state = state.copyWith(entries: page.entries, totalPages: page.totalPages, loadedPages: 1, loading: false);
     _loadPosters(page.entries, generation);
   }
 
@@ -192,7 +190,8 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
       final media = entry.request.media;
       if (media == null || (media.tmdbId == null && media.tvdbId == null)) return;
       final key = '${media.mediaType}:${media.tmdbId}:${media.tvdbId}';
-      final poster = _posterCache.get(key) ??
+      final poster =
+          _posterCache.get(key) ??
           await ref
               .read(seerrApiProvider)
               .fetchDashboardPosterFromIds(
@@ -203,10 +202,12 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
               .timeout(const Duration(seconds: 20));
       if (!mounted || generation != _loadGeneration || poster == null) return;
       _posterCache.set(key, poster);
-      state = state.copyWith(entries: [
-        for (final current in state.entries)
-          if (identical(current.request, entry.request)) SeerrRequestEntry(entry.request, poster) else current,
-      ]);
+      state = state.copyWith(
+        entries: [
+          for (final current in state.entries)
+            if (identical(current.request, entry.request)) SeerrRequestEntry(entry.request, poster) else current,
+        ],
+      );
     } catch (_) {
       // Keep the request and its actions usable when optional metadata fails.
     }
@@ -242,7 +243,9 @@ class SeerrRequestsNotifier extends StateNotifier<SeerrRequestsState> {
     for (final id in pendingIds) {
       try {
         await api.approveRequest(requestId: id);
-      } catch (_) {/* best-effort */}
+      } catch (_) {
+        /* best-effort */
+      }
     }
     if (!mounted) return;
     state = state.copyWith(processing: false);

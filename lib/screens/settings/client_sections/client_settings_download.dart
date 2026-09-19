@@ -37,74 +37,91 @@ List<Widget> buildClientSettingsDownload(BuildContext context, WidgetRef ref, Fu
 
   return [
     if (canSync && !kIsWeb) ...[
-      ...settingsListGroup(
-        context,
-        SettingsLabelDivider(label: context.localized.downloadsTitle),
-        [
-          if (AdaptiveLayout.of(context).isDesktop) ...[
-            SettingsListTile(
-              label: Text(context.localized.downloadsPath),
-              subLabel: Text(currentFolder ?? "-"),
-              onTap: currentFolder != null
-                  ? () async => await showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(context.localized.pathEditTitle),
-                          content: Text(context.localized.pathEditDesc),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                String? selectedDirectory = await FilePicker.platform.getDirectoryPath(
-                                    dialogTitle: context.localized.pathEditSelect, initialDirectory: currentFolder);
-                                if (selectedDirectory != null) {
-                                  await ref.read(clientSettingsProvider.notifier).setSyncPath(selectedDirectory);
-                                }
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(context.localized.change),
-                            )
-                          ],
+      ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.downloadsTitle), [
+        if (AdaptiveLayout.of(context).isDesktop) ...[
+          SettingsListTile(
+            label: Text(context.localized.downloadsPath),
+            subLabel: Text(currentFolder ?? "-"),
+            onTap: currentFolder != null
+                ? () async => await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(context.localized.pathEditTitle),
+                      content: Text(context.localized.pathEditDesc),
+                      actions: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            String? selectedDirectory = await FilePicker.getDirectoryPath(
+                              dialogTitle: context.localized.pathEditSelect,
+                              initialDirectory: currentFolder,
+                            );
+                            if (selectedDirectory != null) {
+                              await ref.read(clientSettingsProvider.notifier).setSyncPath(selectedDirectory);
+                            }
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(context.localized.change),
                         ),
-                      )
-                  : () async {
-                      String? selectedDirectory = await FilePicker.platform.getDirectoryPath(
-                          dialogTitle: context.localized.pathEditSelect, initialDirectory: currentFolder);
-                      if (selectedDirectory != null) {
-                        ref.read(clientSettingsProvider.notifier).setSyncPath(selectedDirectory);
-                      }
-                    },
-              trailing: currentFolder?.isNotEmpty == true
-                  ? IconButton(
-                      color: Theme.of(context).colorScheme.error,
-                      onPressed: () async => await showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(context.localized.pathClearTitle),
-                          content: Text(context.localized.pathEditDesc),
-                          actions: [
-                            ElevatedButton(
-                              onPressed: () {
-                                ref.read(clientSettingsProvider.notifier).setSyncPath(null);
-                                Navigator.of(context).pop();
-                              },
-                              child: Text(context.localized.clear),
-                            )
-                          ],
-                        ),
+                      ],
+                    ),
+                  )
+                : () async {
+                    String? selectedDirectory = await FilePicker.getDirectoryPath(
+                      dialogTitle: context.localized.pathEditSelect,
+                      initialDirectory: currentFolder,
+                    );
+                    if (selectedDirectory != null) {
+                      ref.read(clientSettingsProvider.notifier).setSyncPath(selectedDirectory);
+                    }
+                  },
+            trailing: currentFolder?.isNotEmpty == true
+                ? IconButton(
+                    color: Theme.of(context).colorScheme.error,
+                    onPressed: () async => await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(context.localized.pathClearTitle),
+                        content: Text(context.localized.pathEditDesc),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              ref.read(clientSettingsProvider.notifier).setSyncPath(null);
+                              Navigator.of(context).pop();
+                            },
+                            child: Text(context.localized.clear),
+                          ),
+                        ],
                       ),
-                      icon: const Icon(IconsaxPlusLinear.folder_minus),
-                    )
-                  : null,
-            ),
-          ],
-          FutureBuilder(
-            future: ref.watch(syncProvider.notifier).directorySize,
-            builder: (context, snapshot) {
-              final data = snapshot.data ?? 0;
-              return SettingsListTile(
-                label: Text(context.localized.downloadsSyncedData),
-                subLabel: Text(data.byteFormat ?? ""),
-                onTap: () {
+                    ),
+                    icon: const Icon(IconsaxPlusLinear.folder_minus),
+                  )
+                : null,
+          ),
+        ],
+        FutureBuilder(
+          future: ref.watch(syncProvider.notifier).directorySize,
+          builder: (context, snapshot) {
+            final data = snapshot.data ?? 0;
+            return SettingsListTile(
+              label: Text(context.localized.downloadsSyncedData),
+              subLabel: Text(data.byteFormat ?? ""),
+              onTap: () {
+                showDefaultAlertDialog(
+                  context,
+                  context.localized.downloadsClearTitle,
+                  context.localized.downloadsClearDesc,
+                  (context) async {
+                    await ref.read(syncProvider.notifier).removeAllSyncedData();
+                    setState(() {});
+                    Navigator.of(context).pop();
+                  },
+                  context.localized.clear,
+                  (context) => Navigator.of(context).pop(),
+                  context.localized.cancel,
+                );
+              },
+              trailing: FilledButton(
+                onPressed: () {
                   showDefaultAlertDialog(
                     context,
                     context.localized.downloadsClearTitle,
@@ -119,104 +136,83 @@ List<Widget> buildClientSettingsDownload(BuildContext context, WidgetRef ref, Fu
                     context.localized.cancel,
                   );
                 },
-                trailing: FilledButton(
-                  onPressed: () {
-                    showDefaultAlertDialog(
-                      context,
-                      context.localized.downloadsClearTitle,
-                      context.localized.downloadsClearDesc,
-                      (context) async {
-                        await ref.read(syncProvider.notifier).removeAllSyncedData();
-                        setState(() {});
-                        Navigator.of(context).pop();
-                      },
-                      context.localized.clear,
-                      (context) => Navigator.of(context).pop(),
-                      context.localized.cancel,
-                    );
-                  },
-                  child: Text(context.localized.clear),
-                ),
-              );
+                child: Text(context.localized.clear),
+              ),
+            );
+          },
+        ),
+        SettingsListTile(
+          label: Text(context.localized.clientSettingsRequireWifiTitle),
+          subLabel: Text(context.localized.clientSettingsRequireWifiDesc),
+          onTap: () => ref.read(clientSettingsProvider.notifier).setRequireWifi(!clientSettings.requireWifi),
+          trailing: Switch(
+            value: clientSettings.requireWifi,
+            onChanged: (value) => ref.read(clientSettingsProvider.notifier).setRequireWifi(value),
+          ),
+        ),
+        SettingsListTile(
+          id: SettingId.downloadsVideoQuality,
+          label: Text(context.localized.downloadsVideoQualityTitle),
+          subLabel: Text(clientSettings.transcodeDownloadModel.label(context)),
+          onTap: () => showTranscodeSettingsPopup(
+            context: context,
+            current: clientSettings.transcodeDownloadModel,
+            onChanged: (value) {
+              ref
+                  .read(clientSettingsProvider.notifier)
+                  .update((current) => current.copyWith(transcodeDownloadModel: value));
             },
           ),
-          SettingsListTile(
-            label: Text(context.localized.clientSettingsRequireWifiTitle),
-            subLabel: Text(context.localized.clientSettingsRequireWifiDesc),
-            onTap: () => ref.read(clientSettingsProvider.notifier).setRequireWifi(!clientSettings.requireWifi),
-            trailing: Switch(
-              value: clientSettings.requireWifi,
-              onChanged: (value) => ref.read(clientSettingsProvider.notifier).setRequireWifi(value),
-            ),
+        ),
+        SettingsListTile(
+          id: SettingId.downloadsMusicQuality,
+          label: Text(context.localized.downloadsMusicQualityTitle),
+          subLabel: Text(clientSettings.transcodeMusicDownloadModel.label(context)),
+          onTap: () => showTranscodeMusicSettingsPopup(
+            context: context,
+            current: clientSettings.transcodeMusicDownloadModel,
+            onChanged: (value) {
+              ref
+                  .read(clientSettingsProvider.notifier)
+                  .update((current) => current.copyWith(transcodeMusicDownloadModel: value));
+            },
           ),
-          SettingsListTile(
-            id: SettingId.downloadsVideoQuality,
-            label: Text(context.localized.downloadsVideoQualityTitle),
-            subLabel: Text(clientSettings.transcodeDownloadModel.label(context)),
-            onTap: () => showTranscodeSettingsPopup(
-              context: context,
-              current: clientSettings.transcodeDownloadModel,
-              onChanged: (value) {
-                ref.read(clientSettingsProvider.notifier).update(
-                      (current) => current.copyWith(transcodeDownloadModel: value),
-                    );
-              },
-            ),
-          ),
-          SettingsListTile(
-            id: SettingId.downloadsMusicQuality,
-            label: Text(context.localized.downloadsMusicQualityTitle),
-            subLabel: Text(clientSettings.transcodeMusicDownloadModel.label(context)),
-            onTap: () => showTranscodeMusicSettingsPopup(
-              context: context,
-              current: clientSettings.transcodeMusicDownloadModel,
-              onChanged: (value) {
-                ref.read(clientSettingsProvider.notifier).update(
-                      (current) => current.copyWith(transcodeMusicDownloadModel: value),
-                    );
-              },
-            ),
-          ),
-          SettingsListTile(
-            label: Text(context.localized.maxConcurrentDownloadsTitle),
-            subLabel: Text(context.localized.maxConcurrentDownloadsDesc),
-            trailing: SizedBox(
-              width: 150,
-              child: IntInputField(
-                controller: TextEditingController(text: clientSettings.maxConcurrentDownloads.toString()),
-                onSubmitted: (value) {
-                  if (value != null) {
-                    ref.read(clientSettingsProvider.notifier).update(
-                          (current) => current.copyWith(
-                            maxConcurrentDownloads: value,
-                          ),
-                        );
-
-                    ref.read(backgroundDownloaderProvider.notifier).setMaxConcurrent(value);
-                  }
-                },
-              ),
-            ),
-          ),
-          SettingsListTile(
-            label: Text(context.localized.smartDownloadBudgetTitle),
-            subLabel: Text(context.localized.smartDownloadBudgetDesc),
-            trailing: SizedBox(
-              width: 150,
-              child: IntInputField(
-                controller: TextEditingController(
-                  text: smartDownloadBudgetFieldText(clientSettings.smartDownloadBudgetBytes),
-                ),
-                onSubmitted: (value) {
+        ),
+        SettingsListTile(
+          label: Text(context.localized.maxConcurrentDownloadsTitle),
+          subLabel: Text(context.localized.maxConcurrentDownloadsDesc),
+          trailing: SizedBox(
+            width: 150,
+            child: IntInputField(
+              controller: TextEditingController(text: clientSettings.maxConcurrentDownloads.toString()),
+              onSubmitted: (value) {
+                if (value != null) {
                   ref
                       .read(clientSettingsProvider.notifier)
-                      .setSmartDownloadBudget(smartDownloadBudgetBytesFromMb(value));
-                },
-              ),
+                      .update((current) => current.copyWith(maxConcurrentDownloads: value));
+
+                  ref.read(backgroundDownloaderProvider.notifier).setMaxConcurrent(value);
+                }
+              },
             ),
           ),
-        ],
-      ),
+        ),
+        SettingsListTile(
+          label: Text(context.localized.smartDownloadBudgetTitle),
+          subLabel: Text(context.localized.smartDownloadBudgetDesc),
+          trailing: SizedBox(
+            width: 150,
+            child: IntInputField(
+              controller: TextEditingController(
+                text: smartDownloadBudgetFieldText(clientSettings.smartDownloadBudgetBytes),
+              ),
+              onSubmitted: (value) {
+                ref.read(clientSettingsProvider.notifier).setSmartDownloadBudget(smartDownloadBudgetBytesFromMb(value));
+              },
+            ),
+          ),
+        ),
+      ]),
       const SizedBox(height: 12),
     ],
   ];

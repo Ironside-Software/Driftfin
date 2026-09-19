@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/api_result.dart';
@@ -32,13 +33,9 @@ class IdentifyModel {
   });
 
   Map<String, dynamic> get body => {
-        "SearchInfo": {
-          "ProviderIds": keys,
-          "Name": searchString,
-          "Year": year,
-        },
-        "ItemId": item?.id,
-      }..removeWhere((key, value) => value == null);
+    "SearchInfo": {"ProviderIds": keys, "Name": searchString, "Year": year},
+    "ItemId": item?.id,
+  }..removeWhere((key, value) => value == null);
 
   IdentifyModel copyWith({
     ValueGetter<ItemBaseModel?>? item,
@@ -97,11 +94,7 @@ class IdentifyNotifier extends StateNotifier<IdentifyModel> {
   IdentifyModel update(IdentifyModel Function(IdentifyModel state) cb) => state = cb(state);
 
   void clearFields() {
-    state = state.copyWith(
-      searchString: "",
-      year: () => null,
-      keys: state.keys..updateAll((key, value) => ""),
-    );
+    state = state.copyWith(searchString: "", year: () => null, keys: state.keys..updateAll((key, value) => ""));
   }
 
   void updateKey(MapEntry<String, String> map) {
@@ -127,7 +120,9 @@ class IdentifyNotifier extends StateNotifier<IdentifyModel> {
     if (state.item == null) return null;
     state = state.copyWith(processing: true);
     final response = await api.itemsRemoteSearchApplyItemIdPost(
-        itemId: state.item?.id ?? "", body: RemoteSearchResult.fromJson(result.toJson()));
+      itemId: state.item?.id ?? "",
+      body: RemoteSearchResult.fromJson(result.toJson()),
+    );
     state = state.copyWith(processing: false);
     return response.apiResult;
   }

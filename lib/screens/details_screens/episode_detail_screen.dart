@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:intl/intl.dart';
 
@@ -40,7 +41,7 @@ class EpisodeDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _ItemDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
-  AutoDisposeStateNotifierProvider<EpisodeDetailsProvider, EpisodeDetailModel> get providerInstance =>
+  StateNotifierProvider<EpisodeDetailsProvider, EpisodeDetailModel> get providerInstance =>
       episodeDetailsProvider(widget.item.id);
 
   @override
@@ -48,8 +49,9 @@ class _ItemDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
     final details = ref.watch(providerInstance);
     final seasonDetails = details.series;
     final episodeDetails = details.episode;
-    final wrapAlignment =
-        AdaptiveLayout.viewSizeOf(context) != ViewSize.phone ? WrapAlignment.start : WrapAlignment.center;
+    final wrapAlignment = AdaptiveLayout.viewSizeOf(context) != ViewSize.phone
+        ? WrapAlignment.start
+        : WrapAlignment.center;
 
     final actors = details.episode?.overview.people ?? [];
 
@@ -60,10 +62,7 @@ class _ItemDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
       actions: (context) => details.episode?.generateActions(
         context,
         ref,
-        exclude: {
-          if (details.series == null) ItemActions.openShow,
-          ItemActions.details,
-        },
+        exclude: {if (details.series == null) ItemActions.openShow, ItemActions.details},
         onDeleteSuccesFully: (item) {
           if (context.mounted) {
             context.router.popBack();
@@ -161,10 +160,7 @@ class _ItemDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
                     genres: details.series?.overview.genreItems ?? [],
                     onGenreClicked: (genre) {
                       final itemViewId = details.series?.parentId ?? "";
-                      LibrarySearchRoute(
-                        parentId: [itemViewId],
-                        genres: {genre.name: true},
-                      ).push(context);
+                      LibrarySearchRoute(parentId: [itemViewId], genres: {genre.name: true}).push(context);
                     },
                     officialRating: details.episode?.overview.parentalRating,
                     communityRating: details.episode?.overview.communityRating,
@@ -172,18 +168,14 @@ class _ItemDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
                         ? MediaStreamHelper(
                             mediaStream: details.episode!.mediaStreams,
                             onItemChanged: (changed) {
-                              final updateEpisode = details.episode!.copyWith(
-                                mediaStreams: changed,
-                              );
+                              final updateEpisode = details.episode!.copyWith(mediaStreams: changed);
                               ref.read(providerInstance.notifier).updateEpisode(updateEpisode);
                             },
                           )
                         : null,
                   ),
                   if (episodeDetails.overview.summary.isNotEmpty == true)
-                    ExpandingText(
-                      text: episodeDetails.overview.summary,
-                    ).padding(padding),
+                    ExpandingText(text: episodeDetails.overview.summary).padding(padding),
                   if (episodeDetails.chapters.isNotEmpty)
                     ChapterRow(
                       chapters: episodeDetails.chapters,
@@ -193,42 +185,33 @@ class _ItemDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
                         ref.read(providerInstance.notifier).fetchDetails(widget.item);
                       },
                     ),
-                  if (actors.mainCast.isNotEmpty == true)
-                    PeopleRow(
-                      people: actors.mainCast,
-                      contentPadding: padding,
-                    ),
+                  if (actors.mainCast.isNotEmpty == true) PeopleRow(people: actors.mainCast, contentPadding: padding),
                   if (actors.guestActors.isNotEmpty == true)
-                    PeopleRow(
-                      people: actors.guestActors,
-                      contentPadding: padding,
-                    ),
+                    PeopleRow(people: actors.guestActors, contentPadding: padding),
                   if (details.episodes.length > 1)
                     EpisodePosters(
                       contentPadding: padding,
-                      label: detailsContext.localized
-                          .moreFrom("${detailsContext.localized.season(1).toLowerCase()} ${episodeDetails.season}"),
+                      label: detailsContext.localized.moreFrom(
+                        "${detailsContext.localized.season(1).toLowerCase()} ${episodeDetails.season}",
+                      ),
                       onEpisodeTap: (action, episodeModel) {
                         if (episodeModel.id == episodeDetails.id) {
-                          DriftfinSnack.show(detailsContext.localized.selectedWith(detailsContext.localized.episode(0)),
-                              context: detailsContext);
+                          DriftfinSnack.show(
+                            detailsContext.localized.selectedWith(detailsContext.localized.episode(0)),
+                            context: detailsContext,
+                          );
                         } else {
                           action();
                         }
                       },
-                      playEpisode: (episode) => episode.play(
-                        detailsContext,
-                        ref,
-                      ),
+                      playEpisode: (episode) => episode.play(detailsContext, ref),
                       episodes: details.episodes.where((element) => element.season == episodeDetails.season).toList(),
                     ),
                   if (details.series?.overview.externalUrls?.isNotEmpty == true)
                     Padding(
                       padding: padding,
-                      child: ExternalUrlsRow(
-                        urls: details.series?.overview.externalUrls,
-                      ),
-                    )
+                      child: ExternalUrlsRow(urls: details.series?.overview.externalUrls),
+                    ),
                 ].addPadding(const EdgeInsets.symmetric(vertical: 16)),
               ),
             )

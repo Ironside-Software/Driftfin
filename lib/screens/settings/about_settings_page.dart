@@ -18,22 +18,14 @@ import 'package:driftfin/util/localization_helper.dart';
 class _Socials {
   final String label;
   final String url;
-  final IconData icon;
+  final Widget icon;
 
   const _Socials(this.label, this.url, this.icon);
 }
 
 const socials = [
-  _Socials(
-    'Github',
-    'https://github.com/HamadTheIronside/Driftfin',
-    FontAwesomeIcons.githubAlt,
-  ),
-  _Socials(
-    'Website',
-    'https://hamadtheironside.github.io/Driftfin/',
-    IconsaxPlusLinear.global,
-  ),
+  _Socials('Github', 'https://github.com/HamadTheIronside/Driftfin', FaIcon(FontAwesomeIcons.githubAlt)),
+  _Socials('Website', 'https://hamadtheironside.github.io/Driftfin/', Icon(IconsaxPlusLinear.global)),
 ];
 
 @RoutePage()
@@ -57,13 +49,7 @@ class AboutSettingsPage extends ConsumerWidget {
             Text(context.localized.aboutCreatedBy),
           ],
         ),
-        const FractionallySizedBox(
-          widthFactor: 0.25,
-          child: Divider(
-            indent: 16,
-            endIndent: 16,
-          ),
-        ),
+        const FractionallySizedBox(widthFactor: 0.25, child: Divider(indent: 16, endIndent: 16)),
         const _SocialsSection(),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -77,19 +63,16 @@ class AboutSettingsPage extends ConsumerWidget {
                 useRootNavigator: true,
               ),
               child: Text(context.localized.aboutLicenses),
-            )
+            ),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FilledButton.tonal(
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) => const CrashScreen(),
-              ),
+              onPressed: () => showDialog(context: context, builder: (context) => const CrashScreen()),
               child: Text(context.localized.errorLogs),
-            )
+            ),
           ],
         ),
         const SettingsUpdateInformation(),
@@ -105,10 +88,7 @@ class _SocialsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          context.localized.aboutSocials,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        Text(context.localized.aboutSocials, style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 6),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -116,17 +96,12 @@ class _SocialsSection extends StatelessWidget {
               .map(
                 (e) => IconButton.filledTonal(
                   onPressed: () => launchUrl(context, e.url),
-                  icon: Column(
-                    children: [
-                      Icon(e.icon),
-                      Text(e.label),
-                    ],
-                  ),
+                  icon: Column(children: [e.icon, Text(e.label)]),
                 ),
               )
               .toList()
               .addInBetween(const SizedBox(width: 16)),
-        )
+        ),
       ],
     );
   }

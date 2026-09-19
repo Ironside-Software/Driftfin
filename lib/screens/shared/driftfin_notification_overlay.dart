@@ -101,11 +101,7 @@ class DriftfinSnack {
       ),
     );
 
-    final entry = _NotificationEntry(
-      id: id,
-      overlayEntry: overlayEntry,
-      timer: timer,
-    );
+    final entry = _NotificationEntry(id: id, overlayEntry: overlayEntry, timer: timer);
 
     instance._notifications.add(entry);
     overlay.insert(overlayEntry);
@@ -191,11 +187,7 @@ class _NotificationEntry {
   final OverlayEntry overlayEntry;
   Timer? timer;
 
-  _NotificationEntry({
-    required this.id,
-    required this.overlayEntry,
-    this.timer,
-  });
+  _NotificationEntry({required this.id, required this.overlayEntry, this.timer});
 }
 
 class _NotificationOverlayWidget extends StatefulWidget {
@@ -228,17 +220,12 @@ class _NotificationOverlayWidgetState extends State<_NotificationOverlayWidget> 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
-      vsync: this,
-    );
+    _animationController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOut,
-      ),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOut));
 
     _animationController.forward();
   }
@@ -265,10 +252,7 @@ class _NotificationOverlayWidgetState extends State<_NotificationOverlayWidget> 
     _slideAnimation = Tween<Offset>(
       begin: positioning.slideOffset,
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeOutCubic));
 
     final manager = DriftfinSnack();
     final currentIndex = manager._getIndexById(widget.id);
@@ -288,9 +272,7 @@ class _NotificationOverlayWidgetState extends State<_NotificationOverlayWidget> 
             child: Align(
               alignment: positioning.alignment,
               child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: positioning.maxWidth ?? double.infinity,
-                ),
+                constraints: BoxConstraints(maxWidth: positioning.maxWidth ?? double.infinity),
                 child: _NotificationCard(
                   message: widget.message,
                   onDismiss: widget.onDismiss,
@@ -342,9 +324,7 @@ class _NotificationOverlayWidgetState extends State<_NotificationOverlayWidget> 
           right: 0,
           alignment: Alignment.center,
           slideOffset: const Offset(0, -1),
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).padding.top,
-          ),
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         );
 
       case ViewSize.tablet:
@@ -430,13 +410,7 @@ class _NotificationCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: radius,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(75),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
+          boxShadow: [BoxShadow(color: Colors.black.withAlpha(75), blurRadius: 8, offset: const Offset(0, 4))],
         ),
         child: Padding(
           padding: const EdgeInsets.all(18),
@@ -448,20 +422,16 @@ class _NotificationCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     message,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: foregroundColor,
-                        ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w500, color: foregroundColor),
                   ),
                 )
               else
                 Flexible(
                   child: Text(
                     message,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: foregroundColor,
-                        ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w500, color: foregroundColor),
                   ),
                 ),
               if (showAction)
@@ -473,11 +443,7 @@ class _NotificationCard extends StatelessWidget {
                   child: Text(actionLabel!),
                 ),
               if (showCloseButton && !showAction)
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: onDismiss,
-                  color: foregroundColor,
-                ),
+                IconButton(icon: const Icon(Icons.close), onPressed: onDismiss, color: foregroundColor),
             ],
           ),
         ),
@@ -489,10 +455,7 @@ class _NotificationCard extends StatelessWidget {
 class NotificationManagerInitializer extends StatelessWidget {
   final Widget child;
 
-  const NotificationManagerInitializer({
-    required this.child,
-    super.key,
-  });
+  const NotificationManagerInitializer({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) {

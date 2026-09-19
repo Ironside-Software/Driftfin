@@ -45,7 +45,7 @@ AccountModel _accountWithFilters(List<LibraryFiltersModel> filters) {
     id: 'user-id',
     avatar: '',
     lastUsed: DateTime(2024),
-    credentials: CredentialsModel.internal(url: 'http://server'),
+    credentials: CredentialsModel(url: 'http://server'),
     libraryFilters: filters,
   );
 }
@@ -73,9 +73,7 @@ Widget _harness(ProviderContainer container) {
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Scaffold(
-          body: _OpenButton(),
-        ),
+        home: Scaffold(body: _OpenButton()),
       ),
     ),
   );

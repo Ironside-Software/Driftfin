@@ -14,11 +14,14 @@ final seerrWatchedProvider = AsyncNotifierProvider.autoDispose.family<SeerrWatch
   SeerrWatched.new,
 );
 
-class SeerrWatched extends AutoDisposeFamilyAsyncNotifier<bool, SeerrWatchedKey> {
+class SeerrWatched extends AsyncNotifier<bool> {
+  SeerrWatched(this.arg);
+
+  final SeerrWatchedKey arg;
   String? _storageKey;
 
   @override
-  Future<bool> build(SeerrWatchedKey arg) async {
+  Future<bool> build() async {
     final identity = ref.watch(userProvider.select((user) => (user?.credentials.serverId, user?.id)));
     _storageKey = identity.$2 == null
         ? null

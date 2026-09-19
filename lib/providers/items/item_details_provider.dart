@@ -2,6 +2,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 final itemDetailsProvider = StateNotifierProvider.autoDispose<ItemDetailsNotifier, ItemBaseModel?>((ref) {
   return ItemDetailsNotifier(ref);

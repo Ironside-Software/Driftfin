@@ -77,11 +77,7 @@ class _FakeCastJellyService extends JellyService {
     required enums.SessionsSessionIdPlayingCommandPostCommand command,
     int? seekPositionTicks,
   }) async {
-    playingCommandCalls.add({
-      'sessionId': sessionId,
-      'command': command,
-      'seekPositionTicks': seekPositionTicks,
-    });
+    playingCommandCalls.add({'sessionId': sessionId, 'command': command, 'seekPositionTicks': seekPositionTicks});
     return Response(http.Response('', 200), null);
   }
 }
@@ -136,13 +132,17 @@ Future<_Harness> _readyHarness({Map<String, SessionInfoDto>? sessionsById}) asyn
   final container = ProviderContainer(
     overrides: [
       jellyApiProvider.overrideWith(() => fakeApi),
-      userProvider.overrideWith(() => _FakeUser(AccountModel(
+      userProvider.overrideWith(
+        () => _FakeUser(
+          AccountModel(
             name: 'me',
             id: 'user-1',
             avatar: '',
             lastUsed: DateTime(2024),
-            credentials: CredentialsModel.internal(url: 'http://server.local', deviceId: 'my-device'),
-          ))),
+            credentials: CredentialsModel(url: 'http://server.local', deviceId: 'my-device'),
+          ),
+        ),
+      ),
       playBackModel.overrideWith((ref) => testPlaybackModel()),
       videoPlayerProvider.overrideWith((ref) => FakeVideoPlayerNotifier(ref)),
     ],
@@ -166,42 +166,44 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   WakelockPlusPlatformInterface.instance = _FakeWakelockPlusPlatform();
 
-  test('connect() to a Jellyfin session hands off the exact position + track selection, then marks it connected',
-      () async {
-    final harness = await _readyHarness();
-    addTearDown(() async {
-      // connect() starts a 2s Timer.periodic poll; CastController.dispose()
-      // fires _teardown() (which cancels it) without awaiting it, so an
-      // explicit disconnect() first is needed to guarantee the timer is gone
-      // before the container disposes - otherwise it can fire against an
-      // already-disposed container and hang/crash a later test. Swallow
-      // errors here: this is best-effort cleanup, not a test assertion.
-      try {
-        await harness.controller.disconnect();
-      } catch (_) {}
-      harness.container.dispose();
-    });
-    harness.player.lastState.position = const Duration(seconds: 42);
-    harness.player.lastState.duration = const Duration(minutes: 10);
+  test(
+    'connect() to a Jellyfin session hands off the exact position + track selection, then marks it connected',
+    () async {
+      final harness = await _readyHarness();
+      addTearDown(() async {
+        // connect() starts a 2s Timer.periodic poll; CastController.dispose()
+        // fires _teardown() (which cancels it) without awaiting it, so an
+        // explicit disconnect() first is needed to guarantee the timer is gone
+        // before the container disposes - otherwise it can fire against an
+        // already-disposed container and hang/crash a later test. Swallow
+        // errors here: this is best-effort cleanup, not a test assertion.
+        try {
+          await harness.controller.disconnect();
+        } catch (_) {}
+        harness.container.dispose();
+      });
+      harness.player.lastState.position = const Duration(seconds: 42);
+      harness.player.lastState.duration = const Duration(minutes: 10);
 
-    await harness.controller.connect(_sessionTarget);
-    // connect() fires ref.read(videoPlayerProvider).pause() without awaiting
-    // it (intentional in production: local pause shouldn't block the
-    // handoff); let that background chain settle before this test's
-    // teardown disposes the container, or it throws in a later test.
-    await Future<void>.delayed(const Duration(milliseconds: 50));
+      await harness.controller.connect(_sessionTarget);
+      // connect() fires ref.read(videoPlayerProvider).pause() without awaiting
+      // it (intentional in production: local pause shouldn't block the
+      // handoff); let that background chain settle before this test's
+      // teardown disposes the container, or it throws in a later test.
+      await Future<void>.delayed(const Duration(milliseconds: 50));
 
-    expect(harness.service.playingPostCalls, hasLength(1));
-    final call = harness.service.playingPostCalls.single;
-    expect(call['sessionId'], 's1');
-    expect(call['itemIds'], ['item-1']);
-    expect(call['startPositionTicks'], const Duration(seconds: 42).toRuntimeTicks);
+      expect(harness.service.playingPostCalls, hasLength(1));
+      final call = harness.service.playingPostCalls.single;
+      expect(call['sessionId'], 's1');
+      expect(call['itemIds'], ['item-1']);
+      expect(call['startPositionTicks'], const Duration(seconds: 42).toRuntimeTicks);
 
-    final state = harness.container.read(castProvider);
-    expect(state.status, CastStatus.connected);
-    expect(state.playing, isTrue);
-    expect(state.duration, const Duration(minutes: 10));
-  });
+      final state = harness.container.read(castProvider);
+      expect(state.status, CastStatus.connected);
+      expect(state.playing, isTrue);
+      expect(state.duration, const Duration(minutes: 10));
+    },
+  );
 
   test('connect() reports an error and never dispatches when there is no media to cast', () async {
     final fakeApi = _FakeCastJellyApi({'s1': _remoteSession});
@@ -245,10 +247,7 @@ void main() {
       enums.SessionsSessionIdPlayingCommandPostCommand.unpause,
       enums.SessionsSessionIdPlayingCommandPostCommand.seek,
     ]);
-    expect(
-      harness.service.playingCommandCalls.last['seekPositionTicks'],
-      const Duration(seconds: 30).toRuntimeTicks,
-    );
+    expect(harness.service.playingCommandCalls.last['seekPositionTicks'], const Duration(seconds: 30).toRuntimeTicks);
     expect(harness.container.read(castProvider).playing, isTrue);
     expect(harness.container.read(castProvider).position, const Duration(seconds: 30));
   });
@@ -261,10 +260,7 @@ void main() {
 
     await harness.controller.disconnect();
 
-    expect(
-      harness.service.playingCommandCalls.last['command'],
-      enums.SessionsSessionIdPlayingCommandPostCommand.stop,
-    );
+    expect(harness.service.playingCommandCalls.last['command'], enums.SessionsSessionIdPlayingCommandPostCommand.stop);
     expect(harness.container.read(castProvider).isCasting, isFalse);
     expect(harness.container.read(castProvider).status, CastStatus.disconnected);
   });

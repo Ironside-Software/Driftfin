@@ -8,6 +8,7 @@ import 'package:async/async.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:square_progress_indicator/square_progress_indicator.dart';
 
@@ -46,7 +47,7 @@ extension BookBaseModelExtension on BookModel? {
     BuildContext context,
     WidgetRef ref, {
     int? currentPage,
-    AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel>? provider,
+    StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel>? provider,
     BuildContext? parentContext,
   }) async {
     if (kIsWeb) {
@@ -64,11 +65,7 @@ extension BookBaseModelExtension on BookModel? {
     }
 
     ref.read(bookViewerProvider.notifier).fetchBook(this);
-    await openBookViewer(
-      context,
-      newProvider,
-      initialPage: currentPage ?? this?.currentPage,
-    );
+    await openBookViewer(context, newProvider, initialPage: currentPage ?? this?.currentPage);
     parentContext?.refreshData();
     if (context.mounted) {
       await context.refreshData();
@@ -81,17 +78,20 @@ extension PhotoAlbumExtension on PhotoAlbumModel? {
     BuildContext context,
     WidgetRef ref, {
     int? currentPage,
-    AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel>? provider,
+    StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel>? provider,
     BuildContext? parentContext,
   }) async {
     final albumModel = this;
     if (albumModel == null) return;
 
     final api = ref.read(jellyApiProvider);
-    final op = CancelableOperation.fromFuture(api.itemsGet(
+    final op = CancelableOperation.fromFuture(
+      api.itemsGet(
         parentId: albumModel.id,
         includeItemTypes: FladderItemType.galleryItem.map((e) => e.dtoKind).expand((e) => e).toList(),
-        recursive: true));
+        recursive: true,
+      ),
+    );
 
     _showLoadingIndicator(context, albumModel, op);
 
@@ -120,9 +120,7 @@ extension PhotoAlbumExtension on PhotoAlbumModel? {
       return;
     }
 
-    await context.pushRoute(PhotoViewerRoute(
-      items: photos.toList(),
-    ));
+    await context.pushRoute(PhotoViewerRoute(items: photos.toList()));
 
     if (context.mounted) {
       await context.refreshData();
@@ -136,18 +134,22 @@ extension ChannelModelExtension on ChannelModel? {
     BuildContext context,
     WidgetRef ref, {
     int? currentPage,
-    AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel>? provider,
+    StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel>? provider,
     BuildContext? parentContext,
   }) async {
     if (this == null) return;
 
-    final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          this,
-          forcedPlaybackType: PlaybackType.tv,
-          showPlaybackOptions: false,
-          startPosition: Duration.zero,
-        ));
+    final op = CancelableOperation.fromFuture(
+      ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
+            context,
+            this,
+            forcedPlaybackType: PlaybackType.tv,
+            showPlaybackOptions: false,
+            startPosition: Duration.zero,
+          ),
+    );
 
     _showLoadingIndicator(context, this!, op);
 
@@ -172,9 +174,7 @@ extension ChannelModelExtension on ChannelModel? {
     await _playVideo(
       context,
       startPosition: Duration.zero,
-      current: model.copyWith(
-        channel: this,
-      ),
+      current: model.copyWith(channel: this),
       ref: ref,
       cancelOperation: op,
     );
@@ -198,13 +198,17 @@ extension AudioModelAudioPlayback on AudioModel? {
     }
 
     final currentIndex = queue.indexWhere((element) => element.id == audio.id).clamp(0, queue.length - 1);
-    final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          audio,
-          libraryQueue: queue,
-          showPlaybackOptions: showPlaybackOption,
-          startPosition: startPosition,
-        ));
+    final op = CancelableOperation.fromFuture(
+      ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
+            context,
+            audio,
+            libraryQueue: queue,
+            showPlaybackOptions: showPlaybackOption,
+            startPosition: startPosition,
+          ),
+    );
 
     final model = await op.valueOrCancellation(null);
     if (op.isCanceled || model == null) {
@@ -216,12 +220,7 @@ extension AudioModelAudioPlayback on AudioModel? {
 
     final actualStartPosition = startPosition ?? await model.startDuration() ?? Duration.zero;
 
-    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(
-          model,
-          queue,
-          currentIndex,
-          actualStartPosition,
-        );
+    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(model, queue, currentIndex, actualStartPosition);
   }
 }
 
@@ -241,14 +240,18 @@ extension PlayQueueSource on PlaybackQueueSource? {
       return;
     }
 
-    final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          queue.firstOrNull,
-          libraryQueue: queue,
-          queueSource: queueSource,
-          showPlaybackOptions: showPlaybackOption,
-          startPosition: startPosition,
-        ));
+    final op = CancelableOperation.fromFuture(
+      ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
+            context,
+            queue.firstOrNull,
+            libraryQueue: queue,
+            queueSource: queueSource,
+            showPlaybackOptions: showPlaybackOption,
+            startPosition: startPosition,
+          ),
+    );
 
     final model = await op.valueOrCancellation(null);
     if (op.isCanceled || model == null) {
@@ -261,12 +264,7 @@ extension PlayQueueSource on PlaybackQueueSource? {
     final currentIndex = queue.indexWhere((element) => element.id == model.item.id).clamp(0, queue.length - 1);
     final actualStartPosition = startPosition ?? await model.startDuration() ?? Duration.zero;
 
-    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(
-          model,
-          queue,
-          currentIndex,
-          actualStartPosition,
-        );
+    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(model, queue, currentIndex, actualStartPosition);
   }
 }
 
@@ -297,18 +295,22 @@ extension ArtistModelLatestTracksPlayback on ArtistModel? {
     final selectedItem = startTrack != null
         ? queue.firstWhereOrNull((element) => element.id == startTrack.id) ?? queue.first
         : (shuffleEnabled == true && queue.length > 1)
-            ? queue[Random().nextInt(queue.length)]
-            : queue.first;
+        ? queue[Random().nextInt(queue.length)]
+        : queue.first;
     final currentIndex = queue.indexWhere((element) => element.id == selectedItem.id).clamp(0, queue.length - 1);
 
-    final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          selectedItem,
-          libraryQueue: queue,
-          queueSource: queueSource,
-          showPlaybackOptions: showPlaybackOption,
-          startPosition: startPosition,
-        ));
+    final op = CancelableOperation.fromFuture(
+      ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
+            context,
+            selectedItem,
+            libraryQueue: queue,
+            queueSource: queueSource,
+            showPlaybackOptions: showPlaybackOption,
+            startPosition: startPosition,
+          ),
+    );
 
     final model = await op.valueOrCancellation(null);
     if (op.isCanceled || model == null) {
@@ -320,12 +322,7 @@ extension ArtistModelLatestTracksPlayback on ArtistModel? {
 
     final actualStartPosition = startPosition ?? await model.startDuration() ?? Duration.zero;
 
-    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(
-          model,
-          queue,
-          currentIndex,
-          actualStartPosition,
-        );
+    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(model, queue, currentIndex, actualStartPosition);
   }
 }
 
@@ -340,13 +337,17 @@ extension AudioModelListPlayback on List<AudioModel> {
 
     final queue = cast<ItemBaseModel>().toList();
 
-    final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          queue.first,
-          libraryQueue: queue,
-          showPlaybackOptions: showPlaybackOption,
-          startPosition: startPosition,
-        ));
+    final op = CancelableOperation.fromFuture(
+      ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
+            context,
+            queue.first,
+            libraryQueue: queue,
+            showPlaybackOptions: showPlaybackOption,
+            startPosition: startPosition,
+          ),
+    );
 
     final model = await op.valueOrCancellation(null);
     if (op.isCanceled || model == null) {
@@ -358,12 +359,7 @@ extension AudioModelListPlayback on List<AudioModel> {
 
     final actualStartPosition = startPosition ?? await model.startDuration() ?? Duration.zero;
 
-    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(
-          model,
-          queue,
-          0,
-          actualStartPosition,
-        );
+    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(model, queue, 0, actualStartPosition);
   }
 }
 
@@ -383,13 +379,17 @@ extension AlbumModelInstantMixPlayback on AlbumModel? {
       return;
     }
 
-    final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          queue.first,
-          libraryQueue: queue,
-          showPlaybackOptions: showPlaybackOption,
-          startPosition: startPosition,
-        ));
+    final op = CancelableOperation.fromFuture(
+      ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
+            context,
+            queue.first,
+            libraryQueue: queue,
+            showPlaybackOptions: showPlaybackOption,
+            startPosition: startPosition,
+          ),
+    );
 
     final model = await op.valueOrCancellation(null);
     if (op.isCanceled || model == null) {
@@ -402,12 +402,7 @@ extension AlbumModelInstantMixPlayback on AlbumModel? {
     final currentIndex = queue.indexWhere((element) => element.id == model.item.id).clamp(0, queue.length - 1);
     final actualStartPosition = startPosition ?? await model.startDuration() ?? Duration.zero;
 
-    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(
-          model,
-          queue,
-          currentIndex,
-          actualStartPosition,
-        );
+    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(model, queue, currentIndex, actualStartPosition);
   }
 
   Future<void> playInstantMix(
@@ -516,7 +511,9 @@ extension ArtistModelAddToQueue on ArtistModel? {
 }
 
 Future<List<ItemBaseModel>> _fetchAlbumQueue(AlbumModel album, WidgetRef ref) async {
-  final response = await ref.read(jellyApiProvider).itemsGet(
+  final response = await ref
+      .read(jellyApiProvider)
+      .itemsGet(
         parentId: album.id,
         includeItemTypes: [BaseItemKind.audio],
         enableUserData: true,
@@ -538,7 +535,9 @@ Future<List<ItemBaseModel>> _fetchAudioTrackQueue(AudioModel audio, WidgetRef re
     return [audio];
   }
 
-  final response = await ref.read(jellyApiProvider).itemsGet(
+  final response = await ref
+      .read(jellyApiProvider)
+      .itemsGet(
         parentId: albumId,
         includeItemTypes: [BaseItemKind.audio],
         enableUserData: true,
@@ -571,14 +570,18 @@ Future<void> _playInstantMix(
     return;
   }
 
-  final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-        context,
-        queue.first,
-        libraryQueue: queue,
-        queueSource: queueSource,
-        showPlaybackOptions: showPlaybackOption,
-        startPosition: startPosition,
-      ));
+  final op = CancelableOperation.fromFuture(
+    ref
+        .read(playbackModelHelper)
+        .createPlaybackModel(
+          context,
+          queue.first,
+          libraryQueue: queue,
+          queueSource: queueSource,
+          showPlaybackOptions: showPlaybackOption,
+          startPosition: startPosition,
+        ),
+  );
 
   final model = await op.valueOrCancellation(null);
   if (op.isCanceled || model == null) {
@@ -591,12 +594,7 @@ Future<void> _playInstantMix(
   final currentIndex = queue.indexWhere((element) => element.id == model.item.id).clamp(0, queue.length - 1);
   final actualStartPosition = startPosition ?? await model.startDuration() ?? Duration.zero;
 
-  await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(
-        model,
-        queue,
-        currentIndex,
-        actualStartPosition,
-      );
+  await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(model, queue, currentIndex, actualStartPosition);
 }
 
 extension ItemBaseModelExtensions on ItemBaseModel? {
@@ -605,22 +603,21 @@ extension ItemBaseModelExtensions on ItemBaseModel? {
     WidgetRef ref, {
     Duration? startPosition,
     bool showPlaybackOption = false,
-  }) async =>
-      switch (this) {
-        PhotoAlbumModel album => album.play(context, ref),
-        AlbumModel album => album.play(context, ref),
-        AudioModel audio => audio.play(context, ref),
-        ArtistModel artist => artist.playLatestTracks(context, ref),
-        PlaylistModel playlist => playlist.play(
-            context,
-            ref,
-            startPosition: startPosition,
-            showPlaybackOption: showPlaybackOption,
-          ),
-        BookModel book => book.play(context, ref),
-        ChannelModel channel => channel.play(context, ref),
-        _ => _default(context, this, ref, startPosition: startPosition, showPlaybackOption: showPlaybackOption),
-      };
+  }) async => switch (this) {
+    PhotoAlbumModel album => album.play(context, ref),
+    AlbumModel album => album.play(context, ref),
+    AudioModel audio => audio.play(context, ref),
+    ArtistModel artist => artist.playLatestTracks(context, ref),
+    PlaylistModel playlist => playlist.play(
+      context,
+      ref,
+      startPosition: startPosition,
+      showPlaybackOption: showPlaybackOption,
+    ),
+    BookModel book => book.play(context, ref),
+    ChannelModel channel => channel.play(context, ref),
+    _ => _default(context, this, ref, startPosition: startPosition, showPlaybackOption: showPlaybackOption),
+  };
 
   Future<void> _default(
     BuildContext context,
@@ -631,12 +628,16 @@ extension ItemBaseModelExtensions on ItemBaseModel? {
   }) async {
     if (itemModel == null) return;
 
-    final op = CancelableOperation.fromFuture(ref.read(playbackModelHelper).createPlaybackModel(
-          context,
-          itemModel,
-          showPlaybackOptions: showPlaybackOption,
-          startPosition: startPosition,
-        ));
+    final op = CancelableOperation.fromFuture(
+      ref
+          .read(playbackModelHelper)
+          .createPlaybackModel(
+            context,
+            itemModel,
+            showPlaybackOptions: showPlaybackOption,
+            startPosition: startPosition,
+          ),
+    );
 
     _showLoadingIndicator(context, itemModel, op);
 
@@ -665,33 +666,37 @@ extension ItemBaseModelsBooleans on List<ItemBaseModel> {
   Future<void> playLibraryItems(BuildContext context, WidgetRef ref, {bool shuffle = false}) async {
     if (isEmpty) return;
 
-    final op = CancelableOperation.fromFuture(Future(() async {
-      List<List<ItemBaseModel>> newList = await Future.wait(map((element) async {
-        switch (element.type) {
-          case FladderItemType.series:
-            return await ref.read(jellyApiProvider).fetchEpisodeFromShow(seriesId: element.id);
-          default:
-            return [element];
+    final op = CancelableOperation.fromFuture(
+      Future(() async {
+        List<List<ItemBaseModel>> newList = await Future.wait(
+          map((element) async {
+            switch (element.type) {
+              case FladderItemType.series:
+                return await ref.read(jellyApiProvider).fetchEpisodeFromShow(seriesId: element.id);
+              default:
+                return [element];
+            }
+          }),
+        );
+
+        var expandedList = newList
+            .expand((element) => element)
+            .toList()
+            .where((element) => element.playAble)
+            .toList()
+            .uniqueBy((value) => value.id);
+
+        if (shuffle) {
+          expandedList.shuffle();
         }
-      }));
 
-      var expandedList =
-          newList.expand((element) => element).toList().where((element) => element.playAble).toList().uniqueBy(
-                (value) => value.id,
-              );
+        PlaybackModel? model = await ref
+            .read(playbackModelHelper)
+            .createPlaybackModel(context, expandedList.firstOrNull, libraryQueue: expandedList);
 
-      if (shuffle) {
-        expandedList.shuffle();
-      }
-
-      PlaybackModel? model = await ref.read(playbackModelHelper).createPlaybackModel(
-            context,
-            expandedList.firstOrNull,
-            libraryQueue: expandedList,
-          );
-
-      return (model, expandedList);
-    }));
+        return (model, expandedList);
+      }),
+    );
 
     _showLoadingIndicator(context, null, op);
 
@@ -722,37 +727,41 @@ extension ItemBaseModelsBooleans on List<ItemBaseModel> {
   Future<void> playMusicItems(BuildContext context, WidgetRef ref, {bool shuffle = false}) async {
     if (isEmpty) return;
 
-    final op = CancelableOperation.fromFuture(Future(() async {
-      final newList = await Future.wait(map((element) async {
-        switch (element) {
-          case AudioModel audio:
-            return <ItemBaseModel>[audio];
-          case AlbumModel album:
-            return await _fetchAlbumQueue(album, ref);
-          case ArtistModel artist:
-            return await ArtistCatalogQueueSource(artistId: artist.id, limit: 300).fetchQueue(ref.read);
-          default:
-            return const <ItemBaseModel>[];
+    final op = CancelableOperation.fromFuture(
+      Future(() async {
+        final newList = await Future.wait(
+          map((element) async {
+            switch (element) {
+              case AudioModel audio:
+                return <ItemBaseModel>[audio];
+              case AlbumModel album:
+                return await _fetchAlbumQueue(album, ref);
+              case ArtistModel artist:
+                return await ArtistCatalogQueueSource(artistId: artist.id, limit: 300).fetchQueue(ref.read);
+              default:
+                return const <ItemBaseModel>[];
+            }
+          }),
+        );
+
+        final expandedList = newList
+            .expand((element) => element)
+            .whereType<AudioModel>()
+            .cast<ItemBaseModel>()
+            .toList()
+            .uniqueBy((value) => value.id);
+
+        if (shuffle) {
+          expandedList.shuffle();
         }
-      }));
 
-      final expandedList =
-          newList.expand((element) => element).whereType<AudioModel>().cast<ItemBaseModel>().toList().uniqueBy(
-                (value) => value.id,
-              );
+        final model = await ref
+            .read(playbackModelHelper)
+            .createPlaybackModel(context, expandedList.firstOrNull, libraryQueue: expandedList);
 
-      if (shuffle) {
-        expandedList.shuffle();
-      }
-
-      final model = await ref.read(playbackModelHelper).createPlaybackModel(
-            context,
-            expandedList.firstOrNull,
-            libraryQueue: expandedList,
-          );
-
-      return (model, expandedList);
-    }));
+        return (model, expandedList);
+      }),
+    );
 
     _showLoadingIndicator(context, null, op);
 
@@ -782,20 +791,18 @@ extension ItemBaseModelsBooleans on List<ItemBaseModel> {
       return;
     }
 
-    final currentIndex =
-        expandedList.indexWhere((element) => element.id == model.item.id).clamp(0, expandedList.length - 1);
+    final currentIndex = expandedList
+        .indexWhere((element) => element.id == model.item.id)
+        .clamp(0, expandedList.length - 1);
     final actualStartPosition = await model.startDuration() ?? Duration.zero;
 
     try {
       Navigator.of(context, rootNavigator: true).pop();
     } catch (_) {}
 
-    await ref.read(videoPlayerProvider.notifier).loadAudioPlaybackItem(
-          model,
-          expandedList,
-          currentIndex,
-          actualStartPosition,
-        );
+    await ref
+        .read(videoPlayerProvider.notifier)
+        .loadAudioPlaybackItem(model, expandedList, currentIndex, actualStartPosition);
 
     if (context.mounted) {
       RefreshState.maybeOf(context)?.refresh();
@@ -822,10 +829,7 @@ class _LoadIndicatorCancelable extends StatelessWidget {
     final radius = const BorderRadius.all(Radius.circular(4));
 
     return Dialog(
-      constraints: const BoxConstraints(
-        maxWidth: 450,
-        maxHeight: 500,
-      ),
+      constraints: const BoxConstraints(maxWidth: 450, maxHeight: 500),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -861,10 +865,7 @@ class _LoadIndicatorCancelable extends StatelessWidget {
                                   border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
                                 ),
                                 clipBehavior: Clip.hardEdge,
-                                child: DriftfinImage(
-                                  image: item!.getPosters?.primary,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: DriftfinImage(image: item!.getPosters?.primary, fit: BoxFit.cover),
                               ),
                             ),
                           ),
@@ -872,9 +873,7 @@ class _LoadIndicatorCancelable extends StatelessWidget {
                       ),
                     )
                   else
-                    SquareProgressIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    SquareProgressIndicator(color: Theme.of(context).colorScheme.primary),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -882,16 +881,8 @@ class _LoadIndicatorCancelable extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       spacing: 8,
                       children: [
-                        Text(
-                          context.localized.loading,
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        if (item != null) ...[
-                          Text(
-                            item!.title,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
+                        Text(context.localized.loading, style: Theme.of(context).textTheme.titleLarge),
+                        if (item != null) ...[Text(item!.title, style: Theme.of(context).textTheme.bodyMedium)],
                       ],
                     ),
                   ),
@@ -941,10 +932,7 @@ Future<void> _playVideo(
 
   final actualStartPosition = startPosition ?? await current.startDuration() ?? Duration.zero;
 
-  final loadedCorrectly = await ref.read(videoPlayerProvider.notifier).loadPlaybackItem(
-        current,
-        actualStartPosition,
-      );
+  final loadedCorrectly = await ref.read(videoPlayerProvider.notifier).loadPlaybackItem(current, actualStartPosition);
 
   if (!loadedCorrectly) {
     if (context.mounted) {

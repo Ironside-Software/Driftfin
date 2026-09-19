@@ -20,26 +20,21 @@ class AuthLinkData {
   final String userName;
   final String? password;
 
-  AuthLinkData({
-    required this.serverUrl,
-    this.seerrUrl,
-    required this.userName,
-    this.password,
-  });
+  AuthLinkData({required this.serverUrl, this.seerrUrl, required this.userName, this.password});
 
   Map<String, dynamic> toJson() => {
-        'server': serverUrl,
-        if (seerrUrl != null) 'seerr': seerrUrl,
-        'userName': userName,
-        if (password != null && password!.isNotEmpty) 'password': password,
-      };
+    'server': serverUrl,
+    if (seerrUrl != null) 'seerr': seerrUrl,
+    'userName': userName,
+    if (password != null && password!.isNotEmpty) 'password': password,
+  };
 
   factory AuthLinkData.fromJson(Map<String, dynamic> json) => AuthLinkData(
-        serverUrl: json['server'] as String,
-        seerrUrl: json['seerr'] as String?,
-        userName: json['userName'] as String,
-        password: json['password'] as String?,
-      );
+    serverUrl: json['server'] as String,
+    seerrUrl: json['seerr'] as String?,
+    userName: json['userName'] as String,
+    password: json['password'] as String?,
+  );
 
   static AuthLinkData? parse(String encoded) {
     String removeUrlPrefix = encoded.replaceFirst(RegExp(r'^driftfin:\/\/\/login\?authLink='), '');

@@ -14,9 +14,7 @@ part 'media_segments_model.g.dart';
 abstract class MediaSegmentsModel with _$MediaSegmentsModel {
   const MediaSegmentsModel._();
 
-  factory MediaSegmentsModel({
-    @Default([]) List<MediaSegment> segments,
-  }) = _MediaSegmentsModel;
+  factory MediaSegmentsModel({@Default([]) List<MediaSegment> segments}) = _MediaSegmentsModel;
 
   factory MediaSegmentsModel.fromJson(Map<String, dynamic> json) => _$MediaSegmentsModelFromJson(json);
 
@@ -30,11 +28,8 @@ abstract class MediaSegmentsModel with _$MediaSegmentsModel {
 abstract class MediaSegment with _$MediaSegment {
   const MediaSegment._();
 
-  factory MediaSegment({
-    required MediaSegmentType type,
-    required Duration start,
-    required Duration end,
-  }) = _MediaSegment;
+  factory MediaSegment({required MediaSegmentType type, required Duration start, required Duration end}) =
+      _MediaSegment;
 
   factory MediaSegment.fromJson(Map<String, dynamic> json) => _$MediaSegmentFromJson(json);
 
@@ -49,11 +44,7 @@ abstract class MediaSegment with _$MediaSegment {
   }
 }
 
-enum SegmentVisibility {
-  hidden,
-  partially,
-  visible;
-}
+enum SegmentVisibility { hidden, partially, visible }
 
 const Map<MediaSegmentType, SegmentSkip> defaultSegmentSkipValues = {
   MediaSegmentType.commercial: SegmentSkip.askToSkip,
@@ -72,11 +63,11 @@ enum SegmentSkip {
   const SegmentSkip();
 
   String label(BuildContext context) => switch (this) {
-        SegmentSkip.none => context.localized.segmentActionNone,
-        SegmentSkip.askToSkip => context.localized.segmentActionAskToSkip,
-        SegmentSkip.skipOnce => context.localized.segmentActionSkipOnce,
-        SegmentSkip.skip => context.localized.segmentActionSkip,
-      };
+    SegmentSkip.none => context.localized.segmentActionNone,
+    SegmentSkip.askToSkip => context.localized.segmentActionAskToSkip,
+    SegmentSkip.skipOnce => context.localized.segmentActionSkipOnce,
+    SegmentSkip.skip => context.localized.segmentActionSkip,
+  };
 }
 
 enum MediaSegmentType {
@@ -99,13 +90,13 @@ enum MediaSegmentType {
   }
 
   Color get color => switch (this) {
-        MediaSegmentType.unknown => Colors.black,
-        MediaSegmentType.commercial => Colors.purpleAccent,
-        MediaSegmentType.preview => Colors.deepOrangeAccent,
-        MediaSegmentType.recap => Colors.lightBlueAccent,
-        MediaSegmentType.outro => Colors.yellowAccent,
-        MediaSegmentType.intro => Colors.greenAccent,
-      };
+    MediaSegmentType.unknown => Colors.black,
+    MediaSegmentType.commercial => Colors.purpleAccent,
+    MediaSegmentType.preview => Colors.deepOrangeAccent,
+    MediaSegmentType.recap => Colors.lightBlueAccent,
+    MediaSegmentType.outro => Colors.yellowAccent,
+    MediaSegmentType.intro => Colors.greenAccent,
+  };
 
   static MediaSegmentType fromDto(dto.MediaSegmentType? value) {
     return switch (value) {
@@ -123,10 +114,10 @@ enum MediaSegmentType {
 
 extension MediaSegmentExtension on dto.MediaSegmentDto {
   MediaSegment get toSegment => MediaSegment(
-        type: MediaSegmentType.fromDto(type),
-        start: _durationToMilliseconds(startTicks ?? 0),
-        end: _durationToMilliseconds(endTicks ?? 0),
-      );
+    type: MediaSegmentType.fromDto(type),
+    start: _durationToMilliseconds(startTicks ?? 0),
+    end: _durationToMilliseconds(endTicks ?? 0),
+  );
 }
 
 Duration _durationToMilliseconds(num milliseconds) => Duration(milliseconds: (milliseconds ~/ 10000));

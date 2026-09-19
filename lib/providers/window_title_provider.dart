@@ -1,6 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:driftfin/models/media_playback_model.dart';
 import 'package:driftfin/providers/dashboard_mode_provider.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
@@ -15,8 +17,8 @@ class WindowTitleNotifier extends StateNotifier<String> {
   final Ref ref;
   WindowTitleNotifier(this.ref) : super('Driftfin') {
     // Listen to player state changes to handle minimized <-> maximized transitions
-    ref.listen(mediaPlaybackProvider.select((v) => v.state), (_, __) => _update());
-    ref.listen(musicDashboardModeProvider, (_, __) => _update());
+    ref.listen(mediaPlaybackProvider.select((v) => v.state), (_, _) => _update());
+    ref.listen(musicDashboardModeProvider, (_, _) => _update());
   }
 
   final Map<Object, String> _titles = {};

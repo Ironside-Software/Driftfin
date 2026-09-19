@@ -1,5 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/item_base_model.dart';
@@ -14,11 +15,7 @@ class _PlaylistProviderModel {
   final bool isLoading;
   final List<ItemBaseModel> items;
   final Map<PlaylistModel, bool?> collections;
-  _PlaylistProviderModel({
-    this.isLoading = false,
-    required this.items,
-    required this.collections,
-  });
+  _PlaylistProviderModel({this.isLoading = false, required this.items, required this.collections});
 
   _PlaylistProviderModel copyWith({
     bool? isLoading,
@@ -55,12 +52,7 @@ class PlaylistNotifier extends StateNotifier<_PlaylistProviderModel> {
   }
 
   Future<void> _init() async {
-    final serverPlaylists = await api.usersUserIdItemsGet(
-      recursive: true,
-      includeItemTypes: [
-        BaseItemKind.playlist,
-      ],
-    );
+    final serverPlaylists = await api.usersUserIdItemsGet(recursive: true, includeItemTypes: [BaseItemKind.playlist]);
 
     final playlists = serverPlaylists.body?.items?.map((e) => PlaylistModel.fromBaseDto(e, ref)).toList();
 
@@ -70,27 +62,27 @@ class PlaylistNotifier extends StateNotifier<_PlaylistProviderModel> {
       collections: Map.fromIterables(playlists ?? [], List.generate(playlists?.length ?? 0, (index) => null)),
     );
 
-    playlists?.forEach(
-      (playlist) async {
-        final itemList = await api.playlistsPlaylistIdItemsGet(
-          playlistId: playlist.id,
-          enableImages: false,
-          enableUserData: false,
-          fields: [],
-        );
-        final List<String?> items = (itemList.body?.items ?? []).map((e) => e.id).toList();
-        state = state.copyWith(
-          collections: state.collections.setKey(playlist, items.contains(state.items.firstOrNull?.id)),
-        );
-      },
-    );
+    playlists?.forEach((playlist) async {
+      final itemList = await api.playlistsPlaylistIdItemsGet(
+        playlistId: playlist.id,
+        enableImages: false,
+        enableUserData: false,
+        fields: [],
+      );
+      final List<String?> items = (itemList.body?.items ?? []).map((e) => e.id).toList();
+      state = state.copyWith(
+        collections: state.collections.setKey(playlist, items.contains(state.items.firstOrNull?.id)),
+      );
+    });
 
     state = state.copyWith(isLoading: false);
   }
 
   Future<Response> addToPlaylist({required PlaylistModel playlist}) async {
-    final response =
-        await api.playlistsPlaylistIdItemsPost(playlistId: playlist.id, ids: state.items.map((e) => e.id).toList());
+    final response = await api.playlistsPlaylistIdItemsPost(
+      playlistId: playlist.id,
+      ids: state.items.map((e) => e.id).toList(),
+    );
     if (response.isSuccessful) {
       await _init();
     }
@@ -99,7 +91,9 @@ class PlaylistNotifier extends StateNotifier<_PlaylistProviderModel> {
 
   Future<Response> removeFromPlaylist({required PlaylistModel playlist}) async {
     final response = await api.playlistsPlaylistIdItemsDelete(
-        playlistId: playlist.id, entryIds: state.items.map((e) => e.id).toList());
+      playlistId: playlist.id,
+      entryIds: state.items.map((e) => e.id).toList(),
+    );
     if (response.isSuccessful) {
       await _init();
     }

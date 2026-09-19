@@ -109,10 +109,7 @@ class PosterImage extends ConsumerWidget {
         onLongPress: () => _showBottomSheet(context, ref),
         onSecondaryTapDown: (details) => _showContextMenu(context, ref, details.globalPosition),
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: radius,
-            color: backgroundColor,
-          ),
+          decoration: BoxDecoration(borderRadius: radius, color: backgroundColor),
           foregroundDecoration: BoxDecoration(
             borderRadius: radius,
             border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
@@ -126,7 +123,9 @@ class PosterImage extends ConsumerWidget {
           if (showSyncStatus)
             Align(
               alignment: Alignment.topRight,
-              child: ref.watch(syncedItemProvider(poster)).when(
+              child: ref
+                  .watch(syncedItemProvider(poster))
+                  .when(
                     error: (error, stackTrace) => const SizedBox.shrink(),
                     data: (syncedItem) {
                       if (syncedItem == null) {
@@ -141,10 +140,7 @@ class PosterImage extends ConsumerWidget {
             ),
           if (selected == true)
             IgnorePointer(
-              child: SelectedPosterOverlay(
-                poster: poster,
-                radius: radius as BorderRadius,
-              ),
+              child: SelectedPosterOverlay(poster: poster, radius: radius as BorderRadius),
             ),
           BottomOverlaysContainer(
             showFavourite: poster.userData.isFavourite,
@@ -153,17 +149,9 @@ class PosterImage extends ConsumerWidget {
             itemType: poster.type,
             progressPadding: padding,
           ),
-          if (inlineTitle)
-            InlineTitleOverlay(
-              title: poster.title.maxLength(limitTo: 25),
-            ),
-          UnplayedWatchedOverlay(
-            poster: poster,
-          ),
-          VideoDurationOverlay(
-            poster: poster,
-            padding: padding,
-          ),
+          if (inlineTitle) InlineTitleOverlay(title: poster.title.maxLength(limitTo: 25)),
+          UnplayedWatchedOverlay(poster: poster),
+          VideoDurationOverlay(poster: poster, padding: padding),
           PosterMediaBadge(poster: poster),
         ],
         focusedOverlays: [
@@ -174,10 +162,7 @@ class PosterImage extends ConsumerWidget {
                 alignment: Alignment.center,
                 child: IconButton.filledTonal(
                   onPressed: () => playVideo?.call(false),
-                  icon: const Icon(
-                    IconsaxPlusBold.play,
-                    size: 32,
-                  ),
+                  icon: const Icon(IconsaxPlusBold.play, size: 32),
                 ),
               ),
             Align(
@@ -187,10 +172,7 @@ class PosterImage extends ConsumerWidget {
                 children: [
                   PopupMenuButton(
                     tooltip: context.localized.options,
-                    icon: const Icon(
-                      Icons.more_vert,
-                      color: Colors.white,
-                    ),
+                    icon: const Icon(Icons.more_vert, color: Colors.white),
                     itemBuilder: (context) => poster
                         .generateActions(
                           context,

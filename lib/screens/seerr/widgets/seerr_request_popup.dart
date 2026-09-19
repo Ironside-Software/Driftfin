@@ -24,25 +24,17 @@ import 'package:driftfin/util/refresh_state.dart';
 import 'package:driftfin/widgets/shared/filled_button_await.dart';
 import 'package:driftfin/widgets/shared/pull_to_refresh.dart';
 
-Future<void> openSeerrRequestPopup(
-  BuildContext context,
-  SeerrDashboardPosterModel poster,
-) async {
+Future<void> openSeerrRequestPopup(BuildContext context, SeerrDashboardPosterModel poster) async {
   await showDialogAdaptive(
     context: context,
-    builder: (context) => SeerrRequestPopup(
-      requestModel: poster,
-    ),
+    builder: (context) => SeerrRequestPopup(requestModel: poster),
   );
   await context.refreshData();
 }
 
 class SeerrRequestPopup extends ConsumerStatefulWidget {
   final SeerrDashboardPosterModel requestModel;
-  const SeerrRequestPopup({
-    required this.requestModel,
-    super.key,
-  });
+  const SeerrRequestPopup({required this.requestModel, super.key});
 
   @override
   ConsumerState<SeerrRequestPopup> createState() => _SeerrRequestPopupState();
@@ -111,10 +103,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                   children: [
                     AutoApproveBanner(user: currentUser, isTv: requestState.isTv),
                     if (requestState.activeQuota != null && requestState.activeQuota?.hasRestrictions == true)
-                      QuotaLimitCard(
-                        quota: requestState.activeQuota!,
-                        type: model.type,
-                      ),
+                      QuotaLimitCard(quota: requestState.activeQuota!, type: model.type),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 16,
@@ -130,10 +119,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                 height: 150,
                                 child: DriftfinImage(
                                   image: model.images.primary,
-                                  placeHolder: Container(
-                                    color: Colors.grey,
-                                    child: Icon(FladderItemType.movie.icon),
-                                  ),
+                                  placeHolder: Container(color: Colors.grey, child: Icon(FladderItemType.movie.icon)),
                                 ),
                               ),
                             ),
@@ -151,9 +137,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                     Expanded(
                                       child: Text(
                                         model.title,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleLarge
+                                        style: Theme.of(context).textTheme.titleLarge
                                             ?.copyWith(fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -169,10 +153,8 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                             ),
                                             child: Text(
                                               model.displayStatusLabel(context),
-                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+                                              style: Theme.of(context).textTheme.bodyMedium
+                                                  ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                                             ),
                                           ),
                                         ],
@@ -215,9 +197,8 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                           ),
                                           Text(
                                             requestState.voteAverage!.toStringAsFixed(1),
-                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSecondaryContainer,
-                                                ),
+                                            style: Theme.of(context).textTheme.bodyMedium
+                                                ?.copyWith(color: Theme.of(context).colorScheme.onSecondaryContainer),
                                           ),
                                         ],
                                       ),
@@ -232,9 +213,9 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                       child: Text(
                                         requestState.contentRating!,
                                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                              color: Theme.of(context).colorScheme.onTertiaryContainer,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                          color: Theme.of(context).colorScheme.onTertiaryContainer,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                   if (requestState.releaseDate != null && requestState.releaseDate!.isNotEmpty)
@@ -274,10 +255,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                                         color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                         borderRadius: BorderRadius.circular(4),
                                       ),
-                                      child: Text(
-                                        genre.name ?? '',
-                                        style: Theme.of(context).textTheme.bodySmall,
-                                      ),
+                                      child: Text(genre.name ?? '', style: Theme.of(context).textTheme.bodySmall),
                                     );
                                   }).toList(),
                                 ),
@@ -302,18 +280,14 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                     ],
                     if (canShowAdvancedConfiguration) ...[
                       const Divider(),
-                      RequestConfigurationSection(
-                        requestState: requestState,
-                      ),
+                      RequestConfigurationSection(requestState: requestState),
                     ],
                   ],
                 ),
               ),
             ),
             const Divider(),
-            if (requestState.hasRequestPermission == false) ...[
-              const PermissionDeniedWarning(),
-            ],
+            if (requestState.hasRequestPermission == false) ...[const PermissionDeniedWarning()],
             if (requestState.isAnime) ...[
               Text(
                 context.localized.seerrAnimeSeriesNote,
@@ -335,10 +309,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 8,
-                children: [
-                  const Icon(IconsaxPlusBold.send_2),
-                  Text(context.localized.submitRequest),
-                ],
+                children: [const Icon(IconsaxPlusBold.send_2), Text(context.localized.submitRequest)],
               ),
             ),
             ElevatedButton(
@@ -346,7 +317,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
               focusNode: _closeButtonFocusNode,
               onPressed: () => context.pop(),
               child: Text(context.localized.close),
-            )
+            ),
           ],
         ),
       ),

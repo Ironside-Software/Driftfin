@@ -60,8 +60,9 @@ class SeerrDetailsScreen extends ConsumerWidget {
 
     final currentPoster = state.poster;
     final canMarkWatched = currentPoster?.type == SeerrMediaType.movie;
-    final wrapAlignment =
-        AdaptiveLayout.viewSizeOf(context) != ViewSize.phone ? WrapAlignment.start : WrapAlignment.center;
+    final wrapAlignment = AdaptiveLayout.viewSizeOf(context) != ViewSize.phone
+        ? WrapAlignment.start
+        : WrapAlignment.center;
 
     final radius = BorderRadius.circular(16);
     final theme = Theme.of(context);
@@ -105,9 +106,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    height: MediaQuery.paddingOf(context).top + 16,
-                  ),
+                  SizedBox(height: MediaQuery.paddingOf(context).top + 16),
                   OverviewHeader(
                     minHeight: 50,
                     name: currentPoster.title,
@@ -138,15 +137,12 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                         ),
                                         foregroundDecoration: FladderTheme.defaultPosterDecoration,
                                         clipBehavior: Clip.hardEdge,
-                                        child: DriftfinImage(
-                                          image: currentPoster.images.primary,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child: DriftfinImage(image: currentPoster.images.primary, fit: BoxFit.cover),
                                       ),
                                     ),
                                   ),
                                 ),
-                                if (hasKnownStatus) DownloadStatusLabel(poster: currentPoster)
+                                if (hasKnownStatus) DownloadStatusLabel(poster: currentPoster),
                               ],
                             ),
                           )
@@ -184,11 +180,13 @@ class SeerrDetailsScreen extends ConsumerWidget {
                             ),
                         ],
                     ],
-                    genres:
-                        state.genres.map((e) => GenreItems(id: e.id?.toString() ?? "", name: e.name ?? "")).toList(),
+                    genres: state.genres
+                        .map((e) => GenreItems(id: e.id?.toString() ?? "", name: e.name ?? ""))
+                        .toList(),
                     mainButton: Builder(
                       builder: (context) {
-                        final showStatus = currentPoster.hasDisplayStatus ||
+                        final showStatus =
+                            currentPoster.hasDisplayStatus ||
                             (currentPoster.mediaInfo?.downloadStatus?.isNotEmpty ?? false) ||
                             (currentPoster.mediaInfo?.downloadStatus4k?.isNotEmpty ?? false);
                         final requestButton = FocusButton(
@@ -197,9 +195,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                           borderRadius: radius,
                           onFocusChanged: (value) {
                             if (value) {
-                              context.ensureVisible(
-                                alignment: 1.0,
-                              );
+                              context.ensureVisible(alignment: 1.0);
                             }
                           },
                           child: Container(
@@ -222,8 +218,9 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                       overflow: TextOverflow.fade,
                                       style: theme.textTheme.titleMedium?.copyWith(
                                         fontWeight: FontWeight.w700,
-                                        color:
-                                            theme.colorScheme.onPrimaryContainer.withAlpha(canRequestMore ? 255 : 100),
+                                        color: theme.colorScheme.onPrimaryContainer.withAlpha(
+                                          canRequestMore ? 255 : 100,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -273,9 +270,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                       borderRadius: radius,
                                       onFocusChanged: (value) {
                                         if (value) {
-                                          context.ensureVisible(
-                                            alignment: 1.0,
-                                          );
+                                          context.ensureVisible(alignment: 1.0);
                                         }
                                       },
                                       child: Container(
@@ -311,9 +306,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                       borderRadius: radius,
                                       onFocusChanged: (value) {
                                         if (value) {
-                                          context.ensureVisible(
-                                            alignment: 1.0,
-                                          );
+                                          context.ensureVisible(alignment: 1.0);
                                         }
                                       },
                                       child: Container(
@@ -356,9 +349,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                       borderRadius: radius,
                                       onFocusChanged: (value) {
                                         if (value) {
-                                          context.ensureVisible(
-                                            alignment: 1.0,
-                                          );
+                                          context.ensureVisible(alignment: 1.0);
                                         }
                                       },
                                       child: Container(
@@ -394,12 +385,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                       seasons: currentPoster.seasons ?? const [],
                       seasonStatuses: state.seasonStatuses,
                     ).padding(padding),
-                  if (state.people.isNotEmpty)
-                    PeopleRow(
-                      people: state.people,
-                      contentPadding: padding,
-                      onTap: () {},
-                    ),
+                  if (state.people.isNotEmpty) PeopleRow(people: state.people, contentPadding: padding, onTap: () {}),
                   if (state.recommended.isNotEmpty)
                     SeerrPosterRow(
                       posters: state.recommended,
@@ -412,10 +398,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                       label: "${context.localized.discover} ${context.localized.related.toLowerCase()}",
                       contentPadding: padding,
                     ),
-                  if (externalUrls.isNotEmpty)
-                    ExternalUrlsRow(
-                      urls: externalUrls,
-                    ).padding(padding),
+                  if (externalUrls.isNotEmpty) ExternalUrlsRow(urls: externalUrls).padding(padding),
                 ].addPadding(const EdgeInsets.symmetric(vertical: 16)),
               ),
             ),
@@ -533,10 +516,8 @@ class _SeasonCard extends StatelessWidget {
                               ),
                               child: Text(
                                 status!.label(context),
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(color: Colors.white, fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -548,8 +529,8 @@ class _SeasonCard extends StatelessWidget {
                           Text(
                             '${season.episodeCount} ${context.localized.episode(season.episodeCount ?? 0)}',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-                                ),
+                              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                            ),
                           ),
                         if (seasonDownloads.isNotEmpty) ...[
                           const SizedBox(height: 8),
@@ -561,10 +542,7 @@ class _SeasonCard extends StatelessWidget {
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      IconsaxPlusLinear.arrow_down,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                    child: Icon(IconsaxPlusLinear.arrow_down, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -576,12 +554,7 @@ class _SeasonCard extends StatelessWidget {
             child: isExpanded
                 ? Column(
                     children: episodes.map((episode) {
-                      return _EpisodeCard(
-                        episode: episode,
-                        poster: poster,
-                        seasonNumber: seasonNumber,
-                        tvdbId: tvdbId,
-                      );
+                      return _EpisodeCard(episode: episode, poster: poster, seasonNumber: seasonNumber, tvdbId: tvdbId);
                     }).toList(),
                   )
                 : const SizedBox.shrink(),
@@ -627,12 +600,7 @@ class _EpisodeCard extends ConsumerWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              color: Theme.of(context).colorScheme.surfaceContainer,
-              width: 1,
-            ),
-          ),
+          border: Border(top: BorderSide(color: Theme.of(context).colorScheme.surfaceContainer, width: 1)),
         ),
         padding: const EdgeInsets.all(12),
         child: Row(
@@ -655,9 +623,9 @@ class _EpisodeCard extends ConsumerWidget {
                         child: Text(
                           'E${episode.episodeNumber}',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onPrimaryContainer,
-                              ),
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimaryContainer,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -677,7 +645,9 @@ class _EpisodeCard extends ConsumerWidget {
                           tooltip: context.localized.requestEpisodeSonarr,
                           icon: const Icon(Icons.download_outlined, size: 20),
                           onPressed: () async {
-                            final result = await ref.read(sonarrProvider.notifier).requestEpisodeByTvdb(
+                            final result = await ref
+                                .read(sonarrProvider.notifier)
+                                .requestEpisodeByTvdb(
                                   tvdbId: tvdbId!,
                                   season: seasonNumber,
                                   episode: episode.episodeNumber ?? 0,
@@ -695,50 +665,51 @@ class _EpisodeCard extends ConsumerWidget {
                         ),
                     ],
                   ),
-                  Builder(builder: (context) {
-                    final download = _download;
-                    if (download == null) return const SizedBox.shrink();
-                    final size = download.size ?? 0;
-                    final progress = size > 0 ? (size - (download.sizeLeft ?? 0)) / size : null;
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 6,
-                        children: [
-                          SizedBox(
-                            width: 14,
-                            height: 14,
-                            child: CircularProgressIndicator(
-                              value: progress,
-                              strokeWidth: 2,
-                              backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(50),
-                              valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.onPrimaryContainer),
+                  Builder(
+                    builder: (context) {
+                      final download = _download;
+                      if (download == null) return const SizedBox.shrink();
+                      final size = download.size ?? 0;
+                      final progress = size > 0 ? (size - (download.sizeLeft ?? 0)) / size : null;
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 6,
+                          children: [
+                            SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                value: progress,
+                                strokeWidth: 2,
+                                backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer.withAlpha(50),
+                                valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.onPrimaryContainer),
+                              ),
                             ),
-                          ),
-                          Text(
-                            progress != null
-                                ? '${context.localized.processing} ${(progress * 100).round()}%'
-                                : context.localized.processing,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                            Text(
+                              progress != null
+                                  ? '${context.localized.processing} ${(progress * 100).round()}%'
+                                  : context.localized.processing,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                   if (episode.overview != null && episode.overview!.isNotEmpty)
                     Text(
                       episode.overview!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
-                          ),
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8)),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -751,9 +722,8 @@ class _EpisodeCard extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       child: Text(
                         episode.airDate!,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
+                        style: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ),
                 ],
@@ -761,9 +731,7 @@ class _EpisodeCard extends ConsumerWidget {
             ),
             if (posterImage != null)
               Container(
-                decoration: BoxDecoration(
-                  borderRadius: FladderTheme.defaultPosterDecoration.borderRadius,
-                ),
+                decoration: BoxDecoration(borderRadius: FladderTheme.defaultPosterDecoration.borderRadius),
                 foregroundDecoration: FladderTheme.defaultPosterDecoration,
                 clipBehavior: Clip.hardEdge,
                 child: SizedBox(

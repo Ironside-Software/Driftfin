@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -45,10 +46,10 @@ enum LibraryViewTypes {
   const LibraryViewTypes({required this.icon});
 
   String label(BuildContext context) => switch (this) {
-        LibraryViewTypes.grid => context.localized.grid,
-        LibraryViewTypes.list => context.localized.list,
-        LibraryViewTypes.masonry => context.localized.masonry,
-      };
+    LibraryViewTypes.grid => context.localized.grid,
+    LibraryViewTypes.list => context.localized.list,
+    LibraryViewTypes.masonry => context.localized.masonry,
+  };
 
   final IconData icon;
 }
@@ -64,10 +65,7 @@ class LibraryViews extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
-      sliver: SliverAnimatedSwitcher(
-        duration: const Duration(milliseconds: 250),
-        child: _getWidget(context, ref),
-      ),
+      sliver: SliverAnimatedSwitcher(duration: const Duration(milliseconds: 250), child: _getWidget(context, ref)),
     );
   }
 
@@ -75,7 +73,8 @@ class LibraryViews extends ConsumerWidget {
     final selected = ref.watch(librarySearchProvider(key!).select((value) => value.selectedPosters));
     final posterSizeMultiplier = ref.watch(clientSettingsProvider.select((value) => value.posterSize));
     final libraryProvider = ref.read(librarySearchProvider(key!).notifier);
-    final posterSize = MediaQuery.sizeOf(context).width /
+    final posterSize =
+        MediaQuery.sizeOf(context).width /
         (AdaptiveLayout.poster(context).gridRatio *
             ref.watch(clientSettingsProvider.select((value) => value.posterSize)));
     final decimal = posterSize - posterSize.toInt();
@@ -84,8 +83,10 @@ class LibraryViews extends ConsumerWidget {
 
     List<ItemAction> otherActions(ItemBaseModel item) {
       return [
-        if (ref.watch(librarySearchProvider(key!)
-            .select((value) => value.folderOverwrite.included.firstOrNull?.type is BoxSetModel))) ...{
+        if (ref.watch(
+          librarySearchProvider(key!)
+              .select((value) => value.folderOverwrite.included.firstOrNull?.type is BoxSetModel),
+        )) ...{
           ItemActionButton(
             label: Text(context.localized.removeFromCollection),
             icon: const Icon(IconsaxPlusLinear.archive_slash),
@@ -95,10 +96,12 @@ class LibraryViews extends ConsumerWidget {
                 context.refreshData();
               }
             },
-          )
+          ),
         },
-        if (ref.watch(librarySearchProvider(key!)
-            .select((value) => value.folderOverwrite.included.firstOrNull?.type is PlaylistModel))) ...{
+        if (ref.watch(
+          librarySearchProvider(key!)
+              .select((value) => value.folderOverwrite.included.firstOrNull?.type is PlaylistModel),
+        )) ...{
           ItemActionButton(
             label: Text(context.localized.removeFromPlaylist),
             icon: const Icon(IconsaxPlusLinear.archive_minus),
@@ -108,8 +111,8 @@ class LibraryViews extends ConsumerWidget {
                 context.refreshData();
               }
             },
-          )
-        }
+          ),
+        },
       ];
     }
 
@@ -155,22 +158,14 @@ class LibraryViews extends ConsumerWidget {
         if (groupByType != GroupBy.none) {
           final groupedItems = groupItemsBy(context, items, groupByType);
           return MultiSliver(
-              children: groupedItems.entries.map(
-            (element) {
+            children: groupedItems.entries.map((element) {
               final name = element.key;
               final group = element.value;
-              return stickyHeaderBuilder(
-                context,
-                header: name,
-                sliver: createGrid(group),
-              );
-            },
-          ).toList());
-        } else {
-          return SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            sliver: createGrid(items),
+              return stickyHeaderBuilder(context, header: name, sliver: createGrid(group));
+            }).toList(),
           );
+        } else {
+          return SliverPadding(padding: const EdgeInsets.symmetric(horizontal: 8), sliver: createGrid(items));
         }
       case LibraryViewTypes.list:
         Widget listBuilder(List<ItemBaseModel> items) {
@@ -198,25 +193,19 @@ class LibraryViews extends ConsumerWidget {
         if (groupByType != GroupBy.none) {
           final groupedItems = groupItemsBy(context, items, groupByType);
           return MultiSliver(
-              children: groupedItems.entries.map(
-            (element) {
+            children: groupedItems.entries.map((element) {
               final name = element.key;
               final group = element.value;
-              return stickyHeaderBuilder(
-                context,
-                header: name,
-                sliver: listBuilder(group),
-              );
-            },
-          ).toList());
+              return stickyHeaderBuilder(context, header: name, sliver: listBuilder(group));
+            }).toList(),
+          );
         }
         return listBuilder(items);
       case LibraryViewTypes.masonry:
         if (groupByType != GroupBy.none) {
           final groupedItems = groupItemsBy(context, items, groupByType);
           return MultiSliver(
-              children: groupedItems.entries.map(
-            (element) {
+            children: groupedItems.entries.map((element) {
               final name = element.key;
               final group = element.value;
               return stickyHeaderBuilder(
@@ -232,8 +221,8 @@ class LibraryViews extends ConsumerWidget {
                     gridDelegate: SliverSimpleGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent:
                           (MediaQuery.sizeOf(context).width ~/ (lerpDouble(250, 75, posterSizeMultiplier) ?? 1.0))
-                                  .toDouble() *
-                              12,
+                              .toDouble() *
+                          12,
                     ),
                     itemCount: group.length,
                     itemBuilder: (context, index) {
@@ -256,8 +245,8 @@ class LibraryViews extends ConsumerWidget {
                   ),
                 ),
               );
-            },
-          ).toList());
+            }).toList(),
+          );
         } else {
           return SliverMasonryGrid.count(
             mainAxisSpacing: (8 * decimal) + 8,
@@ -286,11 +275,7 @@ class LibraryViews extends ConsumerWidget {
     }
   }
 
-  SliverStickyHeader stickyHeaderBuilder(
-    BuildContext context, {
-    required String header,
-    Widget? sliver,
-  }) {
+  SliverStickyHeader stickyHeaderBuilder(BuildContext context, {required String header, Widget? sliver}) {
     return SliverStickyHeader(
       header: Container(
         height: 50,
@@ -320,9 +305,11 @@ class LibraryViews extends ConsumerWidget {
     switch (groupOption) {
       case GroupBy.dateAdded:
         return groupBy(
-            items,
-            (poster) => DateFormat.yMMMMd(context.localized.localeName).format(DateTime(
-                poster.overview.dateAdded!.year, poster.overview.dateAdded!.month, poster.overview.dateAdded!.day)));
+          items,
+          (poster) => DateFormat.yMMMMd(context.localized.localeName).format(
+            DateTime(poster.overview.dateAdded!.year, poster.overview.dateAdded!.month, poster.overview.dateAdded!.day),
+          ),
+        );
       case GroupBy.releaseDate:
         return groupBy(list, (poster) => poster.overview.yearAired?.toString() ?? context.localized.unknown);
       case GroupBy.rating:
@@ -356,11 +343,13 @@ class LibraryViews extends ConsumerWidget {
       case PhotoModel _:
         final photoList = items.whereType<PhotoModel>().toList();
         if (context.mounted) {
-          await context.router.push(PhotoViewerRoute(
-            items: photoList,
-            photoQueueSource: ref.read(librarySearchProvider(key).notifier).createPhotoQueueSource(shuffle: false),
-            selected: item.id,
-          ));
+          await context.router.push(
+            PhotoViewerRoute(
+              items: photoList,
+              photoQueueSource: ref.read(librarySearchProvider(key).notifier).createPhotoQueueSource(shuffle: false),
+              selected: item.id,
+            ),
+          );
         }
         if (context.mounted) context.refreshData();
         break;

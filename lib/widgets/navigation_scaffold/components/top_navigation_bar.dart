@@ -45,9 +45,12 @@ class TopNavigationBar extends ConsumerWidget {
     final height = barHeight + (MediaQuery.paddingOf(context).top + 12);
     final buttonShape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(16));
 
-    final useBlurredBackground = ref.watch(clientSettingsProvider.select(
-          (value) => value.backgroundImage == BackgroundType.blurred && value.enableBlurEffects,
-        )) &&
+    final useBlurredBackground =
+        ref.watch(
+          clientSettingsProvider.select(
+            (value) => value.backgroundImage == BackgroundType.blurred && value.enableBlurEffects,
+          ),
+        ) &&
         !topBarNoBlurRoutes.contains(currentLocation);
 
     final adaptiveLayout = AdaptiveLayout.of(context);
@@ -102,14 +105,8 @@ class TopNavigationBar extends ConsumerWidget {
                           return LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white,
-                              Colors.white.withAlpha(200),
-                              Colors.white.withAlpha(0),
-                            ],
-                          ).createShader(
-                            Rect.fromLTRB(0, 10, bounds.width, bounds.height),
-                          );
+                            colors: [Colors.white, Colors.white.withAlpha(200), Colors.white.withAlpha(0)],
+                          ).createShader(Rect.fromLTRB(0, 10, bounds.width, bounds.height));
                         },
                         blendMode: BlendMode.dstIn,
                         child: const BackgroundImage(),
@@ -152,10 +149,7 @@ class TopNavigationBar extends ConsumerWidget {
                           children: [
                             SizedBox(
                               height: 45,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                child: actionButton(context).normal,
-                              ),
+                              child: FittedBox(fit: BoxFit.scaleDown, child: actionButton(context).normal),
                             ),
                             Flexible(
                               child: FittedBox(
@@ -164,52 +158,49 @@ class TopNavigationBar extends ConsumerWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    ...destinations.mapIndexed(
-                                      (index, destination) {
-                                        final isActive = currentIndex == index;
-                                        final icon = isActive ? destination.selectedIcon : destination.icon;
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                          child: FocusButton(
-                                            onTap: () {
-                                              _lastContentFocus = null;
-                                              destination.action?.call();
-                                            },
-                                            darkOverlay: false,
-                                            borderRadius: buttonShape.borderRadius,
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    Theme.of(context).colorScheme.primary.withAlpha(isActive ? 50 : 0),
-                                                borderRadius: buttonShape.borderRadius,
+                                    ...destinations.mapIndexed((index, destination) {
+                                      final isActive = currentIndex == index;
+                                      final icon = isActive ? destination.selectedIcon : destination.icon;
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: FocusButton(
+                                          onTap: () {
+                                            _lastContentFocus = null;
+                                            destination.action?.call();
+                                          },
+                                          darkOverlay: false,
+                                          borderRadius: buttonShape.borderRadius,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.primary.withAlpha(isActive ? 50 : 0),
+                                              borderRadius: buttonShape.borderRadius,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                            child: IconTheme(
+                                              data: Theme.of(context).iconTheme.copyWith(
+                                                color: isActive
+                                                    ? Theme.of(context).colorScheme.primary
+                                                    : Theme.of(context).iconTheme.color,
                                               ),
-                                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                              child: IconTheme(
-                                                data: Theme.of(context).iconTheme.copyWith(
+                                              child: Row(
+                                                spacing: 8,
+                                                children: [
+                                                  ?icon,
+                                                  Text(
+                                                    destination.label,
+                                                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
                                                       color: isActive
                                                           ? Theme.of(context).colorScheme.primary
-                                                          : Theme.of(context).iconTheme.color,
+                                                          : Theme.of(context).textTheme.titleMedium!.color,
                                                     ),
-                                                child: Row(
-                                                  spacing: 8,
-                                                  children: [
-                                                    if (icon != null) icon,
-                                                    Text(
-                                                      destination.label,
-                                                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                                                            color: isActive
-                                                                ? Theme.of(context).colorScheme.primary
-                                                                : Theme.of(context).textTheme.titleMedium!.color,
-                                                          ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    ),
+                                        ),
+                                      );
+                                    }),
                                   ],
                                 ),
                               ),
@@ -237,7 +228,7 @@ class TopNavigationBar extends ConsumerWidget {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

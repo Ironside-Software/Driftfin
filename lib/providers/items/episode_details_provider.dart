@@ -1,6 +1,7 @@
 import 'package:chopper/chopper.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/episode_model.dart';
@@ -15,12 +16,7 @@ class EpisodeDetailModel {
   final List<EpisodeModel> episodes;
   final EpisodeModel? episode;
   final List<Person> guestActors;
-  EpisodeDetailModel({
-    this.series,
-    this.episodes = const [],
-    this.episode,
-    this.guestActors = const [],
-  });
+  EpisodeDetailModel({this.series, this.episodes = const [], this.episode, this.guestActors = const []});
 
   EpisodeDetailModel copyWith({
     SeriesModel? series,
@@ -37,10 +33,10 @@ class EpisodeDetailModel {
   }
 }
 
-final episodeDetailsProvider =
-    StateNotifierProvider.autoDispose.family<EpisodeDetailsProvider, EpisodeDetailModel, String>((ref, id) {
-  return EpisodeDetailsProvider(ref);
-});
+final episodeDetailsProvider = StateNotifierProvider.autoDispose
+    .family<EpisodeDetailsProvider, EpisodeDetailModel, String>((ref, id) {
+      return EpisodeDetailsProvider(ref);
+    });
 
 class EpisodeDetailsProvider extends StateNotifier<EpisodeDetailModel> {
   EpisodeDetailsProvider(this.ref) : super(EpisodeDetailModel());

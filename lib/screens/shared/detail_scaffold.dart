@@ -204,19 +204,13 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                     SizedBox(
                       height: maxHeight,
                       width: size.width,
-                      child: DriftfinImage(
-                        image: backgroundImage,
-                        blurOnly: !widget.posterFillsContent,
-                      ),
+                      child: DriftfinImage(image: backgroundImage, blurOnly: !widget.posterFillsContent),
                     ),
                     if (backgroundImage != null && !widget.posterFillsContent)
                       Align(
                         alignment: Alignment.topCenter,
                         child: Padding(
-                          padding: EdgeInsetsDirectional.only(
-                            start: sideBarPadding / 1.5,
-                            top: topBarPadding / 1.5,
-                          ),
+                          padding: EdgeInsetsDirectional.only(start: sideBarPadding / 1.5, top: topBarPadding / 1.5),
                           child: RepaintBoundary(
                             child: ConstrainedBox(
                               constraints: BoxConstraints(
@@ -230,19 +224,13 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                                 topFade: topBarPadding > 0 ? 0.1 : 0.0,
                                 bottomFade: 0.2,
                                 child: FadeInImage(
-                                  placeholder: ResizeImage(
-                                    backgroundImage!.imageProvider,
-                                    height: maxHeight ~/ 1.5,
-                                  ),
+                                  placeholder: ResizeImage(backgroundImage!.imageProvider, height: maxHeight ~/ 1.5),
                                   placeholderColor: Colors.transparent,
                                   fit: BoxFit.cover,
                                   alignment: Alignment.topCenter,
                                   placeholderFit: BoxFit.cover,
                                   excludeFromSemantics: true,
-                                  image: ResizeImage(
-                                    backgroundImage!.imageProvider,
-                                    height: maxHeight ~/ 1.5,
-                                  ),
+                                  image: ResizeImage(backgroundImage!.imageProvider, height: maxHeight ~/ 1.5),
                                 ),
                               ),
                             ),
@@ -272,22 +260,12 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: size.height,
-                      width: size.width,
-                      color: widget.backgroundColor,
-                    ),
+                    Container(height: size.height, width: size.width, color: widget.backgroundColor),
                     FocusScope(
                       autofocus: true,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: size.height,
-                          maxWidth: size.width,
-                        ),
-                        child: widget.content(
-                          context,
-                          contentPadding,
-                        ),
+                        constraints: BoxConstraints(minHeight: size.height, maxWidth: size.width),
+                        child: widget.content(context, contentPadding),
                       ),
                     ),
                   ],
@@ -302,13 +280,12 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                     child: Row(
                       children: [
                         IconButton.filledTonal(
-                          style: IconButton.styleFrom(
-                            backgroundColor: backGroundColor,
-                          ),
+                          style: IconButton.styleFrom(backgroundColor: backGroundColor),
                           onPressed: () => context.router.popBack(),
                           icon: Padding(
-                            padding:
-                                EdgeInsets.all(AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer ? 0 : 4),
+                            padding: EdgeInsets.all(
+                              AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer ? 0 : 4,
+                            ),
                             child: const BackButtonIcon(),
                           ),
                         ),
@@ -317,25 +294,25 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                           duration: const Duration(milliseconds: 250),
                           child: Container(
                             decoration: BoxDecoration(
-                                color: backGroundColor, borderRadius: FladderTheme.defaultShape.borderRadius),
+                              color: backGroundColor,
+                              borderRadius: FladderTheme.defaultShape.borderRadius,
+                            ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 if (item != null) ...[
-                                  ref.watch(syncedItemProvider(item)).when(
+                                  ref
+                                      .watch(syncedItemProvider(item))
+                                      .when(
                                         error: (error, stackTrace) => const SizedBox.shrink(),
                                         data: (syncedItem) {
                                           if (syncedItem == null &&
-                                              ref.read(userProvider.select(
-                                                (value) => value?.canDownload ?? false,
-                                              )) &&
+                                              ref.read(userProvider.select((value) => value?.canDownload ?? false)) &&
                                               item?.syncAble == true) {
                                             return IconButton(
                                               onPressed: () =>
                                                   ref.read(syncProvider.notifier).addSyncItem(context, item!),
-                                              icon: const Icon(
-                                                IconsaxPlusLinear.arrow_down_2,
-                                              ),
+                                              icon: const Icon(IconsaxPlusLinear.arrow_down_2),
                                             );
                                           } else if (syncedItem != null) {
                                             return IconButton(
@@ -354,10 +331,7 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                                         return PopupMenuButton(
                                           tooltip: context.localized.moreOptions,
                                           enabled: newActions?.isNotEmpty == true,
-                                          icon: Icon(
-                                            item!.type.icon,
-                                            color: Theme.of(context).colorScheme.onSurface,
-                                          ),
+                                          icon: Icon(item!.type.icon, color: Theme.of(context).colorScheme.onSurface),
                                           itemBuilder: (context) => newActions?.popupMenuItems(useIcons: true) ?? [],
                                         );
                                       } else {
@@ -370,9 +344,7 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                                               children: newActions?.listTileItems(context, useIcons: true) ?? [],
                                             ),
                                           ),
-                                          icon: Icon(
-                                            item!.type.icon,
-                                          ),
+                                          icon: Icon(item!.type.icon),
                                         );
                                       }
                                     },
@@ -390,19 +362,16 @@ class _DetailScaffoldState extends ConsumerState<DetailScaffold> {
                                     AdaptiveLayout.viewSizeOf(context) == ViewSize.phone)
                                   Container(
                                     margin: const EdgeInsets.symmetric(horizontal: 6),
-                                    child: const SizedBox(
-                                      height: 30,
-                                      width: 30,
-                                      child: SettingsUserIcon(),
-                                    ),
+                                    child: const SizedBox(height: 30, width: 30, child: SettingsUserIcon()),
                                   ),
                                 if (AdaptiveLayout.layoutModeOf(context) == LayoutMode.single)
                                   Tooltip(
-                                      message: context.localized.home,
-                                      child: IconButton(
-                                        onPressed: () => context.navigateTo(const DashboardRoute()),
-                                        icon: const Icon(IconsaxPlusLinear.home),
-                                      )),
+                                    message: context.localized.home,
+                                    child: IconButton(
+                                      onPressed: () => context.navigateTo(const DashboardRoute()),
+                                      icon: const Icon(IconsaxPlusLinear.home),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),

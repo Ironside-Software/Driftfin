@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:driftfin/l10n/generated/app_localizations.dart';
@@ -113,10 +114,7 @@ Widget _harness(EpisodeDetailModel model) {
       supportedLocales: AppLocalizations.supportedLocales,
       // AdaptiveLayout must wrap the Navigator (via `builder`), not just
       // `home`, so any dialogs/overlays also see it.
-      builder: (context, child) => AdaptiveLayout(
-        data: _adaptiveModel,
-        child: child!,
-      ),
+      builder: (context, child) => AdaptiveLayout(data: _adaptiveModel, child: child!),
       home: EpisodeDetailScreen(item: _episode()),
     ),
   );
@@ -159,12 +157,8 @@ void main() {
       series: _series(),
       episode: _episode(
         overviewText: 'Overview text',
-        chapters: [
-          Chapter(name: 'Chapter 1', imageUrl: '', startPosition: Duration.zero),
-        ],
-        people: [
-          Person(id: 'p1', name: 'Main Actor', role: 'Self'),
-        ],
+        chapters: [Chapter(name: 'Chapter 1', imageUrl: '', startPosition: Duration.zero)],
+        people: [Person(id: 'p1', name: 'Main Actor', role: 'Self')],
       ),
       episodes: [_episode()],
     );

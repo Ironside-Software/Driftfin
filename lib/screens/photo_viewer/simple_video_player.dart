@@ -95,20 +95,23 @@ class _SimpleVideoPlayerState extends ConsumerState<SimpleVideoPlayer> with Wind
     player.init(ref.read(videoPlayerSettingsProvider));
 
     final baseUrl = ref.read(serverUrlProvider) ?? '';
-    videoUrl = buildServerUriFromBase(
+    videoUrl =
+        buildServerUriFromBase(
           baseUrl,
           pathSegments: ['Videos', widget.video.id, 'stream'],
           queryParameters: directOptions,
         )?.toString() ??
         '';
 
-    subscriptions.add(player.stateStream.listen((event) {
-      setState(() {
-        playing = event.playing;
-        position = event.position;
-        duration = event.duration;
-      });
-    }));
+    subscriptions.add(
+      player.stateStream.listen((event) {
+        setState(() {
+          playing = event.playing;
+          position = event.position;
+          duration = event.duration;
+        });
+      }),
+    );
     await player.loadVideo(videoUrl, !ref.watch(photoViewSettingsProvider).autoPlay);
     await player.setVolume(ref.watch(photoViewSettingsProvider.select((value) => value.mute)) ? 0 : 100);
     await player.loop(ref.watch(photoViewSettingsProvider.select((value) => value.repeat)));
@@ -128,10 +131,7 @@ class _SimpleVideoPlayerState extends ConsumerState<SimpleVideoPlayer> with Wind
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold);
-    ref.listen(
-      photoViewSettingsProvider.select((value) => value.repeat),
-      (previous, next) => player.loop(next),
-    );
+    ref.listen(photoViewSettingsProvider.select((value) => value.repeat), (previous, next) => player.loop(next));
     ref.listen(
       photoViewSettingsProvider.select((value) => value.mute),
       (previous, next) => player.setVolume(next ? 0 : 100),
@@ -142,20 +142,10 @@ class _SimpleVideoPlayerState extends ConsumerState<SimpleVideoPlayer> with Wind
         alignment: Alignment.center,
         children: [
           Positioned.fill(
-            child: DriftfinImage(
-              image: widget.video.thumbnail?.primary,
-              disableBlur: true,
-              fit: BoxFit.contain,
-            ),
+            child: DriftfinImage(image: widget.video.thumbnail?.primary, disableBlur: true, fit: BoxFit.contain),
           ),
           //Fixes small overlay problems with thumbnail
-          Transform.scale(
-            scaleY: 1.004,
-            child: player.videoWidget(
-              UniqueKey(),
-              BoxFit.contain,
-            ),
-          ),
+          Transform.scale(scaleY: 1.004, child: player.videoWidget(UniqueKey(), BoxFit.contain)),
           IgnorePointer(
             ignoring: !widget.showOverlay,
             child: AnimatedOpacity(
@@ -184,9 +174,9 @@ class _SimpleVideoPlayerState extends ConsumerState<SimpleVideoPlayer> with Wind
                                       min: 0.0,
                                       max: duration.inMilliseconds.toDouble(),
                                       value: position.inMilliseconds.toDouble().clamp(
-                                            0,
-                                            duration.inMilliseconds.toDouble(),
-                                          ),
+                                        0,
+                                        duration.inMilliseconds.toDouble(),
+                                      ),
                                       onChangeEnd: (e) async {
                                         await player.seek(Duration(milliseconds: e ~/ 1));
                                         if (wasPlaying) {
@@ -230,7 +220,7 @@ class _SimpleVideoPlayerState extends ConsumerState<SimpleVideoPlayer> with Wind
                               icon: Icon(
                                 player.lastState.playing ? IconsaxPlusBold.pause_circle : IconsaxPlusBold.play_circle,
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

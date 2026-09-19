@@ -26,7 +26,7 @@ const _phoneModel = AdaptiveLayoutModel(
 
 /// Harness that pumps a single button whose onPressed exposes both a real
 /// [BuildContext] (with [AppLocalizations] available) and a real
-/// [SeerrSearch] notifier instance (obtained via `ref.read`), so the
+/// [SeerrSearch] notifier instance (kept alive via `ref.watch`), so the
 /// dialog-opening top-level functions can be exercised without any network
 /// activity (SeerrSearch.build() is network-free; only init()/submit()/etc.
 /// call the API, none of which we invoke here).
@@ -34,9 +34,7 @@ const _phoneModel = AdaptiveLayoutModel(
 /// Wrapped in [AdaptiveLayout] because some dialogs (e.g. the studio search
 /// dialog) render an [OutlinedTextField], which reads
 /// `AdaptiveLayout.inputDeviceOf(context)` during its first frame.
-Widget _harness({
-  required Widget Function(BuildContext context, SeerrSearch notifier) builder,
-}) {
+Widget _harness({required Widget Function(BuildContext context, SeerrSearch notifier) builder}) {
   return ProviderScope(
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -44,14 +42,11 @@ Widget _harness({
       // AdaptiveLayout must wrap the Navigator (via `builder`), not just
       // `home`, because dialogs render into the Navigator's Overlay, which
       // sits alongside `home` rather than beneath it.
-      builder: (context, child) => AdaptiveLayout(
-        data: _phoneModel,
-        child: child!,
-      ),
+      builder: (context, child) => AdaptiveLayout(data: _phoneModel, child: child!),
       home: Scaffold(
         body: Consumer(
           builder: (context, ref, _) {
-            final notifier = ref.read(seerrSearchProvider.notifier);
+            final notifier = ref.watch(seerrSearchProvider.notifier);
             return Builder(builder: (context) => builder(context, notifier));
           },
         ),
@@ -70,17 +65,19 @@ void main() {
       late String minOnlyLabel;
       late String maxOnlyLabel;
 
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () {
-            noneLabel = yearLabel(context, (null, null));
-            rangeLabel = yearLabel(context, (2000, 2020));
-            minOnlyLabel = yearLabel(context, (2000, null));
-            maxOnlyLabel = yearLabel(context, (null, 2020));
-          },
-          child: const Text('go'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () {
+              noneLabel = yearLabel(context, (null, null));
+              rangeLabel = yearLabel(context, (2000, 2020));
+              minOnlyLabel = yearLabel(context, (2000, null));
+              maxOnlyLabel = yearLabel(context, (null, 2020));
+            },
+            child: const Text('go'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('go'));
@@ -98,17 +95,19 @@ void main() {
       late String minOnlyLabel;
       late String maxOnlyLabel;
 
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () {
-            noneLabel = ratingLabel(context, const SeerrFilterModel());
-            rangeLabel = ratingLabel(context, const SeerrFilterModel(voteAverageGte: 5, voteAverageLte: 8));
-            minOnlyLabel = ratingLabel(context, const SeerrFilterModel(voteAverageGte: 5));
-            maxOnlyLabel = ratingLabel(context, const SeerrFilterModel(voteAverageLte: 8));
-          },
-          child: const Text('go'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () {
+              noneLabel = ratingLabel(context, const SeerrFilterModel());
+              rangeLabel = ratingLabel(context, const SeerrFilterModel(voteAverageGte: 5, voteAverageLte: 8));
+              minOnlyLabel = ratingLabel(context, const SeerrFilterModel(voteAverageGte: 5));
+              maxOnlyLabel = ratingLabel(context, const SeerrFilterModel(voteAverageLte: 8));
+            },
+            child: const Text('go'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('go'));
@@ -126,17 +125,19 @@ void main() {
       late String minOnlyLabel;
       late String maxOnlyLabel;
 
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () {
-            noneLabel = runtimeLabel(context, const SeerrFilterModel());
-            rangeLabel = runtimeLabel(context, const SeerrFilterModel(runtimeGte: 30, runtimeLte: 90));
-            minOnlyLabel = runtimeLabel(context, const SeerrFilterModel(runtimeGte: 30));
-            maxOnlyLabel = runtimeLabel(context, const SeerrFilterModel(runtimeLte: 90));
-          },
-          child: const Text('go'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () {
+              noneLabel = runtimeLabel(context, const SeerrFilterModel());
+              rangeLabel = runtimeLabel(context, const SeerrFilterModel(runtimeGte: 30, runtimeLte: 90));
+              minOnlyLabel = runtimeLabel(context, const SeerrFilterModel(runtimeGte: 30));
+              maxOnlyLabel = runtimeLabel(context, const SeerrFilterModel(runtimeLte: 90));
+            },
+            child: const Text('go'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('go'));
@@ -151,13 +152,18 @@ void main() {
 
   group('openYearDialog', () {
     testWidgets('renders the range summary and Save closes it, updating filters without submit', (tester) async {
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () => openYearDialog(context,
-              (first, last) => notifier.setYearRangeWithoutSubmit(minYear: first, maxYear: last), (2010, 2015)),
-          child: const Text('open'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () => openYearDialog(
+              context,
+              (first, last) => notifier.setYearRangeWithoutSubmit(minYear: first, maxYear: last),
+              (2010, 2015),
+            ),
+            child: const Text('open'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));
@@ -175,16 +181,21 @@ void main() {
     testWidgets('Clear resets the year range', (tester) async {
       SeerrSearch? capturedNotifier;
 
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) {
-          capturedNotifier = notifier;
-          return ElevatedButton(
-            onPressed: () => openYearDialog(context,
-                (first, last) => notifier.setYearRangeWithoutSubmit(minYear: first, maxYear: last), (2010, 2015)),
-            child: const Text('open'),
-          );
-        },
-      ));
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) {
+            capturedNotifier = notifier;
+            return ElevatedButton(
+              onPressed: () => openYearDialog(
+                context,
+                (first, last) => notifier.setYearRangeWithoutSubmit(minYear: first, maxYear: last),
+                (2010, 2015),
+              ),
+              child: const Text('open'),
+            );
+          },
+        ),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));
@@ -202,13 +213,15 @@ void main() {
 
   group('openRatingDialog', () {
     testWidgets('renders with the initial rating summary', (tester) async {
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () =>
-              openRatingDialog(context, notifier, const SeerrFilterModel(voteAverageGte: 2, voteAverageLte: 9)),
-          child: const Text('open'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () =>
+                openRatingDialog(context, notifier, const SeerrFilterModel(voteAverageGte: 2, voteAverageLte: 9)),
+            child: const Text('open'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));
@@ -220,13 +233,15 @@ void main() {
 
   group('openRuntimeDialog', () {
     testWidgets('renders with the initial runtime range', (tester) async {
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () =>
-              openRuntimeDialog(context, notifier, const SeerrFilterModel(runtimeGte: 30, runtimeLte: 120)),
-          child: const Text('open'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () =>
+                openRuntimeDialog(context, notifier, const SeerrFilterModel(runtimeGte: 30, runtimeLte: 120)),
+            child: const Text('open'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));
@@ -238,12 +253,14 @@ void main() {
 
   group('openSortDialog', () {
     testWidgets('renders a checkbox list item for every SeerrSortBy option', (tester) async {
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () => openSortDialog(context, notifier, const SeerrFilterModel()),
-          child: const Text('open'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () => openSortDialog(context, notifier, const SeerrFilterModel()),
+            child: const Text('open'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));
@@ -255,19 +272,18 @@ void main() {
     testWidgets('selecting a different sort updates the notifier and closes the dialog', (tester) async {
       SeerrSearch? capturedNotifier;
 
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) {
-          capturedNotifier = notifier;
-          return ElevatedButton(
-            onPressed: () => openSortDialog(
-              context,
-              notifier,
-              const SeerrFilterModel(sortBy: SeerrSortBy.popularityDesc),
-            ),
-            child: const Text('open'),
-          );
-        },
-      ));
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) {
+            capturedNotifier = notifier;
+            return ElevatedButton(
+              onPressed: () =>
+                  openSortDialog(context, notifier, const SeerrFilterModel(sortBy: SeerrSortBy.popularityDesc)),
+              child: const Text('open'),
+            );
+          },
+        ),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));
@@ -289,12 +305,14 @@ void main() {
 
   group('openStudioDialog', () {
     testWidgets('renders the empty state without triggering a search', (tester) async {
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () => openStudioDialog(context, notifier, const SeerrFilterModel()),
-          child: const Text('open'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () => openStudioDialog(context, notifier, const SeerrFilterModel()),
+            child: const Text('open'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));
@@ -308,12 +326,14 @@ void main() {
     testWidgets('shows the previously selected studio name pre-filled', (tester) async {
       final studio = SeerrCompany(id: 1, name: 'Studio Ghibli');
 
-      await tester.pumpWidget(_harness(
-        builder: (context, notifier) => ElevatedButton(
-          onPressed: () => openStudioDialog(context, notifier, SeerrFilterModel(studio: studio)),
-          child: const Text('open'),
+      await tester.pumpWidget(
+        _harness(
+          builder: (context, notifier) => ElevatedButton(
+            onPressed: () => openStudioDialog(context, notifier, SeerrFilterModel(studio: studio)),
+            child: const Text('open'),
+          ),
         ),
-      ));
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('open'));

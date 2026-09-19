@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/l10n/generated/app_localizations.dart';
 import 'package:driftfin/providers/sync/background_download_provider.dart';
@@ -16,11 +17,7 @@ extension BuildContextExtension on BuildContext {
 class LocalizationContextWrapper extends ConsumerStatefulWidget {
   final Widget child;
   final Locale currentLocale;
-  const LocalizationContextWrapper({
-    required this.child,
-    required this.currentLocale,
-    super.key,
-  });
+  const LocalizationContextWrapper({required this.child, required this.currentLocale, super.key});
 
   @override
   ConsumerState<LocalizationContextWrapper> createState() => _LocalizationContextWrapperState();

@@ -18,12 +18,7 @@ class PeopleRow extends ConsumerWidget {
   final List<Person> people;
   final EdgeInsets contentPadding;
   final Function()? onTap;
-  const PeopleRow({
-    required this.people,
-    required this.contentPadding,
-    this.onTap,
-    super.key,
-  });
+  const PeopleRow({required this.people, required this.contentPadding, this.onTap, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,10 +33,11 @@ class PeopleRow extends ConsumerWidget {
               color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.50),
             ),
             child: Center(
-                child: Text(
-              name.getInitials(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            )),
+              child: Text(
+                name.getInitials(),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         ),
       );
@@ -69,19 +65,12 @@ class PeopleRow extends ConsumerWidget {
                   ),
                   foregroundDecoration: FladderTheme.defaultPosterDecoration,
                   child: FocusButton(
-                    onTap: onTap ??
-                        () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => PersonDetailScreen(
-                                  person: person,
-                                ),
-                              ),
-                            ),
-                    child: DriftfinImage(
-                      image: person.image,
-                      placeHolder: placeHolder(person.name),
-                      fit: BoxFit.cover,
-                    ),
+                    onTap:
+                        onTap ??
+                        () =>
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) => PersonDetailScreen(person: person))),
+                    child: DriftfinImage(image: person.image, placeHolder: placeHolder(person.name), fit: BoxFit.cover),
                   ),
                 ),
               ),

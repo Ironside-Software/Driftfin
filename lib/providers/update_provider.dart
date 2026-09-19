@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -34,7 +36,9 @@ class Update extends _$Update {
   @override
   UpdatesModel build() {
     ref.listen(
-        clientSettingsProvider.select((value) => value.checkForUpdates), (previous, next) => toggleUpdateChecker(next));
+      clientSettingsProvider.select((value) => value.checkForUpdates),
+      (previous, next) => toggleUpdateChecker(next),
+    );
     final checkForUpdates = ref.read(clientSettingsProvider.select((value) => value.checkForUpdates));
 
     if (!checkForUpdates) {
@@ -69,9 +73,7 @@ class Update extends _$Update {
 
   Future<List<ReleaseInfo>> _fetchLatest() async {
     final latest = await updateChecker.fetchRecentReleases();
-    state = UpdatesModel(
-      lastRelease: latest,
-    );
+    state = UpdatesModel(lastRelease: latest);
     return latest;
   }
 }
@@ -80,9 +82,7 @@ class Update extends _$Update {
 abstract class UpdatesModel with _$UpdatesModel {
   const UpdatesModel._();
 
-  factory UpdatesModel({
-    @Default([]) List<ReleaseInfo> lastRelease,
-  }) = _UpdatesModel;
+  factory UpdatesModel({@Default([]) List<ReleaseInfo> lastRelease}) = _UpdatesModel;
 
   ReleaseInfo? get latestRelease => lastRelease.firstWhereOrNull((value) => value.isNewerThanCurrent);
 }

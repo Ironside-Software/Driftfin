@@ -39,19 +39,24 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playbackState = ref.watch(mediaPlaybackProvider.select((state) => (
+    final playbackState = ref.watch(
+      mediaPlaybackProvider.select(
+        (state) => (
           state: state.state,
           duration: state.duration,
           playing: state.playing,
           shuffleEnabled: state.shuffleEnabled,
           repeatMode: state.repeatMode,
-        )));
+        ),
+      ),
+    );
     final viewSize = AdaptiveLayout.viewSizeOf(context);
     final layoutMode = AdaptiveLayout.layoutModeOf(context);
 
     final playerVolume = ref.watch(videoPlayerSettingsProvider.select((value) => value.volume));
 
-    final showVolumeSlider = viewSize >= ViewSize.tablet &&
+    final showVolumeSlider =
+        viewSize >= ViewSize.tablet &&
         layoutMode == LayoutMode.dual &&
         AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer;
 
@@ -82,10 +87,7 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
                                 showExpandButton: showExpandButton,
                                 onShowExpandButton: onShowExpandButton,
                                 openFullScreenPlayer: openFullScreenPlayer,
-                                child: DriftfinImage(
-                                  image: item.images?.primary,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: DriftfinImage(image: item.images?.primary, fit: BoxFit.cover),
                               ),
                             Expanded(
                               child: ClipRRect(
@@ -125,22 +127,21 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
                                           if (item.albumArtists.isNotEmpty)
                                             Flexible(
                                               child: ClickableText(
-                                                  text: item.albumArtists.map((e) => e.name).join(', '),
-                                                  overflow: TextOverflow.ellipsis,
-                                                  opacity: 0.65 * opacity,
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .onSurface
-                                                            .withValues(alpha: 0.65),
-                                                      ),
-                                                  maxLines: 1,
-                                                  onTap: () {
-                                                    final artistModel = item.artistModel;
-                                                    if (artistModel != null) {
-                                                      artistModel.navigateTo(context);
-                                                    }
-                                                  }),
+                                                text: item.albumArtists.map((e) => e.name).join(', '),
+                                                overflow: TextOverflow.ellipsis,
+                                                opacity: 0.65 * opacity,
+                                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                  color: Theme.of(context).colorScheme.onSurface
+                                                      .withValues(alpha: 0.65),
+                                                ),
+                                                maxLines: 1,
+                                                onTap: () {
+                                                  final artistModel = item.artistModel;
+                                                  if (artistModel != null) {
+                                                    artistModel.navigateTo(context);
+                                                  }
+                                                },
+                                              ),
                                             ),
                                         ],
                                       ),
@@ -148,7 +149,7 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
                                   },
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -164,9 +165,8 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
                                   return Flexible(
                                     child: Text(
                                       "${pos.readAbleDuration} / ${playbackState.duration.readAbleDuration}",
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: Theme.of(context).colorScheme.onSurface.withAlpha(125),
-                                          ),
+                                      style: Theme.of(context).textTheme.bodySmall
+                                          ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withAlpha(125)),
                                     ),
                                   );
                                 },
@@ -192,10 +192,11 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
                       else ...{
                         IconButton(
                           onPressed: () async {
-                            final result = (await ref
-                                    .read(userProvider.notifier)
-                                    .setAsFavorite(!item.userData.isFavourite, item.id))
-                                ?.body;
+                            final result =
+                                (await ref
+                                        .read(userProvider.notifier)
+                                        .setAsFavorite(!item.userData.isFavourite, item.id))
+                                    ?.body;
 
                             if (result != null) {
                               ref.read(playBackModel.notifier).update((state) => state?.updateUserData(result));
@@ -266,10 +267,10 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
                                   ),
                                   children: itemActions.map((e) => e.toButton()).toList(),
                                 ),
-                              )
+                              ),
                             ],
                           ),
-                        )
+                        ),
                     ],
                   ),
                 ),

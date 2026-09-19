@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -49,11 +51,7 @@ String runtimeLabel(BuildContext context, SeerrFilterModel filters) {
   return '${context.localized.runTime}: <=$maxRuntime';
 }
 
-Future<void> openSearchModeDialog(
-  BuildContext context,
-  SeerrSearch notifier,
-  SeerrSearchMode selectedMode,
-) async {
+Future<void> openSearchModeDialog(BuildContext context, SeerrSearch notifier, SeerrSearchMode selectedMode) async {
   return showDialog(
     context: context,
     builder: (dialogContext) {
@@ -72,13 +70,7 @@ Future<void> openSearchModeDialog(
                       notifier.setSearchMode(mode);
                       context.refreshData();
                     },
-                    title: Row(
-                      spacing: 8,
-                      children: [
-                        Icon(mode.icon),
-                        Text(mode.label(context)),
-                      ],
-                    ),
+                    title: Row(spacing: 8, children: [Icon(mode.icon), Text(mode.label(context))]),
                   ),
                 )
                 .toList(),
@@ -109,10 +101,8 @@ Future<void> openYearDialog(
     divisions: 110,
     wholeNumbers: true,
     allowEmpty: true,
-    labelsBuilder: (start, end) => RangeLabels(
-      (start ?? sliderMin).toStringAsFixed(0),
-      (end ?? sliderMax).toStringAsFixed(0),
-    ),
+    labelsBuilder: (start, end) =>
+        RangeLabels((start ?? sliderMin).toStringAsFixed(0), (end ?? sliderMax).toStringAsFixed(0)),
     summaryBuilder: (start, end) => [
       start?.toStringAsFixed(0) ?? context.localized.none,
       end?.toStringAsFixed(0) ?? context.localized.none,
@@ -122,20 +112,13 @@ Future<void> openYearDialog(
       await context.refreshData();
     },
     onSave: (start, end) async {
-      onYearRangeSelected(
-        start?.round(),
-        end?.round(),
-      );
+      onYearRangeSelected(start?.round(), end?.round());
       await context.refreshData();
     },
   );
 }
 
-Future<void> openRatingDialog(
-  BuildContext context,
-  SeerrSearch notifier,
-  SeerrFilterModel filters,
-) {
+Future<void> openRatingDialog(BuildContext context, SeerrSearch notifier, SeerrFilterModel filters) {
   return _showRangeDialog(
     context: context,
     title: context.localized.rating(1),
@@ -144,10 +127,7 @@ Future<void> openRatingDialog(
     initialStart: filters.voteAverageGte ?? 0,
     initialEnd: filters.voteAverageLte ?? 10,
     divisions: 100,
-    labelsBuilder: (start, end) => RangeLabels(
-      (start ?? 0).toStringAsFixed(1),
-      (end ?? 10).toStringAsFixed(1),
-    ),
+    labelsBuilder: (start, end) => RangeLabels((start ?? 0).toStringAsFixed(1), (end ?? 10).toStringAsFixed(1)),
     wholeNumbers: false,
     summaryBuilder: (start, end) => '${(start ?? 0).toStringAsFixed(1)} - ${(end ?? 10).toStringAsFixed(1)}',
     onClear: () async {
@@ -155,20 +135,13 @@ Future<void> openRatingDialog(
       await context.refreshData();
     },
     onSave: (start, end) async {
-      notifier.setVoteAverageRange(
-        (start ?? 0) > 0 ? start : null,
-        (end ?? 10) < 10 ? end : null,
-      );
+      notifier.setVoteAverageRange((start ?? 0) > 0 ? start : null, (end ?? 10) < 10 ? end : null);
       await context.refreshData();
     },
   );
 }
 
-Future<void> openRuntimeDialog(
-  BuildContext context,
-  SeerrSearch notifier,
-  SeerrFilterModel filters,
-) {
+Future<void> openRuntimeDialog(BuildContext context, SeerrSearch notifier, SeerrFilterModel filters) {
   return _showRangeDialog(
     context: context,
     title: context.localized.runtimeMinutesTitle,
@@ -181,10 +154,7 @@ Future<void> openRuntimeDialog(
       context.localized.minutesShort((start ?? 0).round()),
       context.localized.minutesShort((end ?? 300).round()),
     ),
-    summaryBuilder: (start, end) => context.localized.runtimeRangeMinutes(
-      (start ?? 0).round(),
-      (end ?? 300).round(),
-    ),
+    summaryBuilder: (start, end) => context.localized.runtimeRangeMinutes((start ?? 0).round(), (end ?? 300).round()),
     wholeNumbers: true,
     allowEmpty: true,
     onClear: () async {
@@ -192,20 +162,13 @@ Future<void> openRuntimeDialog(
       await context.refreshData();
     },
     onSave: (start, end) async {
-      notifier.setRuntimeRange(
-        (start ?? 0) > 0 ? start?.round() : null,
-        (end ?? 300) < 300 ? end?.round() : null,
-      );
+      notifier.setRuntimeRange((start ?? 0) > 0 ? start?.round() : null, (end ?? 300) < 300 ? end?.round() : null);
       await context.refreshData();
     },
   );
 }
 
-Future<void> openSortDialog(
-  BuildContext context,
-  SeerrSearch notifier,
-  SeerrFilterModel filters,
-) async {
+Future<void> openSortDialog(BuildContext context, SeerrSearch notifier, SeerrFilterModel filters) async {
   return showDialog(
     context: context,
     builder: (dialogContext) {
@@ -259,11 +222,11 @@ Future<void> openWatchRegionDialog(
           width: MediaQuery.of(context).size.width * 0.65,
           child: ListView(
             shrinkWrap: true,
-            children: sortedRegions.map(
-              (region) {
-                final code = (region.iso31661 ?? 'US').toUpperCase();
-                final isSelected = code == currentRegion;
-                return Builder(builder: (context) {
+            children: sortedRegions.map((region) {
+              final code = (region.iso31661 ?? 'US').toUpperCase();
+              final isSelected = code == currentRegion;
+              return Builder(
+                builder: (context) {
                   return CheckboxListTile(
                     title: Text('${region.englishName ?? region.nativeName ?? region.iso31661 ?? ''} ($code)'),
                     value: isSelected,
@@ -279,9 +242,9 @@ Future<void> openWatchRegionDialog(
                       await rootContext.refreshData();
                     },
                   );
-                });
-              },
-            ).toList(),
+                },
+              );
+            }).toList(),
           ),
         ),
       );
@@ -385,10 +348,7 @@ Future<void> _showRangeDialog({
                   },
                   child: Text(context.localized.clear),
                 ),
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: Text(context.localized.cancel),
-              ),
+              TextButton(onPressed: () => Navigator.pop(dialogContext), child: Text(context.localized.cancel)),
               TextButton(
                 onPressed: () {
                   Navigator.pop(dialogContext);
@@ -404,39 +364,27 @@ Future<void> _showRangeDialog({
   );
 }
 
-Future<void> openStudioDialog(
-  BuildContext context,
-  SeerrSearch notifier,
-  SeerrFilterModel filters,
-) async {
+Future<void> openStudioDialog(BuildContext context, SeerrSearch notifier, SeerrFilterModel filters) async {
   return showDialog(
     context: context,
     builder: (dialogContext) {
-      return _StudioSearchDialog(
-        notifier: notifier,
-        parentContext: context,
-        selectedStudio: filters.studio,
-      );
+      return _StudioSearchDialog(notifier: notifier, parentContext: context, selectedStudio: filters.studio);
     },
   );
 }
 
-class _StudioSearchDialog extends StatefulWidget {
+class _StudioSearchDialog extends ConsumerStatefulWidget {
   final SeerrSearch notifier;
   final BuildContext parentContext;
   final SeerrCompany? selectedStudio;
 
-  const _StudioSearchDialog({
-    required this.notifier,
-    required this.parentContext,
-    this.selectedStudio,
-  });
+  const _StudioSearchDialog({required this.notifier, required this.parentContext, this.selectedStudio});
 
   @override
-  State<_StudioSearchDialog> createState() => _StudioSearchDialogState();
+  ConsumerState<_StudioSearchDialog> createState() => _StudioSearchDialogState();
 }
 
-class _StudioSearchDialogState extends State<_StudioSearchDialog> {
+class _StudioSearchDialogState extends ConsumerState<_StudioSearchDialog> {
   late final TextEditingController _searchController = TextEditingController(text: widget.selectedStudio?.name ?? '');
   final Debouncer _debouncer = Debouncer(const Duration(milliseconds: 500));
   List<SeerrCompany> _searchResults = [];
@@ -465,7 +413,7 @@ class _StudioSearchDialogState extends State<_StudioSearchDialog> {
 
     setState(() => _isSearching = true);
     try {
-      final api = widget.notifier.ref.read(seerrApiProvider);
+      final api = ref.read(seerrApiProvider);
       final response = await api.searchCompany(query: query);
       setState(() {
         _searchResults = response.body?.results ?? [];
@@ -497,50 +445,43 @@ class _StudioSearchDialogState extends State<_StudioSearchDialog> {
             ),
             const SizedBox(height: 16),
             if (_isSearching)
-              const SizedBox(
-                height: 200,
-                child: Center(child: CircularProgressIndicator()),
-              )
+              const SizedBox(height: 200, child: Center(child: CircularProgressIndicator()))
             else if (_searchResults.isEmpty)
-              Center(
-                child: Text(context.localized.noResults),
-              )
+              Center(child: Text(context.localized.noResults))
             else
               Flexible(
                 child: ListView(
                   shrinkWrap: true,
-                  children: _searchResults.map(
-                    (studio) {
-                      final selected = _selectedStudio?.id == studio.id;
-                      return ListTile(
-                        selected: selected,
-                        selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-                        trailing: studio.logoUrl != null
-                            ? Container(
-                                width: 120,
-                                height: 40,
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                  borderRadius: FladderTheme.smallShape.borderRadius,
-                                ),
-                                child: CachedNetworkImage(
-                                  imageUrl: studio.logoUrl!,
-                                  cacheManager: CustomCacheManager.instance,
-                                  fit: BoxFit.contain,
-                                  errorWidget: (context, url, error) {
-                                    return const Icon(IconsaxPlusBold.building);
-                                  },
-                                ),
-                              )
-                            : const Icon(IconsaxPlusBold.building),
-                        title: Text(studio.name),
-                        onTap: () {
-                          setState(() => _selectedStudio = studio);
-                        },
-                      );
-                    },
-                  ).toList(),
+                  children: _searchResults.map((studio) {
+                    final selected = _selectedStudio?.id == studio.id;
+                    return ListTile(
+                      selected: selected,
+                      selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
+                      trailing: studio.logoUrl != null
+                          ? Container(
+                              width: 120,
+                              height: 40,
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                borderRadius: FladderTheme.smallShape.borderRadius,
+                              ),
+                              child: CachedNetworkImage(
+                                imageUrl: studio.logoUrl!,
+                                cacheManager: CustomCacheManager.instance,
+                                fit: BoxFit.contain,
+                                errorWidget: (context, url, error) {
+                                  return const Icon(IconsaxPlusBold.building);
+                                },
+                              ),
+                            )
+                          : const Icon(IconsaxPlusBold.building),
+                      title: Text(studio.name),
+                      onTap: () {
+                        setState(() => _selectedStudio = studio);
+                      },
+                    );
+                  }).toList(),
                 ),
               ),
           ],
@@ -556,10 +497,7 @@ class _StudioSearchDialogState extends State<_StudioSearchDialog> {
             },
             child: Text(context.localized.clear),
           ),
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(context.localized.cancel),
-        ),
+        TextButton(onPressed: () => Navigator.pop(context), child: Text(context.localized.cancel)),
         TextButton(
           onPressed: () {
             widget.notifier.setStudio(_selectedStudio);

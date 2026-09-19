@@ -55,9 +55,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               children: [
                 Container(
                   clipBehavior: Clip.hardEdge,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
                   width: AdaptiveLayout.viewSizeOf(context) == ViewSize.phone
                       ? MediaQuery.of(context).size.width
                       : MediaQuery.of(context).size.width / 3.5,
@@ -91,8 +89,11 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                       ),
                     ),
                     if (details?.dateOfBirth != null)
-                      Text(context.localized.personBirthday(
-                          DateFormat.yMEd(context.localized.localeName).format(details!.dateOfBirth!).toString())),
+                      Text(
+                        context.localized.personBirthday(
+                          DateFormat.yMEd(context.localized.localeName).format(details!.dateOfBirth!).toString(),
+                        ),
+                      ),
                     if (details?.age != null) Text(context.localized.personAge(details!.age!)),
                     if (details?.birthPlace.isEmpty == false)
                       Text(context.localized.personBirthPlace(details!.birthPlace.join(", "))),
@@ -127,9 +128,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
               label: context.localized.seerrSeries,
             ),
           if (details?.overview.externalUrls?.isNotEmpty ?? false)
-            ExternalUrlsRow(
-              urls: details?.overview.externalUrls,
-            ).padding(padding),
+            ExternalUrlsRow(urls: details?.overview.externalUrls).padding(padding),
         ],
       ),
     );
@@ -143,10 +142,11 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
         child: Card(
           shape: const CircleBorder(),
           child: Center(
-              child: Text(
-            name.getInitials(),
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-          )),
+            child: Text(
+              name.getInitials(),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
         ),
       ),
     );

@@ -126,16 +126,12 @@ enum EditorLockedFields {
   productionLocations("ProductionLocations"),
   runTime("Runtime"),
   studios("Studios"),
-  tags("Tags"),
-  ;
+  tags("Tags");
 
   const EditorLockedFields(this.value);
 
-  static Map<EditorLockedFields, bool> enabled(List<String> fromStrings) => Map.fromEntries(
-        EditorLockedFields.values.map(
-          (e) => MapEntry(e, fromStrings.contains(e.value)),
-        ),
-      );
+  static Map<EditorLockedFields, bool> enabled(List<String> fromStrings) =>
+      Map.fromEntries(EditorLockedFields.values.map((e) => MapEntry(e, fromStrings.contains(e.value))));
 
   final String value;
 }
@@ -149,8 +145,7 @@ enum DisplayOrder {
   digital("digital"),
   storyArc("storyArc"),
   production("production"),
-  tv("tv"),
-  ;
+  tv("tv");
 
   const DisplayOrder(this.value);
 
@@ -178,27 +173,18 @@ enum ShowStatus {
 class ExternalUrls {
   final String name;
   final String url;
-  ExternalUrls({
-    required this.name,
-    required this.url,
-  });
+  ExternalUrls({required this.name, required this.url});
 
   static List<ExternalUrls> fromDto(List<dto.ExternalUrl> dto) {
     return dto.map((e) => ExternalUrls(name: e.name ?? "", url: e.url ?? "")).toList();
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'Name': name,
-      'Url': url,
-    };
+    return {'Name': name, 'Url': url};
   }
 
   factory ExternalUrls.fromMap(Map<String, dynamic> map) {
-    return ExternalUrls(
-      name: map['Name'] ?? '',
-      url: map['Url'] ?? '',
-    );
+    return ExternalUrls(name: map['Name'] ?? '', url: map['Url'] ?? '');
   }
 
   String toJson() => json.encode(toMap());
@@ -209,10 +195,7 @@ class ExternalUrls {
 class GenreItems {
   final String id;
   final String name;
-  GenreItems({
-    required this.id,
-    required this.name,
-  });
+  GenreItems({required this.id, required this.name});
 
   @override
   String toString() => 'GenreItems(id: $id, name: $name)';
@@ -224,47 +207,28 @@ class Person {
   final ImageData? image;
   final String role;
   final PersonKind? type;
-  Person({
-    required this.id,
-    this.name = "",
-    this.image,
-    this.role = "",
-    this.type,
-  });
+  Person({required this.id, this.name = "", this.image, this.role = "", this.type});
 
   static Person fromBaseDto(dto.BaseItemDto item, Ref ref) {
-    return Person(
-      id: item.id ?? "",
-      name: item.name ?? "",
-      image: ImagesData.fromBaseItem(item, ref)?.primary,
-    );
+    return Person(id: item.id ?? "", name: item.name ?? "", image: ImagesData.fromBaseItem(item, ref)?.primary);
   }
 
   static Person fromBasePerson(dto.BaseItemPerson person, Ref ref) {
     return Person(
-        id: person.id ?? "",
-        name: person.name ?? "",
-        image: ImagesData.fromPersonDto(person, ref)?.primary,
-        role: person.role ?? "",
-        type: person.type);
-  }
-
-  dto.BaseItemPerson toPerson() {
-    return dto.BaseItemPerson(
-      id: id,
-      name: name,
-      type: type,
-      role: role,
+      id: person.id ?? "",
+      name: person.name ?? "",
+      image: ImagesData.fromPersonDto(person, ref)?.primary,
+      role: person.role ?? "",
+      type: person.type,
     );
   }
 
+  dto.BaseItemPerson toPerson() {
+    return dto.BaseItemPerson(id: id, name: name, type: type, role: role);
+  }
+
   static List<Person> peopleFromDto(List<dto.BaseItemPerson>? people, Ref ref) {
-    return people
-            ?.mapIndexed(
-              (index, person) => fromBasePerson(person, ref),
-            )
-            .toList() ??
-        [];
+    return people?.mapIndexed((index, person) => fromBasePerson(person, ref)).toList() ?? [];
   }
 
   @override
@@ -276,37 +240,21 @@ class Person {
 class Studio {
   final String id;
   final String name;
-  Studio({
-    required this.id,
-    required this.name,
-  });
+  Studio({required this.id, required this.name});
 
-  Studio copyWith({
-    String? id,
-    String? name,
-    ValueGetter<String?>? image,
-  }) {
-    return Studio(
-      id: id ?? this.id,
-      name: name ?? this.name,
-    );
+  Studio copyWith({String? id, String? name, ValueGetter<String?>? image}) {
+    return Studio(id: id ?? this.id, name: name ?? this.name);
   }
 
   @override
   String toString() => 'Studio(name: $name, id: $id)';
 
   Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-    };
+    return {'id': id, 'name': name};
   }
 
   factory Studio.fromMap(Map<String, dynamic> map) {
-    return Studio(
-      id: map['id'] ?? map['Id'] ?? '',
-      name: map['name'] ?? map['Name'] ?? '',
-    );
+    return Studio(id: map['id'] ?? map['Id'] ?? '', name: map['name'] ?? map['Name'] ?? '');
   }
 
   String toJson() => json.encode(toMap());

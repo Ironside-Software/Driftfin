@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
@@ -71,47 +72,39 @@ ItemBaseModel _item({
   ImagesData? images,
   UserData userData = const UserData(),
   OverviewModel overview = const OverviewModel(),
-}) =>
-    ItemBaseModel(
-      name: name,
-      id: id,
-      overview: overview,
-      parentId: null,
-      playlistId: null,
-      images: images,
-      childCount: null,
-      primaryRatio: null,
-      userData: userData,
-      canDownload: null,
-      canDelete: null,
-      jellyType: null,
-    );
+}) => ItemBaseModel(
+  name: name,
+  id: id,
+  overview: overview,
+  parentId: null,
+  playlistId: null,
+  images: images,
+  childCount: null,
+  primaryRatio: null,
+  userData: userData,
+  canDownload: null,
+  canDelete: null,
+  jellyType: null,
+);
 
-BookModel _book({
-  String name = 'Book',
-  String id = 'book-1',
-  UserData userData = const UserData(),
-}) =>
-    BookModel(
-      parentName: 'Series Name',
-      name: name,
-      id: id,
-      overview: const OverviewModel(),
-      parentId: null,
-      playlistId: null,
-      images: null,
-      childCount: null,
-      primaryRatio: null,
-      userData: userData,
-      canDownload: null,
-      canDelete: null,
-    );
+BookModel _book({String name = 'Book', String id = 'book-1', UserData userData = const UserData()}) => BookModel(
+  parentName: 'Series Name',
+  name: name,
+  id: id,
+  overview: const OverviewModel(),
+  parentId: null,
+  playlistId: null,
+  images: null,
+  childCount: null,
+  primaryRatio: null,
+  userData: userData,
+  canDownload: null,
+  canDelete: null,
+);
 
 Widget _harness(ItemBaseModel poster, {AdaptiveLayoutModel model = _phoneModel, Widget? subTitle}) {
   return ProviderScope(
-    overrides: [
-      syncProvider.overrideWith((ref) => _FakeSyncNotifier()),
-    ],
+    overrides: [syncProvider.overrideWith((ref) => _FakeSyncNotifier())],
     // AdaptiveLayout must wrap MaterialApp (as it does in lib/main.dart) so
     // that modal routes pushed on the root navigator (e.g. showBottomSheetPill,
     // which uses useRootNavigator: true) still see it via context.

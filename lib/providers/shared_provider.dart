@@ -38,10 +38,7 @@ final sharedUtilityProvider = Provider<SharedUtility>((ref) {
 SharedHelper get sharedHelper => SharedHelper(sharedPreferences: SharedPreferences.getInstance() as SharedPreferences);
 
 class SharedUtility extends SharedHelper {
-  SharedUtility({
-    required Ref ref,
-    required super.sharedPreferences,
-  }) : _ref = ref;
+  SharedUtility({required this._ref, required super.sharedPreferences});
 
   final Ref _ref;
 
@@ -101,27 +98,19 @@ class SharedHelper {
   const SharedHelper({this.ref, required this.sharedPreferences});
 
   Future<bool?> addAccount(AccountModel account) async {
-    final newAccount = account.copyWith(
-      lastUsed: DateTime.now(),
-    );
+    final newAccount = account.copyWith(lastUsed: DateTime.now());
 
     List<AccountModel> accounts = getAccounts().toList();
     if (accounts.any((element) => element.sameIdentity(newAccount))) {
       accounts = accounts
           .map(
             (e) => e.sameIdentity(newAccount)
-                ? e.copyWith(
-                    credentials: newAccount.credentials,
-                    lastUsed: newAccount.lastUsed,
-                  )
+                ? e.copyWith(credentials: newAccount.credentials, lastUsed: newAccount.lastUsed)
                 : e,
           )
           .toList();
     } else {
-      accounts = [
-        ...accounts,
-        newAccount,
-      ];
+      accounts = [...accounts, newAccount];
     }
 
     return await saveAccounts(accounts);
@@ -213,22 +202,23 @@ class SharedHelper {
   Future<void> updateAccountInfo(AccountModel account) async {
     final accounts = getAccounts();
     await Future.microtask(() async {
-      await saveAccounts(accounts.map((e) {
-        if (e.sameIdentity(account)) {
-          return account.copyWith(
-            lastUsed: DateTime.now(),
-          );
-        } else {
-          return e;
-        }
-      }).toList());
+      await saveAccounts(
+        accounts.map((e) {
+          if (e.sameIdentity(account)) {
+            return account.copyWith(lastUsed: DateTime.now());
+          } else {
+            return e;
+          }
+        }).toList(),
+      );
     });
   }
 
   LastSeenNotificationsModel get lastSeenNotifications {
     try {
       return LastSeenNotificationsModel.fromJson(
-          jsonDecode(sharedPreferences.getString(SharedKeys.lastSeenNotificationsKey) ?? ""));
+        jsonDecode(sharedPreferences.getString(SharedKeys.lastSeenNotificationsKey) ?? ""),
+      );
     } catch (e) {
       log(e.toString());
       return const LastSeenNotificationsModel();
@@ -243,7 +233,8 @@ class SharedHelper {
   SubtitleSettingsModel get subtitleSettings {
     try {
       return SubtitleSettingsModel.fromJson(
-          jsonDecode(sharedPreferences.getString(SharedKeys._subtitleSettingsKey) ?? ""));
+        jsonDecode(sharedPreferences.getString(SharedKeys._subtitleSettingsKey) ?? ""),
+      );
     } catch (e) {
       log(e.toString());
       return const SubtitleSettingsModel();
@@ -257,7 +248,8 @@ class SharedHelper {
   VideoPlayerSettingsModel get videoPlayerSettings {
     try {
       return VideoPlayerSettingsModel.fromJson(
-          jsonDecode(sharedPreferences.getString(SharedKeys._videoPlayerSettingsKey) ?? ""));
+        jsonDecode(sharedPreferences.getString(SharedKeys._videoPlayerSettingsKey) ?? ""),
+      );
     } catch (e) {
       log(e.toString());
       return VideoPlayerSettingsModel();

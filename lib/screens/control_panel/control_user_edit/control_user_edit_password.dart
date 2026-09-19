@@ -26,103 +26,83 @@ class _ControlUserEditPasswordState extends ConsumerState<ControlUserEditPasswor
 
   @override
   Widget build(BuildContext context) {
-    final hasConfiguredPassword =
-        ref.watch(controlUsersProvider.select((value) => value.selectedUser?.hasConfiguredPassword ?? false));
+    final hasConfiguredPassword = ref.watch(
+      controlUsersProvider.select((value) => value.selectedUser?.hasConfiguredPassword ?? false),
+    );
 
     final currentUser = ref.watch(controlUsersProvider.select((value) => value.selectedUser));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ...settingsListGroup(
-          context,
-          SettingsLabelDivider(label: context.localized.password),
-          [
-            if (hasConfiguredPassword)
-              SettingsListTile(
-                label: Text(context.localized.currentPassword),
-                trailing: OutlinedTextField(
-                  controller: currentPasswordController,
-                ),
-              ),
+        ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.password), [
+          if (hasConfiguredPassword)
             SettingsListTile(
-              label: Text(context.localized.newPassword),
-              trailing: OutlinedTextField(
-                controller: newPasswordController,
-              ),
+              label: Text(context.localized.currentPassword),
+              trailing: OutlinedTextField(controller: currentPasswordController),
             ),
-            SettingsListTile(
-              label: Text(context.localized.confirmPassword),
-              trailing: OutlinedTextField(
-                controller: confirmPasswordController,
-              ),
-            ),
-          ],
-        ),
+          SettingsListTile(
+            label: Text(context.localized.newPassword),
+            trailing: OutlinedTextField(controller: newPasswordController),
+          ),
+          SettingsListTile(
+            label: Text(context.localized.confirmPassword),
+            trailing: OutlinedTextField(controller: confirmPasswordController),
+          ),
+        ]),
         const SizedBox(height: 16),
-        Builder(builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 4,
-              children: [
-                FilledButtonAwait.tonal(
-                  onPressed: () async {
-                    final success = await ref.read(controlUsersProvider.notifier).resetUserPassword();
-                    if (success) {
-                      DriftfinSnack.show(
-                        context.localized.passwordResetSuccess,
-                        context: context,
-                      );
-                    } else {
-                      DriftfinSnack.show(
-                        context.localized.passwordResetFailed,
-                        context: context,
-                      );
-                    }
-                    await context.refreshData();
-                  },
-                  child: Text(context.localized.resetPassword),
-                ),
-                FilledButtonAwait(
-                  onPressed: () async {
-                    if (newPasswordController.text != confirmPasswordController.text) {
-                      DriftfinSnack.show(
-                        context.localized.passwordMismatch,
-                        context: context,
-                      );
-                      return;
-                    }
-                    final responseMessage = await ref.read(controlUsersProvider.notifier).setUserPassword(
-                          currentUser?.id,
-                          current: currentPasswordController.text,
-                          newPassword: newPasswordController.text,
-                          confirmPassword: confirmPasswordController.text,
-                        );
-                    if (responseMessage == null) {
-                      DriftfinSnack.show(
-                        context.localized.passwordChangeSuccess,
-                        context: context,
-                      );
-                      currentPasswordController.clear();
-                      newPasswordController.clear();
-                      confirmPasswordController.clear();
-                    } else {
-                      DriftfinSnack.show(
-                        responseMessage,
-                        context: context,
-                      );
-                    }
-                    await context.refreshData();
-                  },
-                  child: Text(context.localized.savePassword),
-                ),
-              ],
-            ),
-          );
-        })
+        Builder(
+          builder: (context) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: 4,
+                children: [
+                  FilledButtonAwait.tonal(
+                    onPressed: () async {
+                      final success = await ref.read(controlUsersProvider.notifier).resetUserPassword();
+                      if (success) {
+                        DriftfinSnack.show(context.localized.passwordResetSuccess, context: context);
+                      } else {
+                        DriftfinSnack.show(context.localized.passwordResetFailed, context: context);
+                      }
+                      await context.refreshData();
+                    },
+                    child: Text(context.localized.resetPassword),
+                  ),
+                  FilledButtonAwait(
+                    onPressed: () async {
+                      if (newPasswordController.text != confirmPasswordController.text) {
+                        DriftfinSnack.show(context.localized.passwordMismatch, context: context);
+                        return;
+                      }
+                      final responseMessage = await ref
+                          .read(controlUsersProvider.notifier)
+                          .setUserPassword(
+                            currentUser?.id,
+                            current: currentPasswordController.text,
+                            newPassword: newPasswordController.text,
+                            confirmPassword: confirmPasswordController.text,
+                          );
+                      if (responseMessage == null) {
+                        DriftfinSnack.show(context.localized.passwordChangeSuccess, context: context);
+                        currentPasswordController.clear();
+                        newPasswordController.clear();
+                        confirmPasswordController.clear();
+                      } else {
+                        DriftfinSnack.show(responseMessage, context: context);
+                      }
+                      await context.refreshData();
+                    },
+                    child: Text(context.localized.savePassword),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ],
     );
   }

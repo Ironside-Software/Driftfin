@@ -1,5 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/favourites_model.dart';
@@ -38,12 +39,14 @@ class FavouritesNotifier extends StateNotifier<FavouritesModel> {
     final mappedList = await Future.wait(views.dashboardViews.map((viewModel) => _loadLibrary(viewModel: viewModel)));
 
     state = state.copyWith(
-        favourites: (mappedList
-                .expand((innerList) => innerList ?? [])
-                .where((item) => item != null)
-                .cast<ItemBaseModel>()
-                .toList())
-            .groupedItems);
+      favourites:
+          (mappedList
+                  .expand((innerList) => innerList ?? [])
+                  .where((item) => item != null)
+                  .cast<ItemBaseModel>()
+                  .toList())
+              .groupedItems,
+    );
   }
 
   Future<List<ItemBaseModel>?> _loadLibrary({ViewModel? viewModel}) async {
@@ -69,26 +72,16 @@ class FavouritesNotifier extends StateNotifier<FavouritesModel> {
           isFavorite: true,
           recursive: true,
           limit: 15,
-          fields: [
-            ItemFields.overview,
-            ItemFields.genres,
-            ItemFields.mediastreams,
-            ItemFields.parentid,
-          ],
+          fields: [ItemFields.overview, ItemFields.genres, ItemFields.mediastreams, ItemFields.parentid],
           includeItemTypes: includeItemTypes,
           sortOrder: [SortOrder.ascending],
           sortBy: [ItemSortBy.seriessortname, ItemSortBy.sortname, ItemSortBy.datelastcontentadded],
-        ))
-            .body
-            ?.items ??
+        )).body?.items ??
         [];
   }
 
   Future<Response<List<ItemBaseModel>>?> _fetchPeople() async {
-    final response = await api.personsGet(
-      limit: 20,
-      isFavorite: true,
-    );
+    final response = await api.personsGet(limit: 20, isFavorite: true);
     state = state.copyWith(people: response.body ?? []);
     return response;
   }

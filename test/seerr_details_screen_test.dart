@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -36,11 +37,7 @@ class FakeSeerrDetails extends SeerrDetails {
   final SeerrDetailsModel _fixedState;
 
   @override
-  SeerrDetailsModel build({
-    required int tmdbId,
-    required SeerrMediaType mediaType,
-    SeerrDashboardPosterModel? poster,
-  }) {
+  SeerrDetailsModel build({required int tmdbId, required SeerrMediaType mediaType, SeerrDashboardPosterModel? poster}) {
     state = _fixedState;
     return state;
   }
@@ -48,9 +45,7 @@ class FakeSeerrDetails extends SeerrDetails {
   @override
   Future<void> toggleSeasonExpanded(int seasonNumber) async {
     final currentExpanded = state.expandedSeasons[seasonNumber] ?? false;
-    state = state.copyWith(
-      expandedSeasons: {...state.expandedSeasons, seasonNumber: !currentExpanded},
-    );
+    state = state.copyWith(expandedSeasons: {...state.expandedSeasons, seasonNumber: !currentExpanded});
   }
 
   /// `DetailScaffold` triggers a refresh on start (and pull-to-refresh),
@@ -111,10 +106,7 @@ class _HarnessState extends State<_Harness> {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
-      overrides: widget.overrides,
-      child: _showChild ? widget.child : const SizedBox.shrink(),
-    );
+    return ProviderScope(overrides: widget.overrides, child: _showChild ? widget.child : const SizedBox.shrink());
   }
 }
 
@@ -147,11 +139,7 @@ void main() {
     useTallView(tester);
     final prefs = await SharedPreferences.getInstance();
 
-    final poster = _poster(
-      type: SeerrMediaType.movie,
-      title: 'A Great Movie',
-      overview: 'A gripping tale of testing.',
-    );
+    final poster = _poster(type: SeerrMediaType.movie, title: 'A Great Movie', overview: 'A gripping tale of testing.');
     final state = SeerrDetailsModel(
       tmdbId: 42,
       mediaType: SeerrMediaType.movie,
@@ -199,12 +187,7 @@ void main() {
     useTallView(tester);
     final prefs = await SharedPreferences.getInstance();
 
-    final season = SeerrSeason(
-      id: 1,
-      name: 'Season 1',
-      seasonNumber: 1,
-      episodeCount: 2,
-    );
+    final season = SeerrSeason(id: 1, name: 'Season 1', seasonNumber: 1, episodeCount: 2);
     final episodes = [
       SeerrEpisode(id: 1, name: 'Pilot', episodeNumber: 1, seasonNumber: 1, overview: 'The first episode.'),
       SeerrEpisode(id: 2, name: 'Second Episode', episodeNumber: 2, seasonNumber: 1, overview: 'The second one.'),
@@ -303,15 +286,8 @@ void main() {
     useTallView(tester);
     final prefs = await SharedPreferences.getInstance();
 
-    final season = SeerrSeason(
-      id: 1,
-      name: 'Season 1',
-      seasonNumber: 1,
-      episodeCount: 1,
-    );
-    final episodes = [
-      SeerrEpisode(id: 1, name: 'Only Episode', episodeNumber: 1, seasonNumber: 1),
-    ];
+    final season = SeerrSeason(id: 1, name: 'Season 1', seasonNumber: 1, episodeCount: 1);
+    final episodes = [SeerrEpisode(id: 1, name: 'Only Episode', episodeNumber: 1, seasonNumber: 1)];
 
     final poster = _poster(
       type: SeerrMediaType.tvshow,

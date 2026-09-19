@@ -47,18 +47,18 @@ class _SeerrRequestsScreenState extends ConsumerState<SeerrRequestsScreen> {
   }
 
   String _filterLabel(BuildContext context, RequestFilter filter) => switch (filter) {
-        RequestFilter.all => context.localized.requestFilterAll,
-        RequestFilter.pending => context.localized.seerrRequestStatusPending,
-        RequestFilter.processing => context.localized.seerrMediaStatusProcessing,
-        RequestFilter.available => context.localized.seerrMediaStatusAvailable,
-        RequestFilter.approved => context.localized.seerrRequestStatusApproved,
-        RequestFilter.unavailable => context.localized.requestFilterUnavailable,
-      };
+    RequestFilter.all => context.localized.requestFilterAll,
+    RequestFilter.pending => context.localized.seerrRequestStatusPending,
+    RequestFilter.processing => context.localized.seerrMediaStatusProcessing,
+    RequestFilter.available => context.localized.seerrMediaStatusAvailable,
+    RequestFilter.approved => context.localized.seerrRequestStatusApproved,
+    RequestFilter.unavailable => context.localized.requestFilterUnavailable,
+  };
 
   String _sortLabel(BuildContext context, RequestSort sort) => switch (sort) {
-        RequestSort.added => context.localized.requestSortAdded,
-        RequestSort.modified => context.localized.requestSortModified,
-      };
+    RequestSort.added => context.localized.requestSortAdded,
+    RequestSort.modified => context.localized.requestSortModified,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -143,42 +143,44 @@ class _SeerrRequestsScreenState extends ConsumerState<SeerrRequestsScreen> {
                 child: state.loading && state.entries.isEmpty
                     ? const Center(child: CircularProgressIndicator())
                     : state.entries.isEmpty
-                        ? ListView(physics: const AlwaysScrollableScrollPhysics(), children: [
-                            const SizedBox(height: 120),
-                            if (!state.hasError) Center(child: Text(context.localized.noRequestsFound)),
-                          ])
-                        : GridView.builder(
-                            controller: _scroll,
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 480,
-                              mainAxisExtent: 170,
-                              crossAxisSpacing: 8,
-                              mainAxisSpacing: 8,
-                            ),
-                            itemCount: state.entries.length + (state.canLoadMore ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (index >= state.entries.length) {
-                                return Center(
-                                  child: state.loadingMore
-                                      ? const CircularProgressIndicator()
-                                      : IconButton(
-                                          tooltip:
-                                              state.hasError ? context.localized.retry : context.localized.showMore,
-                                          onPressed: notifier.loadMore,
-                                          icon: const Icon(Icons.expand_more),
-                                        ),
-                                );
-                              }
-                              return _RequestCard(
-                                entry: state.entries[index],
-                                canManage: canManage,
-                                onApprove: (id) => notifier.approve(id),
-                                onDecline: (id) => notifier.decline(id),
-                              );
-                            },
-                          ),
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          const SizedBox(height: 120),
+                          if (!state.hasError) Center(child: Text(context.localized.noRequestsFound)),
+                        ],
+                      )
+                    : GridView.builder(
+                        controller: _scroll,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 480,
+                          mainAxisExtent: 170,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemCount: state.entries.length + (state.canLoadMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index >= state.entries.length) {
+                            return Center(
+                              child: state.loadingMore
+                                  ? const CircularProgressIndicator()
+                                  : IconButton(
+                                      tooltip: state.hasError ? context.localized.retry : context.localized.showMore,
+                                      onPressed: notifier.loadMore,
+                                      icon: const Icon(Icons.expand_more),
+                                    ),
+                            );
+                          }
+                          return _RequestCard(
+                            entry: state.entries[index],
+                            canManage: canManage,
+                            onApprove: (id) => notifier.approve(id),
+                            onDecline: (id) => notifier.decline(id),
+                          );
+                        },
+                      ),
               ),
             ),
           ],
@@ -196,12 +198,7 @@ class _RequestCard extends StatelessWidget {
   final void Function(int requestId) onApprove;
   final void Function(int requestId) onDecline;
 
-  const _RequestCard({
-    required this.entry,
-    required this.canManage,
-    required this.onApprove,
-    required this.onDecline,
-  });
+  const _RequestCard({required this.entry, required this.canManage, required this.onApprove, required this.onDecline});
 
   @override
   Widget build(BuildContext context) {
@@ -221,11 +218,13 @@ class _RequestCard extends StatelessWidget {
       child: InkWell(
         onTap: poster == null
             ? null
-            : () => context.router.push(SeerrDetailsRoute(
+            : () => context.router.push(
+                SeerrDetailsRoute(
                   mediaType: poster.type == SeerrMediaType.tvshow ? 'tvshow' : 'movie',
                   tmdbId: poster.tmdbId,
                   poster: poster,
-                )),
+                ),
+              ),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Row(
@@ -280,10 +279,7 @@ class _RequestCard extends StatelessWidget {
                       ],
                     ),
                     if (year != null && year.isNotEmpty)
-                      Text(
-                        year,
-                        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                      ),
+                      Text(year, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
                     const SizedBox(height: 6),
                     Wrap(
                       spacing: 8,
@@ -344,12 +340,7 @@ class _CompactIconButton extends StatelessWidget {
   final Color color;
   final VoidCallback onPressed;
 
-  const _CompactIconButton({
-    required this.tooltip,
-    required this.icon,
-    required this.color,
-    required this.onPressed,
-  });
+  const _CompactIconButton({required this.tooltip, required this.icon, required this.color, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

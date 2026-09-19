@@ -23,10 +23,7 @@ import 'package:driftfin/widgets/navigation_scaffold/components/driftfin_app_bar
 @RoutePage()
 class LoginScreen extends ConsumerStatefulWidget {
   final String? authLink;
-  const LoginScreen({
-    @QueryParam() this.authLink,
-    super.key,
-  });
+  const LoginScreen({@QueryParam() this.authLink, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LoginPageState();
@@ -70,41 +67,37 @@ class _LoginPageState extends ConsumerState<LoginScreen> {
     return RouteWrapper(
       child: CustomKeyboardWrapper(
         child: Scaffold(
-          appBar: DriftfinAppBar(
-            isDesktop: AdaptiveLayout.of(context).isDesktop,
-          ),
+          appBar: DriftfinAppBar(isDesktop: AdaptiveLayout.of(context).isDesktop),
           extendBody: true,
           extendBodyBehindAppBar: true,
           floatingActionButton: switch (screen) {
             LoginScreenType.users => Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                spacing: 16,
-                children: [
+              mainAxisAlignment: MainAxisAlignment.end,
+              spacing: 16,
+              children: [
+                AdaptiveFab(
+                  context: context,
+                  key: const Key("new_user_button"),
+                  heroTag: "new_user_button",
+                  child: const Icon(IconsaxPlusLinear.add_square),
+                  onPressed: () => ref.read(authProvider.notifier).addNewUser(),
+                ).normal,
+                if (accounts.isNotEmpty)
                   AdaptiveFab(
                     context: context,
-                    key: const Key("new_user_button"),
-                    heroTag: "new_user_button",
-                    child: const Icon(IconsaxPlusLinear.add_square),
-                    onPressed: () => ref.read(authProvider.notifier).addNewUser(),
+                    key: const Key("edit_user_button"),
+                    heroTag: "edit_user_button",
+                    backgroundColor: editUsersMode ? Theme.of(context).colorScheme.errorContainer : null,
+                    child: const Icon(IconsaxPlusLinear.edit_2),
+                    onPressed: () => setState(() => editUsersMode = !editUsersMode),
                   ).normal,
-                  if (accounts.isNotEmpty)
-                    AdaptiveFab(
-                      context: context,
-                      key: const Key("edit_user_button"),
-                      heroTag: "edit_user_button",
-                      backgroundColor: editUsersMode ? Theme.of(context).colorScheme.errorContainer : null,
-                      child: const Icon(IconsaxPlusLinear.edit_2),
-                      onPressed: () => setState(() => editUsersMode = !editUsersMode),
-                    ).normal,
-                ],
-              ),
+              ],
+            ),
             _ => null,
           },
           body: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 1000,
-              ),
+              constraints: const BoxConstraints(maxWidth: 1000),
               child: loggingIn
                   ? const CircularProgressIndicator()
                   : ListView(
@@ -115,17 +108,16 @@ class _LoginPageState extends ConsumerState<LoginScreen> {
                         const SizedBox(height: 24),
                         AnimatedFadeSize(
                           child: switch (screen) {
-                            LoginScreenType.login || LoginScreenType.code => LoginScreenCredentials(
-                                authLinkData: parsedAuthLink,
-                              ),
+                            LoginScreenType.login ||
+                            LoginScreenType.code => LoginScreenCredentials(authLinkData: parsedAuthLink),
                             _ => LoginUserGrid(
-                                users: accounts,
-                                editMode: editUsersMode,
-                                onPressed: (user) => tapLoggedInAccount(context, user, ref),
-                                onLongPress: (user) => openUserEditDialogue(context, user),
-                              ),
+                              users: accounts,
+                              editMode: editUsersMode,
+                              onPressed: (user) => tapLoggedInAccount(context, user, ref),
+                              onLongPress: (user) => openUserEditDialogue(context, user),
+                            ),
                           },
-                        )
+                        ),
                       ],
                     ),
             ),

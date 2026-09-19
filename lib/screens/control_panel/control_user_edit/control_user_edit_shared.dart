@@ -29,10 +29,7 @@ class AccessSchedulesEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<TimeOfDay> timesOfDay = List.generate(
-      48,
-      (index) => TimeOfDay(hour: index ~/ 2, minute: (index % 2) * 30),
-    );
+    List<TimeOfDay> timesOfDay = List.generate(48, (index) => TimeOfDay(hour: index ~/ 2, minute: (index % 2) * 30));
 
     return Container(
       constraints: const BoxConstraints(minHeight: 50, maxHeight: 250),
@@ -44,12 +41,7 @@ class AccessSchedulesEditor extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
+              Expanded(child: Text(label, style: Theme.of(context).textTheme.titleMedium)),
               IconButton.filledTonal(
                 icon: const Icon(IconsaxPlusBold.add_circle),
                 onPressed: () {
@@ -61,71 +53,75 @@ class AccessSchedulesEditor extends StatelessWidget {
                     builder: (context) {
                       return AlertDialog(
                         title: Text(context.localized.addAccessSchedule),
-                        content: StatefulBuilder(builder: (context, setState) {
-                          return ConstrainedBox(
-                            constraints: const BoxConstraints(
-                              minWidth: 500,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              spacing: 16,
-                              children: [
-                                EnumSelection(
-                                  label: Text(context.localized.dayOfWeek),
-                                  current: selectedDay.label(context).capitalize(),
-                                  itemBuilder: (context) => DynamicDayOfWeek.values
-                                      .map(
-                                        (e) => ItemActionButton(
-                                          label: Text(e.label(context).capitalize()),
-                                          action: () {
-                                            setState(() {
-                                              selectedDay = e;
-                                            });
-                                          },
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                                EnumSelection(
-                                  label: Text(context.localized.startTime),
-                                  current: context.localized
-                                      .formattedTime(DateTime(0, 0, 0, startTime.hour, startTime.minute)),
-                                  itemBuilder: (context) => timesOfDay
-                                      .map(
-                                        (e) => ItemActionButton(
-                                          label: Text(
-                                              context.localized.formattedTime(DateTime(0, 0, 0, e.hour, e.minute))),
-                                          action: () {
-                                            setState(() {
-                                              startTime = e;
-                                            });
-                                          },
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                                EnumSelection(
-                                  label: Text(context.localized.endTime),
-                                  current:
-                                      context.localized.formattedTime(DateTime(0, 0, 0, endTime.hour, endTime.minute)),
-                                  itemBuilder: (context) => timesOfDay
-                                      .map(
-                                        (e) => ItemActionButton(
-                                          label: Text(
-                                              context.localized.formattedTime(DateTime(0, 0, 0, e.hour, e.minute))),
-                                          action: () {
-                                            setState(() {
-                                              endTime = e;
-                                            });
-                                          },
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
+                        content: StatefulBuilder(
+                          builder: (context, setState) {
+                            return ConstrainedBox(
+                              constraints: const BoxConstraints(minWidth: 500),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 16,
+                                children: [
+                                  EnumSelection(
+                                    label: Text(context.localized.dayOfWeek),
+                                    current: selectedDay.label(context).capitalize(),
+                                    itemBuilder: (context) => DynamicDayOfWeek.values
+                                        .map(
+                                          (e) => ItemActionButton(
+                                            label: Text(e.label(context).capitalize()),
+                                            action: () {
+                                              setState(() {
+                                                selectedDay = e;
+                                              });
+                                            },
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                  EnumSelection(
+                                    label: Text(context.localized.startTime),
+                                    current: context.localized.formattedTime(
+                                      DateTime(0, 0, 0, startTime.hour, startTime.minute),
+                                    ),
+                                    itemBuilder: (context) => timesOfDay
+                                        .map(
+                                          (e) => ItemActionButton(
+                                            label: Text(
+                                              context.localized.formattedTime(DateTime(0, 0, 0, e.hour, e.minute)),
+                                            ),
+                                            action: () {
+                                              setState(() {
+                                                startTime = e;
+                                              });
+                                            },
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                  EnumSelection(
+                                    label: Text(context.localized.endTime),
+                                    current: context.localized.formattedTime(
+                                      DateTime(0, 0, 0, endTime.hour, endTime.minute),
+                                    ),
+                                    itemBuilder: (context) => timesOfDay
+                                        .map(
+                                          (e) => ItemActionButton(
+                                            label: Text(
+                                              context.localized.formattedTime(DateTime(0, 0, 0, e.hour, e.minute)),
+                                            ),
+                                            action: () {
+                                              setState(() {
+                                                endTime = e;
+                                              });
+                                            },
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                         actions: [
                           TextButton(
                             autofocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
@@ -148,66 +144,60 @@ class AccessSchedulesEditor extends StatelessWidget {
                               Navigator.of(context).pop();
                             },
                             child: Text(context.localized.create),
-                          )
+                          ),
                         ],
                       );
                     },
                   );
                 },
-              )
+              ),
             ],
           ),
           if (schedules.isNotEmpty)
-            ...schedules.map(
-              (schedule) {
-                final start = TimeOfDay(hour: schedule.startHour?.toInt() ?? 0, minute: 0);
-                final end = TimeOfDay(hour: schedule.endHour?.toInt() ?? 0, minute: 0);
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: SettingsListChild(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(25),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text((schedule.dayOfWeek?.label(context) ?? "").capitalize()),
-                                Text(
-                                  "${context.localized.formattedTime(DateTime(0, 0, 0, start.hour, start.minute))} - ${context.localized.formattedTime(DateTime(0, 0, 0, end.hour, end.minute))}",
-                                ),
-                              ],
-                            ),
+            ...schedules.map((schedule) {
+              final start = TimeOfDay(hour: schedule.startHour?.toInt() ?? 0, minute: 0);
+              final end = TimeOfDay(hour: schedule.endHour?.toInt() ?? 0, minute: 0);
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: SettingsListChild(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(25),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text((schedule.dayOfWeek?.label(context) ?? "").capitalize()),
+                              Text(
+                                "${context.localized.formattedTime(DateTime(0, 0, 0, start.hour, start.minute))} - ${context.localized.formattedTime(DateTime(0, 0, 0, end.hour, end.minute))}",
+                              ),
+                            ],
                           ),
-                          IconButton(
-                            onPressed: () {
-                              onRemoveSchedule?.call(schedule);
-                            },
-                            style: IconButton.styleFrom(
-                              foregroundColor: Theme.of(context).colorScheme.error,
-                            ),
-                            icon: const Icon(IconsaxPlusBold.trash),
-                          )
-                        ],
-                      ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            onRemoveSchedule?.call(schedule);
+                          },
+                          style: IconButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
+                          icon: const Icon(IconsaxPlusBold.trash),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-            )
+                ),
+              );
+            })
           else
             Text(
               context.localized.empty,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
+              style: Theme.of(context).textTheme.bodyMedium
                   ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(125)),
-            )
+            ),
         ],
       ),
     );
@@ -219,13 +209,7 @@ class TagsEditor extends StatelessWidget {
   final List<String> tags;
   final Function(String newTag) onTagAdded;
   final Function(String tag)? onTagRemoved;
-  const TagsEditor({
-    required this.label,
-    required this.tags,
-    required this.onTagAdded,
-    this.onTagRemoved,
-    super.key,
-  });
+  const TagsEditor({required this.label, required this.tags, required this.onTagAdded, this.onTagRemoved, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -239,12 +223,7 @@ class TagsEditor extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ),
+              Expanded(child: Text(label, style: Theme.of(context).textTheme.titleMedium)),
               IconButton.filledTonal(
                 onPressed: () {
                   showDialog(
@@ -275,14 +254,14 @@ class TagsEditor extends StatelessWidget {
                               Navigator.of(context).pop();
                             },
                             child: Text(context.localized.create),
-                          )
+                          ),
                         ],
                       );
                     },
                   );
                 },
                 icon: const Icon(IconsaxPlusBold.add_circle),
-              )
+              ),
             ],
           ),
           if (tags.isNotEmpty)
@@ -303,11 +282,9 @@ class TagsEditor extends StatelessWidget {
           else
             Text(
               context.localized.empty,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium
+              style: Theme.of(context).textTheme.bodyMedium
                   ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant.withAlpha(125)),
-            )
+            ),
         ],
       ),
     );

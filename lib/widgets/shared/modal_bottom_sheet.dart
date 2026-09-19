@@ -9,13 +9,13 @@ import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
 Future<void> showItemContextMenu(
-    BuildContext context, WidgetRef ref, Offset globalPos, List<ItemAction> actions) async {
+  BuildContext context,
+  WidgetRef ref,
+  Offset globalPos,
+  List<ItemAction> actions,
+) async {
   final position = RelativeRect.fromLTRB(globalPos.dx, globalPos.dy, globalPos.dx, globalPos.dy);
-  await showMenu(
-    context: context,
-    position: position,
-    items: actions.popupMenuItems(useIcons: true),
-  );
+  await showMenu(context: context, position: position, items: actions.popupMenuItems(useIcons: true));
 }
 
 Future<void> showBottomSheetPill({
@@ -24,10 +24,7 @@ Future<void> showBottomSheetPill({
   Function()? onDismiss,
   EdgeInsets padding = const EdgeInsets.all(16),
   required BuildContext context,
-  required Widget Function(
-    BuildContext context,
-    ScrollController scrollController,
-  ) content,
+  required Widget Function(BuildContext context, ScrollController scrollController) content,
 }) async {
   await showModalBottomSheet(
     isScrollControlled: true,
@@ -38,15 +35,11 @@ Future<void> showBottomSheetPill({
     builder: (context) {
       final controller = ScrollController();
       return ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.sizeOf(context).height * 0.85,
-        ),
+        constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.85),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8).add(MediaQuery.paddingOf(context)),
           child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: FladderTheme.largeShape.borderRadius,
-            ),
+            shape: RoundedRectangleBorder(borderRadius: FladderTheme.largeShape.borderRadius),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -105,10 +98,7 @@ class ItemBottomSheetPreview extends ConsumerWidget {
                 height: 90,
                 child: AspectRatio(
                   aspectRatio: 1,
-                  child: DriftfinImage(
-                    image: item.images?.primary,
-                    fit: BoxFit.contain,
-                  ),
+                  child: DriftfinImage(image: item.images?.primary, fit: BoxFit.contain),
                 ),
               ),
             ),

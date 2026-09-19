@@ -112,14 +112,14 @@ class ViewModel {
       recentlyAdded: [],
       imageData: item.primaryImageItemId != null
           ? ImagesData.fromBaseItem(
-              dto.BaseItemDto(
-                id: item.itemId,
-                imageTags: {'Primary': item.primaryImageItemId},
-              ),
-              ref)
+              dto.BaseItemDto(id: item.itemId, imageTags: {'Primary': item.primaryImageItemId}),
+              ref,
+            )
           : null,
-      collectionType: CollectionType.values
-              .firstWhereOrNull((element) => element.name.toLowerCase() == item.collectionType?.value?.toLowerCase()) ??
+      collectionType:
+          CollectionType.values.firstWhereOrNull(
+            (element) => element.name.toLowerCase() == item.collectionType?.value?.toLowerCase(),
+          ) ??
           CollectionType.folders,
       playAccess: PlayAccess.none,
       childCount: 0,
@@ -141,39 +141,21 @@ class ViewModel {
 
   Future<void> navigateToView(BuildContext context) async {
     if (collectionType == CollectionType.livetv) {
-      context.pushRoute(
-        LiveTvRoute(
-          viewId: id,
-        ),
-      );
+      context.pushRoute(LiveTvRoute(viewId: id));
       return;
     }
-    context.pushRoute(
-      LibrarySearchRoute(
-        parentId: [id],
-      ).withFilter(collectionType.defaultFilters),
-    );
+    context.pushRoute(LibrarySearchRoute(parentId: [id]).withFilter(collectionType.defaultFilters));
   }
 
-  Widget createIcon(
-    BuildContext context, {
-    required bool selected,
-    bool rounded = true,
-  }) {
+  Widget createIcon(BuildContext context, {required bool selected, bool rounded = true}) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: rounded ? FladderTheme.smallShape.borderRadius : BorderRadius.zero,
-      ),
+      decoration: BoxDecoration(borderRadius: rounded ? FladderTheme.smallShape.borderRadius : BorderRadius.zero),
       clipBehavior: Clip.hardEdge,
       child: SizedBox.square(
         dimension: 45,
         child: DriftfinImage(
           image: imageData?.primary,
-          placeHolder: Card(
-            child: Icon(
-              selected ? collectionType.icon : collectionType.iconOutlined,
-            ),
-          ),
+          placeHolder: Card(child: Icon(selected ? collectionType.icon : collectionType.iconOutlined)),
         ),
       ),
     );
@@ -181,19 +163,20 @@ class ViewModel {
 
   factory ViewModel.createEmpty(String id, CollectionType collectionType) {
     return ViewModel(
-        name: "",
-        id: id,
-        serverId: "",
-        dateCreated: DateTime.now(),
-        canDelete: false,
-        canDownload: false,
-        parentId: "",
-        collectionType: collectionType,
-        playAccess: PlayAccess.none,
-        recentlyAdded: [],
-        imageData: null,
-        childCount: 0,
-        path: "");
+      name: "",
+      id: id,
+      serverId: "",
+      dateCreated: DateTime.now(),
+      canDelete: false,
+      canDownload: false,
+      parentId: "",
+      collectionType: collectionType,
+      playAccess: PlayAccess.none,
+      recentlyAdded: [],
+      imageData: null,
+      childCount: 0,
+      path: "",
+    );
   }
 
   NavigationButton toNavigationButton(

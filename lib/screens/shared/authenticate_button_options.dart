@@ -64,10 +64,7 @@ Future<void> showAuthOptionsDialogue(
                   }
                 },
                 icon: Icon(method.icon),
-                label: Text(
-                  method.name(context),
-                  textAlign: TextAlign.center,
-                ),
+                label: Text(method.name(context), textAlign: TextAlign.center),
               ),
             ),
           )

@@ -53,19 +53,12 @@ class PlaylistModel extends ItemBaseModel with PlaylistModelMappable {
   @override
   bool get playAble => true;
 
-  Widget iconWidget(
-    BuildContext context, {
-    bool usePoster = false,
-    Color? backgroundColor = Colors.transparent,
-  }) {
+  Widget iconWidget(BuildContext context, {bool usePoster = false, Color? backgroundColor = Colors.transparent}) {
     if (usePoster) {
       return SizedBox.square(
         dimension: 45,
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: FladderTheme.smallShape.borderRadius,
-            color: backgroundColor,
-          ),
+          decoration: BoxDecoration(borderRadius: FladderTheme.smallShape.borderRadius, color: backgroundColor),
           clipBehavior: Clip.hardEdge,
           padding: const EdgeInsets.all(2),
           child: ClipRRect(
@@ -74,10 +67,7 @@ class PlaylistModel extends ItemBaseModel with PlaylistModelMappable {
               image: images?.primary,
               placeHolder: Container(
                 color: backgroundColor,
-                child: Icon(
-                  FladderItemType.playlist.icon,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                child: Icon(FladderItemType.playlist.icon, color: Theme.of(context).colorScheme.onSurface),
               ),
               fit: BoxFit.cover,
             ),
@@ -85,10 +75,7 @@ class PlaylistModel extends ItemBaseModel with PlaylistModelMappable {
         ),
       );
     } else {
-      return Icon(
-        FladderItemType.playlist.icon,
-        color: Theme.of(context).colorScheme.onSurface,
-      );
+      return Icon(FladderItemType.playlist.icon, color: Theme.of(context).colorScheme.onSurface);
     }
   }
 }

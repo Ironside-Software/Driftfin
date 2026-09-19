@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:logging/logging.dart' as logging;
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
@@ -13,8 +14,10 @@ import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
 
-final albumDetailsProvider =
-    StateNotifierProvider.autoDispose.family<AlbumDetailsNotifier, AlbumModel?, String>((ref, id) {
+final albumDetailsProvider = StateNotifierProvider.autoDispose.family<AlbumDetailsNotifier, AlbumModel?, String>((
+  ref,
+  id,
+) {
   return AlbumDetailsNotifier(ref);
 });
 
@@ -67,11 +70,7 @@ class AlbumDetailsNotifier extends StateNotifier<AlbumModel?> {
         enableUserData: true,
         enableImages: true,
         imageTypeLimit: 1,
-        fields: [
-          ItemFields.primaryimageaspectratio,
-          ItemFields.mediasourcecount,
-          ItemFields.childcount,
-        ],
+        fields: [ItemFields.primaryimageaspectratio, ItemFields.mediasourcecount, ItemFields.childcount],
         sortBy: [ItemSortBy.sortname, ItemSortBy.parentindexnumber],
         sortOrder: [SortOrder.ascending],
         limit: 100,
@@ -82,8 +81,12 @@ class AlbumDetailsNotifier extends StateNotifier<AlbumModel?> {
         state = state?.copyWith(tracks: tracks);
       }
     } catch (error, stack) {
-      log('Failed to fetch album tracks for ${state?.id} due to $error',
-          level: logging.Level.WARNING.value, error: error, stackTrace: stack);
+      log(
+        'Failed to fetch album tracks for ${state?.id} due to $error',
+        level: logging.Level.WARNING.value,
+        error: error,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -119,8 +122,10 @@ class AlbumDetailsNotifier extends StateNotifier<AlbumModel?> {
         limit: 25,
       );
 
-      final relatedAlbums =
-          albumsResponse.body?.items.whereType<AlbumModel>().where((album) => album.id != state!.id).toList();
+      final relatedAlbums = albumsResponse.body?.items
+          .whereType<AlbumModel>()
+          .where((album) => album.id != state!.id)
+          .toList();
 
       final songsResponse = await api.itemsGet(
         artistIds: artistIds,
@@ -135,8 +140,10 @@ class AlbumDetailsNotifier extends StateNotifier<AlbumModel?> {
         limit: 25,
       );
 
-      final relatedTracks =
-          songsResponse.body?.items.whereType<AudioModel>().where((track) => track.albumId != state!.id).toList();
+      final relatedTracks = songsResponse.body?.items
+          .whereType<AudioModel>()
+          .where((track) => track.albumId != state!.id)
+          .toList();
 
       if (relatedAlbums != null || relatedTracks != null) {
         state = state?.copyWith(
@@ -145,8 +152,12 @@ class AlbumDetailsNotifier extends StateNotifier<AlbumModel?> {
         );
       }
     } catch (error, stack) {
-      log('Failed to fetch related album items for ${state?.id} due to $error',
-          level: logging.Level.WARNING.value, error: error, stackTrace: stack);
+      log(
+        'Failed to fetch related album items for ${state?.id} due to $error',
+        level: logging.Level.WARNING.value,
+        error: error,
+        stackTrace: stack,
+      );
     }
   }
 }

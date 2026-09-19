@@ -10,20 +10,14 @@ import 'package:driftfin/util/localization_helper.dart';
 class SeerrUserLabel extends StatelessWidget {
   final SeerrUserModel? user;
 
-  const SeerrUserLabel({
-    required this.user,
-    super.key,
-  });
+  const SeerrUserLabel({required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
     final avatarUrl = user?.avatar;
     final placeholder = CircleAvatar(
       radius: 18,
-      child: Icon(
-        FladderItemType.person.icon,
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
+      child: Icon(FladderItemType.person.icon, color: Theme.of(context).colorScheme.onSurfaceVariant),
     );
 
     final avatar = avatarUrl == null || avatarUrl.isEmpty
@@ -36,8 +30,8 @@ class SeerrUserLabel extends StatelessWidget {
               width: 28,
               height: 28,
               fit: BoxFit.cover,
-              placeholder: (_, __) => placeholder,
-              errorWidget: (_, __, ___) => placeholder,
+              placeholder: (_, _) => placeholder,
+              errorWidget: (_, _, _) => placeholder,
             ),
           );
 
@@ -46,12 +40,7 @@ class SeerrUserLabel extends StatelessWidget {
       children: [
         avatar,
         const SizedBox(width: 8),
-        Flexible(
-          child: Text(
-            user?.label ?? context.localized.unknown,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
+        Flexible(child: Text(user?.label ?? context.localized.unknown, overflow: TextOverflow.ellipsis)),
       ],
     );
   }

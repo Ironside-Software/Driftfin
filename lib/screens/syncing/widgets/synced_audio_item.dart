@@ -22,12 +22,7 @@ import 'package:driftfin/util/size_formatting.dart';
 import 'package:driftfin/widgets/shared/icon_button_await.dart';
 
 class SyncedAudioItem extends ConsumerStatefulWidget {
-  const SyncedAudioItem({
-    required this.audio,
-    required this.syncedItem,
-    this.playlistMode = false,
-    super.key,
-  });
+  const SyncedAudioItem({required this.audio, required this.syncedItem, this.playlistMode = false, super.key});
 
   final AudioModel audio;
   final SyncedItem syncedItem;
@@ -82,7 +77,8 @@ class _SyncedAudioItemState extends ConsumerState<SyncedAudioItem> {
       final artistLabel = widget.audio.artistsLabel;
       final trackLabel = widget.audio.trackLabel(context, widget.audio.trackNumber);
       final albumLabel = widget.audio.albumLabel();
-      final coverImage = widget.audio.getPosters?.primary ??
+      final coverImage =
+          widget.audio.getPosters?.primary ??
           widget.audio.getPosters?.backDrop?.firstOrNull ??
           parentAlbumItem?.itemModel?.getPosters?.primary ??
           parentAlbumItem?.itemModel?.getPosters?.backDrop?.firstOrNull;
@@ -102,10 +98,7 @@ class _SyncedAudioItemState extends ConsumerState<SyncedAudioItem> {
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Card(
-                      child: DriftfinImage(
-                        image: coverImage,
-                        fit: BoxFit.cover,
-                      ),
+                      child: DriftfinImage(image: coverImage, fit: BoxFit.cover),
                     ),
                   ),
                 ),
@@ -155,10 +148,15 @@ class _SyncedAudioItemState extends ConsumerState<SyncedAudioItem> {
                   else
                     Flexible(
                       child: SyncLabel(
-                        label:
-                            context.localized.totalSize(ref.watch(syncSizeProvider(syncedItem, [])).byteFormat ?? '--'),
-                        status: ref.watch(syncDownloadStatusProvider(syncedItem, [])
-                            .select((value) => value?.status ?? TaskStatus.notFound)),
+                        label: context.localized.totalSize(
+                          ref.watch(syncSizeProvider(syncedItem, const [])).byteFormat ?? '--',
+                        ),
+                        status: ref.watch(
+                          syncDownloadStatusProvider(
+                            syncedItem,
+                            const [],
+                          ).select((value) => value?.status ?? TaskStatus.notFound),
+                        ),
                       ),
                     ),
                 ],

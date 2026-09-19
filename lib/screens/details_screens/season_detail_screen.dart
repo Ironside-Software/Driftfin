@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/item_base_model.dart';
@@ -34,8 +35,7 @@ class SeasonDetailScreen extends ConsumerStatefulWidget {
 
 class _SeasonDetailScreenState extends ConsumerState<SeasonDetailScreen> {
   Set<EpisodeDetailsViewType> viewOptions = {EpisodeDetailsViewType.grid};
-  AutoDisposeStateNotifierProvider<SeasonDetailsNotifier, SeasonModel?> get providerId =>
-      seasonDetailsProvider(widget.item.id);
+  StateNotifierProvider<SeasonDetailsNotifier, SeasonModel?> get providerId => seasonDetailsProvider(widget.item.id);
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +45,7 @@ class _SeasonDetailScreenState extends ConsumerState<SeasonDetailScreen> {
       label: details?.localizedName(context.localized) ?? "",
       windowTitle: details?.windowTitle(context.localized),
       item: details,
-      actions: (context) => details?.generateActions(context, ref, exclude: {
-        ItemActions.details,
-      }),
+      actions: (context) => details?.generateActions(context, ref, exclude: {ItemActions.details}),
       onRefresh: () async {
         await ref.read(providerId.notifier).fetchDetails(widget.item.id);
       },
@@ -119,13 +117,7 @@ class _SeasonDetailScreenState extends ConsumerState<SeasonDetailScreen> {
                                   (e) => ButtonSegment(
                                     value: e,
                                     icon: Icon(e.icon),
-                                    label: SizedBox(
-                                        height: 40,
-                                        child: Center(
-                                          child: Text(
-                                            e.name.capitalize(),
-                                          ),
-                                        )),
+                                    label: SizedBox(height: 40, child: Center(child: Text(e.name.capitalize()))),
                                   ),
                                 )
                                 .toList(),
@@ -141,9 +133,7 @@ class _SeasonDetailScreenState extends ConsumerState<SeasonDetailScreen> {
                     ],
                   ).padding(padding),
                   if (details.overview.summary.isNotEmpty)
-                    ExpandingText(
-                      text: details.overview.summary,
-                    ).padding(padding),
+                    ExpandingText(text: details.overview.summary).padding(padding),
                   if (details.overview.directors.isNotEmpty)
                     PersonList(
                       label: context.localized.director(2),
@@ -152,33 +142,22 @@ class _SeasonDetailScreenState extends ConsumerState<SeasonDetailScreen> {
                   if (details.overview.writers.isNotEmpty)
                     PersonList(label: context.localized.writer(2), people: details.overview.writers).padding(padding),
                   if (details.episodes.isNotEmpty)
-                    EpisodeDetailsList(
-                      viewType: viewOptions.first,
-                      episodes: details.episodes,
-                      padding: padding,
-                    ),
+                    EpisodeDetailsList(viewType: viewOptions.first, episodes: details.episodes, padding: padding),
                   if (details.overview.people.mainCast.isNotEmpty)
-                    PeopleRow(
-                      people: details.overview.people.mainCast,
-                      contentPadding: padding,
-                    ),
+                    PeopleRow(people: details.overview.people.mainCast, contentPadding: padding),
                   if (details.overview.people.guestActors.isNotEmpty)
-                    PeopleRow(
-                      people: details.overview.people.guestActors,
-                      contentPadding: padding,
-                    ),
+                    PeopleRow(people: details.overview.people.guestActors, contentPadding: padding),
                   if (details.specialFeatures.isNotEmpty)
                     SpecialFeaturesRow(
-                        contentPadding: padding,
-                        label: context.localized.specialFeature(details.specialFeatures.length),
-                        specialFeatures: details.specialFeatures),
+                      contentPadding: padding,
+                      label: context.localized.specialFeature(details.specialFeatures.length),
+                      specialFeatures: details.specialFeatures,
+                    ),
                   if (details.overview.externalUrls?.isNotEmpty == true)
                     Padding(
                       padding: padding,
-                      child: ExternalUrlsRow(
-                        urls: details.overview.externalUrls,
-                      ),
-                    )
+                      child: ExternalUrlsRow(urls: details.overview.externalUrls),
+                    ),
                 ].addPadding(const EdgeInsets.symmetric(vertical: 16)),
               )
             : null,
