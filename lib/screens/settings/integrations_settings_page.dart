@@ -138,6 +138,9 @@ class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsP
   String _seerrStatusLabel(BuildContext context, SeerrCredentialsModel? credentials, SeerrUserModel? seerrUser) {
     if (credentials == null || credentials.serverUrl.isEmpty) return context.localized.seerrNotConfigured;
 
+    if (credentials.isConfigured && credentials.origin != CredentialOrigin.manual) {
+      return context.localized.integrationCredentialsReconnect;
+    }
     if (credentials.sessionCookie.isNotEmpty || credentials.apiKey.isNotEmpty) {
       if (seerrUser == null) {
         return context.localized.seerrLoadingUser;

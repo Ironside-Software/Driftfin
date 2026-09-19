@@ -8,7 +8,7 @@
     <RootNamespace>Jellyfin.Plugin.Driftfin</RootNamespace>
     <AssemblyName>Jellyfin.Plugin.Driftfin</AssemblyName>
     <!-- Keep in sync with build.yaml; CI validates the version and target ABI. -->
-    <Version>2.0.0.0</Version>
+    <Version>3.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

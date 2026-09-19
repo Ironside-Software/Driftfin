@@ -1583,5 +1583,6 @@
   "discoveryUnavailable": "Unavailable",
   "discoveryLoadMore": "More discovery results",
   "discoveryLibraryResults": "Library results",
-  "discoveryLibraryOnlyFilters": "Clear library filters to search all sources."
+  "discoveryLibraryOnlyFilters": "Clear library filters to search all sources.",
+  "integrationCredentialsReconnect": "Reconnect to confirm saved integration credentials"
 }

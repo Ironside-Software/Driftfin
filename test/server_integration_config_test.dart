@@ -135,6 +135,15 @@ void main() {
       expect(result.config, isNotNull);
     });
 
+    test('retired legacy contract marks the server managed without importing credentials', () async {
+      final client = MockClient((_) async => http.Response('{"reason":"upgrade_required"}', 426));
+      final result = await fetchServerIntegrationConfigDiagnostic(url, const {}, client);
+      expect(result.status, ServerIntegrationConfigStatus.incompatible);
+      expect(result.config?.managedProtocol, isTrue);
+      expect(result.config?.seerr.apiKey, isEmpty);
+      expect(result.detail, 'upgrade_required');
+    });
+
     test('noPlugin on 404', () async {
       final client = MockClient((_) async => http.Response('', 404));
       final result = await fetchServerIntegrationConfigDiagnostic(url, const {}, client);

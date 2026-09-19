@@ -81,16 +81,28 @@ def main():
             plugins = request('/Plugins', token=admin)
             assert any(p['Name'] == 'Driftfin' and p['Status'] == 'Active' for p in plugins), 'Plugin not active'
             request('/Driftfin/Config', status=401)
-            original = request('/Driftfin/Config', token=admin)
-            assert original['localUrl'] == 'http://legacy-server:8096', 'Saved configuration was not migrated'
-            assert original['seerr']['apiKey'] == 'fixture-key'
+            upgrade = {'reason': 'upgrade_required', 'protocolVersion': 1}
+            assert request('/Driftfin/Config', token=admin, status=426) == upgrade
+            admin_config_path = '/Plugins/a3b1e7c4-1d2f-4b8a-9c6e-7f0d2e5a9b11/Configuration'
+            saved = request(admin_config_path, token=admin)
+            assert saved['LocalUrl'] == 'http://legacy-server:8096', 'Saved configuration was not migrated'
+            assert saved['SeerrApiKey'] == 'fixture-key'
+            original = {
+                'localUrl': saved['LocalUrl'],
+                'seerr': {'enabled': saved['SeerrEnabled'], 'url': saved['SeerrUrl'],
+                          'apiKey': saved['SeerrApiKey']},
+                'sonarr': {'enabled': False, 'url': '', 'apiKey': ''},
+                'radarr': {'enabled': False, 'url': '', 'apiKey': ''},
+                'trakt': {'enabled': False, 'clientId': '', 'clientSecret': ''},
+            }
             original['localUrl'] = 'http://updated-server:8096'
             request('/Driftfin/Config', original, token=admin, status=204)
-            assert request('/Driftfin/Config', token=admin)['localUrl'] == original['localUrl']
+            assert request(admin_config_path, token=admin)['LocalUrl'] == original['localUrl']
             request('/Users/New', {'Name': 'member', 'Password': password}, token=admin)
             member = request('/Users/AuthenticateByName', {'Username': 'member', 'Pw': password},
                              device='member')['AccessToken']
-            request('/Driftfin/Config', token=member, device='member')
+            assert request('/Driftfin/Config', token=member, device='member', status=426) == upgrade
+            request(admin_config_path, token=member, device='member', status=403)
             request('/Driftfin/Config', original, token=member, device='member', status=403)
             request('/Driftfin/v1/capabilities', status=401)
             request('/Driftfin/v1/integrations/seerr/check', {}, token=member, device='member', status=403)
