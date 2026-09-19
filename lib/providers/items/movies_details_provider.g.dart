@@ -52,7 +52,7 @@ final class MovieDetailsProvider extends $NotifierProvider<MovieDetails, MovieMo
   }
 }
 
-String _$movieDetailsHash() => r'cef764853d7527e173927bd45b9cd0a5c78a2b63';
+String _$movieDetailsHash() => r'd068323f85857be24703c88579a933a8b2ad1390';
 
 final class MovieDetailsFamily extends $Family
     with $ClassFamilyOverride<MovieDetails, MovieModel?, MovieModel?, MovieModel?, String> {

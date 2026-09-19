@@ -1,3 +1,4 @@
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -198,7 +199,7 @@ class SeerrRequest extends _$SeerrRequest {
     final poster = state.poster;
     if (poster == null) return null;
 
-    final canOverrideUser = state.currentUser?.canManageUsers ?? false;
+    final canOverrideUser = !ref.read(managedIntegrationsProvider) && (state.currentUser?.canManageUsers ?? false);
     final userId = canOverrideUser ? state.selectedUser?.id ?? state.currentUser?.id : null;
     final tags = state.selectedTags.map((t) => t.id).whereType<int>().toList();
 
@@ -219,8 +220,7 @@ class SeerrRequest extends _$SeerrRequest {
         rootFolder: rootFolder,
         tags: tags,
         seasons: state.selectedSeasonNumbers,
-      ))
-          .apiResult;
+      )).apiResult;
     } else {
       return (await api.requestMovie(
         tmdbId: poster.tmdbId,
@@ -230,8 +230,7 @@ class SeerrRequest extends _$SeerrRequest {
         profileId: profileId,
         rootFolder: rootFolder,
         tags: tags,
-      ))
-          .apiResult;
+      )).apiResult;
     }
   }
 
@@ -256,10 +255,7 @@ class SeerrRequest extends _$SeerrRequest {
       selection[number] = locked;
     }
 
-    state = state.copyWith(
-      selectedSeasons: selection,
-      seasonStatuses: statuses,
-    );
+    state = state.copyWith(selectedSeasons: selection, seasonStatuses: statuses);
   }
 
   void selectAllSeasons() {
@@ -306,13 +302,13 @@ abstract class SeerrRequestModel with _$SeerrRequestModel {
 
   SeerrUserModel? get requestingUser => selectedUser ?? currentUser;
 
-  List<SeerrMediaRequest> get _activeRequests => (poster?.mediaInfo?.requests ?? const <SeerrMediaRequest>[]).where(
-        (request) {
-          if (request.id == null) return false;
-          final status = SeerrRequestStatus.fromRaw(request.status);
-          return status == SeerrRequestStatus.pending || status == SeerrRequestStatus.approved;
-        },
-      ).toList(growable: false);
+  List<SeerrMediaRequest> get _activeRequests => (poster?.mediaInfo?.requests ?? const <SeerrMediaRequest>[])
+      .where((request) {
+        if (request.id == null) return false;
+        final status = SeerrRequestStatus.fromRaw(request.status);
+        return status == SeerrRequestStatus.pending || status == SeerrRequestStatus.approved;
+      })
+      .toList(growable: false);
 
   bool get hasExistingRequest => _activeRequests.isNotEmpty;
 
@@ -380,8 +376,10 @@ abstract class SeerrRequestModel with _$SeerrRequestModel {
       isTv ? (selectedSonarrServer?.tags ?? const []) : (selectedRadarrServer?.tags ?? const []);
 
   List<int>? get selectedSeasonNumbers {
-    final enabled =
-        selectedSeasons.entries.where((e) => e.value && !isRequestedAlready(e.key)).map((e) => e.key).toList();
+    final enabled = selectedSeasons.entries
+        .where((e) => e.value && !isRequestedAlready(e.key))
+        .map((e) => e.key)
+        .toList();
     if (enabled.isEmpty) return null;
     return enabled;
   }
@@ -438,15 +436,14 @@ abstract class SeerrRequestModel with _$SeerrRequestModel {
 
     if (profiles == null || profiles.isEmpty) return null;
     if (activeId == null) return profiles.first;
-    return profiles.firstWhereOrNull(
-      (p) => p.id == activeId,
-    );
+    return profiles.firstWhereOrNull((p) => p.id == activeId);
   }
 
   String? pickRootFolderForServer(SeerrServer? server) {
     final folders = server?.rootFolders;
-    final activeDirectory =
-        server is SeerrSonarrServer && isAnime ? server.activeAnimeDirectory : server?.activeDirectory;
+    final activeDirectory = server is SeerrSonarrServer && isAnime
+        ? server.activeAnimeDirectory
+        : server?.activeDirectory;
 
     final available = folders ?? const [];
     if (available.isEmpty) return activeDirectory;

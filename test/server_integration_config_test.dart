@@ -122,11 +122,14 @@ void main() {
     const url = 'http://server/Driftfin/Config';
 
     test('ok on 200 with a config', () async {
-      final client = MockClient((_) async => http.Response(
+      final client = MockClient(
+        (_) async => http.Response(
           jsonEncode({
-            'sonarr': {'enabled': true}
+            'sonarr': {'enabled': true},
           }),
-          200));
+          200,
+        ),
+      );
       final result = await fetchServerIntegrationConfigDiagnostic(url, const {}, client);
       expect(result.status, ServerIntegrationConfigStatus.ok);
       expect(result.config, isNotNull);
@@ -157,11 +160,11 @@ void main() {
       expect(result.status, ServerIntegrationConfigStatus.invalidResponse);
     });
 
-    test('requestFailed with the error text on a network/timeout failure', () async {
+    test('requestFailed redacts the exception text on a network/timeout failure', () async {
       final client = MockClient((_) async => throw Exception('boom'));
       final result = await fetchServerIntegrationConfigDiagnostic(url, const {}, client);
       expect(result.status, ServerIntegrationConfigStatus.requestFailed);
-      expect(result.detail, contains('boom'));
+      expect(result.detail, isNot(contains('boom')));
     });
   });
 
@@ -192,10 +195,7 @@ void main() {
 
     test('load() with no server URL leaves config null; clear() resets', () async {
       final container = ProviderContainer(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-          serverUrlProvider.overrideWith((ref) => ''),
-        ],
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs), serverUrlProvider.overrideWith((ref) => '')],
       );
       addTearDown(container.dispose);
 

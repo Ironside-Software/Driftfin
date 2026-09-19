@@ -8,6 +8,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr/seerr_request_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/screens/seerr/widgets/request_configuration_section.dart';
 import 'package:driftfin/screens/seerr/widgets/request_popup_widgets.dart';
 import 'package:driftfin/screens/seerr/widgets/seasons_section.dart';
@@ -110,7 +111,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                       children: [
                         if (model.images.primary != null)
                           FocusButton(
-                            onTap: () => openSeerrLink(context, model),
+                            onTap: ref.watch(managedIntegrationsProvider) ? null : () => openSeerrLink(context, model),
                             borderRadius: BorderRadius.circular(8),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),

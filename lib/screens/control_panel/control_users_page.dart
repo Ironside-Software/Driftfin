@@ -44,90 +44,78 @@ class ControlUsersPage extends ConsumerWidget {
             child: Column(
               spacing: 16,
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: users.mapIndexed(
-                (index, user) {
-                  final userActions = [
-                    ItemActionButton(
-                      action: () {
-                        final server = currentUser?.credentials.url;
-                        final seerr = currentUser?.seerrCredentials?.serverUrl;
-                        openAuthLinkDialog(
-                          context,
-                          serverUrl: server ?? "",
-                          seerrUrl: seerr,
-                          user: user,
+              children: users.mapIndexed((index, user) {
+                final userActions = [
+                  ItemActionButton(
+                    action: () {
+                      final server = currentUser?.credentials.url;
+                      final seerr = currentUser?.managedIntegrations == true
+                          ? null
+                          : currentUser?.seerrCredentials?.serverUrl;
+                      openAuthLinkDialog(context, serverUrl: server ?? "", seerrUrl: seerr, user: user);
+                    },
+                    label: Text(context.localized.generateLoginLink(user.name)),
+                    icon: const Icon(Icons.qr_code),
+                  ),
+                  ItemActionButton(
+                    action: user.id == ref.read(userProvider)?.id
+                        ? null
+                        : () {
+                            showDefaultAlertDialog(
+                              context,
+                              context.localized.deleteUserTitle(user.name),
+                              context.localized.deleteUserDesc(user.name),
+                              (context) async {
+                                provider.deleteUser(user.id);
+                                Navigator.of(context).pop();
+                              },
+                              context.localized.delete,
+                              (context) => context.pop(),
+                              context.localized.cancel,
+                            );
+                          },
+                    label: Text(context.localized.delete),
+                    icon: const Icon(IconsaxPlusBold.profile_delete),
+                  ),
+                ];
+                return FocusButton(
+                  autoFocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad && index == 0,
+                  onTap: () => context.tabsRouter.navigate(ControlUserEditRoute(userId: user.id)),
+                  onLongPress: () {
+                    showBottomSheetPill(
+                      context: context,
+                      content: (context, controller) {
+                        return ListView(
+                          controller: controller,
+                          shrinkWrap: true,
+                          children: userActions.listTileItems(context, useIcons: true),
                         );
                       },
-                      label: Text(context.localized.generateLoginLink(user.name)),
-                      icon: const Icon(Icons.qr_code),
-                    ),
-                    ItemActionButton(
-                      action: user.id == ref.read(userProvider)?.id
-                          ? null
-                          : () {
-                              showDefaultAlertDialog(
-                                context,
-                                context.localized.deleteUserTitle(user.name),
-                                context.localized.deleteUserDesc(user.name),
-                                (context) async {
-                                  provider.deleteUser(user.id);
-                                  Navigator.of(context).pop();
-                                },
-                                context.localized.delete,
-                                (context) => context.pop(),
-                                context.localized.cancel,
-                              );
-                            },
-                      label: Text(context.localized.delete),
-                      icon: const Icon(IconsaxPlusBold.profile_delete),
-                    ),
-                  ];
-                  return FocusButton(
-                    autoFocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad && index == 0,
-                    onTap: () => context.tabsRouter.navigate(ControlUserEditRoute(userId: user.id)),
-                    onLongPress: () {
-                      showBottomSheetPill(
-                        context: context,
-                        content: (context, controller) {
-                          return ListView(
-                            controller: controller,
-                            shrinkWrap: true,
-                            children: userActions.listTileItems(
-                              context,
-                              useIcons: true,
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    onSecondaryTapDown: (globalPos) =>
-                        _showContextMenu(context, ref, globalPos.globalPosition, userActions),
-                    child: SizedBox(
-                      width: 200,
-                      child: _UserListItem(user: user),
-                    ),
-                  );
-                },
-              ).toList(),
+                    );
+                  },
+                  onSecondaryTapDown: (globalPos) =>
+                      _showContextMenu(context, ref, globalPos.globalPosition, userActions),
+                  child: SizedBox(width: 200, child: _UserListItem(user: user)),
+                );
+              }).toList(),
             ),
           ),
-          const Divider(
-            indent: 32,
-            endIndent: 32,
-          ),
+          const Divider(indent: 32, endIndent: 32),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Builder(builder: (context) {
-              return FilledButton.icon(
-                onPressed: () async {
-                  await openUserCreateDialog(context);
-                  context.refreshData();
-                },
-                icon: const Icon(Icons.add),
-                label: Text(context.localized.createNewUser),
-              );
-            }),
-          )
+            child: Builder(
+              builder: (context) {
+                return FilledButton.icon(
+                  onPressed: () async {
+                    await openUserCreateDialog(context);
+                    context.refreshData();
+                  },
+                  icon: const Icon(Icons.add),
+                  label: Text(context.localized.createNewUser),
+                );
+              },
+            ),
+          ),
         ],
       ),
       onRefresh: () => provider.fetchUsers(),
@@ -135,13 +123,13 @@ class ControlUsersPage extends ConsumerWidget {
   }
 
   Future<void> _showContextMenu(
-      BuildContext context, WidgetRef ref, Offset globalPos, List<ItemAction> otherActions) async {
+    BuildContext context,
+    WidgetRef ref,
+    Offset globalPos,
+    List<ItemAction> otherActions,
+  ) async {
     final position = RelativeRect.fromLTRB(globalPos.dx, globalPos.dy, globalPos.dx, globalPos.dy);
-    await showMenu(
-      context: context,
-      position: position,
-      items: otherActions.popupMenuItems(useIcons: true),
-    );
+    await showMenu(context: context, position: position, items: otherActions.popupMenuItems(useIcons: true));
   }
 }
 
@@ -173,10 +161,7 @@ class _UserListItem extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Flexible(
-                    child: UserIcon(
-                      labelStyle: Theme.of(context).textTheme.headlineMedium,
-                      user: user,
-                    ),
+                    child: UserIcon(labelStyle: Theme.of(context).textTheme.headlineMedium, user: user),
                   ),
                 ],
               ),
@@ -187,12 +172,7 @@ class _UserListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Flexible(
-                    child: Text(
-                      user.name,
-                      maxLines: 2,
-                      softWrap: true,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
+                    child: Text(user.name, maxLines: 2, softWrap: true, style: Theme.of(context).textTheme.titleMedium),
                   ),
                   Flexible(
                     child: Text(
@@ -200,14 +180,13 @@ class _UserListItem extends StatelessWidget {
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       "${context.localized.lastActivity} ${user.lastUsed.timeAgo(context) ?? ""}",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -47,7 +47,8 @@ class User extends _$User {
   Future<Response<bool>> quickConnect(String pin) async => api.quickConnect(pin);
 
   Future<Response<AccountModel>?> updateInformation() async {
-    if (state == null) return null;
+    final account = state;
+    if (account == null) return null;
     try {
       var response = await api.usersMeGet();
       var quickConnectStatus = await api.quickConnectEnabled();
@@ -59,6 +60,11 @@ class User extends _$User {
 
       final user = response.body;
       if (user == null) return null;
+      if (!ref.mounted ||
+          state?.sameIdentity(account) != true ||
+          state?.credentials.token != account.credentials.token) {
+        return null;
+      }
 
       if (response.isSuccessful && response.body != null) {
         userState = state?.copyWith(
@@ -87,7 +93,9 @@ class User extends _$User {
   /// applies the Seerr part (the *.arr/Trakt providers listen for it
   /// themselves). A missing plugin leaves everything on local settings.
   Future<void> _loadServerIntegrationConfig() async {
+    final account = state;
     await ref.read(serverIntegrationConfigProvider.notifier).load();
+    if (!ref.mounted || account == null || state?.sameIdentity(account) != true) return;
     final config = ref.read(serverIntegrationConfigProvider);
 
     // A server-wide local URL from the plugin applies to every user on the
@@ -98,7 +106,7 @@ class User extends _$User {
     }
 
     final seerr = config?.seerr;
-    if (seerr != null && seerr.isManaged) {
+    if (seerr != null && seerr.isManaged && !seerr.viaPlugin) {
       // Adopt only the server-provided URL. Injecting the shared admin API key
       // here authenticated every user as the admin; instead each user signs in
       // to Seerr as themselves (Jellyfin/local login yields a per-user session
@@ -127,8 +135,9 @@ class User extends _$User {
 
     final normalizedLanguage = language?.trim().toLowerCase();
     final updated = currentUserConfiguration.copyWithWrapped(
-      subtitleLanguagePreference:
-          Wrapped<String?>.value((normalizedLanguage?.isEmpty ?? true) ? null : normalizedLanguage),
+      subtitleLanguagePreference: Wrapped<String?>.value(
+        (normalizedLanguage?.isEmpty ?? true) ? null : normalizedLanguage,
+      ),
     );
     final newUserConfiguration = await api.updateUserConfiguration(updated);
     if (newUserConfiguration != null) {
@@ -227,13 +236,8 @@ class User extends _$User {
 
   Future<Response<UserData>?> markAsPlayed(bool enable, String itemId) async {
     final response = await (enable
-        ? api.usersUserIdPlayedItemsItemIdPost(
-            itemId: itemId,
-            datePlayed: DateTime.now(),
-          )
-        : api.usersUserIdPlayedItemsItemIdDelete(
-            itemId: itemId,
-          ));
+        ? api.usersUserIdPlayedItemsItemIdPost(itemId: itemId, datePlayed: DateTime.now())
+        : api.usersUserIdPlayedItemsItemIdDelete(itemId: itemId));
     return Response(response.base, UserData.fromDto(response.body));
   }
 
@@ -244,28 +248,21 @@ class User extends _$User {
   void setLocalURL(String? value) {
     final user = state;
     if (user == null) return;
-    state = user.copyWith(
-      credentials: user.credentials.copyWith(localUrl: value?.isEmpty == true ? null : value),
-    );
+    state = user.copyWith(credentials: user.credentials.copyWith(localUrl: value?.isEmpty == true ? null : value));
     userState = state;
   }
 
   void setSeerrServerUrl(String? value) {
     final user = state;
     if (user == null) return;
-    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(
-      serverUrl: value?.trim() ?? "",
-    );
+    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(serverUrl: value?.trim() ?? "");
     userState = user.copyWith(seerrCredentials: updated);
   }
 
   void logoutSeerr() {
     final user = state;
     if (user == null) return;
-    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(
-      apiKey: "",
-      sessionCookie: "",
-    );
+    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(apiKey: "", sessionCookie: "");
     userState = user.copyWith(seerrCredentials: updated);
   }
 
@@ -274,6 +271,7 @@ class User extends _$User {
     if (user == null) return;
     final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(
       apiKey: value?.trim() ?? "",
+      origin: CredentialOrigin.manual,
     );
     userState = user.copyWith(seerrCredentials: updated);
   }
@@ -283,6 +281,7 @@ class User extends _$User {
     if (user == null) return;
     final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(
       sessionCookie: value?.trim() ?? "",
+      origin: CredentialOrigin.manual,
     );
     userState = user.copyWith(seerrCredentials: updated);
   }
@@ -290,18 +289,14 @@ class User extends _$User {
   void setSeerrCustomHeaders(Map<String, String> headers) {
     final user = state;
     if (user == null) return;
-    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(
-      customHeaders: headers,
-    );
+    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(customHeaders: headers);
     userState = user.copyWith(seerrCredentials: updated);
   }
 
   void clearSeerrCustomHeaders() {
     final user = state;
     if (user == null) return;
-    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(
-      customHeaders: {},
-    );
+    final updated = (user.seerrCredentials ?? const SeerrCredentialsModel()).copyWith(customHeaders: {});
     userState = user.copyWith(seerrCredentials: updated);
   }
 
@@ -351,8 +346,9 @@ class User extends _$User {
     final currentList = (state?.userSettings?.libraryFilters ?? state?.libraryFilters ?? []).toList(growable: true);
     currentList.remove(model);
 
-    final userSettings =
-        state == null ? null : (state?.userSettings ?? UserSettings()).copyWith(libraryFilters: currentList);
+    final userSettings = state == null
+        ? null
+        : (state?.userSettings ?? UserSettings()).copyWith(libraryFilters: currentList);
     if (userSettings != null) {
       updateCustomConfig(userSettings);
     }
@@ -374,8 +370,9 @@ class User extends _$User {
         }
       }
     }
-    final userSettings =
-        state == null ? null : (state?.userSettings ?? UserSettings()).copyWith(libraryFilters: currentList);
+    final userSettings = state == null
+        ? null
+        : (state?.userSettings ?? UserSettings()).copyWith(libraryFilters: currentList);
     if (userSettings != null) {
       updateCustomConfig(userSettings);
     }
@@ -385,11 +382,13 @@ class User extends _$User {
     final currentList = (state?.userSettings?.libraryFilters ?? state?.libraryFilters ?? []).toList(growable: true);
     final index = currentList.indexWhere((value) => value.id == model.id);
     if (index != -1) {
-      final updatedModel =
-          model.copyWith(sortKeys: model.sortKeys.setKey(FilterSortKey.sideBar, false, addIfNotExists: true));
+      final updatedModel = model.copyWith(
+        sortKeys: model.sortKeys.setKey(FilterSortKey.sideBar, false, addIfNotExists: true),
+      );
       currentList[index] = updatedModel;
-      final userSettings =
-          state == null ? null : (state?.userSettings ?? UserSettings()).copyWith(libraryFilters: currentList);
+      final userSettings = state == null
+          ? null
+          : (state?.userSettings ?? UserSettings()).copyWith(libraryFilters: currentList);
       if (userSettings != null) {
         updateCustomConfig(userSettings);
       }
@@ -410,17 +409,11 @@ class User extends _$User {
     required bool enableAllFolders,
     required List<String> enabledFolders,
   }) async {
-    final newUser = (await api.createNewUser(
-      CreateUserByName(name: userName, password: password),
-    ))
-        .body;
+    final newUser = (await api.createNewUser(CreateUserByName(name: userName, password: password))).body;
     if (newUser == null) return;
     await api.setUserPolicy(
       id: newUser.id ?? "",
-      policy: newUser.policy?.copyWith(
-        enableAllFolders: enableAllFolders,
-        enabledFolders: enabledFolders,
-      ),
+      policy: newUser.policy?.copyWith(enableAllFolders: enableAllFolders, enabledFolders: enabledFolders),
     );
   }
 
@@ -443,9 +436,7 @@ class User extends _$User {
   void setDashboardSorting(List<DashboardSorting> items) {
     final currentSorting = state?.userSettings?.dashboardSorting ?? {};
 
-    final updatedSorting = <DashboardSorting, bool>{
-      for (final item in items) item: currentSorting[item] ?? true,
-    };
+    final updatedSorting = <DashboardSorting, bool>{for (final item in items) item: currentSorting[item] ?? true};
 
     final newUserSettings = state?.userSettings?.copyWith(pDashboardSorting: updatedSorting);
 

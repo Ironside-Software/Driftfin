@@ -18,6 +18,7 @@ import 'package:driftfin/providers/related_provider.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 
@@ -106,8 +107,7 @@ class SeriesDetailViewNotifier extends StateNotifier<SeriesModel?> {
 
       String? seerrUrl;
 
-      final seerrCreds = ref.read(userProvider)?.seerrCredentials;
-      if (seerrCreds?.isConfigured == true) {
+      if (ref.read(seerrAvailableProvider)) {
         final tmdbId = newState.tmdbId;
         if (tmdbId != null) {
           final seerr = ref.read(seerrApiProvider);
@@ -115,7 +115,7 @@ class SeriesDetailViewNotifier extends StateNotifier<SeriesModel?> {
           seerrRecommended = await seerr.discoverRecommendedSeries(tmdbId: tmdbId);
           final seerrPoster = await seerr.fetchDashboardPosterFromIds(tmdbId: tmdbId, mediaType: SeerrMediaType.tvshow);
           final status = seerrPoster?.mediaInfo?.mediaStatus;
-          if (status != SeerrMediaStatus.unknown) {
+          if (status != SeerrMediaStatus.unknown && !ref.read(managedIntegrationsProvider)) {
             final seerrServerUrl = ref.read(userProvider.select((value) => value?.seerrCredentials?.serverUrl));
             seerrUrl = '${seerrServerUrl}tv/$tmdbId';
           }

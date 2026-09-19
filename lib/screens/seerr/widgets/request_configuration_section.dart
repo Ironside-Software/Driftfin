@@ -1,3 +1,4 @@
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,10 +13,7 @@ import 'package:driftfin/widgets/shared/item_actions.dart';
 class RequestConfigurationSection extends ConsumerWidget {
   final SeerrRequestModel requestState;
 
-  const RequestConfigurationSection({
-    required this.requestState,
-    super.key,
-  });
+  const RequestConfigurationSection({required this.requestState, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,10 +34,11 @@ class RequestConfigurationSection extends ConsumerWidget {
     final notifier = ref.read(seerrRequestProvider.notifier);
 
     String rootFolderLabel(BuildContext context, String folder, String? defaultFolder) {
+      final label = folder.startsWith('folder:') ? '${context.localized.rootFolder} ${folder.substring(7)}' : folder;
       if (defaultFolder != null && folder == defaultFolder) {
-        return context.localized.rootFolderDefaultLabel(folder);
+        return context.localized.rootFolderDefaultLabel(label);
       }
-      return folder;
+      return label;
     }
 
     return Column(
@@ -68,10 +67,12 @@ class RequestConfigurationSection extends ConsumerWidget {
             label: Text(context.localized.qualityProfile),
             current: requestState.selectedProfile?.name ?? context.localized.selectProfile,
             itemBuilder: (context) => availableProfiles
-                .map((profile) => ItemActionButton(
-                      label: Text(profile.name ?? context.localized.unknown),
-                      action: () => notifier.selectProfile(profile),
-                    ))
+                .map(
+                  (profile) => ItemActionButton(
+                    label: Text(profile.name ?? context.localized.unknown),
+                    action: () => notifier.selectProfile(profile),
+                  ),
+                )
                 .toList(),
           ),
         if (availableRootFolders.isNotEmpty)
@@ -81,10 +82,12 @@ class RequestConfigurationSection extends ConsumerWidget {
                 ? rootFolderLabel(context, requestState.selectedRootFolder!, defaultRootFolder)
                 : context.localized.selectFolder,
             itemBuilder: (context) => availableRootFolders
-                .map((folder) => ItemActionButton(
-                      label: Text(rootFolderLabel(context, folder, defaultRootFolder)),
-                      action: () => notifier.selectRootFolder(folder),
-                    ))
+                .map(
+                  (folder) => ItemActionButton(
+                    label: Text(rootFolderLabel(context, folder, defaultRootFolder)),
+                    action: () => notifier.selectRootFolder(folder),
+                  ),
+                )
                 .toList(),
           ),
         if (availableTags.isNotEmpty)
@@ -94,26 +97,25 @@ class RequestConfigurationSection extends ConsumerWidget {
                 ? context.localized.noTags
                 : requestState.selectedTags.map((t) => t.label).join(', '),
             itemBuilder: (context) => [
-              ItemActionButton(
-                label: Text(context.localized.noTags),
-                action: () => notifier.selectTags([]),
+              ItemActionButton(label: Text(context.localized.noTags), action: () => notifier.selectTags([])),
+              ...availableTags.map(
+                (tag) => ItemActionButton(
+                  label: Text(tag.label ?? context.localized.unknown),
+                  selected: requestState.selectedTags.any((t) => t.id == tag.id),
+                  action: () {
+                    final current = List<SeerrServiceTag>.from(requestState.selectedTags);
+                    if (current.any((t) => t.id == tag.id)) {
+                      current.removeWhere((t) => t.id == tag.id);
+                    } else {
+                      current.add(tag);
+                    }
+                    notifier.selectTags(current);
+                  },
+                ),
               ),
-              ...availableTags.map((tag) => ItemActionButton(
-                    label: Text(tag.label ?? context.localized.unknown),
-                    selected: requestState.selectedTags.any((t) => t.id == tag.id),
-                    action: () {
-                      final current = List<SeerrServiceTag>.from(requestState.selectedTags);
-                      if (current.any((t) => t.id == tag.id)) {
-                        current.removeWhere((t) => t.id == tag.id);
-                      } else {
-                        current.add(tag);
-                      }
-                      notifier.selectTags(current);
-                    },
-                  )),
             ],
           ),
-        if (requestState.currentUser?.canManageUsers == true)
+        if (requestState.currentUser?.canManageUsers == true && !ref.watch(managedIntegrationsProvider))
           EnumSelection(
             label: Text(context.localized.requestAs),
             current: requestState.selectedUser?.label ?? requestState.currentUser?.label ?? context.localized.unknown,

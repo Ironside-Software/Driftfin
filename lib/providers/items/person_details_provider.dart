@@ -12,7 +12,7 @@ import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_service_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
-import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 
 final personDetailsProvider = StateNotifierProvider.autoDispose.family<PersonDetailsNotifier, PersonModel?, String>((
@@ -86,8 +86,7 @@ class PersonDetailsNotifier extends StateNotifier<PersonModel?> {
   Future<void> fetchSeerrCredits() async {
     if (state == null) return;
 
-    final seerrCredentials = ref.read(userProvider)?.seerrCredentials;
-    if (seerrCredentials?.isConfigured != true) {
+    if (!ref.read(seerrAvailableProvider)) {
       state = state?.copyWith(seerrMovies: const [], seerrSeries: const []);
       return;
     }

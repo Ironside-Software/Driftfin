@@ -1,8 +1,11 @@
 import 'dart:developer';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:driftfin/providers/seerr_api_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
+import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 
 part 'seerr_user_provider.g.dart';
@@ -11,6 +14,9 @@ part 'seerr_user_provider.g.dart';
 class SeerrUser extends _$SeerrUser {
   @override
   SeerrUserModel? build() {
+    ref.watch(userProvider.select((user) => (user?.id, user?.credentials.serverId, user?.credentials.token)));
+    ref.watch(serverIntegrationConfigProvider);
+    ref.watch(serverIntegrationConnectionProvider);
     refreshUser();
     return null;
   }

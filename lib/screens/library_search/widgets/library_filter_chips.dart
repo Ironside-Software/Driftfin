@@ -11,7 +11,7 @@ import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/library_search/library_search_model.dart';
 import 'package:driftfin/models/library_search/library_search_options.dart';
 import 'package:driftfin/providers/library_search_provider.dart';
-import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/seerr/widgets/seerr_filter_dialogs.dart';
 import 'package:driftfin/screens/shared/chips/category_chip.dart';
@@ -40,9 +40,7 @@ class _LibraryFilterChipsState extends ConsumerState<LibraryFilterChips> {
     final hideEmpty = ref.watch(librarySearchProvider(uniqueKey).select((v) => v.filters.hideEmptyShows));
     final librarySearchResults = ref.watch(librarySearchProvider(uniqueKey));
 
-    final seerrAuthenticated = ref.watch(
-      userProvider.select((user) => user?.seerrCredentials?.isConfigured ?? false),
-    );
+    final seerrAuthenticated = ref.watch(seerrAvailableProvider);
 
     final chips = [
       if (seerrAuthenticated)
@@ -74,13 +72,8 @@ class _LibraryFilterChipsState extends ConsumerState<LibraryFilterChips> {
         label: Text(context.localized.type(librarySearchResults.filters.types.length)),
         items: librarySearchResults.filters.types.sortByKey((value) => value.label(context.localized)),
         activeIcon: IconsaxPlusBold.filter_tick,
-        labelBuilder: (item) => Row(
-          children: [
-            Icon(item.icon),
-            const SizedBox(width: 12),
-            Text(item.label(context.localized)),
-          ],
-        ),
+        labelBuilder: (item) =>
+            Row(children: [Icon(item.icon), const SizedBox(width: 12), Text(item.label(context.localized))]),
         onSave: (value) => libraryProvider.setTypes(value),
         onClear: () => libraryProvider.setTypes(librarySearchResults.filters.types.setAll(false)),
       ),
@@ -198,24 +191,17 @@ class _LibraryFilterChipsState extends ConsumerState<LibraryFilterChips> {
       policy: ReadingOrderTraversalPolicy(),
       child: Row(
         spacing: 4,
-        children: chips.mapIndexed(
-          (index, element) {
-            final position = index == 0
-                ? PositionContext.first
-                : (index == chips.length - 1 ? PositionContext.last : PositionContext.middle);
-            return PositionProvider(position: position, child: element);
-          },
-        ).toList(),
+        children: chips.mapIndexed((index, element) {
+          final position = index == 0
+              ? PositionContext.first
+              : (index == chips.length - 1 ? PositionContext.last : PositionContext.middle);
+          return PositionProvider(position: position, child: element);
+        }).toList(),
       ),
     );
   }
 
-  void _openGroupDialogue(
-    BuildContext context,
-    WidgetRef ref,
-    LibrarySearchNotifier provider,
-    Key uniqueKey,
-  ) {
+  void _openGroupDialogue(BuildContext context, WidgetRef ref, LibrarySearchNotifier provider, Key uniqueKey) {
     showDialog(
       context: context,
       builder: (context) {

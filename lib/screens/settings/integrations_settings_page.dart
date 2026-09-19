@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/models/seerr_credentials_model.dart';
+import 'package:driftfin/models/plugin_capabilities.dart';
 import 'package:driftfin/models/settings/settings_entry.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
 import 'package:driftfin/providers/server_integration_config_provider.dart';
@@ -33,6 +34,58 @@ class IntegrationsSettingsPage extends ConsumerStatefulWidget {
 
 class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsPage> {
   bool _refreshing = false;
+  final Map<String, ({bool healthy, String? reason, String? correlationId, DateTime? checkedAt})> _checks = {};
+  final Set<String> _checking = {};
+
+  Future<void> _check(String service) async {
+    final account = ref.read(userProvider);
+    setState(() => _checking.add(service));
+    final result = await ref.read(serverIntegrationConfigProvider.notifier).check(service);
+    if (!mounted || account == null || ref.read(userProvider)?.sameIdentity(account) != true) return;
+    setState(() {
+      _checking.remove(service);
+      _checks[service] = result;
+    });
+  }
+
+  Widget _managedService(String service, PluginCapabilities? capabilities) {
+    final integration = capabilities?.integration(service);
+    final result = _checks[service];
+    final feature = capabilities?.feature(service == 'seerr' ? 'discovery' : 'arrManagement');
+    final reason =
+        result?.reason ?? feature?.reason ?? integration?.reason ?? (capabilities == null ? 'unreachable' : null);
+    final status = reason != null
+        ? pluginReasonMessage(context, reason)
+        : result?.healthy == true
+        ? context.localized.pluginHealthy
+        : context.localized.pluginManaged;
+    final checkedAt = result?.checkedAt;
+    return SettingsListTile(
+      label: Text(
+        service == 'seerr'
+            ? 'Seerr'
+            : service == 'sonarr'
+            ? 'Sonarr'
+            : 'Radarr',
+      ),
+      subLabel: Text(
+        [
+          status,
+          if (checkedAt != null)
+            '${context.localized.pluginLastChecked}: ${MaterialLocalizations.of(context).formatTimeOfDay(TimeOfDay.fromDateTime(checkedAt.toLocal()))}',
+          if (result?.correlationId != null) '${context.localized.pluginCheckReference}: ${result!.correlationId}',
+        ].join('\n'),
+      ),
+      onTap: capabilities?.feature('diagnostics').allowed == true && !_checking.contains(service)
+          ? () => _check(service)
+          : null,
+      trailing: _checking.contains(service)
+          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+          : capabilities?.feature('diagnostics').allowed == true
+          ? Tooltip(message: context.localized.pluginCheckConnection, child: const Icon(Icons.network_check))
+          : null,
+    );
+  }
 
   Future<void> _refreshServerConfig() async {
     setState(() => _refreshing = true);
@@ -55,6 +108,16 @@ class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsP
   String _statusMessage(BuildContext context, ServerIntegrationConfigStatus status, String? detail) {
     final l10n = context.localized;
     switch (status) {
+      case ServerIntegrationConfigStatus.legacy:
+        return l10n.pluginLegacy;
+      case ServerIntegrationConfigStatus.loading:
+        return l10n.pluginChecking;
+      case ServerIntegrationConfigStatus.expiredLogin:
+        return l10n.pluginExpired;
+      case ServerIntegrationConfigStatus.forbidden:
+        return l10n.pluginDenied;
+      case ServerIntegrationConfigStatus.incompatible:
+        return l10n.pluginIncompatible;
       case ServerIntegrationConfigStatus.ok:
         return l10n.settingsIntegrationsRefreshSuccess;
       case ServerIntegrationConfigStatus.noPlugin:
@@ -90,49 +153,84 @@ class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsP
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider);
     final seerrUser = ref.watch(seerrUserProvider);
+    final managed = ref.watch(managedIntegrationsProvider);
+    final capabilities = ref.watch(serverIntegrationConfigProvider)?.capabilities;
+    final connection = ref.watch(serverIntegrationConnectionProvider);
+    ref.listen(userProvider.select((user) => (user?.id, user?.credentials.serverId)), (_, _) {
+      _checks.clear();
+      _checking.clear();
+    });
 
     return SettingsScaffold(
       label: context.localized.settingsIntegrationsTitle,
       items: [
         SettingsListTile(
           label: Text(context.localized.refresh),
-          subLabel: Text(context.localized.settingsIntegrationsDesc),
+          subLabel: Text(
+            connection == ServerIntegrationConfigStatus.notLoggedIn
+                ? context.localized.settingsIntegrationsDesc
+                : _statusMessage(context, connection, null),
+          ),
           onTap: _refreshing ? null : _refreshServerConfig,
           trailing: _refreshing
               ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
               : const Icon(Icons.refresh),
         ),
         const SizedBox(height: 12),
-        ...settingsListGroup(context, const SettingsLabelDivider(label: "Seerr"), [
-          SettingsListTile(
-            id: SettingId.seerrIntegration,
-            label: Text(context.localized.seerr),
-            subLabel: Text(_seerrStatusLabel(context, user?.seerrCredentials, seerrUser)),
-            onTap: () => showSeerrConnectionDialog(context),
-          ),
-          if (seerrUser?.canManageRequests ?? false)
-            SettingsListTileCheckbox(
-              id: SettingId.seerrRequestNotifications,
-              label: Text(context.localized.seerrRequestNotifications),
-              value: user?.seerrRequestsEnabled ?? false,
-              onChanged: (val) async {
-                final current = ref.read(userProvider);
-                if (current == null || val == null) return;
-
-                ref.read(userProvider.notifier).userState = current.copyWith(seerrRequestsEnabled: val);
-
-                if (val) {
-                  await NotificationService.requestPermission();
-                  await ref.read(updateNotificationsProvider).registerBackgroundTask();
-                } else {
-                  await ref.read(updateNotificationsProvider).conditionallyUnregisterBackgroundTask();
-                }
-              },
+        if (managed) ...[
+          for (final service in const ['seerr', 'sonarr', 'radarr']) _managedService(service, capabilities),
+          if (capabilities?.traktMigrationRequired == true)
+            SettingsListTile(
+              label: Text(context.localized.traktTitle),
+              subLabel: Text(context.localized.pluginTraktMigration),
             ),
-        ]),
+        ],
+        if (!managed || (seerrUser?.canManageRequests ?? false))
+          ...settingsListGroup(context, const SettingsLabelDivider(label: "Seerr"), [
+            if (!managed)
+              SettingsListTile(
+                id: SettingId.seerrIntegration,
+                label: Text(context.localized.seerr),
+                subLabel: Text(_seerrStatusLabel(context, user?.seerrCredentials, seerrUser)),
+                onTap: () => showSeerrConnectionDialog(context),
+              ),
+            if (seerrUser?.canManageRequests ?? false)
+              SettingsListTileCheckbox(
+                id: SettingId.seerrRequestNotifications,
+                label: Text(context.localized.seerrRequestNotifications),
+                value: user?.seerrRequestsEnabled ?? false,
+                onChanged: (val) async {
+                  final current = ref.read(userProvider);
+                  if (current == null || val == null) return;
+
+                  ref.read(userProvider.notifier).userState = current.copyWith(seerrRequestsEnabled: val);
+
+                  if (val) {
+                    await NotificationService.requestPermission();
+                    await ref.read(updateNotificationsProvider).registerBackgroundTask();
+                  } else {
+                    await ref.read(updateNotificationsProvider).conditionallyUnregisterBackgroundTask();
+                  }
+                },
+              ),
+          ]),
         const SizedBox(height: 12),
-        ...buildIntegrationSettings(context, ref),
+        ...buildIntegrationSettings(context, ref, includeArr: !managed),
       ],
     );
   }
 }
+
+String pluginReasonMessage(BuildContext context, String? reason) => switch (reason) {
+  'not_configured' || 'invalid_configuration' => context.localized.pluginNotConfigured,
+  'user_not_linked' => context.localized.pluginUserNotLinked,
+  'server_not_linked' => context.localized.pluginServerNotLinked,
+  'permission_denied' => context.localized.pluginDenied,
+  'expired_login' => context.localized.pluginExpired,
+  'invalid_credentials' => context.localized.pluginInvalidCredentials,
+  'content_restricted' => context.localized.pluginContentRestricted,
+  'unsupported_version' => context.localized.pluginUnsupportedVersion,
+  'rate_limited' => context.localized.pluginRateLimited,
+  null => context.localized.pluginManaged,
+  _ => context.localized.pluginUnreachable,
+};

@@ -5,6 +5,16 @@ import unittest
 
 
 class ManagedOperationInventoryTests(unittest.TestCase):
+    def test_arr_client_paths_have_explicit_routes(self):
+        root = Path(__file__).resolve().parents[2]
+        controller = (root / 'jellyfin-plugin/Jellyfin.Plugin.Driftfin/Api/DriftfinArrController.cs').read_text()
+        routes = set(re.findall(r'\[Http(?:Get|Post|Put)\("([^"]+)"\)\]', controller))
+        for service in ('sonarr', 'radarr'):
+            client = (root / f'lib/providers/{service}_provider.dart').read_text()
+            for path in re.findall(r"_uri\('([^']+)'", client):
+                with self.subTest(service=service, path=path):
+                    self.assertIn(path, routes)
+
     def test_every_client_operation_has_an_explicit_route_or_direct_login_exception(self):
         root = Path(__file__).resolve().parents[2]
         client = (root / 'lib/seerr/seerr_chopper_service.dart').read_text()

@@ -12,6 +12,7 @@ import 'package:driftfin/models/credentials_model.dart';
 import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 
 class _User extends User {
@@ -22,7 +23,11 @@ class _User extends User {
     avatar: '',
     lastUsed: DateTime(2026),
     credentials: CredentialsModel(),
-    seerrCredentials: const SeerrCredentialsModel(serverUrl: 'https://seerr.test', apiKey: 'test-key'),
+    seerrCredentials: const SeerrCredentialsModel(
+      origin: CredentialOrigin.manual,
+      serverUrl: 'https://seerr.test',
+      apiKey: 'test-key',
+    ),
   );
 
   @override
@@ -48,6 +53,32 @@ Widget _screen(ProviderContainer container) => UncontrolledProviderScope(
 );
 
 void main() {
+  test('profile retries when plugin negotiation finishes without a plugin', () async {
+    var calls = 0;
+    await http.runWithClient(
+      () async {
+        final container = _container();
+        final account = container.read(userProvider)!;
+        container.read(userProvider.notifier).userState = account.copyWith(
+          seerrCredentials: account.seerrCredentials!.copyWith(origin: CredentialOrigin.unknown),
+        );
+        final subscription = container.listen(seerrUserProvider, (_, _) {});
+        addTearDown(subscription.close);
+        await container.pump();
+        expect(calls, 0);
+        container.read(serverIntegrationConnectionProvider.notifier).state = ServerIntegrationConfigStatus.noPlugin;
+        await container.pump();
+        await Future<void>.delayed(Duration.zero);
+        expect(calls, 1);
+        expect(container.read(seerrUserProvider)?.id, 1);
+      },
+      () => MockClient((_) async {
+        calls++;
+        return _profile();
+      }),
+    );
+  });
+
   test('cached Seerr API works after an idle frame without listeners', () async {
     await http.runWithClient(() async {
       final container = _container();
@@ -74,6 +105,7 @@ void main() {
             .read(userProvider)!
             .copyWith(
               seerrCredentials: const SeerrCredentialsModel(
+                origin: CredentialOrigin.manual,
                 serverUrl: 'https://new-seerr.test',
                 apiKey: 'new-test-key',
               ),

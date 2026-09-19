@@ -116,6 +116,8 @@ def main():
             assert not policy['EnableRemoteControlOfOtherUsers'], 'Test user must not control other users'
             request(relay, {'kind': 'chat', 'text': 'inside'}, token=member, device='member', status=204)
             request('/web/configurationpage?name=Driftfin', token=admin)
+            from arr_smoke import check_arr
+            check_arr(request, admin, member, original)
             if args.with_seerr:
                 from seerr_smoke import check_seerr
                 check_seerr(request, admin, member, original, info['Id'])

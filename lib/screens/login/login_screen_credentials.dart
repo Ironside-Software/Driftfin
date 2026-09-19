@@ -13,6 +13,7 @@ import 'package:driftfin/providers/auth_provider.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/login/lock_screen.dart';
 import 'package:driftfin/screens/login/login_code_dialog.dart';
@@ -350,7 +351,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
     }
 
     final tempSeerrUrl = ref.read(authProvider.select((value) => value.tempSeerrUrl));
-    if (tempSeerrUrl != null && tempSeerrUrl.isNotEmpty) {
+    if (!ref.read(managedIntegrationsProvider) && tempSeerrUrl != null && tempSeerrUrl.isNotEmpty) {
       await _tryAuthenticateSeerr(tempSeerrUrl);
     }
 
