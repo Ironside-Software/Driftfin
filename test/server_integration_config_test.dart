@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:async';
+
+import 'package:driftfin/models/seerr_credentials_model.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -214,6 +217,109 @@ void main() {
 
       notifier.clear();
       expect(container.read(serverIntegrationConfigProvider), isNull);
+    });
+
+    test('unknown credentials remain stored and inactive until explicitly saved', () async {
+      await prefs.setString('sonarrSettings', jsonEncode({'enabled': true, 'baseUrl': 'http://s', 'apiKey': 'old-s'}));
+      await prefs.setString('radarrSettings', jsonEncode({'enabled': true, 'baseUrl': 'http://r', 'apiKey': 'old-r'}));
+      await prefs.setString('traktSettings', jsonEncode({'enabled': true, 'clientId': 'c', 'clientSecret': 'old-t'}));
+      final container = _container(prefs, null);
+      addTearDown(container.dispose);
+      expect(container.read(sonarrProvider).isConfigured, isFalse);
+      expect(container.read(radarrProvider).isConfigured, isFalse);
+      expect(container.read(traktProvider).hasCredentials, isFalse);
+      expect(container.read(sonarrProvider).apiKey, 'old-s');
+      expect(container.read(radarrProvider).apiKey, 'old-r');
+      expect(container.read(traktProvider).clientSecret, 'old-t');
+      container.read(sonarrProvider.notifier).setApiKey('new-s');
+      container.read(radarrProvider.notifier).setApiKey('new-r');
+      container.read(traktProvider.notifier).setClientSecret('new-t');
+      expect(container.read(sonarrProvider).isConfigured, isTrue);
+      expect(container.read(radarrProvider).isConfigured, isTrue);
+      expect(container.read(traktProvider).hasCredentials, isTrue);
+      for (final key in ['sonarrSettings', 'radarrSettings', 'traktSettings']) {
+        expect(jsonDecode(prefs.getString(key)!)['origin'], 'manual');
+      }
+    });
+
+    test('known plugin credentials are removed from preferences', () async {
+      for (final key in ['sonarrSettings', 'radarrSettings', 'traktSettings']) {
+        await prefs.setString(
+          key,
+          jsonEncode({
+            'origin': 'plugin',
+            'enabled': true,
+            'baseUrl': 'http://internal',
+            'apiKey': 'plugin-key',
+            'clientId': 'plugin-client',
+            'clientSecret': 'plugin-secret',
+          }),
+        );
+      }
+      final container = _container(prefs, null);
+      addTearDown(container.dispose);
+      expect(container.read(sonarrProvider).apiKey, isEmpty);
+      expect(container.read(radarrProvider).apiKey, isEmpty);
+      expect(container.read(traktProvider).clientSecret, isEmpty);
+      for (final key in ['sonarrSettings', 'radarrSettings', 'traktSettings']) {
+        expect(prefs.containsKey(key), isFalse);
+      }
+    });
+
+    test('legacy Trakt login never overwrites personal credentials or tokens', () async {
+      final manual = TraktSettings(
+        origin: CredentialOrigin.manual,
+        clientId: 'personal',
+        clientSecret: 'personal-secret',
+        enabled: true,
+        tokens: const TraktTokens(
+          accessToken: 'personal-token',
+          refreshToken: 'refresh',
+          createdAt: 0,
+          expiresIn: 999999,
+        ),
+      );
+      final saved = jsonEncode(manual.toJson());
+      await prefs.setString('traktSettings', saved);
+      await http.runWithClient(
+        () async {
+          const config = ServerIntegrationConfig(
+            trakt: TraktServerConfig(enabled: true, clientId: 'server', clientSecret: 'server-secret'),
+          );
+          final container = _container(prefs, config);
+          addTearDown(container.dispose);
+          expect(container.read(traktProvider).tokens, isNull);
+          await container.read(traktProvider.notifier).pollDeviceToken('code');
+          expect(container.read(traktProvider).tokens?.accessToken, 'server-token');
+          expect(jsonEncode(container.read(traktProvider).toJson()), isNot(contains('server-secret')));
+          container.read(traktProvider.notifier).logout();
+          expect(prefs.getString('traktSettings'), saved);
+          (container.read(serverIntegrationConfigProvider.notifier) as _FakeServerIntegrationConfig).emit(null);
+          expect(container.read(traktProvider).tokens?.accessToken, 'personal-token');
+        },
+        () => MockClient(
+          (_) async => http.Response(
+            '{"access_token":"server-token","refresh_token":"r","created_at":0,"expires_in":999999}',
+            200,
+          ),
+        ),
+      );
+    });
+
+    test('late Trakt login cannot restore tokens after credentials change', () async {
+      final pending = Completer<http.Response>();
+      await http.runWithClient(() async {
+        final container = _container(prefs, null);
+        addTearDown(container.dispose);
+        final notifier = container.read(traktProvider.notifier);
+        notifier.setClientId('first');
+        notifier.setClientSecret('secret');
+        final poll = notifier.pollDeviceToken('code');
+        notifier.setClientId('second');
+        pending.complete(http.Response('{"access_token":"old-token"}', 200));
+        expect((await poll).status, TraktPollStatus.invalid);
+        expect(container.read(traktProvider).tokens, isNull);
+      }, () => MockClient((_) => pending.future));
     });
 
     test('absent plugin → providers use local prefs, fully editable', () {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/providers/radarr_provider.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/sonarr_provider.dart';
 import 'package:driftfin/providers/trakt_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
@@ -23,7 +24,13 @@ List<Widget> buildIntegrationSettings(BuildContext context, WidgetRef ref, {bool
       SettingsListTile(
         label: Text(context.localized.sonarrIntegrationTitle),
         subLabel: Text(
-          sonarrManaged ? context.localized.managedByServerPlugin : context.localized.sonarrIntegrationDesc,
+          sonarrManaged
+              ? context.localized.managedByServerPlugin
+              : ref.watch(
+                  sonarrProvider.select((value) => value.apiKey.isNotEmpty && value.origin != CredentialOrigin.manual),
+                )
+              ? context.localized.integrationCredentialsReconnect
+              : context.localized.sonarrIntegrationDesc,
         ),
         onTap: sonarrManaged
             ? null
@@ -73,7 +80,13 @@ List<Widget> buildIntegrationSettings(BuildContext context, WidgetRef ref, {bool
       SettingsListTile(
         label: Text(context.localized.radarrIntegrationTitle),
         subLabel: Text(
-          radarrManaged ? context.localized.managedByServerPlugin : context.localized.radarrIntegrationDesc,
+          radarrManaged
+              ? context.localized.managedByServerPlugin
+              : ref.watch(
+                  radarrProvider.select((value) => value.apiKey.isNotEmpty && value.origin != CredentialOrigin.manual),
+                )
+              ? context.localized.integrationCredentialsReconnect
+              : context.localized.radarrIntegrationDesc,
         ),
         onTap: radarrManaged
             ? null
@@ -123,7 +136,17 @@ List<Widget> buildIntegrationSettings(BuildContext context, WidgetRef ref, {bool
     ],
     SettingsListTile(
       label: Text(context.localized.traktTitle),
-      subLabel: Text(traktManaged ? context.localized.managedByServerPlugin : context.localized.traktDesc),
+      subLabel: Text(
+        traktManaged
+            ? context.localized.managedByServerPlugin
+            : ref.watch(
+                traktProvider.select(
+                  (value) => value.clientSecret.isNotEmpty && value.origin != CredentialOrigin.manual,
+                ),
+              )
+            ? context.localized.integrationCredentialsReconnect
+            : context.localized.traktDesc,
+      ),
       onTap: traktManaged ? null : () => ref.read(traktProvider.notifier).setEnabled(!ref.read(traktProvider).enabled),
       trailing: Switch(
         value: ref.watch(traktProvider.select((value) => value.enabled)),

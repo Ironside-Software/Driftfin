@@ -50,9 +50,7 @@ Widget _harness(SharedPreferences prefs, ServerIntegrationConfig? config) {
       home: AdaptiveLayout(
         data: _adaptiveModel,
         child: Scaffold(
-          body: Consumer(
-            builder: (context, ref, _) => ListView(children: buildIntegrationSettings(context, ref)),
-          ),
+          body: Consumer(builder: (context, ref, _) => ListView(children: buildIntegrationSettings(context, ref))),
         ),
       ),
     ),
@@ -113,6 +111,7 @@ void main() {
 
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
 
+    expect(find.text(l10n.integrationCredentialsReconnect), findsNWidgets(3));
     // No managed note when the plugin is absent.
     expect(find.text(l10n.managedByServerPlugin), findsNothing);
 
@@ -149,10 +148,11 @@ void main() {
     await tester.pumpAndSettle();
     expect(container.read(sonarrProvider).baseUrl, 'http://new-sonarr');
 
-    // Trakt is authenticated -> the action tile disconnects (no network).
-    await tester.tap(find.text(l10n.traktDisconnect));
-    await tester.pumpAndSettle();
+    // Changing the OAuth application invalidates its old session.
     expect(container.read(traktProvider).isAuthenticated, isFalse);
+    expect(container.read(sonarrProvider).isConfigured, isTrue);
+    expect(container.read(radarrProvider).isConfigured, isTrue);
+    expect(find.text(l10n.integrationCredentialsReconnect), findsNothing);
 
     // Toggle each integration via its Switch (covers the onChanged closures).
     // The three section switches keep their order (sonarr, radarr, trakt) even
