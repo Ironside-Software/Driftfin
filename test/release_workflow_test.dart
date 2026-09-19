@@ -1,0 +1,136 @@
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:yaml/yaml.dart';
+
+void main() {
+  final workflow = loadYaml(File('.github/workflows/release.yml').readAsStringSync()) as YamlMap;
+  final jobs = workflow['jobs'] as YamlMap;
+  const platforms = ['web', 'windows', 'ios', 'android', 'macos_desktop', 'linux'];
+
+  List<YamlMap> steps(String job) => (jobs[job]['steps'] as YamlList).cast<YamlMap>();
+  String script(String job, String name) => steps(job).singleWhere((step) => step['name'] == name)['run'] as String;
+
+  test('all build jobs and Pages check out the same resolved commit', () {
+    for (final job in [...platforms, 'pages']) {
+      final checkout = steps(job).singleWhere((step) => '${step['uses']}'.startsWith('actions/checkout@'));
+      expect(checkout['with']['ref'], r'${{ needs.prepare.outputs.sha }}', reason: job);
+    }
+    expect(jobs['prepare']['outputs']['sha'], r'${{ steps.v.outputs.sha }}');
+    expect(workflow['concurrency']['cancel-in-progress'], isFalse);
+  });
+
+  test('publishing consumes artifacts and requires successful producers', () {
+    expect(jobs['release']['needs'], containsAll(platforms));
+    expect(jobs['pages']['needs'], contains('web'));
+    expect(jobs['testflight']['needs'], 'ios');
+    for (final job in ['release', 'pages', 'testflight']) {
+      expect(steps(job).any((step) => '${step['uses']}'.startsWith('actions/download-artifact@')), isTrue);
+      expect(steps(job).any((step) => '${step['run']}'.contains('flutter build')), isFalse);
+      expect('${jobs[job]['if']}', isNot(contains('always()')));
+    }
+    for (final job in ['release', 'pages']) {
+      expect(jobs[job]['if'], contains("github.event_name == 'push'"));
+    }
+    expect(jobs['testflight']['if'], contains('inputs.testflight == true'));
+    for (final job in platforms) {
+      final upload = steps(job).singleWhere((step) => '${step['uses']}'.startsWith('actions/upload-artifact@'));
+      expect(upload['with']['if-no-files-found'], 'error', reason: job);
+    }
+  });
+
+  test('iOS chooses one build and Android builds both modes independently', () {
+    final iosBuilds = steps('ios').where((step) => '${step['run']}'.contains('flutter build')).toList();
+    expect(iosBuilds, hasLength(2));
+    expect(
+      iosBuilds.map((step) => step['if']),
+      unorderedEquals(['inputs.testflight == true', 'inputs.testflight != true']),
+    );
+    expect(jobs['android']['strategy']['matrix']['mode'], unorderedEquals(['release', 'debug']));
+    expect(jobs['android']['strategy']['fail-fast'], isFalse);
+  });
+
+  group('Unix runner scripts', () {
+    test('version metadata distinguishes pushed tags from manual builds', () async {
+      final temp = Directory.systemTemp.createTempSync('driftfin-version-');
+      addTearDown(() => temp.deleteSync(recursive: true));
+      final output = File('${temp.path}/output');
+      final prepare = steps('prepare').singleWhere((step) => step['id'] == 'v')['run'] as String;
+      final pubspec = loadYaml(File('pubspec.yaml').readAsStringSync()) as YamlMap;
+      final version = '${pubspec['version']}'.split('+').first;
+      final sha = (await Process.run('git', ['rev-parse', 'HEAD'])).stdout.toString().trim();
+      for (final event in ['push', 'workflow_dispatch']) {
+        output.writeAsStringSync('');
+        final result = await Process.run(
+          'bash',
+          ['-e', '-c', prepare],
+          environment: {
+            'GITHUB_EVENT_NAME': event,
+            'GITHUB_REF': 'refs/tags/v1.2.3-nightly.20260919.1',
+            'GITHUB_REF_NAME': 'v1.2.3-nightly.20260919.1',
+            'GITHUB_OUTPUT': output.path,
+          },
+        );
+        expect(result.exitCode, 0, reason: '${result.stderr}');
+        expect(output.readAsStringSync(), contains('sha=$sha\n'));
+        expect(
+          output.readAsStringSync(),
+          contains('version=${event == 'push' ? '1.2.3-nightly.20260919.1' : '$version-dev'}\n'),
+        );
+      }
+    });
+
+    test('Pages rebases the downloaded bundle and preserves its other files', () async {
+      final temp = Directory.systemTemp.createTempSync('driftfin-pages-');
+      addTearDown(() => temp.deleteSync(recursive: true));
+      Directory('${temp.path}/site').createSync();
+      File('${temp.path}/site/index.html').writeAsStringSync('landing page');
+      Directory('${temp.path}/bundle').createSync();
+      final html = File('web/index.html').readAsStringSync().replaceAll(r'$FLUTTER_BASE_HREF', '/');
+      File('${temp.path}/bundle/index.html').writeAsStringSync(html);
+      File('${temp.path}/bundle/main.dart.js').writeAsStringSync('compiled app');
+      Directory('${temp.path}/dist').createSync();
+      final zip = await Process.run('python3', [
+        '-c',
+        'import shutil; shutil.make_archive("../dist/Driftfin-Web-test", "zip", ".")',
+      ], workingDirectory: '${temp.path}/bundle');
+      expect(zip.exitCode, 0, reason: '${zip.stderr}');
+      final assemble = script(
+        'pages',
+        'Assemble Pages site from the web build',
+      ).replaceAll(r'${{ needs.prepare.outputs.version }}', 'test');
+      final result = await Process.run('bash', ['-e', '-c', assemble], workingDirectory: temp.path);
+      expect(result.exitCode, 0, reason: '${result.stderr}');
+      expect(File('${temp.path}/dist-pages/index.html').readAsStringSync(), 'landing page');
+      expect(
+        File('${temp.path}/dist-pages/app/index.html').readAsStringSync(),
+        html.replaceAll('href="/"', 'href="/Driftfin/app/"'),
+      );
+      expect(File('${temp.path}/dist-pages/app/main.dart.js').readAsStringSync(), 'compiled app');
+      expect(File('${temp.path}/bundle/index.html').readAsStringSync(), html);
+    });
+
+    for (final mode in ['release', 'debug']) {
+      test('Android $mode packaging keeps every ABI and fails on missing APKs', () async {
+        final temp = Directory.systemTemp.createTempSync('driftfin-apk-');
+        addTearDown(() => temp.deleteSync(recursive: true));
+        final input = Directory('${temp.path}/build/app/outputs/flutter-apk')..createSync(recursive: true);
+        const abis = ['armeabi-v7a', 'arm64-v8a', 'x86_64'];
+        for (final abi in abis) {
+          File('${input.path}/app-$abi-production-$mode.apk').writeAsStringSync(abi);
+        }
+        final collect = script('android', 'Collect APKs').replaceAll(r'${{ needs.prepare.outputs.version }}', 'test');
+        Future<ProcessResult> run() =>
+            Process.run('bash', ['-e', '-c', collect], workingDirectory: temp.path, environment: {'BUILD_MODE': mode});
+        final result = await run();
+        expect(result.exitCode, 0, reason: '${result.stderr}');
+        for (final abi in abis) {
+          final suffix = mode == 'debug' ? '-debug' : '';
+          expect(File('${temp.path}/dist-apk/Driftfin-Android-test-$abi$suffix.apk').readAsStringSync(), abi);
+        }
+        File('${input.path}/app-x86_64-production-$mode.apk').deleteSync();
+        expect((await run()).exitCode, isNot(0));
+      });
+    }
+  }, skip: Platform.isWindows ? 'Release scripts run on Unix CI runners.' : false);
+}

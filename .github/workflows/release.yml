@@ -1,14 +1,8 @@
 name: Release Driftfin
 
-# Fork-owned release pipeline. Builds the desktop/mobile/web targets and
-# publishes a GitHub Release with the binaries. A manual dispatch can also add
-# a signed iOS TestFlight upload to the normal build jobs.
-# The upstream Fladder pipeline (build.yml.disabled) is disabled — it needs
-# secrets (Android keystore, Play Console, a GitHub App) this fork does not have.
-#
-# To cut a release:  git tag vX.Y.Z && git push origin vX.Y.Z  (see CLAUDE.md → Releases)
-# Or run manually from the Actions tab (workflow_dispatch) for a dry build.
-
+# Resolve one commit, build each target once, then publish those artifacts.
+# Tag pushes publish GitHub Releases and Pages. Manual runs are dry builds unless
+# TestFlight is selected, in which case the iOS build is signed and uploaded.
 on:
   push:
     tags: ["v*"]
@@ -20,9 +14,8 @@ on:
         default: false
         type: boolean
       ref:
-        description: Git ref to build for TestFlight
+        description: Git ref to build for every platform (blank uses the selected branch)
         required: false
-        default: develop
         type: string
       release_notes:
         description: Optional TestFlight What to Test notes
@@ -30,35 +23,43 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: true
+  group: release-${{ inputs.testflight && 'testflight' || inputs.ref || github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  version:
+  prepare:
+    name: Prepare build
     runs-on: blacksmith-2vcpu-ubuntu-2404
     outputs:
       version: ${{ steps.v.outputs.version }}
+      sha: ${{ steps.v.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
       - id: v
         shell: bash
         run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+          if [[ "$GITHUB_EVENT_NAME" == push && "$GITHUB_REF" == refs/tags/* ]]; then
             V="${GITHUB_REF_NAME#v}"
           else
             V="$(grep '^version:' pubspec.yaml | cut -d: -f2 | cut -d+ -f1 | tr -d ' ')-dev"
           fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "version=$V" >> "$GITHUB_OUTPUT"
           echo "Driftfin version: $V"
 
   web:
-    needs: version
+    name: Build Web
+    needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version-file: .fvmrc
@@ -66,17 +67,21 @@ jobs:
       - run: flutter pub get
       - run: flutter build web --release --build-number=${{ github.run_number }}
       - name: Zip web bundle
-        run: cd build/web && zip -r "../../Driftfin-Web-${{ needs.version.outputs.version }}.zip" .
+        run: cd build/web && zip -r "../../Driftfin-Web-${{ needs.prepare.outputs.version }}.zip" .
       - uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: error
           name: web
           path: Driftfin-Web-*.zip
 
   windows:
-    needs: version
+    name: Build Windows
+    needs: prepare
     runs-on: blacksmith-2vcpu-windows-2025
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version-file: .fvmrc
@@ -84,86 +89,94 @@ jobs:
       - run: flutter pub get
       - run: flutter build windows --release --build-number=${{ github.run_number }}
       - name: Zip Windows bundle (portable)
-        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "Driftfin-Windows-${{ needs.version.outputs.version }}.zip"
+        run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath "Driftfin-Windows-${{ needs.prepare.outputs.version }}.zip"
       - name: Compile Inno Setup installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.2
         with:
           path: windows/windows_setup.iss
-          options: /O+ /DDRIFTFIN_VERSION="${{ needs.version.outputs.version }}"
+          options: /O+ /DDRIFTFIN_VERSION="${{ needs.prepare.outputs.version }}"
       - name: Rename installer
-        run: Move-Item windows\Output\driftfin_setup.exe "Driftfin-Windows-${{ needs.version.outputs.version }}-Setup.exe"
+        run: Move-Item windows\Output\driftfin_setup.exe "Driftfin-Windows-${{ needs.prepare.outputs.version }}-Setup.exe"
       - uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: error
           name: windows
           path: |
             Driftfin-Windows-*.zip
             Driftfin-Windows-*-Setup.exe
 
-  # Deploys the landing page (site/) at the Pages root and the web app under
-  # /app/ (https://hamadtheironside.github.io/Driftfin/ and .../Driftfin/app/).
-  # The app must use --base-href "/Driftfin/app/" because it's served from that
-  # subpath; without it Flutter requests assets from "/" and the page renders blank.
-  pages:
-    needs: version
-    runs-on: blacksmith-2vcpu-ubuntu-2404
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version-file: .fvmrc
-          cache: true
-      - run: flutter pub get
-      - run: flutter build web --release --base-href "/Driftfin/app/" --build-number=${{ github.run_number }}
-      - name: Assemble Pages publish dir (landing site + app)
-        run: |
-          mkdir -p dist-pages/app
-          cp -r site/. dist-pages/
-          cp -r build/web/. dist-pages/app/
-      # keep_files: true — this branch also hosts the Jellyfin plugin-repository
-      # manifest (deployed by plugin.yaml under /jellyfin-plugin/); don't delete it.
-      - name: Deploy to GitHub Pages
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist-pages
-          keep_files: true
-
   ios:
-    needs: version
+    name: Build iOS
+    needs: prepare
     runs-on: blacksmith-6vcpu-macos-latest
+    environment: ${{ inputs.testflight && 'testflight' || '' }}
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+      APPSTORE_BUNDLE_ID: app.driftfin.79758DD3NW
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version-file: .fvmrc
           cache: true
+      - name: Import App Store distribution certificate
+        if: inputs.testflight == true
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
+          p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
+      - name: Download App Store provisioning profile
+        if: inputs.testflight == true
+        uses: apple-actions/download-provisioning-profiles@v6
+        with:
+          bundle-id: ${{ env.APPSTORE_BUNDLE_ID }}
+          profile-type: IOS_APP_STORE
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
       - run: flutter pub get
       - name: Build iOS (unsigned)
+        if: inputs.testflight != true
         run: flutter build ios --release --no-codesign --flavor production --build-number=${{ github.run_number }}
       - name: Package unsigned .ipa
+        if: inputs.testflight != true
         run: |
           cd build/ios/iphoneos
           mkdir -p Payload
           cp -R Runner.app Payload/Runner.app
-          zip -qr "../../../Driftfin-iOS-${{ needs.version.outputs.version }}-unsigned.ipa" Payload
+          zip -qr "../../../Driftfin-iOS-${{ needs.prepare.outputs.version }}-unsigned.ipa" Payload
+      - name: Build signed production IPA
+        if: inputs.testflight == true
+        run: >-
+          flutter build ipa
+          --release
+          --flavor production
+          --build-number=${{ github.run_number }}
+          --export-options-plist=ios/exportOptions.plist
+      - name: Collect signed IPA
+        if: inputs.testflight == true
+        run: cp build/ios/ipa/*.ipa "Driftfin-iOS-${{ needs.prepare.outputs.version }}-signed.ipa"
       - uses: actions/upload-artifact@v4
         with:
           name: ios
           path: Driftfin-iOS-*.ipa
+          if-no-files-found: error
 
-  # Ships two APK sets per ABI:
-  #  - release (AOT, fast) — the download most users want. Signed with your own key
-  #    when the KEYSTORE_BASE_64 secret + passwords are set; otherwise app/build.gradle
-  #    falls back to the debug key so the build still succeeds (debug-signed release).
-  #  - debug (`-debug` suffix) — slower, but has Flutter assertions on and readable
-  #    logs; handy for reproducing/diagnosing bug reports. Doubles this job's runtime.
   android:
-    needs: version
+    name: Build Android (${{ matrix.mode }})
+    needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [release, debug]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
@@ -188,39 +201,40 @@ jobs:
             echo "No KEYSTORE_BASE_64 secret set — release APKs will be debug-signed."
           fi
       - run: flutter pub get
-      - name: Build Android APKs (release)
-        # checkProductionReleaseDuplicateClasses (Jetifier) flakes intermittently; retry once.
+      - name: Build Android APKs
+        # Jetifier can fail intermittently; retry once.
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 30
           max_attempts: 2
-          command: flutter build apk --release --split-per-abi --flavor production --build-number=${{ github.run_number }}
-      - name: Build Android APKs (debug)
-        # checkProductionDebugDuplicateClasses (Jetifier) flakes intermittently; retry once.
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 30
-          max_attempts: 2
-          command: flutter build apk --debug --split-per-abi --flavor production --build-number=${{ github.run_number }}
+          command: flutter build apk --${{ matrix.mode }} --split-per-abi --flavor production --build-number=${{ github.run_number }}
       - name: Collect APKs
+        env:
+          BUILD_MODE: ${{ matrix.mode }}
         run: |
           mkdir -p dist-apk
+          SUFFIX=""
+          if [[ "$BUILD_MODE" == debug ]]; then SUFFIX="-debug"; fi
           for abi in armeabi-v7a arm64-v8a x86_64; do
-            cp "build/app/outputs/flutter-apk/app-${abi}-production-release.apk" \
-               "dist-apk/Driftfin-Android-${{ needs.version.outputs.version }}-${abi}.apk" || true
-            cp "build/app/outputs/flutter-apk/app-${abi}-production-debug.apk" \
-               "dist-apk/Driftfin-Android-${{ needs.version.outputs.version }}-${abi}-debug.apk" || true
+            cp "build/app/outputs/flutter-apk/app-${abi}-production-${BUILD_MODE}.apk" \
+               "dist-apk/Driftfin-Android-${{ needs.prepare.outputs.version }}-${abi}${SUFFIX}.apk"
           done
       - uses: actions/upload-artifact@v4
         with:
-          name: android
+          if-no-files-found: error
+          name: android-${{ matrix.mode }}
           path: dist-apk/*.apk
 
   macos_desktop:
-    needs: version
+    name: Build macOS
+    needs: prepare
     runs-on: blacksmith-6vcpu-macos-latest
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version-file: .fvmrc
@@ -231,17 +245,21 @@ jobs:
         run: |
           APP=$(find build/macos/Build/Products -maxdepth 2 -name "*.app" | head -1)
           echo "Packaging: $APP"
-          ditto -c -k --keepParent "$APP" "Driftfin-macOS-${{ needs.version.outputs.version }}.zip"
+          ditto -c -k --keepParent "$APP" "Driftfin-macOS-${{ needs.prepare.outputs.version }}.zip"
       - uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: error
           name: macos
           path: Driftfin-macOS-*.zip
 
   linux:
-    needs: version
+    name: Build Linux
+    needs: prepare
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.sha }}
       - uses: subosito/flutter-action@v2
         with:
           flutter-version-file: .fvmrc
@@ -253,16 +271,20 @@ jobs:
       - run: flutter pub get
       - run: flutter build linux --release --build-number=${{ github.run_number }}
       - name: Zip bundle
-        run: cd build/linux/x64/release/bundle && zip -r "$GITHUB_WORKSPACE/Driftfin-Linux-${{ needs.version.outputs.version }}.zip" .
+        run: cd build/linux/x64/release/bundle && zip -r "$GITHUB_WORKSPACE/Driftfin-Linux-${{ needs.prepare.outputs.version }}.zip" .
       - uses: actions/upload-artifact@v4
         with:
+          if-no-files-found: error
           name: linux
           path: Driftfin-Linux-*.zip
 
   release:
-    needs: [version, web, windows, ios, android, macos_desktop, linux]
-    # Publish even if one platform fails, but only for real tag pushes.
-    if: always() && startsWith(github.ref, 'refs/tags/')
+    name: Publish GitHub Release
+    needs: [prepare, web, windows, ios, android, macos_desktop, linux]
+    # All platform artifacts must exist before making a release public.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
       - uses: actions/download-artifact@v4
@@ -270,17 +292,17 @@ jobs:
           path: dist
           merge-multiple: true
       - name: List artifacts
-        run: ls -R dist || echo "(no artifacts)"
+        run: ls -R dist
       - uses: softprops/action-gh-release@v2
         with:
-          name: Driftfin ${{ needs.version.outputs.version }}
+          name: Driftfin ${{ needs.prepare.outputs.version }}
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
           prerelease: ${{ contains(github.ref_name, 'nightly') }}
-          fail_on_unmatched_files: false
+          fail_on_unmatched_files: true
           files: dist/**/*
           body: |
-            **Driftfin ${{ needs.version.outputs.version }}** — a cross-platform Jellyfin client.
+            **Driftfin ${{ needs.prepare.outputs.version }}** — a cross-platform Jellyfin client.
 
             Driftfin is a fork of [Fladder](https://github.com/DonutWare/Fladder) by DonutWare, continued under the same **GPL-3.0** license. All credit for the original application goes to the Fladder authors.
 
@@ -288,70 +310,66 @@ jobs:
             - **Web** (`Driftfin-Web-*.zip`) — unzip and serve behind any static host; open in a browser.
             - **Windows installer** (`Driftfin-Windows-*-Setup.exe`) — recommended; installs to your user profile with Start Menu shortcuts.
             - **Windows portable** (`Driftfin-Windows-*.zip`) — unzip and run `driftfin.exe`; supports in-app self-update.
-            - **iOS** (`Driftfin-iOS-*-unsigned.ipa`) — **unsigned** (no Apple Developer cert in CI); sideload with AltStore / Sideloadly or re-sign yourself.
+            - **iOS** (`Driftfin-iOS-*-unsigned.ipa`) — **unsigned**; sideload with AltStore / Sideloadly or re-sign yourself.
             - **Android** (`Driftfin-Android-*.apk`) — **release** build (AOT-optimized); the recommended download. Install the APK matching your device's ABI. Signed with the project release key when configured, otherwise debug-signed.
             - **Android debug** (`Driftfin-Android-*-debug.apk`) — slower debug build with assertions and verbose logs; only grab this if you're reproducing a bug for a report.
             - **macOS** (`Driftfin-macOS-*.zip`) — unsigned `.app`; unzip and run (you may need to allow it in Gatekeeper).
             - **Linux** (`Driftfin-Linux-*.zip`) — portable bundle; needs `libmpv` (`sudo apt install libmpv-dev`). Unzip and run `driftfin`.
 
-  testflight:
-    if: github.event_name == 'workflow_dispatch' && inputs.testflight == true
-    needs: version
-    runs-on: macos-15
-    environment: testflight
+  pages:
+    name: Publish Pages
+    needs: [prepare, web]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+    runs-on: blacksmith-2vcpu-ubuntu-2404
     permissions:
-      contents: read
-    concurrency:
-      group: ios-testflight
-      cancel-in-progress: false
-    env:
-      APPSTORE_BUNDLE_ID: app.driftfin.79758DD3NW
+      contents: write
     steps:
-      - name: Check out requested ref
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref || github.ref }}
-
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
+          ref: ${{ needs.prepare.outputs.sha }}
+      - uses: actions/download-artifact@v4
         with:
-          flutter-version-file: .fvmrc
-          cache: true
-
-      - name: Import App Store distribution certificate
-        uses: apple-actions/import-codesign-certs@v7
+          name: web
+          path: dist
+      - name: Assemble Pages site from the web build
+        run: |
+          mkdir -p dist-pages/app
+          cp -r site/. dist-pages/
+          unzip -q "dist/Driftfin-Web-${{ needs.prepare.outputs.version }}.zip" -d dist-pages/app
+          python3 - <<'PYTHON'
+          from pathlib import Path
+          index = Path("dist-pages/app/index.html")
+          html = index.read_text()
+          assert html.count('<base href="/">') == 1, "Unexpected Flutter base href"
+          index.write_text(html.replace('<base href="/">', '<base href="/Driftfin/app/">'))
+          PYTHON
+      # The plugin workflow also publishes /jellyfin-plugin/ to this branch.
+      - uses: peaceiris/actions-gh-pages@v4
         with:
-          p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
-          p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist-pages
+          keep_files: true
 
-      - name: Download App Store provisioning profile
-        uses: apple-actions/download-provisioning-profiles@v6
+  testflight:
+    name: Upload TestFlight
+    if: github.event_name == 'workflow_dispatch' && inputs.testflight == true
+    needs: ios
+    runs-on: macos-26
+    environment: testflight
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - uses: actions/download-artifact@v4
         with:
-          bundle-id: ${{ env.APPSTORE_BUNDLE_ID }}
-          profile-type: IOS_APP_STORE
-          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
-          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
-          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Build signed production IPA
-        run: >-
-          flutter build ipa
-          --release
-          --flavor production
-          --build-number=${{ github.run_number }}
-          --export-options-plist=ios/exportOptions.plist
-
-      - name: Locate IPA
+          name: ios
+          path: dist
+      - name: Locate signed IPA
         id: ipa
         shell: bash
         run: |
-          IPA_PATH="$(find build/ios/ipa -maxdepth 1 -type f -name '*.ipa' -print -quit)"
+          IPA_PATH="$(find dist -maxdepth 1 -type f -name '*-signed.ipa' -print -quit)"
           test -n "$IPA_PATH"
           echo "path=$IPA_PATH" >> "$GITHUB_OUTPUT"
-
       - name: Upload to TestFlight
         uses: apple-actions/upload-testflight-build@v5
         with:

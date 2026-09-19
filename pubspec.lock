@@ -162,12 +162,13 @@ packages:
     source: hosted
     version: "6.0.2"
   bonsoir_darwin:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: bonsoir_darwin
-      sha256: d62fd62ed433aa09ec99f71f95dae53ffa0adf788c9051ff3d6b903463045d3c
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/bonsoir_darwin"
+      ref: ce155549130e0337ed3fd9a34a4cffafe70797f5
+      resolved-ref: ce155549130e0337ed3fd9a34a4cffafe70797f5
+      url: "https://github.com/Skyost/Bonsoir.git"
+    source: git
     version: "6.1.0"
   bonsoir_linux:
     dependency: transitive
@@ -1601,10 +1602,10 @@ packages:
     dependency: "direct dev"
     description:
       name: pigeon
-      sha256: "3f6bd058e3e9472e657e6d9391756bfec78649dd4207114a1057ccca4309fa79"
+      sha256: d7850c5b3edfc6ed16075f09433efc50aaaf21af52978e325a7dd73364852cc9
       url: "https://pub.dev"
     source: hosted
-    version: "29.0.2"
+    version: "27.3.2"
   pip:
     dependency: "direct main"
     description:
@@ -2628,7 +2629,7 @@ packages:
     source: hosted
     version: "1.2.0"
   yaml:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: yaml
       sha256: f67cdd8e07d3c6329146aaef1ba043542b3134c12489f553ca9a7435d1068aea

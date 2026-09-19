@@ -1,6 +1,5 @@
 package io.github.hamadtheironside.driftfin.wallpaper
 
-import FlutterError
 import android.content.Intent
 import androidx.core.content.FileProvider
 import java.io.File

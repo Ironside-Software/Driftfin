@@ -2,9 +2,10 @@
 
 Driftfin's production iOS bundle identifier is `app.driftfin.79758DD3NW`.
 The GitHub Actions workflow at `.github/workflows/release.yml` contains the
-manual TestFlight path alongside the normal cross-platform release jobs. It
-builds the `production` flavor on macOS, signs it, and uploads the IPA to App
-Store Connect.
+manual TestFlight path alongside the cross-platform release jobs. The iOS job
+builds the `production` flavor once with Xcode 26.6 on a macOS runner, signs it when
+TestFlight is selected, and stores the IPA as an artifact. The TestFlight job
+downloads that artifact and uploads it to App Store Connect.
 
 ## One-time Apple setup
 
@@ -40,14 +41,25 @@ Add these environment secrets:
 | `APPSTORE_CERTIFICATES_PASSWORD` | Password used when exporting the `.p12` |
 
 The workflow does not print these values. Keep the `testflight` environment
-protected if uploads should require approval.
+protected if signing and uploads should require approval. Both the iOS signing
+job and the TestFlight upload job use this environment.
 
 ## Running it
 
 Run **Release Driftfin** manually from the Actions tab, set `testflight` to
-`true`, and use `ref=develop` for a proof build. That dispatch runs all normal
-cross-platform build jobs and adds the signed TestFlight job. Normal tag pushes
-continue to build and publish the cross-platform GitHub Release artifacts. The
+`true`, and use `ref=develop` for a proof build. The ref applies to **every
+platform** and is resolved to a single commit before any builds start. Leave it
+blank to build the branch selected in Actions. The iOS job produces a signed IPA
+instead of also compiling an unsigned copy. Other platform builds still run.
+The upload job depends only on iOS, so unrelated platform failures do not block
+TestFlight. Re-running a failed upload reuses the same IPA.
+
+Tag pushes build unsigned iOS alongside the other platforms. GitHub Releases
+require every platform to succeed; missing APKs and artifacts fail the build.
+Pages downloads the Web artifact and adjusts its base URL to `/Driftfin/app/`
+without recompiling. Android release and debug builds run in parallel. Manual
+runs never publish GitHub Releases or Pages, even when dispatched on a tag.
+TestFlight runs are serialized and are not cancelled by newer dispatches. The
 TestFlight path does not submit the build for App Review or release it to the
 App Store.
 
