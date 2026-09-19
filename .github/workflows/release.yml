@@ -1,7 +1,8 @@
 name: Release Driftfin
 
-# Fork-owned release pipeline. Builds the three targets Driftfin cares about
-# (Web, Windows, iOS-unsigned) and publishes a GitHub Release with the binaries.
+# Fork-owned release pipeline. Builds the desktop/mobile/web targets and
+# publishes a GitHub Release with the binaries. A manual dispatch can instead
+# run the signed iOS TestFlight path only.
 # The upstream Fladder pipeline (build.yml.disabled) is disabled — it needs
 # secrets (Android keystore, Play Console, a GitHub App) this fork does not have.
 #
@@ -12,6 +13,21 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      testflight:
+        description: Upload a signed iOS build to TestFlight instead of building release artifacts
+        required: true
+        default: false
+        type: boolean
+      ref:
+        description: Git ref to build for TestFlight
+        required: false
+        default: develop
+        type: string
+      release_notes:
+        description: Optional TestFlight What to Test notes
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -39,6 +55,7 @@ jobs:
           echo "Driftfin version: $V"
 
   web:
+    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -57,6 +74,7 @@ jobs:
           path: Driftfin-Web-*.zip
 
   windows:
+    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-windows-2025
     steps:
@@ -88,6 +106,7 @@ jobs:
   # The app must use --base-href "/Driftfin/app/" because it's served from that
   # subpath; without it Flutter requests assets from "/" and the page renders blank.
   pages:
+    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -114,6 +133,7 @@ jobs:
           keep_files: true
 
   ios:
+    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-6vcpu-macos-latest
     steps:
@@ -143,6 +163,7 @@ jobs:
   #  - debug (`-debug` suffix) — slower, but has Flutter assertions on and readable
   #    logs; handy for reproducing/diagnosing bug reports. Doubles this job's runtime.
   android:
+    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -201,6 +222,7 @@ jobs:
           path: dist-apk/*.apk
 
   macos_desktop:
+    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-6vcpu-macos-latest
     steps:
@@ -222,6 +244,7 @@ jobs:
           path: Driftfin-macOS-*.zip
 
   linux:
+    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -277,3 +300,72 @@ jobs:
             - **Android debug** (`Driftfin-Android-*-debug.apk`) — slower debug build with assertions and verbose logs; only grab this if you're reproducing a bug for a report.
             - **macOS** (`Driftfin-macOS-*.zip`) — unsigned `.app`; unzip and run (you may need to allow it in Gatekeeper).
             - **Linux** (`Driftfin-Linux-*.zip`) — portable bundle; needs `libmpv` (`sudo apt install libmpv-dev`). Unzip and run `driftfin`.
+
+  testflight:
+    if: github.event_name == 'workflow_dispatch' && inputs.testflight == true
+    needs: version
+    runs-on: macos-15
+    environment: testflight
+    permissions:
+      contents: read
+    concurrency:
+      group: ios-testflight
+      cancel-in-progress: false
+    env:
+      APPSTORE_BUNDLE_ID: app.driftfin.79758DD3NW
+    steps:
+      - name: Check out requested ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - name: Import App Store distribution certificate
+        uses: apple-actions/import-codesign-certs@v7
+        with:
+          p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
+          p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
+
+      - name: Download App Store provisioning profile
+        uses: apple-actions/download-provisioning-profiles@v6
+        with:
+          bundle-id: ${{ env.APPSTORE_BUNDLE_ID }}
+          profile-type: IOS_APP_STORE
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build signed production IPA
+        run: >-
+          flutter build ipa
+          --release
+          --flavor production
+          --build-number=${{ github.run_number }}
+          --export-options-plist=ios/exportOptions.plist
+
+      - name: Locate IPA
+        id: ipa
+        shell: bash
+        run: |
+          IPA_PATH="$(find build/ios/ipa -maxdepth 1 -type f -name '*.ipa' -print -quit)"
+          test -n "$IPA_PATH"
+          echo "path=$IPA_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Upload to TestFlight
+        uses: apple-actions/upload-testflight-build@v5
+        with:
+          app-path: ${{ steps.ipa.outputs.path }}
+          issuer-id: ${{ vars.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ vars.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+          release-notes: ${{ inputs.release_notes }}
+          uses-non-exempt-encryption: 'false'
+          wait-for-processing: 'true'
