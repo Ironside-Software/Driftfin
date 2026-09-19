@@ -7,7 +7,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/screens/details_screens/components/overview_header.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/custom_shader_mask.dart';
@@ -49,7 +49,7 @@ class _DetailedBannerState extends ConsumerState<DetailedBanner> {
                     child: CustomShaderMask(
                       child: ValueListenableBuilder(
                         valueListenable: selectedPoster,
-                        builder: (context, value, child) => FladderImage(
+                        builder: (context, value, child) => DriftfinImage(
                           image: value.images?.primary,
                         ),
                       ),

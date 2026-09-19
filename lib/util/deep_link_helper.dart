@@ -42,7 +42,7 @@ class AuthLinkData {
       );
 
   static AuthLinkData? parse(String encoded) {
-    String removeUrlPrefix = encoded.replaceFirst(RegExp(r'^fladder:\/\/\/login\?authLink='), '');
+    String removeUrlPrefix = encoded.replaceFirst(RegExp(r'^driftfin:\/\/\/login\?authLink='), '');
     try {
       final pad = removeUrlPrefix.length % 4;
       if (pad != 0) {

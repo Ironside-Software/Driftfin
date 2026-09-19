@@ -12,7 +12,7 @@ import 'package:driftfin/screens/shared/detail_scaffold.dart';
 import 'package:driftfin/screens/shared/media/external_urls.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/list_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/string_extensions.dart';
@@ -63,7 +63,7 @@ class _PersonDetailScreenState extends ConsumerState<PersonDetailScreen> {
                       : MediaQuery.of(context).size.width / 3.5,
                   child: AspectRatio(
                     aspectRatio: 0.70,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       fit: BoxFit.cover,
                       placeHolder: placeHolder(details?.name ?? ""),
                       image: details?.images?.primary,

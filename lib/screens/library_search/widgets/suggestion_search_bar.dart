@@ -10,7 +10,7 @@ import 'package:driftfin/providers/library_search_provider.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/debouncer.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 class SuggestionSearchBar extends ConsumerStatefulWidget {
@@ -158,7 +158,7 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                       child: AspectRatio(
                         aspectRatio: 0.8,
-                        child: FladderImage(
+                        child: DriftfinImage(
                           image: suggestion.images?.primary,
                           fit: BoxFit.cover,
                         ),

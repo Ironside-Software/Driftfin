@@ -7,13 +7,13 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/screens/shared/media/banner_play_button.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/themes_data.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
 
@@ -185,7 +185,7 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
                                 height: double.infinity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(1),
-                                  child: FladderImage(
+                                  child: DriftfinImage(
                                     fit: BoxFit.cover,
                                     image: currentItem.bannerImage,
                                   ),
@@ -265,7 +265,7 @@ class _MediaBannerState extends ConsumerState<MediaBanner> {
           if (widget.items.length > 1)
             FractionallySizedBox(
               widthFactor: 0.35,
-              child: FladderSlider(
+              child: DriftfinSlider(
                 value: currentPage.toDouble(),
                 min: 0,
                 animation: const Duration(milliseconds: 250),

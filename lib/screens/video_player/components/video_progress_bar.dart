@@ -11,7 +11,7 @@ import 'package:driftfin/util/duration_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/string_extensions.dart';
 import 'package:driftfin/widgets/gapped_container_shape.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/trick_play_image.dart';
 
 class VideoProgressBar extends ConsumerStatefulWidget {
@@ -95,7 +95,7 @@ class _ChapterProgressSliderState extends ConsumerState<VideoProgressBar> {
                   },
                   child: Opacity(
                     opacity: widget.buffering ? 0 : 1.0,
-                    child: FladderSlider(
+                    child: DriftfinSlider(
                       min: 0.0,
                       max: widget.duration.inMilliseconds.toDouble(),
                       animation: Duration.zero,

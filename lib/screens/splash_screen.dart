@@ -8,7 +8,7 @@ import 'package:driftfin/providers/arguments_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
-import 'package:driftfin/screens/shared/fladder_logo.dart';
+import 'package:driftfin/screens/shared/driftfin_logo.dart';
 import 'package:driftfin/screens/shared/route_wrapper.dart';
 import 'package:driftfin/services/local_network_permission.dart';
 
@@ -74,7 +74,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         body: Center(
           child: FractionallySizedBox(
             heightFactor: 0.4,
-            child: FladderLogo(),
+            child: DriftfinLogo(),
           ),
         ),
       ),

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/providers/control_panel/control_users_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/filled_button_await.dart';
@@ -102,7 +102,7 @@ class _PasswordResetDialogState extends ConsumerState<PasswordResetDialog> {
                   FilledButtonAwait(
                     onPressed: () async {
                       if (newPasswordController.text != confirmPasswordController.text) {
-                        FladderSnack.show(
+                        DriftfinSnack.show(
                           context.localized.passwordMismatch,
                           context: context,
                         );
@@ -115,13 +115,13 @@ class _PasswordResetDialogState extends ConsumerState<PasswordResetDialog> {
                         confirmPassword: confirmPasswordController.text,
                       );
                       if (responseMessage == null) {
-                        FladderSnack.show(
+                        DriftfinSnack.show(
                           context.localized.passwordChangeSuccess,
                           context: context,
                         );
                         Navigator.of(context).pop();
                       } else {
-                        FladderSnack.show(
+                        DriftfinSnack.show(
                           responseMessage,
                           context: context,
                         );

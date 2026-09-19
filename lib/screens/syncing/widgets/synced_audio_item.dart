@@ -15,7 +15,7 @@ import 'package:driftfin/screens/shared/flat_button.dart';
 import 'package:driftfin/screens/syncing/sync_widgets.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_file_button.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_item_poster.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/size_formatting.dart';
@@ -102,7 +102,7 @@ class _SyncedAudioItemState extends ConsumerState<SyncedAudioItem> {
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Card(
-                      child: FladderImage(
+                      child: DriftfinImage(
                         image: coverImage,
                         fit: BoxFit.cover,
                       ),

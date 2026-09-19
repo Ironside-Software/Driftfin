@@ -9,7 +9,7 @@ import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/util/string_extensions.dart';
 
 extension WindowHelperSetup on WindowManager {
-  Future<void> setupFladderWindowChrome(
+  Future<void> setupDriftfinWindowChrome(
     ArgumentsModel startupArguments,
     ClientSettingsModel clientSettings,
     PackageInfo packageInfo,

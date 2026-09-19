@@ -15,7 +15,7 @@ import 'package:driftfin/providers/crash_log_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/src/video_player_helper.g.dart';
 import 'package:driftfin/util/application_info.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/string_extensions.dart';
 import 'package:driftfin/util/svg_utils.dart';
 
@@ -30,7 +30,7 @@ const sentryDsn = String.fromEnvironment('SENTRY_DSN');
 /// other platform only ever has the compile-time value.
 String get resolvedSentryDsn => resolveSentryDsn(
       isWeb: kIsWeb,
-      webConfiguredDsn: FladderConfig.sentryDsn,
+      webConfiguredDsn: DriftfinConfig.sentryDsn,
       buildTimeDsn: sentryDsn,
     );
 
@@ -92,7 +92,7 @@ Future<AppBootstrapResult> bootstrapApplication(List<String> args) async {
 
   if (kIsWeb) {
     final configString = await rootBundle.loadString('config/config.json');
-    FladderConfig.fromJson(jsonDecode(configString) as Map<String, dynamic>);
+    DriftfinConfig.fromJson(jsonDecode(configString) as Map<String, dynamic>);
   }
 
   await SvgUtils.preCacheSVGs();

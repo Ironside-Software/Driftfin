@@ -14,7 +14,7 @@ import 'package:driftfin/screens/seerr/widgets/seerr_watched_button.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/clickable_text.dart';
@@ -101,7 +101,7 @@ class SeerrPosterCard extends ConsumerWidget {
                 border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
               ),
               clipBehavior: Clip.hardEdge,
-              child: FladderImage(
+              child: DriftfinImage(
                 image: image,
                 placeHolder: Center(
                   child: Text(

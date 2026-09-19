@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
 Future<void> showItemContextMenu(
@@ -105,7 +105,7 @@ class ItemBottomSheetPreview extends ConsumerWidget {
                 height: 90,
                 child: AspectRatio(
                   aspectRatio: 1,
-                  child: FladderImage(
+                  child: DriftfinImage(
                     image: item.images?.primary,
                     fit: BoxFit.contain,
                   ),

@@ -10,7 +10,7 @@ import 'package:driftfin/models/media_playback_model.dart';
 import 'package:driftfin/providers/settings/video_player_settings_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/video_player/video_player.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
@@ -137,7 +137,7 @@ class _CurrentlyPlayingBarState extends ConsumerState<FloatingPlayerBar> {
         },
         direction: DismissDirection.vertical,
         child: InkWell(
-          onLongPress: () => FladderSnack.show("Swipe up/down to open/close the player", context: context),
+          onLongPress: () => DriftfinSnack.show("Swipe up/down to open/close the player", context: context),
           child: Container(
             height: floatingPlayerHeight(context),
             clipBehavior: Clip.hardEdge,

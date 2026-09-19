@@ -1,6 +1,6 @@
-class FladderConfig {
-  static FladderConfig _instance = FladderConfig._();
-  FladderConfig._();
+class DriftfinConfig {
+  static DriftfinConfig _instance = DriftfinConfig._();
+  DriftfinConfig._();
 
   static String? get baseUrl => _instance._baseUrl;
   static set baseUrl(String? value) => _instance._baseUrl = value;
@@ -19,10 +19,10 @@ class FladderConfig {
   static set sentryDsn(String? value) => _instance._sentryDsn = value;
   String? _sentryDsn;
 
-  static void fromJson(Map<String, dynamic> json) => _instance = FladderConfig._fromJson(json);
+  static void fromJson(Map<String, dynamic> json) => _instance = DriftfinConfig._fromJson(json);
 
-  factory FladderConfig._fromJson(Map<String, dynamic> json) {
-    final config = FladderConfig._();
+  factory DriftfinConfig._fromJson(Map<String, dynamic> json) {
+    final config = DriftfinConfig._();
     final newUrl = json['baseUrl'] as String?;
     final newSeerrUrl = json['seerrBaseUrl'] as String?;
     final newSentryDsn = json['sentryDsn'] as String?;

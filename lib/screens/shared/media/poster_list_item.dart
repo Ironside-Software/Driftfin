@@ -8,7 +8,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -132,7 +132,7 @@ class PosterListItem extends ConsumerWidget {
                               tag: poster.id,
                               child: Card(
                                 margin: EdgeInsets.zero,
-                                child: FladderImage(
+                                child: DriftfinImage(
                                   image: poster.getPosters?.primary ?? poster.getPosters?.backDrop?.lastOrNull,
                                 ),
                               ),

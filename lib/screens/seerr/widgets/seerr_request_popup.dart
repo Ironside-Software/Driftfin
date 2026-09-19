@@ -12,12 +12,12 @@ import 'package:driftfin/screens/seerr/widgets/request_configuration_section.dar
 import 'package:driftfin/screens/seerr/widgets/request_popup_widgets.dart';
 import 'package:driftfin/screens/seerr/widgets/seasons_section.dart';
 import 'package:driftfin/screens/shared/adaptive_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/external_urls.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
@@ -128,7 +128,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                               child: SizedBox(
                                 width: 100,
                                 height: 150,
-                                child: FladderImage(
+                                child: DriftfinImage(
                                   image: model.images.primary,
                                   placeHolder: Container(
                                     color: Colors.grey,
@@ -323,7 +323,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
             FilledButtonAwait(
               onPressed: requestState.canSubmitRequest
                   ? () async {
-                      await FladderSnack.showResponse(
+                      await DriftfinSnack.showResponse(
                         notifier.submitRequest(),
                         successTitle: context.localized.requestedSuccessForItem(model.title),
                       );

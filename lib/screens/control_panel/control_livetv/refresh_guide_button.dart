@@ -7,7 +7,7 @@ import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/providers/control_panel/control_active_tasks_provider.dart';
 import 'package:driftfin/providers/control_panel/control_livetv_provider.dart';
 import 'package:driftfin/screens/control_panel/control_livetv/listing_provider_edit_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
 
@@ -42,7 +42,7 @@ class RefreshGuideButton extends ConsumerWidget {
                   builder: (context) => ListingProviderEditDialog(availableTuners: tunerHosts),
                 );
                 if (result != null && context.mounted) {
-                  final response = await FladderSnack.showResponse<ListingsProviderInfo>(
+                  final response = await DriftfinSnack.showResponse<ListingsProviderInfo>(
                     ref.read(controlLiveTvProvider.notifier).addListingProvider(result),
                     successTitle: context.localized.epgProviderAddedSuccessfully,
                     errorTitle: (err) => context.localized.failedToAddEpgProvider(err),

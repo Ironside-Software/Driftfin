@@ -15,7 +15,7 @@ import 'package:driftfin/screens/shared/media/components/media_header.dart';
 import 'package:driftfin/screens/shared/media/components/poster_overlays.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -209,7 +209,7 @@ class _TVPosterItem extends ConsumerWidget {
           clipBehavior: Clip.hardEdge,
           child: Stack(
             children: [
-              FladderImage(
+              DriftfinImage(
                 key: ValueKey(poster.tvPosterLarge?.key ?? "${poster.id}_large"),
                 image: poster.tvPosterLarge,
                 placeHolder: const _TVPosterPlaceholder(),
@@ -217,7 +217,7 @@ class _TVPosterItem extends ConsumerWidget {
               AnimatedOpacity(
                 duration: _kAnimationDuration,
                 opacity: focused ? 0 : 1,
-                child: FladderImage(
+                child: DriftfinImage(
                   key: ValueKey(poster.tvPosterSmall?.key ?? "${poster.id}_small"),
                   image: poster.tvPosterSmall,
                   placeHolder: const _TVPosterPlaceholder(),

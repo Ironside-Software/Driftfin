@@ -15,7 +15,7 @@ import 'package:driftfin/screens/settings/settings_scaffold.dart';
 import 'package:driftfin/screens/settings/widgets/seerr_connection_dialog.dart';
 import 'package:driftfin/screens/settings/widgets/settings_label_divider.dart';
 import 'package:driftfin/screens/settings/widgets/settings_list_group.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/services/notification_service.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -45,7 +45,7 @@ class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsP
     final result = await ref.read(serverIntegrationConfigProvider.notifier).loadWithDiagnostics();
     if (mounted) {
       setState(() => _refreshing = false);
-      FladderSnack.show(_statusMessage(context, result.status, result.detail), context: context);
+      DriftfinSnack.show(_statusMessage(context, result.status, result.detail), context: context);
     }
   }
 

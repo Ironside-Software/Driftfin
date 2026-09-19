@@ -17,7 +17,7 @@ import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
 import 'package:driftfin/screens/shared/default_title_bar.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/full_screen_helpers/full_screen_wrapper.dart';
@@ -365,7 +365,7 @@ class _NextUpInformation extends StatelessWidget {
                     child: AspectRatio(
                       aspectRatio: 0.67,
                       child: Card(
-                        child: FladderImage(
+                        child: DriftfinImage(
                           image: item.images?.primary,
                         ),
                       ),
@@ -414,7 +414,7 @@ class _NextUpInformation extends StatelessWidget {
               child: AspectRatio(
                 aspectRatio: 2.1,
                 child: Card(
-                  child: FladderImage(
+                  child: DriftfinImage(
                     image: item.images?.primary,
                   ),
                 ),

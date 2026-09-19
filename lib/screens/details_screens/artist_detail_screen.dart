@@ -12,12 +12,12 @@ import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/screens/details_screens/tracks_detail_screen.dart';
 import 'package:driftfin/screens/shared/detail_scaffold.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
 import 'package:driftfin/screens/shared/media/track_list.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/color_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/item_base_model/play_item_helpers.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -84,7 +84,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                   height: 200,
                   width: double.infinity,
                   alignment: Alignment.center,
-                  child: FladderImage(
+                  child: DriftfinImage(
                     image: artist?.getPosters?.logo,
                     placeHolder: placeHolder,
                     disableBlur: true,
@@ -174,7 +174,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                                 onAddToQueueSelected: (selected) async {
                                   await ref.read(videoPlayerProvider.notifier).addToTemporaryQueue(selected);
                                   if (detailsContext.mounted) {
-                                    FladderSnack.show(
+                                    DriftfinSnack.show(
                                       detailsContext.localized.addedToQueue(selected.length),
                                       context: detailsContext,
                                     );

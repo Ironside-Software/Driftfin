@@ -45,7 +45,7 @@ import 'package:driftfin/providers/sync/background_download_provider.dart';
 import 'package:driftfin/providers/sync/sync_provider_media.dart';
 import 'package:driftfin/providers/sync/sync_provider_overlay.dart';
 import 'package:driftfin/providers/user_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/duration_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/string_extensions.dart';
@@ -373,14 +373,14 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
         String? selectedDirectory =
             await FilePicker.platform.getDirectoryPath(dialogTitle: context.localized.syncSelectDownloadsFolder);
         if (selectedDirectory?.isEmpty == true && context.mounted) {
-          FladderSnack.show(context.localized.syncNoFolderSetup, context: context);
+          DriftfinSnack.show(context.localized.syncNoFolderSetup, context: context);
           return;
         }
         ref.read(clientSettingsProvider.notifier).setSyncPath(selectedDirectory);
       }
 
       if (context.mounted) {
-        FladderSnack.show(context.localized.syncAddItemForSyncing(item.detailedName(context.localized) ?? "Unknown"),
+        DriftfinSnack.show(context.localized.syncAddItemForSyncing(item.detailedName(context.localized) ?? "Unknown"),
             context: context);
       }
       final newSync = switch (item) {
@@ -395,7 +395,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
         _ => null
       };
       if (context.mounted) {
-        FladderSnack.show(
+        DriftfinSnack.show(
             newSync != null
                 ? context.localized.startedSyncingItem(item.detailedName(context.localized) ?? "Unknown")
                 : context.localized.unableToSyncItem(item.detailedName(context.localized) ?? "Unknown"),
@@ -406,7 +406,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
     } catch (e) {
       log('Error adding sync item: ${e.toString()}');
       if (context?.mounted == true) {
-        FladderSnack.show(context!.localized.somethingWentWrong, context: context);
+        DriftfinSnack.show(context!.localized.somethingWentWrong, context: context);
       }
     }
   }
@@ -447,7 +447,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
     } catch (e) {
       log('Error deleting synced item ${e.toString()}');
       state = state.copyWith(items: state.items.map((e) => e.copyWith(markedForDelete: false)).toList());
-      FladderSnack.show(context.localized.syncRemoveUnableToDeleteItem, context: context);
+      DriftfinSnack.show(context.localized.syncRemoveUnableToDeleteItem, context: context);
       return false;
     }
   }
@@ -484,7 +484,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
     } catch (e) {
       log('Error deleting synced playlist ${e.toString()}');
       state = state.copyWith(items: state.items.map((e) => e.copyWith(markedForDelete: false)).toList());
-      FladderSnack.show(context.localized.syncRemoveUnableToDeleteItem, context: context);
+      DriftfinSnack.show(context.localized.syncRemoveUnableToDeleteItem, context: context);
       return false;
     }
   }
@@ -687,7 +687,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
             : ref.read(videoProfileProvider))
         : (effectiveTranscodeModel.enabled ? effectiveTranscodeModel.deviceProfile : ref.read(videoProfileProvider));
 
-    final playbackResponse = await FladderSnack.showResponse(
+    final playbackResponse = await DriftfinSnack.showResponse(
       api
           .itemsItemIdPlaybackInfoPost(
             itemId: syncItem.id,

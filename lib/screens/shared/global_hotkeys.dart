@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/focus_helper.dart';
 import 'package:driftfin/util/input_handler.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -45,7 +45,7 @@ class GlobalHotkeys extends ConsumerWidget {
             Future.microtask(() async {
               final closed = await closeCurrentWindow();
               if (!closed && context.mounted) {
-                FladderSnack.show(context.localized.somethingWentWrong, context: context);
+                DriftfinSnack.show(context.localized.somethingWentWrong, context: context);
               }
             });
             return true;

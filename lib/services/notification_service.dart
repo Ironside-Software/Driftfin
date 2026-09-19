@@ -12,7 +12,7 @@ class NotificationService {
   NotificationService._();
 
   static final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
-  static const String _channelId = 'fladder_updates';
+  static const String _channelId = 'driftfin_updates';
   static const String _channelName = 'Update notifications';
   static const String _channelDesc = 'Notifications for newly added items';
 
@@ -125,7 +125,7 @@ class NotificationService {
     if (notifications.isEmpty) return;
 
     final baseId = DateTime.now().millisecond;
-    final groupKey = 'fladder_group_$groupId';
+    final groupKey = 'driftfin_group_$groupId';
 
     if (notifications.length == 1) {
       final single = notifications.first;

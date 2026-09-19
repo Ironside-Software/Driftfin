@@ -9,7 +9,7 @@ import 'package:driftfin/models/items/channel_program.dart';
 import 'package:driftfin/providers/live_tv_provider.dart';
 import 'package:driftfin/screens/live_tv/widgets/guide_constants.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
@@ -179,7 +179,7 @@ class ChannelRowState extends ConsumerState<ChannelRow> {
                                     Container(
                                       child: AspectRatio(
                                         aspectRatio: 0.7,
-                                        child: FladderImage(
+                                        child: DriftfinImage(
                                           image: program.images?.primary?.copyWith(
                                             key: 'program-${program.id}-${program.name}}',
                                           ),

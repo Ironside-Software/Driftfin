@@ -8,7 +8,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/providers/items/identify_provider.dart';
 import 'package:driftfin/screens/shared/adaptive_dialog.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/focused_outlined_text_field.dart';
 import 'package:driftfin/util/custom_cache_manager.dart';
 import 'package:driftfin/util/list_padding.dart';
@@ -279,7 +279,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
                             child: IconButton(
                               onPressed: !processing
                                   ? () async {
-                                      await FladderSnack.showResponse(
+                                      await DriftfinSnack.showResponse(
                                         ref.read(provider.notifier).setIdentity(result),
                                         successTitle: context.localized.setIdentityTo(result.name ?? ""),
                                       );

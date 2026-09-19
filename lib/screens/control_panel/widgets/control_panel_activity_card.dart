@@ -6,7 +6,7 @@ import 'package:driftfin/providers/control_panel/control_activity_provider.dart'
 import 'package:driftfin/screens/shared/user_icon.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/humanize_duration.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -75,7 +75,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                     if (nowPlayingItem != null)
                       Positioned.fill(
                         child: trickPlayModel == null
-                            ? FladderImage(
+                            ? DriftfinImage(
                                 image: nowPlayingItem.images?.primary,
                               )
                             : TrickPlayImage(
@@ -270,7 +270,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                             child: Container(
                               decoration: FladderTheme.defaultPosterDecoration,
                               clipBehavior: Clip.hardEdge,
-                              child: FladderImage(image: nowPlayingItem.getPosters?.primary),
+                              child: DriftfinImage(image: nowPlayingItem.getPosters?.primary),
                             ),
                           ),
                         ),

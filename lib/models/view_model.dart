@@ -14,7 +14,7 @@ import 'package:driftfin/models/items/images_models.dart';
 import 'package:driftfin/models/library_filter_model.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/theme.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/navigation_button.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
@@ -167,7 +167,7 @@ class ViewModel {
       clipBehavior: Clip.hardEdge,
       child: SizedBox.square(
         dimension: 45,
-        child: FladderImage(
+        child: DriftfinImage(
           image: imageData?.primary,
           placeHolder: Card(
             child: Icon(

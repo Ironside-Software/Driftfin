@@ -30,7 +30,7 @@ import 'package:driftfin/util/audio_filter_chain.dart';
 import 'package:driftfin/util/bitrate_helper.dart';
 import 'package:driftfin/util/box_fit_extension.dart';
 import 'package:driftfin/util/localization_helper.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/wrappers/pip_manager.dart';
 
@@ -306,7 +306,7 @@ class _PlayerSettingsPageState extends ConsumerState<PlayerSettingsPage> {
                     Row(
                       children: [
                         Expanded(
-                          child: FladderSlider(
+                          child: DriftfinSlider(
                             min: 0.25,
                             max: 3.0,
                             value: videoSettings.speedBoostRate,
@@ -645,7 +645,7 @@ class _PlayerSettingsPageState extends ConsumerState<PlayerSettingsPage> {
                         Row(
                           children: [
                             Expanded(
-                              child: FladderSlider(
+                              child: DriftfinSlider(
                                 min: 200,
                                 max: 3000,
                                 value: videoSettings.crossfadeDurationMs.toDouble(),

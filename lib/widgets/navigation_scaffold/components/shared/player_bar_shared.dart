@@ -8,7 +8,7 @@ import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/screens/shared/flat_button.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
 const videoPlayerHeroTag = "HeroPlayer";
@@ -193,7 +193,7 @@ class _FloatingPlayerBarProgressState extends ConsumerState<FloatingPlayerBarPro
     return AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer
         ? SizedBox(
             height: 8,
-            child: FladderSlider(
+            child: DriftfinSlider(
               value: position.inMilliseconds.toDouble(),
               min: 0.0,
               max: playback.duration.inMilliseconds.toDouble(),

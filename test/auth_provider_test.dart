@@ -8,7 +8,7 @@ import 'package:driftfin/models/login_screen_model.dart';
 import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/auth_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 
 /// Builds a minimal [AccountModel] for a given server/user, optionally with
 /// Seerr credentials and a `lastUsed` timestamp (used to test recency sorting).
@@ -37,8 +37,8 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     prefs = await SharedPreferences.getInstance();
     // Reset any global config mutated by other tests in this isolate.
-    FladderConfig.baseUrl = null;
-    FladderConfig.seerrBaseUrl = null;
+    DriftfinConfig.baseUrl = null;
+    DriftfinConfig.seerrBaseUrl = null;
   });
 
   ProviderContainer container() {
@@ -213,10 +213,10 @@ void main() {
   // `_findSeerrUrlForServer` is private, but is invoked from `_fetchServerInfo`
   // (network-bound) and from nowhere else public. We can't reach it directly
   // without a network round trip, so we validate its documented precedence
-  // rules by exercising `FladderConfig.seerrBaseUrl` and the account list it
+  // rules by exercising `DriftfinConfig.seerrBaseUrl` and the account list it
   // reads from `state.accounts`, using `initModel` (which populates
   // `state.accounts` from saved accounts and does not require network when
-  // `FladderConfig.baseUrl` is null).
+  // `DriftfinConfig.baseUrl` is null).
   group('initModel (no base url configured)', () {
     test('populates accounts from shared storage and defaults to login screen when empty', () async {
       final c = container();
@@ -242,17 +242,17 @@ void main() {
     });
   });
 
-  group('FladderConfig.seerrBaseUrl precedence (documents _findSeerrUrlForServer contract)', () {
-    // These tests exercise FladderConfig directly since _findSeerrUrlForServer
+  group('DriftfinConfig.seerrBaseUrl precedence (documents _findSeerrUrlForServer contract)', () {
+    // These tests exercise DriftfinConfig directly since _findSeerrUrlForServer
     // is private and only reachable via the network-bound _fetchServerInfo.
     // They document/verify the static config half of that method's contract.
     test('seerrBaseUrl set takes precedence and is non-empty', () {
-      FladderConfig.seerrBaseUrl = 'https://global-seerr.example.com';
-      expect(FladderConfig.seerrBaseUrl?.isNotEmpty, isTrue);
+      DriftfinConfig.seerrBaseUrl = 'https://global-seerr.example.com';
+      expect(DriftfinConfig.seerrBaseUrl?.isNotEmpty, isTrue);
     });
 
     test('seerrBaseUrl unset is null', () {
-      expect(FladderConfig.seerrBaseUrl, isNull);
+      expect(DriftfinConfig.seerrBaseUrl, isNull);
     });
   });
 }

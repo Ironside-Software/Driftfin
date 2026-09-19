@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:driftfin/models/item_base_model.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 class ItemLogo extends StatelessWidget {
   final ItemBaseModel item;
@@ -35,7 +35,7 @@ class ItemLogo extends StatelessWidget {
     return logo != null
         ? ConstrainedBox(
             constraints: BoxConstraints(maxWidth: size.width * 0.25, maxHeight: maxHeight),
-            child: FladderImage(
+            child: DriftfinImage(
               image: logo,
               disableBlur: true,
               stackFit: StackFit.passthrough,

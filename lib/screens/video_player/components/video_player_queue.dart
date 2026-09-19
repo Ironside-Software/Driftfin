@@ -8,7 +8,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/media_playback_model.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/wrappers/media_control_wrapper.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/models/playback/playback_queue_state.dart';
@@ -361,7 +361,7 @@ class _QueueTile extends StatelessWidget {
           child: SizedBox(
             width: 40,
             height: 40,
-            child: FladderImage(
+            child: DriftfinImage(
               image: item.images?.primary,
               fit: BoxFit.cover,
               placeHolder: const Center(child: Icon(Icons.music_note_rounded, size: 20)),

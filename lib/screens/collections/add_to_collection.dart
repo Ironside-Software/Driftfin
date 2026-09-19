@@ -8,7 +8,7 @@ import 'package:driftfin/models/boxset_model.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/providers/collections_provider.dart';
 import 'package:driftfin/screens/shared/adaptive_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -159,7 +159,7 @@ class _AddToCollectionState extends ConsumerState<AddToCollection> {
     if (value == true) {
       final response = await ref.read(provider.notifier).addToCollection(boxSet: boxSet, add: false);
       if (context.mounted) {
-        FladderSnack.show(
+        DriftfinSnack.show(
             response.isSuccessful
                 ? context.localized.removedFromCollection(boxSet.name)
                 : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',
@@ -168,7 +168,7 @@ class _AddToCollectionState extends ConsumerState<AddToCollection> {
     } else {
       final response = await ref.read(provider.notifier).addToCollection(boxSet: boxSet, add: true);
       if (context.mounted) {
-        FladderSnack.show(
+        DriftfinSnack.show(
             response.isSuccessful
                 ? context.localized.addedToCollection(boxSet.name)
                 : '${context.localized.somethingWentWrong} - (${response.statusCode}) - ${response.base.reasonPhrase}',

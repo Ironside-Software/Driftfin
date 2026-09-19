@@ -12,7 +12,7 @@ import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/details_screens/components/media_stream_information.dart';
 import 'package:driftfin/screens/details_screens/components/overview_header.dart';
 import 'package:driftfin/screens/shared/detail_scaffold.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/chapter_row.dart';
 import 'package:driftfin/screens/shared/media/components/media_play_button.dart';
 import 'package:driftfin/screens/shared/media/episode_posters.dart';
@@ -210,7 +210,7 @@ class _ItemDetailScreenState extends ConsumerState<EpisodeDetailScreen> {
                           .moreFrom("${detailsContext.localized.season(1).toLowerCase()} ${episodeDetails.season}"),
                       onEpisodeTap: (action, episodeModel) {
                         if (episodeModel.id == episodeDetails.id) {
-                          FladderSnack.show(detailsContext.localized.selectedWith(detailsContext.localized.episode(0)),
+                          DriftfinSnack.show(detailsContext.localized.selectedWith(detailsContext.localized.episode(0)),
                               context: detailsContext);
                         } else {
                           action();

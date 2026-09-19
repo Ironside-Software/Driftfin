@@ -14,7 +14,7 @@ import 'package:driftfin/providers/config_sync_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 /// Export/Import/Reset for the local settings (issue #50 Phase 5), built on
@@ -56,7 +56,7 @@ class SettingsBackupActions extends ConsumerWidget {
     if (Platform.isMacOS || Platform.isWindows || Platform.isLinux) {
       await File(path).writeAsBytes(bytes);
     }
-    if (context.mounted) FladderSnack.show(context.localized.saved, context: context);
+    if (context.mounted) DriftfinSnack.show(context.localized.saved, context: context);
   }
 
   Future<void> _import(BuildContext context, WidgetRef ref) async {
@@ -73,9 +73,9 @@ class SettingsBackupActions extends ConsumerWidget {
       if (decoded is! Map<String, dynamic>) throw const FormatException('not a JSON object');
       final settings = UserSettings.fromJson(decoded);
       ref.read(configSyncProvider).applySettings(settings);
-      if (context.mounted) FladderSnack.show(context.localized.saved, context: context);
+      if (context.mounted) DriftfinSnack.show(context.localized.saved, context: context);
     } catch (_) {
-      if (context.mounted) FladderSnack.show(context.localized.somethingWentWrong, context: context);
+      if (context.mounted) DriftfinSnack.show(context.localized.somethingWentWrong, context: context);
     }
   }
 

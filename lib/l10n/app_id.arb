@@ -1101,7 +1101,7 @@
   "passwordNotRequired": "Tidak dibutuhkan, biarkan kosong untuk tidak memasukkan password di link",
   "authLinkButtonToolTip": "Buka dialog otorisasi link",
   "connectWithAuthLink": "Hubungkan dengan link otorisasi",
-  "pasteDriftfinAuthLink": "Tempel link otorisasi fladder driftfin:///login?authLink=...",
+  "pasteDriftfinAuthLink": "Tempel link otorisasi driftfin driftfin:///login?authLink=...",
   "connect": "Hubungkan",
   "authLinkDesc": "Minta administrator server untuk menyediakan link otorisasi . Link mengandung informasi otentikasi, pastikan untuk menyimpannya dengan aman.",
   "deletedItem": "{itemName} dihapus",

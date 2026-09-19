@@ -16,7 +16,7 @@ import 'package:driftfin/screens/shared/nested_bottom_appbar.dart';
 import 'package:driftfin/screens/video_player/audio_player_full_screen.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/destination_model.dart';
-import 'package:driftfin/widgets/navigation_scaffold/components/fladder_app_bar.dart';
+import 'package:driftfin/widgets/navigation_scaffold/components/driftfin_app_bar.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/floating_player_bar.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/navigation_body.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/navigation_drawer.dart';
@@ -107,7 +107,7 @@ class _NavigationScaffoldState extends ConsumerState<NavigationScaffold> {
         appBar: fullScreenChildRoute ||
                 (showAudioFullScreen && AdaptiveLayout.layoutModeOf(scaffoldContext) == LayoutMode.single)
             ? null
-            : FladderAppBar(
+            : DriftfinAppBar(
                 isDesktop: isDesktop,
                 label: currentIndex == -1 ? "" : null,
               ),

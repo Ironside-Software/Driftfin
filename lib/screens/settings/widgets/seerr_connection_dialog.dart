@@ -13,11 +13,11 @@ import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/screens/settings/widgets/settings_message_box.dart';
 import 'package:driftfin/screens/shared/adaptive_dialog.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/focused_outlined_text_field.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 final _stackTracePattern = RegExp(r'\n#\d');
@@ -70,7 +70,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
   String? error;
   String? warning;
 
-  bool get _hasPresetSeerrBaseUrl => FladderConfig.seerrBaseUrl?.isNotEmpty == true;
+  bool get _hasPresetSeerrBaseUrl => DriftfinConfig.seerrBaseUrl?.isNotEmpty == true;
 
   /// Whether Seerr is configured server-side by the Driftfin plugin; when true
   /// the connection is locked and the in-dialog controls are read-only.
@@ -81,7 +81,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     super.initState();
     final creds = ref.read(userProvider)?.seerrCredentials;
     apiKeyController = TextEditingController(text: creds?.apiKey ?? '');
-    serverController = TextEditingController(text: FladderConfig.seerrBaseUrl ?? creds?.serverUrl ?? '');
+    serverController = TextEditingController(text: DriftfinConfig.seerrBaseUrl ?? creds?.serverUrl ?? '');
     localEmailController = TextEditingController();
     localPasswordController = TextEditingController();
     jfUsernameController = TextEditingController();
@@ -127,8 +127,8 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
   }
 
   Future<void> _refreshSession() async {
-    final serverUrl = (FladderConfig.seerrBaseUrl?.trim().isNotEmpty == true)
-        ? FladderConfig.seerrBaseUrl?.trim()
+    final serverUrl = (DriftfinConfig.seerrBaseUrl?.trim().isNotEmpty == true)
+        ? DriftfinConfig.seerrBaseUrl?.trim()
         : (serverController.text.trim().isNotEmpty
             ? serverController.text.trim()
             : ref.read(userProvider)?.seerrCredentials?.serverUrl.trim());
@@ -230,7 +230,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     await _refreshSession();
 
     if (mounted) {
-      FladderSnack.show(context.localized.seerrApiKeySaved, context: context);
+      DriftfinSnack.show(context.localized.seerrApiKeySaved, context: context);
     }
 
     if (mounted) {
@@ -254,13 +254,13 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
       ref.read(userProvider.notifier).setSeerrApiKey('');
       await _refreshSession();
       if (mounted) {
-        FladderSnack.show(context.localized.seerrLoggedIn, context: context);
+        DriftfinSnack.show(context.localized.seerrLoggedIn, context: context);
       }
     } catch (e) {
       if (mounted) {
         final message = _sanitizeErrorMessage(e);
         error = message;
-        FladderSnack.show(message, context: context);
+        DriftfinSnack.show(message, context: context);
       }
     } finally {
       if (mounted) {
@@ -285,13 +285,13 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
       ref.read(userProvider.notifier).setSeerrApiKey('');
       await _refreshSession();
       if (mounted) {
-        FladderSnack.show(context.localized.seerrLoggedIn, context: context);
+        DriftfinSnack.show(context.localized.seerrLoggedIn, context: context);
       }
     } catch (e) {
       if (mounted) {
         final message = _sanitizeErrorMessage(e);
         error = message;
-        FladderSnack.show(message, context: context);
+        DriftfinSnack.show(message, context: context);
       }
     } finally {
       if (mounted) {
@@ -320,7 +320,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
       if (mounted) {
         final message = _sanitizeErrorMessage(e);
         error = message;
-        FladderSnack.show(message, context: context);
+        DriftfinSnack.show(message, context: context);
       }
     } finally {
       ref.read(userProvider.notifier).logoutSeerr();

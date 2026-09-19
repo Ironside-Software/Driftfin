@@ -15,7 +15,7 @@ import 'package:driftfin/screens/settings/settings_list_tile.dart';
 import 'package:driftfin/screens/settings/settings_scaffold.dart';
 import 'package:driftfin/screens/settings/widgets/settings_search_field.dart';
 import 'package:driftfin/screens/shared/default_alert_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_icon.dart';
+import 'package:driftfin/screens/shared/driftfin_icon.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/theme_extensions.dart';
@@ -183,7 +183,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               selected: containsRoute(const AboutSettingsRoute()),
               leading: Opacity(
                 opacity: 1,
-                child: FladderIconOutlined(
+                child: DriftfinIconOutlined(
                   size: 24,
                   color: context.colors.onSurfaceVariant,
                 ),

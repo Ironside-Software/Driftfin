@@ -29,12 +29,12 @@ import 'package:driftfin/screens/video_player/components/video_volume_slider.dar
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/clickable_text.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
 import 'package:driftfin/widgets/shared/theme_overwrite.dart';
@@ -295,7 +295,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                   child: SizedBox(
                     width: 56,
                     height: 56,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: artwork,
                       fit: BoxFit.cover,
                       placeHolder: const Center(child: Icon(Icons.music_note_rounded, size: 20)),
@@ -438,7 +438,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                 color: Theme.of(context).colorScheme.surfaceContainer,
               ),
               clipBehavior: Clip.hardEdge,
-              child: FladderImage(
+              child: DriftfinImage(
                 image: item.images?.primary,
                 fit: BoxFit.cover,
                 placeHolder: const Center(child: Icon(Icons.music_note_rounded, size: 20)),
@@ -648,7 +648,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                       maxHeight: 512,
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: artwork,
                       fit: BoxFit.cover,
                       placeHolder: Center(child: Icon(audioType.selectedicon, size: 56)),
@@ -979,7 +979,7 @@ class _AudioPlayerControlsState extends ConsumerState<_AudioPlayerControls> {
               )
             ],
           ),
-          child: FladderSlider(
+          child: DriftfinSlider(
             thumbWidth: 12,
             value: _sliderPosition.inMilliseconds.toDouble().clamp(0, playback.duration.inMilliseconds.toDouble()),
             min: 0,

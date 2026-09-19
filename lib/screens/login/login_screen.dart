@@ -11,14 +11,14 @@ import 'package:driftfin/screens/login/login_edit_user.dart';
 import 'package:driftfin/screens/login/login_screen_credentials.dart';
 import 'package:driftfin/screens/login/login_user_grid.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
-import 'package:driftfin/screens/shared/fladder_logo.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_logo.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/route_wrapper.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/deep_link_helper.dart';
 import 'package:driftfin/widgets/keyboard/slide_in_keyboard.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/adaptive_fab.dart';
-import 'package:driftfin/widgets/navigation_scaffold/components/fladder_app_bar.dart';
+import 'package:driftfin/widgets/navigation_scaffold/components/driftfin_app_bar.dart';
 
 @RoutePage()
 class LoginScreen extends ConsumerStatefulWidget {
@@ -52,7 +52,7 @@ class _LoginPageState extends ConsumerState<LoginScreen> {
         if (data != null) {
           initLink(data);
         } else {
-          FladderSnack.show("Invalid auth link");
+          DriftfinSnack.show("Invalid auth link");
         }
       }
     });
@@ -70,7 +70,7 @@ class _LoginPageState extends ConsumerState<LoginScreen> {
     return RouteWrapper(
       child: CustomKeyboardWrapper(
         child: Scaffold(
-          appBar: FladderAppBar(
+          appBar: DriftfinAppBar(
             isDesktop: AdaptiveLayout.of(context).isDesktop,
           ),
           extendBody: true,
@@ -111,7 +111,7 @@ class _LoginPageState extends ConsumerState<LoginScreen> {
                       shrinkWrap: true,
                       padding: MediaQuery.paddingOf(context).add(const EdgeInsetsGeometry.all(16)),
                       children: [
-                        const FladderLogo(),
+                        const DriftfinLogo(),
                         const SizedBox(height: 24),
                         AnimatedFadeSize(
                           child: switch (screen) {
