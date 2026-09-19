@@ -90,6 +90,20 @@ def main():
                              device='member')['AccessToken']
             request('/Driftfin/Config', token=member, device='member')
             request('/Driftfin/Config', original, token=member, device='member', status=403)
+            request('/Driftfin/v1/capabilities', status=401)
+            request('/Driftfin/v1/integrations/seerr/check', {}, token=member, device='member', status=403)
+            original['seerr']['enabled'] = False
+            request('/Driftfin/Config', original, token=admin, status=204)
+            capabilities = request('/Driftfin/v1/capabilities', token=member, device='member')
+            assert capabilities['protocolVersion'] == 1
+            assert not capabilities['features']['arrManagement']['allowed']
+            assert capabilities['integrations']['seerr']['reason'] == 'not_configured'
+            assert 'fixture-key' not in json.dumps(capabilities)
+            assert 'seerr.test' not in json.dumps(capabilities)
+            diagnostics = request('/Driftfin/v1/integrations/seerr/check', {}, token=admin)
+            assert diagnostics['reason'] == 'not_configured' and not diagnostics['healthy']
+            assert diagnostics['correlationId'] and diagnostics['checkedAt']
+            request('/Driftfin/v1/integrations/arbitrary/check', {}, token=admin, status=404)
             group = request('/SyncPlay/New', {'GroupName': 'Plugin test'}, token=admin)
             relay = f'/Driftfin/SyncPlay/{group["GroupId"]}/Messages'
             request(relay, {'kind': 'chat', 'text': 'outside'}, token=member, device='member', status=403)
