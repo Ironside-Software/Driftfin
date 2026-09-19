@@ -17,6 +17,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--dll', type=Path, default=Path(__file__).resolve().parents[1] /
                         'Jellyfin.Plugin.Driftfin/bin/Release/net10.0/Jellyfin.Plugin.Driftfin.dll')
+    parser.add_argument('--with-seerr', action='store_true', help='Also test attribution against a real Seerr 3.4.1 fixture')
     args = parser.parse_args()
     if not args.dll.is_file():
         parser.error('Build the Release plugin first')
@@ -41,15 +42,16 @@ def main():
             port = subprocess.check_output(['docker', 'port', name, '8096'], text=True).strip().split(':')[-1]
             base = f'http://127.0.0.1:{port}'
 
-            def request(path, body=None, *, token='', device='admin', status=200, method=None):
+            def request(path, body=None, *, token='', device='admin', status=200, method=None, extra_headers=None):
                 auth = f'MediaBrowser Client="Driftfin smoke", Device="Test", DeviceId="{device}", Version="1"'
                 if token:
                     auth += f', Token="{token}"'
                 headers = {'Authorization': auth, 'Content-Type': 'application/json'}
+                headers.update(extra_headers or {})
                 data = None if body is None else json.dumps(body).encode()
                 req = urllib.request.Request(base + path, data=data, headers=headers, method=method)
                 try:
-                    response = urllib.request.urlopen(req, timeout=5)
+                    response = urllib.request.urlopen(req, timeout=30)
                 except urllib.error.HTTPError as error:
                     response = error
                 with response:
@@ -114,6 +116,9 @@ def main():
             assert not policy['EnableRemoteControlOfOtherUsers'], 'Test user must not control other users'
             request(relay, {'kind': 'chat', 'text': 'inside'}, token=member, device='member', status=204)
             request('/web/configurationpage?name=Driftfin', token=admin)
+            if args.with_seerr:
+                from seerr_smoke import check_seerr
+                check_seerr(request, admin, member, original, info['Id'])
             print('PASS: Jellyfin 12 loads plugin; saved config, admin/user permissions, and SyncPlay membership work.')
         finally:
             subprocess.run(['docker', 'rm', '-f', name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

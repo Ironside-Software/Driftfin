@@ -7,14 +7,28 @@ Status: implementation in progress. Updated 2026-09-19.
 - Existing Jellyfin 12, Seerr lifecycle, and download settings fixes are isolated
   in [PR #76](https://github.com/Ironside-Software/Driftfin/pull/76).
   Baseline: 1,627 Flutter tests pass; three credential-dependent tests skip.
-- Plugin capabilities and admin diagnostics routes, bounded HTTP transport, and
-  exact Seerr identity/pairing checks are implemented. Twenty-nine C# tests pass;
-  the disposable Jellyfin 12 smoke test verifies authentication, admin-only
-  diagnostics, redaction, disabled integration state, and existing SyncPlay.
-- Still required: app status UI/lifecycle, complete operation adapters and managed
-  app transports, discovery enrichment and active search UI, migration, real
-  two-user Seerr fixtures, platform gates, full regression/coverage, and final PR
-  review. Unit identity fixtures do not substitute for real Seerr verification.
+- Plugin capabilities, admin diagnostics, bounded HTTP transport, exact Seerr
+  identity/pairing checks, explicit Seerr operations, response projection, and the
+  discovery endpoint are implemented. The native library matcher uses provider
+  IDs and user-scoped Jellyfin queries; its populated-library smoke coverage is
+  still required.
+- The disposable Jellyfin 12 + real Seerr 3.4.1 smoke test proves two-user
+  attribution, distinct quotas, pending requests, manager-only approval,
+  missing mappings, spoofed identity rejection, discovery request state, and
+  parental-policy rejection. The test caught and fixed Seerr search omitting
+  request ownership; tracked catalog results now fetch detail ownership before
+  projection. CI runs this fixture before packaging the plugin.
+  Current backend checkpoint: 65 C# tests, seven Python checks, workflow
+  actionlint, and the live Jellyfin/Seerr smoke test pass.
+- The operation inventory test covers every current `SeerrChopperService` route.
+  Password/cookie login and logout remain direct-mode-only; managed calls use
+  Jellyfin sessions. Managed request ownership is always the caller, so the app's
+  on-behalf-of user selector must be hidden in managed mode. Advanced profiles,
+  tags and opaque folder IDs are validated against saved service options.
+- Still required: app status UI/lifecycle, Sonarr/Radarr adapters, managed app and
+  background-worker transports, active unified-search UI, migration/provenance,
+  populated-library matching tests, platform gates, full regression/coverage, and
+  final PR review. No feature release or merge has been performed.
 
 ## Agreed scope
 

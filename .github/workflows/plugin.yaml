@@ -38,8 +38,8 @@ jobs:
       - name: Build and test
         run: dotnet test jellyfin-plugin/Jellyfin.Plugin.Driftfin.Tests/Jellyfin.Plugin.Driftfin.Tests.csproj -c Release
 
-      - name: Verify loading, saved config and authorization on Jellyfin 12
-        run: python3 jellyfin-plugin/scripts/smoke_test.py
+      - name: Verify Jellyfin 12 and real Seerr attribution, quotas and approvals
+        run: python3 jellyfin-plugin/scripts/smoke_test.py --with-seerr
 
       - name: Package tested plugin
         run: |
