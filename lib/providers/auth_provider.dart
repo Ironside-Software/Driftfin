@@ -22,9 +22,9 @@ import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/views_provider.dart';
 import 'package:driftfin/screens/login/lock_screen.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/services/local_network_permission.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/list_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
@@ -45,8 +45,8 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
     ref.read(userProvider.notifier).clear();
     final currentAccounts = getSavedAccounts();
     ref.read(lockScreenActiveProvider.notifier).update((state) => true);
-    if (FladderConfig.baseUrl != null) {
-      final url = FladderConfig.baseUrl;
+    if (DriftfinConfig.baseUrl != null) {
+      final url = DriftfinConfig.baseUrl;
       state = state.copyWith(hasBaseUrl: true);
       if (url != null) {
         await setServer(url);
@@ -87,7 +87,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
       setTempSeerrUrl(seerrUrl);
     } catch (e) {
       state = state.copyWith(errorMessage: localContext?.localized.invalidUrl, loading: false);
-      FladderSnack.show(localContext?.localized.unableToConnectHost ?? "");
+      DriftfinSnack.show(localContext?.localized.unableToConnectHost ?? "");
     }
   }
 
@@ -183,8 +183,8 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
 
   Future<void> setServer(String server) async {
     if (state.hasBaseUrl) {
-      if (!await _hasLocalNetworkPermission(FladderConfig.baseUrl!)) return;
-      await _fetchServerInfo(FladderConfig.baseUrl!);
+      if (!await _hasLocalNetworkPermission(DriftfinConfig.baseUrl!)) return;
+      await _fetchServerInfo(DriftfinConfig.baseUrl!);
       return;
     }
     final trimmed = server.trim();
@@ -222,8 +222,8 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
   }
 
   String? _findSeerrUrlForServer(String? serverId) {
-    if (FladderConfig.seerrBaseUrl?.isNotEmpty == true) {
-      return FladderConfig.seerrBaseUrl;
+    if (DriftfinConfig.seerrBaseUrl?.isNotEmpty == true) {
+      return DriftfinConfig.seerrBaseUrl;
     }
     if (serverId == null || serverId.isEmpty) return null;
     final matches = state.accounts.where(

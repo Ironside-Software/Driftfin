@@ -130,7 +130,7 @@ void main() {
           userProvider.overrideWith(() => _FakeUser(null)),
         ],
         // AdaptiveLayout sits ABOVE MaterialApp (as it does in the real app) so
-        // the FladderSnack overlay — inserted into MaterialApp's Overlay — can
+        // the DriftfinSnack overlay — inserted into MaterialApp's Overlay — can
         // still resolve AdaptiveLayout.viewSizeOf/inputDeviceOf.
         child: const AdaptiveLayout(
           data: _adaptiveModel,
@@ -150,7 +150,7 @@ void main() {
       .widgetList<SettingsListTile>(find.byType(SettingsListTile))
       .firstWhere((t) => (t.label as Text).data == label);
 
-  // Fire the FladderSnack's 5s auto-dismiss timer and its reverse animation so
+  // Fire the DriftfinSnack's 5s auto-dismiss timer and its reverse animation so
   // no timer/overlay outlives the test.
   Future<void> drainSnack(WidgetTester tester) async {
     await tester.pump(const Duration(seconds: 6));

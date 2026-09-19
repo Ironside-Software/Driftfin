@@ -33,7 +33,7 @@ import 'package:driftfin/util/map_bool_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
 import 'package:driftfin/util/string_extensions.dart';
 import 'package:driftfin/widgets/shared/enum_selection.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
 import 'package:driftfin/widgets/shared/spaced_list_tile.dart';
@@ -550,7 +550,7 @@ Future<void> showPlaybackSpeed(BuildContext context) {
                         Flexible(
                           child: SizedBox(
                             width: 250,
-                            child: FladderSlider(
+                            child: DriftfinSlider(
                               min: 0.25,
                               max: 3,
                               value: lastSpeed,

@@ -8,7 +8,7 @@ import 'package:driftfin/providers/arguments_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
-import 'package:driftfin/screens/shared/fladder_logo.dart';
+import 'package:driftfin/screens/shared/driftfin_logo.dart';
 import 'package:driftfin/screens/shared/route_wrapper.dart';
 import 'package:driftfin/services/local_network_permission.dart';
 
@@ -34,10 +34,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         if (lastUsedAccount == null || ref.read(argumentsStateProvider).newWindow == true) {
           callBackOrNavigate(false);
         } else {
-          !await ensureLocalNetworkPermissions(
-            [lastUsedAccount.credentials.url, lastUsedAccount.credentials.localUrl],
-            context,
-          );
+          !await ensureLocalNetworkPermissions([
+            lastUsedAccount.credentials.url,
+            lastUsedAccount.credentials.localUrl,
+          ], context);
 
           switch (lastUsedAccount.authMethod) {
             case Authentication.autoLogin:
@@ -71,12 +71,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Widget build(BuildContext context) {
     return const RouteWrapper(
       child: Scaffold(
-        body: Center(
-          child: FractionallySizedBox(
-            heightFactor: 0.4,
-            child: FladderLogo(),
-          ),
-        ),
+        body: Center(child: FractionallySizedBox(heightFactor: 0.4, child: DriftfinLogo())),
       ),
     );
   }

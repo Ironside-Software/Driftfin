@@ -30,7 +30,7 @@ class AuthService {
             "(${user.name} - ${user.credentials.serverName})",
           ),
           authMessages: <AuthMessages>[
-            const AndroidAuthMessages(signInTitle: 'Fladder'),
+            const AndroidAuthMessages(signInTitle: 'Driftfin'),
             IOSAuthMessages(cancelButton: context.localized.cancel),
           ],
           persistAcrossBackgrounding: stickyAuth,

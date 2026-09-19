@@ -21,7 +21,7 @@ import 'package:driftfin/screens/shared/nested_scaffold.dart';
 import 'package:driftfin/screens/shared/nested_sliver_appbar.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/sliver_list_padding.dart';
@@ -33,9 +33,7 @@ import 'package:driftfin/widgets/shared/pull_to_refresh.dart';
 
 @RoutePage()
 class LibraryScreen extends ConsumerStatefulWidget {
-  const LibraryScreen({
-    super.key,
-  });
+  const LibraryScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LibraryScreenState();
@@ -65,12 +63,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
     final useTVExpandedLayout = ref.watch(clientSettingsProvider.select((value) => value.useTVExpandedLayout));
 
     return NestedScaffold(
-      background: BackgroundImage(
-        items: [
-          ...recommendations.expand((e) => e.posters),
-          ...favourites,
-        ],
-      ),
+      background: BackgroundImage(items: [...recommendations.expand((e) => e.posters), ...favourites]),
       body: PullToRefresh(
         refreshOnStart: true,
         refreshKey: refreshKey,
@@ -95,10 +88,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
               slivers: [
                 const DefaultSliverTopBadding(),
                 if (AdaptiveLayout.viewSizeOf(context) == ViewSize.phone)
-                  NestedSliverAppBar(
-                    route: LibrarySearchRoute(),
-                    parent: context,
-                  ),
+                  NestedSliverAppBar(route: LibrarySearchRoute(), parent: context),
                 if (views.isNotEmpty)
                   SliverToBoxAdapter(
                     child: LibraryRow(
@@ -128,28 +118,23 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
                               label: Text("${context.localized.search} ${selectedView.name}..."),
                               icon: const Icon(IconsaxPlusLinear.search_normal),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4.0),
-                              child: VerticalDivider(),
-                            ),
+                            const Padding(padding: EdgeInsets.symmetric(horizontal: 4.0), child: VerticalDivider()),
                             ExpressiveButtonGroup(
                               multiSelection: true,
                               options: LibraryViewType.values
-                                  .map((element) => ButtonGroupOption(
+                                  .map(
+                                    (element) => ButtonGroupOption(
                                       value: element,
                                       icon: Icon(element.icon),
                                       selected: Icon(element.iconSelected),
-                                      child: Text(
-                                        element.label(context),
-                                      )))
+                                      child: Text(element.label(context)),
+                                    ),
+                                  )
                                   .toList(),
                               selectedValues: viewTypes,
                               onSelected: (value) => ref.read(libraryScreenProvider.notifier).setViewType(value),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 4.0),
-                              child: VerticalDivider(),
-                            ),
+                            const Padding(padding: EdgeInsets.symmetric(horizontal: 4.0), child: VerticalDivider()),
                             ElevatedButton.icon(
                               onPressed: () => showRefreshPopup(context, selectedView.id, selectedView.name),
                               label: Text(context.localized.scanLibrary),
@@ -160,32 +145,27 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
                       ),
                     ),
                   ),
-                if (viewTypes.isEmpty)
-                  SliverFillRemaining(
-                    child: Center(child: Text(context.localized.noResults)),
-                  ),
+                if (viewTypes.isEmpty) SliverFillRemaining(child: Center(child: Text(context.localized.noResults))),
                 if (viewTypes.contains(LibraryViewType.recommended) && recommendations.isNotEmpty) ...[
-                  ...recommendations.where((element) => element.posters.isNotEmpty).map(
-                    (element) {
-                      return SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: PosterRow(
-                            tvMode: useTVExpandedLayout,
-                            contentPadding: padding,
-                            posters: element.posters,
-                            collectionAspectRatio: element.name is Continue ? 1.2 : null,
-                            imagePriority: element.name is Continue
-                                ? const [jelly.ImageType.thumb, jelly.ImageType.backdrop, jelly.ImageType.primary]
-                                : null,
-                            label: element.type != null
-                                ? "${element.type?.label(context.localized)} - ${element.name.label(context.localized)}"
-                                : element.name.label(context.localized),
-                          ),
+                  ...recommendations.where((element) => element.posters.isNotEmpty).map((element) {
+                    return SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: PosterRow(
+                          tvMode: useTVExpandedLayout,
+                          contentPadding: padding,
+                          posters: element.posters,
+                          collectionAspectRatio: element.name is Continue ? 1.2 : null,
+                          imagePriority: element.name is Continue
+                              ? const [jelly.ImageType.thumb, jelly.ImageType.backdrop, jelly.ImageType.primary]
+                              : null,
+                          label: element.type != null
+                              ? "${element.type?.label(context.localized)} - ${element.name.label(context.localized)}"
+                              : element.name.label(context.localized),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
                 ],
                 if (viewTypes.contains(LibraryViewType.favourites) && favourites.isNotEmpty)
                   SliverToBoxAdapter(
@@ -195,14 +175,8 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
                         tvMode: useTVExpandedLayout,
                         contentPadding: padding,
                         onLabelClick: () => context.pushRoute(
-                          LibrarySearchRoute(
-                            parentId: [libraryScreenState.selectedViewModel?.id ?? ""],
-                          ).withFilter(
-                            const LibraryFilterModel(
-                              favourites: true,
-                              recursive: true,
-                            ),
-                          ),
+                          LibrarySearchRoute(parentId: [libraryScreenState.selectedViewModel?.id ?? ""])
+                              .withFilter(const LibraryFilterModel(favourites: true, recursive: true)),
                         ),
                         posters: favourites,
                         label: context.localized.favorites,
@@ -210,7 +184,9 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
                     ),
                   ),
                 if (viewTypes.contains(LibraryViewType.genres) && genres.isNotEmpty) ...[
-                  ...genres.where((element) => element.posters.isNotEmpty).map(
+                  ...genres
+                      .where((element) => element.posters.isNotEmpty)
+                      .map(
                         (element) => SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -219,14 +195,13 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
                               contentPadding: padding,
                               posters: element.posters,
                               onLabelClick: () => context.pushRoute(
-                                LibrarySearchRoute(
-                                  parentId: [libraryScreenState.selectedViewModel?.id ?? ""],
-                                ).withFilter(
-                                  LibraryFilterModel(
-                                    recursive: true,
-                                    genres: {(element.name as Other).customLabel: true},
-                                  ),
-                                ),
+                                LibrarySearchRoute(parentId: [libraryScreenState.selectedViewModel?.id ?? ""])
+                                    .withFilter(
+                                      LibraryFilterModel(
+                                        recursive: true,
+                                        genres: {(element.name as Other).customLabel: true},
+                                      ),
+                                    ),
                               ),
                               label: element.type != null
                                   ? "${element.type?.label(context.localized)} - ${element.name.label(context.localized)}"
@@ -234,7 +209,7 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
                             ),
                           ),
                         ),
-                      )
+                      ),
                 ],
                 const DefaultSliverBottomPadding(),
               ],
@@ -304,8 +279,12 @@ class LibraryRow extends ConsumerWidget {
                   : () => context.pushRoute(LibrarySearchRoute(parentId: [view.id])),
               onSecondaryTapDown: (details) async {
                 Offset localPosition = details.globalPosition;
-                RelativeRect position =
-                    RelativeRect.fromLTRB(localPosition.dx, localPosition.dy, localPosition.dx, localPosition.dy);
+                RelativeRect position = RelativeRect.fromLTRB(
+                  localPosition.dx,
+                  localPosition.dy,
+                  localPosition.dx,
+                  localPosition.dy,
+                );
                 await showMenu(
                   context: context,
                   position: position,
@@ -328,7 +307,7 @@ class LibraryRow extends ConsumerWidget {
                   borderRadius: FladderTheme.smallShape.borderRadius,
                   child: AspectRatio(
                     aspectRatio: 1.60,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: view.imageData?.primary,
                       fit: BoxFit.cover,
                       cachedImage: enableImageCache,
@@ -361,10 +340,7 @@ class LibraryRow extends ConsumerWidget {
                   Container(
                     height: 12,
                     width: 12,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).colorScheme.primary),
                   ),
                 Text(
                   view.name,
@@ -372,9 +348,9 @@ class LibraryRow extends ConsumerWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start,
-                )
+                ),
               ],
-            )
+            ),
           ],
         );
       },

@@ -29,21 +29,19 @@ import 'package:driftfin/screens/video_player/components/video_volume_slider.dar
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/clickable_text.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
 import 'package:driftfin/widgets/shared/theme_overwrite.dart';
 import 'package:driftfin/wrappers/media_control_wrapper.dart';
 
 class AudioPlayerFullScreen extends ConsumerStatefulWidget {
-  const AudioPlayerFullScreen({
-    super.key,
-  });
+  const AudioPlayerFullScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AudioPlayerFullScreenState();
@@ -73,15 +71,12 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
   void initState() {
     super.initState();
     fetchAlbumDominantColor();
-    _lyricsPositionTimer = Timer.periodic(
-      const Duration(milliseconds: 120),
-      (_) {
-        final position = ref.read(videoPlayerProvider).lastState?.position;
-        if (position != null) {
-          ref.read(audioLyricsProvider.notifier).updatePosition(position);
-        }
-      },
-    );
+    _lyricsPositionTimer = Timer.periodic(const Duration(milliseconds: 120), (_) {
+      final position = ref.read(videoPlayerProvider).lastState?.position;
+      if (position != null) {
+        ref.read(audioLyricsProvider.notifier).updatePosition(position);
+      }
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final playbackModel = ref.read(playBackModel);
       if (playbackModel?.item is AudioModel) {
@@ -98,40 +93,30 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<String?>(
-      playBackModel.select((value) => value?.item.id),
-      (_, next) {
-        final currentModel = ref.read(playBackModel);
-        if (currentModel?.item is AudioModel && next != null && next.isNotEmpty) {
-          ref.read(audioLyricsProvider.notifier).loadForTrack(next);
-        }
-      },
-    );
+    ref.listen<String?>(playBackModel.select((value) => value?.item.id), (_, next) {
+      final currentModel = ref.read(playBackModel);
+      if (currentModel?.item is AudioModel && next != null && next.isNotEmpty) {
+        ref.read(audioLyricsProvider.notifier).loadForTrack(next);
+      }
+    });
 
-    ref.listen<Duration>(
-      mediaPlaybackProvider.select((state) => state.position),
-      (_, next) {
-        ref.read(audioLyricsProvider.notifier).updatePosition(next);
-      },
-    );
+    ref.listen<Duration>(mediaPlaybackProvider.select((state) => state.position), (_, next) {
+      ref.read(audioLyricsProvider.notifier).updatePosition(next);
+    });
 
     final playbackModel = ref.watch(playBackModel);
     final lyricsState = ref.watch(audioLyricsProvider);
-    final playbackInfo = ref.watch(mediaPlaybackProvider.select((state) => (
-          shuffleEnabled: state.shuffleEnabled,
-          repeatMode: state.repeatMode,
-          queueRefilling: state.queueRefilling,
-        )));
+    final playbackInfo = ref.watch(
+      mediaPlaybackProvider.select(
+        (state) =>
+            (shuffleEnabled: state.shuffleEnabled, repeatMode: state.repeatMode, queueRefilling: state.queueRefilling),
+      ),
+    );
     final player = ref.watch(videoPlayerProvider);
 
     if (playbackModel == null || playbackModel.item is! AudioModel) {
       return Scaffold(
-        body: Center(
-          child: Text(
-            context.localized.unknown,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-        ),
+        body: Center(child: Text(context.localized.unknown, style: Theme.of(context).textTheme.headlineMedium)),
       );
     }
 
@@ -149,8 +134,9 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
     final queueFromCurrent = queueFromPlayer.isNotEmpty
         ? queueFromPlayer
         : _queueFromCurrent(queue, currentItem, wrapAround: shouldWrapQueue);
-    final tempStart =
-        queueFromPlayer.isNotEmpty ? player.temporaryQueueStartInDisplay(wrapAround: shouldWrapQueue) : null;
+    final tempStart = queueFromPlayer.isNotEmpty
+        ? player.temporaryQueueStartInDisplay(wrapAround: shouldWrapQueue)
+        : null;
     final tempCount = queueFromPlayer.isNotEmpty ? (player.temporaryQueueCountInDisplay() ?? 0) : 0;
 
     final nowPlaying = queueFromCurrent.isNotEmpty ? queueFromCurrent.first : null;
@@ -173,9 +159,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
 
     final artwork = currentItem.images?.primary;
     final queueCount = queueFromCurrent.length;
-    final replayGainVolumeLevel = ref.watch(
-      videoPlayerSettingsProvider.select((value) => value.replayGainVolumeLevel),
-    );
+    final replayGainVolumeLevel = ref.watch(videoPlayerSettingsProvider.select((value) => value.replayGainVolumeLevel));
 
     final isFavourite = currentItem.userData.isFavourite;
 
@@ -216,9 +200,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                   },
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleMedium
+                  style: Theme.of(context).textTheme.titleMedium
                       ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                 ),
                 const SizedBox(height: 4),
@@ -232,10 +214,10 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                     },
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Theme.of(context).colorScheme.primary,
-                        ),
+                      color: Theme.of(context).colorScheme.primary,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Theme.of(context).colorScheme.primary,
+                    ),
                   ),
                 const SizedBox(height: 10),
                 _PlaybackTypeChip(playbackModel: playbackModel),
@@ -245,15 +227,9 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
             ),
           ),
           IconButton(
-            style: IconButton.styleFrom(
-              foregroundColor: isFavourite ? Theme.of(context).colorScheme.primary : null,
-            ),
+            style: IconButton.styleFrom(foregroundColor: isFavourite ? Theme.of(context).colorScheme.primary : null),
             onPressed: () async {
-              final result = (await ref.read(userProvider.notifier).setAsFavorite(
-                        !isFavourite,
-                        currentItem.id,
-                      ))
-                  ?.body;
+              final result = (await ref.read(userProvider.notifier).setAsFavorite(!isFavourite, currentItem.id))?.body;
 
               if (result != null) {
                 ref.read(playBackModel.notifier).update((state) => state?.updateUserData(result));
@@ -262,12 +238,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
             iconSize: 32,
             icon: Icon(
               isFavourite ? IconsaxPlusBold.heart : IconsaxPlusLinear.heart,
-              shadows: [
-                Shadow(
-                  color: Theme.of(context).colorScheme.primary.withAlpha(125),
-                  blurRadius: 24,
-                )
-              ],
+              shadows: [Shadow(color: Theme.of(context).colorScheme.primary.withAlpha(125), blurRadius: 24)],
             ),
           ),
         ],
@@ -295,7 +266,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                   child: SizedBox(
                     width: 56,
                     height: 56,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: artwork,
                       fit: BoxFit.cover,
                       placeHolder: const Center(child: Icon(Icons.music_note_rounded, size: 20)),
@@ -320,19 +291,13 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                         currentItem.album ?? currentItem.subTextShort(context.localized) ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
+                        style: Theme.of(context).textTheme.bodyMedium
                             ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     ],
                   ),
                 ),
-                if (canCollapseLyrics)
-                  Icon(
-                    Icons.expand_more_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                if (canCollapseLyrics) Icon(Icons.expand_more_rounded, color: Theme.of(context).colorScheme.primary),
               ],
             ),
           ),
@@ -341,11 +306,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
     }
 
     List<Widget> queuePreview(BuildContext context) {
-      Widget sectionHeader({
-        required IconData icon,
-        required String title,
-        Widget? trailing,
-      }) {
+      Widget sectionHeader({required IconData icon, required String title, Widget? trailing}) {
         return Padding(
           padding: const EdgeInsets.only(top: 6, bottom: 4),
           child: Row(
@@ -355,27 +316,17 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
               Expanded(
                 child: Text(
                   title,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 0.8,
-                      ),
+                  style: Theme.of(context).textTheme.labelMedium
+                      ?.copyWith(fontWeight: FontWeight.w700, letterSpacing: 0.8),
                 ),
               ),
-              if (trailing != null)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: trailing,
-                ),
+              if (trailing != null) Padding(padding: const EdgeInsets.only(left: 8), child: trailing),
             ],
           ),
         );
       }
 
-      Widget queueItem(
-        ItemBaseModel item, {
-        bool isCurrent = false,
-        bool canRemove = true,
-      }) {
+      Widget queueItem(ItemBaseModel item, {bool isCurrent = false, bool canRemove = true}) {
         Future<void> removeItem() {
           return ref.read(videoPlayerProvider.notifier).removeAudioQueueItem(item);
         }
@@ -388,15 +339,10 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
             final itemActions = item.generateActions(
               context,
               ref,
-              exclude: {
-                ItemActions.play,
-                ItemActions.refreshMetaData,
-              },
+              exclude: {ItemActions.play, ItemActions.refreshMetaData},
               onUserDataChanged: (newData) {
                 if (newData == null) return;
-                ref.read(playBackModel.notifier).update(
-                      (state) => state?.updateUserData(newData),
-                    );
+                ref.read(playBackModel.notifier).update((state) => state?.updateUserData(newData));
               },
             );
             showMenu(
@@ -415,9 +361,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                     action: removeItem,
                   ),
                 ItemActionButton(
-                  label: Text(
-                    context.localized.play(item.title),
-                  ),
+                  label: Text(context.localized.play(item.title)),
                   icon: const Icon(IconsaxPlusLinear.play),
                   action: () {
                     ref.read(videoPlayerProvider.notifier).playAudioQueueItem(item);
@@ -438,7 +382,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                 color: Theme.of(context).colorScheme.surfaceContainer,
               ),
               clipBehavior: Clip.hardEdge,
-              child: FladderImage(
+              child: DriftfinImage(
                 image: item.images?.primary,
                 fit: BoxFit.cover,
                 placeHolder: const Center(child: Icon(Icons.music_note_rounded, size: 20)),
@@ -450,15 +394,9 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
               item.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: isCurrent ? FontWeight.bold : null,
-                  ),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: isCurrent ? FontWeight.bold : null),
             ),
-            subtitle: Text(
-              item.subTextShort(context.localized) ?? '',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            subtitle: Text(item.subTextShort(context.localized) ?? '', maxLines: 1, overflow: TextOverflow.ellipsis),
             trailing: isCurrent ? Icon(Icons.play_arrow_rounded, color: Theme.of(context).colorScheme.primary) : null,
           ),
         );
@@ -480,11 +418,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                     ),
                     if (showQueueRefillIndicator) ...[
                       const SizedBox(width: 8),
-                      const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      ),
+                      const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
                     ],
                     const Spacer(),
                     if (queueCount > 0)
@@ -493,11 +427,9 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                           showAudioQueueDialog(
                             context,
                             onSectionReorder: (section, oldIndex, newIndex) {
-                              return ref.read(videoPlayerProvider.notifier).reorderAudioQueueSection(
-                                    section,
-                                    oldIndex,
-                                    newIndex,
-                                  );
+                              return ref
+                                  .read(videoPlayerProvider.notifier)
+                                  .reorderAudioQueueSection(section, oldIndex, newIndex);
                             },
                             playSelected: ref.read(videoPlayerProvider.notifier).playAudioQueueItem,
                           );
@@ -509,11 +441,9 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                 if (nowPlaying == null)
                   Text(
                     context.localized.queueIsEmpty,
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
+                    style: Theme.of(context).textTheme.bodyMedium
                         ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
-                  )
+                  ),
               ],
             ),
           ),
@@ -539,11 +469,9 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                       icon: const Icon(Icons.clear_all_rounded),
                     ),
                   ),
-                  ...nextUpItems.map(
-                    (e) {
-                      return queueItem(e, canRemove: true);
-                    },
-                  )
+                  ...nextUpItems.map((e) {
+                    return queueItem(e, canRemove: true);
+                  }),
                 ],
               ),
             ),
@@ -555,10 +483,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
               opacity: 0.6,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                child: Text(
-                  context.localized.queueIsEmpty,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
+                child: Text(context.localized.queueIsEmpty, style: Theme.of(context).textTheme.bodyMedium),
               ),
             ),
           )
@@ -566,13 +491,10 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final item = existingItems[index];
-                  return queueItem(item);
-                },
-                childCount: existingItems.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final item = existingItems[index];
+                return queueItem(item);
+              }, childCount: existingItems.length),
             ),
           ),
       ];
@@ -593,9 +515,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
         },
         onUserDataChanged: (newData) {
           if (newData == null) return;
-          ref.read(playBackModel.notifier).update(
-                (state) => state?.updateUserData(newData),
-              );
+          ref.read(playBackModel.notifier).update((state) => state?.updateUserData(newData));
         },
       );
       return Row(
@@ -640,15 +560,12 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                           color: Theme.of(context).colorScheme.surface.withAlpha(125),
                           blurRadius: 36,
                           offset: const Offset(0, 10),
-                        )
+                        ),
                       ],
                     ),
-                    constraints: const BoxConstraints(
-                      maxWidth: 512,
-                      maxHeight: 512,
-                    ),
+                    constraints: const BoxConstraints(maxWidth: 512, maxHeight: 512),
                     clipBehavior: Clip.antiAlias,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: artwork,
                       fit: BoxFit.cover,
                       placeHolder: Center(child: Icon(audioType.selectedicon, size: 56)),
@@ -688,14 +605,8 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      stops: const [
-                        0,
-                        1,
-                      ],
-                      colors: [
-                        Theme.of(context).colorScheme.primaryContainer,
-                        Theme.of(context).colorScheme.surface,
-                      ],
+                      stops: const [0, 1],
+                      colors: [Theme.of(context).colorScheme.primaryContainer, Theme.of(context).colorScheme.surface],
                     ),
                   ),
                 ),
@@ -762,10 +673,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                                       Expanded(
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                          child: AudioPlayerLyricsPanel(
-                                            currentItem: currentItem,
-                                            state: lyricsState,
-                                          ),
+                                          child: AudioPlayerLyricsPanel(currentItem: currentItem, state: lyricsState),
                                         ),
                                       ),
                                     ],
@@ -786,9 +694,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                                             builder: (context, transitionProgress) {
                                               return Container(
                                                 decoration: BoxDecoration(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .surface
+                                                  color: Theme.of(context).colorScheme.surface
                                                       .withAlpha(((transitionProgress * 255)).round()),
                                                   borderRadius: BorderRadius.circular(12),
                                                 ),
@@ -835,9 +741,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                                       ),
                                       const SliverPadding(
                                         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                        sliver: SliverToBoxAdapter(
-                                          child: Divider(),
-                                        ),
+                                        sliver: SliverToBoxAdapter(child: Divider()),
                                       ),
                                       if (lyricsState.hasLyrics)
                                         SliverToBoxAdapter(
@@ -856,7 +760,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                                           ),
                                         ),
                                       ...queuePreview(context),
-                                      const SliverPadding(padding: EdgeInsets.only(bottom: 100))
+                                      const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
                                     ],
                                   ),
                                 ),
@@ -867,9 +771,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface.withAlpha(220),
                           border: Border(
-                            top: BorderSide(
-                              color: Theme.of(context).colorScheme.outlineVariant.withAlpha(110),
-                            ),
+                            top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant.withAlpha(110)),
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -895,10 +797,7 @@ class _AudioPlayerFullScreenState extends ConsumerState<AudioPlayerFullScreen> {
     final currentIndex = queue.indexWhere((item) => item.id == currentItem.id);
     if (currentIndex < 0) return List<ItemBaseModel>.from(queue);
 
-    return <ItemBaseModel>[
-      ...queue.sublist(currentIndex),
-      if (wrapAround) ...queue.sublist(0, currentIndex),
-    ];
+    return <ItemBaseModel>[...queue.sublist(currentIndex), if (wrapAround) ...queue.sublist(0, currentIndex)];
   }
 }
 
@@ -954,13 +853,17 @@ class _AudioPlayerControlsState extends ConsumerState<_AudioPlayerControls> {
 
   @override
   Widget build(BuildContext context) {
-    final playback = ref.watch(mediaPlaybackProvider.select((s) => (
+    final playback = ref.watch(
+      mediaPlaybackProvider.select(
+        (s) => (
           position: s.position,
           duration: s.duration,
           playing: s.playing,
           shuffleEnabled: s.shuffleEnabled,
           repeatMode: s.repeatMode,
-        )));
+        ),
+      ),
+    );
 
     if (!_changingSliderValue) {
       _sliderPosition = playback.position;
@@ -972,14 +875,9 @@ class _AudioPlayerControlsState extends ConsumerState<_AudioPlayerControls> {
       children: [
         Container(
           decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.primary.withAlpha(35),
-                blurRadius: 60,
-              )
-            ],
+            boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.primary.withAlpha(35), blurRadius: 60)],
           ),
-          child: FladderSlider(
+          child: DriftfinSlider(
             thumbWidth: 12,
             value: _sliderPosition.inMilliseconds.toDouble().clamp(0, playback.duration.inMilliseconds.toDouble()),
             min: 0,
@@ -1045,23 +943,24 @@ class _AudioPlayerControlsState extends ConsumerState<_AudioPlayerControls> {
               ),
             ),
             Tooltip(
-                message: playback.repeatMode == AudioRepeatMode.off
-                    ? context.localized.audioPlayerRepeatOff
-                    : playback.repeatMode == AudioRepeatMode.one
-                        ? context.localized.audioPlayerRepeatOne
-                        : context.localized.audioPlayerRepeatAll,
-                child: IconButton.outlined(
-                  icon: Icon(playback.repeatMode == AudioRepeatMode.one
+              message: playback.repeatMode == AudioRepeatMode.off
+                  ? context.localized.audioPlayerRepeatOff
+                  : playback.repeatMode == AudioRepeatMode.one
+                  ? context.localized.audioPlayerRepeatOne
+                  : context.localized.audioPlayerRepeatAll,
+              child: IconButton.outlined(
+                icon: Icon(
+                  playback.repeatMode == AudioRepeatMode.one
                       ? IconsaxPlusBold.repeate_one
-                      : IconsaxPlusBold.repeate_music),
-                  isSelected: playback.repeatMode != AudioRepeatMode.off,
-                  iconSize: 26,
-                  onPressed: () {
-                    ref.read(videoPlayerProvider).setAudioRepeatMode(
-                          playback.repeatMode.next,
-                        );
-                  },
-                )),
+                      : IconsaxPlusBold.repeate_music,
+                ),
+                isSelected: playback.repeatMode != AudioRepeatMode.off,
+                iconSize: 26,
+                onPressed: () {
+                  ref.read(videoPlayerProvider).setAudioRepeatMode(playback.repeatMode.next);
+                },
+              ),
+            ),
           ],
         ),
       ],
@@ -1226,10 +1125,7 @@ class _AudioPropertyChip extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerHighest.withAlpha(150),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Text(
-        value,
-        style: Theme.of(context).textTheme.labelMedium,
-      ),
+      child: Text(value, style: Theme.of(context).textTheme.labelMedium),
     );
   }
 }

@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 
 import 'package:driftfin/screens/shared/default_title_bar.dart';
 
-class FladderAppBar extends StatelessWidget implements PreferredSize {
+class DriftfinAppBar extends StatelessWidget implements PreferredSize {
   final double height;
   final String? label;
   final bool automaticallyImplyLeading;
   final bool isDesktop;
-  const FladderAppBar({
+  const DriftfinAppBar({
     this.height = 35,
     this.automaticallyImplyLeading = false,
     this.label,
@@ -23,9 +23,7 @@ class FladderAppBar extends StatelessWidget implements PreferredSize {
         preferredSize: Size(double.infinity, height),
         child: SizedBox(
           height: height,
-          child: DefaultTitleBar(
-            label: label,
-          ),
+          child: DefaultTitleBar(label: label),
         ),
       );
     } else {

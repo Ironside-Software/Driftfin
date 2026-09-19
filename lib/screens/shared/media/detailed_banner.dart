@@ -7,7 +7,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/screens/details_screens/components/overview_header.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/custom_shader_mask.dart';
@@ -16,11 +16,7 @@ import 'package:driftfin/widgets/shared/ensure_visible.dart';
 class DetailedBanner extends ConsumerStatefulWidget {
   final List<ItemBaseModel> posters;
   final Function(ItemBaseModel selected) onSelect;
-  const DetailedBanner({
-    required this.posters,
-    required this.onSelect,
-    super.key,
-  });
+  const DetailedBanner({required this.posters, required this.onSelect, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _DetailedBannerState();
@@ -31,8 +27,9 @@ class _DetailedBannerState extends ConsumerState<DetailedBanner> {
 
   @override
   Widget build(BuildContext context) {
-    final phoneOffsetHeight =
-        AdaptiveLayout.viewSizeOf(context) <= ViewSize.phone ? MediaQuery.paddingOf(context).top + 80 : 0.0;
+    final phoneOffsetHeight = AdaptiveLayout.viewSizeOf(context) <= ViewSize.phone
+        ? MediaQuery.paddingOf(context).top + 80
+        : 0.0;
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -49,9 +46,7 @@ class _DetailedBannerState extends ConsumerState<DetailedBanner> {
                     child: CustomShaderMask(
                       child: ValueListenableBuilder(
                         valueListenable: selectedPoster,
-                        builder: (context, value, child) => FladderImage(
-                          image: value.images?.primary,
-                        ),
+                        builder: (context, value, child) => DriftfinImage(image: value.images?.primary),
                       ),
                     ),
                   ),
@@ -62,10 +57,11 @@ class _DetailedBannerState extends ConsumerState<DetailedBanner> {
         ),
         ConstrainedBox(
           constraints: BoxConstraints(
-            maxHeight: (AdaptiveLayout.viewSizeOf(context) == ViewSize.phone
-                    ? MediaQuery.sizeOf(context).height * 0.75
-                    : MediaQuery.sizeOf(context).height * 0.9)
-                .clamp(20, 1000),
+            maxHeight:
+                (AdaptiveLayout.viewSizeOf(context) == ViewSize.phone
+                        ? MediaQuery.sizeOf(context).height * 0.75
+                        : MediaQuery.sizeOf(context).height * 0.9)
+                    .clamp(20, 1000),
             maxWidth: double.infinity,
           ),
           child: Column(
@@ -107,28 +103,24 @@ class _DetailedBannerState extends ConsumerState<DetailedBanner> {
                   ),
                 ),
               ),
-              Builder(builder: (context) {
-                return FocusProvider(
-                  autoFocus: true,
-                  child: PosterRow(
-                    imagePriority: const [
-                      jelly.ImageType.thumb,
-                      jelly.ImageType.backdrop,
-                      jelly.ImageType.primary,
-                    ],
-                    label: context.localized.nextUp,
-                    posters: widget.posters,
-                    onFocused: (poster) {
-                      context.ensureVisible(
-                        alignment: 10.0,
-                      );
-                      selectedPoster.value = poster;
-                      widget.onSelect(poster);
-                    },
-                  ),
-                );
-              }),
-              const SizedBox(height: 16)
+              Builder(
+                builder: (context) {
+                  return FocusProvider(
+                    autoFocus: true,
+                    child: PosterRow(
+                      imagePriority: const [jelly.ImageType.thumb, jelly.ImageType.backdrop, jelly.ImageType.primary],
+                      label: context.localized.nextUp,
+                      posters: widget.posters,
+                      onFocused: (poster) {
+                        context.ensureVisible(alignment: 10.0);
+                        selectedPoster.value = poster;
+                        widget.onSelect(poster);
+                      },
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
             ],
           ),
         ),

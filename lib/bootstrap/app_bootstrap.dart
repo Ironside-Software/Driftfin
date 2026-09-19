@@ -15,7 +15,7 @@ import 'package:driftfin/providers/crash_log_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/src/video_player_helper.g.dart';
 import 'package:driftfin/util/application_info.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/string_extensions.dart';
 import 'package:driftfin/util/svg_utils.dart';
 
@@ -28,11 +28,8 @@ const sentryDsn = String.fromEnvironment('SENTRY_DSN');
 /// var) over the compile-time [sentryDsn], since a single Web build is shared
 /// across deployments and can't bake in a deployment-specific value. Every
 /// other platform only ever has the compile-time value.
-String get resolvedSentryDsn => resolveSentryDsn(
-      isWeb: kIsWeb,
-      webConfiguredDsn: FladderConfig.sentryDsn,
-      buildTimeDsn: sentryDsn,
-    );
+String get resolvedSentryDsn =>
+    resolveSentryDsn(isWeb: kIsWeb, webConfiguredDsn: DriftfinConfig.sentryDsn, buildTimeDsn: sentryDsn);
 
 /// Pure form of [resolvedSentryDsn]. `kIsWeb` is a compile-time constant that
 /// gets folded to `false` on the VM, so its branch is unreachable in
@@ -54,11 +51,7 @@ bool computeCrashReportingEnabled({required String dsn, required ClientSettingsM
 
 bool get isDesktopPlatform {
   if (kIsWeb) return false;
-  return [
-    TargetPlatform.windows,
-    TargetPlatform.linux,
-    TargetPlatform.macOS,
-  ].contains(defaultTargetPlatform);
+  return [TargetPlatform.windows, TargetPlatform.linux, TargetPlatform.macOS].contains(defaultTargetPlatform);
 }
 
 class AppBootstrapResult {
@@ -92,7 +85,7 @@ Future<AppBootstrapResult> bootstrapApplication(List<String> args) async {
 
   if (kIsWeb) {
     final configString = await rootBundle.loadString('config/config.json');
-    FladderConfig.fromJson(jsonDecode(configString) as Map<String, dynamic>);
+    DriftfinConfig.fromJson(jsonDecode(configString) as Map<String, dynamic>);
   }
 
   await SvgUtils.preCacheSVGs();
@@ -119,11 +112,7 @@ Future<AppBootstrapResult> bootstrapApplication(List<String> args) async {
     platform: defaultTargetPlatform,
   );
 
-  final argumentsModel = ArgumentsModel.fromArguments(
-    args,
-    windowArguments,
-    leanBackEnabled,
-  );
+  final argumentsModel = ArgumentsModel.fromArguments(args, windowArguments, leanBackEnabled);
 
   final effectiveSentryDsn = resolvedSentryDsn;
   final crashReportingEnabled = computeCrashReportingEnabled(

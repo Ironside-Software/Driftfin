@@ -18,7 +18,7 @@ import 'package:driftfin/providers/views_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/dashboard/music_playlist_row.dart';
 import 'package:driftfin/screens/home_screen.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
 import 'package:driftfin/screens/shared/media/track_list.dart';
 import 'package:driftfin/screens/shared/nested_scaffold.dart';
@@ -335,7 +335,7 @@ class _MusicDashboardScreenState extends ConsumerState<MusicDashboardScreen> {
 
     if (model == null) {
       if (mounted) {
-        FladderSnack.show(context.localized.unableToPlayMedia, context: context);
+        DriftfinSnack.show(context.localized.unableToPlayMedia, context: context);
       }
       return;
     }

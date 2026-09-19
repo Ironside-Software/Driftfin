@@ -21,21 +21,18 @@ import 'package:driftfin/screens/login/widgets/advanced_login_options_dialog.dar
 import 'package:driftfin/screens/login/widgets/connect_link_dialog.dart';
 import 'package:driftfin/screens/login/widgets/discover_servers_widget.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/screens/shared/passcode_input.dart';
 import 'package:driftfin/services/local_network_permission.dart';
 import 'package:driftfin/util/auth_service.dart';
 import 'package:driftfin/util/deep_link_helper.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 class LoginScreenCredentials extends ConsumerStatefulWidget {
   final AuthLinkData? authLinkData;
-  const LoginScreenCredentials({
-    this.authLinkData,
-    super.key,
-  });
+  const LoginScreenCredentials({this.authLinkData, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenCredentialsState();
@@ -76,7 +73,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
       }
     } catch (e) {
       log("Error during auto-login with auth link: $e");
-      FladderSnack.show(context.localized.error);
+      DriftfinSnack.show(context.localized.error);
     } finally {
       setState(() {
         loggingIn = false;
@@ -105,14 +102,11 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
     final urlError = ref.watch(authProvider.select((value) => value.errorMessage));
     final hasQuickConnect = ref.watch(authProvider.select((value) => value.serverLoginModel?.hasQuickConnect ?? false));
 
-    ref.listen(
-      authProvider.select((value) => value.serverLoginModel),
-      (previous, next) {
-        if (next?.tempCredentials.url.isNotEmpty == true) {
-          serverTextController.text = next?.tempCredentials.url ?? "";
-        }
-      },
-    );
+    ref.listen(authProvider.select((value) => value.serverLoginModel), (previous, next) {
+      if (next?.tempCredentials.url.isNotEmpty == true) {
+        serverTextController.text = next?.tempCredentials.url ?? "";
+      }
+    });
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -129,9 +123,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
                 aspectRatio: 1,
                 child: IconButton.filledTonal(
                   onPressed: () => provider.goUserSelect(),
-                  icon: const Icon(
-                    IconsaxPlusLinear.arrow_left_2,
-                  ),
+                  icon: const Icon(IconsaxPlusLinear.arrow_left_2),
                 ),
               ),
               if (!hasBaseUrl)
@@ -154,9 +146,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
                   waitDuration: const Duration(seconds: 1),
                   child: IconButton.filled(
                     onPressed: () => provider.setServer(serverTextController.text),
-                    icon: const Icon(
-                      IconsaxPlusLinear.refresh,
-                    ),
+                    icon: const Icon(IconsaxPlusLinear.refresh),
                   ),
                 ),
               ),
@@ -173,10 +163,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
               ),
               FilledButton(
                 onPressed: () {
-                  showConnectLinkDialog(
-                    context,
-                    (link) => loginUsingAuthLink(link),
-                  );
+                  showConnectLinkDialog(context, (link) => loginUsingAuthLink(link));
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -249,10 +236,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
                       ),
                     ),
                   ),
-                  const Divider(
-                    indent: 32,
-                    endIndent: 32,
-                  ),
+                  const Divider(indent: 32, endIndent: 32),
                   Row(
                     spacing: 8,
                     children: [
@@ -264,7 +248,9 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
                                   width: 18,
                                   height: 18,
                                   child: CircularProgressIndicator(
-                                      color: Theme.of(context).colorScheme.inversePrimary, strokeCap: StrokeCap.round),
+                                    color: Theme.of(context).colorScheme.inversePrimary,
+                                    strokeCap: StrokeCap.round,
+                                  ),
                                 )
                               : Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -276,14 +262,11 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
                                 ),
                         ),
                       ),
-                      if (FladderConfig.seerrBaseUrl?.isNotEmpty != true)
+                      if (DriftfinConfig.seerrBaseUrl?.isNotEmpty != true)
                         IconButton.filledTonal(
                           onPressed: () async {
                             final tempSeerrUrl = ref.read(authProvider.select((value) => value.tempSeerrUrl));
-                            final result = await showAdvancedLoginOptionsDialog(
-                              context,
-                              initialSeerrUrl: tempSeerrUrl,
-                            );
+                            final result = await showAdvancedLoginOptionsDialog(context, initialSeerrUrl: tempSeerrUrl);
                             if (result != null) {
                               ref.read(authProvider.notifier).setTempSeerrUrl(result);
                             }
@@ -308,7 +291,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
                             },
                           );
                         } else {
-                          FladderSnack.show(context.localized.quickConnectPostFailed, context: context);
+                          DriftfinSnack.show(context.localized.quickConnectPostFailed, context: context);
                         }
                       },
                       child: Row(
@@ -344,15 +327,15 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
       loggingIn = true;
     });
 
-    final response = await ref.read(authProvider.notifier).authenticateByName(
-          usernameController.text,
-          passwordController.text,
-        );
+    final response = await ref
+        .read(authProvider.notifier)
+        .authenticateByName(usernameController.text, passwordController.text);
 
     if (response?.isSuccessful == false) {
-      FladderSnack.show(
-          "(${response?.base.statusCode}) ${response?.base.reasonPhrase ?? context.localized.somethingWentWrongPasswordCheck}",
-          context: context);
+      DriftfinSnack.show(
+        "(${response?.base.statusCode}) ${response?.base.reasonPhrase ?? context.localized.somethingWentWrongPasswordCheck}",
+        context: context,
+      );
       setState(() {
         loggingIn = false;
       });
@@ -381,29 +364,23 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
       final username = usernameController.text.trim();
       final password = passwordController.text;
 
-      final effectiveSeerrUrl = FladderConfig.seerrBaseUrl ?? seerrUrl;
+      final effectiveSeerrUrl = DriftfinConfig.seerrBaseUrl ?? seerrUrl;
       ref.read(userProvider.notifier).setSeerrServerUrl(effectiveSeerrUrl);
 
       final tempCookie = ref.read(authProvider.select((value) => value.tempSeerrSessionCookie));
-      final cookie = tempCookie ??
-          await ref.read(seerrApiProvider).authenticateJellyfin(
-                username: username,
-                password: password,
-              );
+      final cookie =
+          tempCookie ?? await ref.read(seerrApiProvider).authenticateJellyfin(username: username, password: password);
 
       ref.read(userProvider.notifier).setSeerrSessionCookie(cookie);
       ref.read(userProvider.notifier).setSeerrApiKey('');
       ref.read(authProvider.notifier).setTempSeerrSessionCookie(null);
 
       if (context.mounted) {
-        FladderSnack.show(context.localized.seerrLoggedIn, context: context);
+        DriftfinSnack.show(context.localized.seerrLoggedIn, context: context);
       }
     } catch (e) {
       if (context.mounted) {
-        FladderSnack.show(
-          "${context.localized.seerrAuthenticateLocal}: ${e.toString()}",
-          context: context,
-        );
+        DriftfinSnack.show("${context.localized.seerrAuthenticateLocal}: ${e.toString()}", context: context);
       }
     }
   }
@@ -412,9 +389,7 @@ class _LoginScreenCredentialsState extends ConsumerState<LoginScreenCredentials>
     setState(() {
       loggingIn = true;
     });
-    final response = await FladderSnack.showResponse(
-      ref.read(authProvider.notifier).authenticateUsingSecret(secret),
-    );
+    final response = await DriftfinSnack.showResponse(ref.read(authProvider.notifier).authenticateUsingSecret(secret));
     if (response.isSuccess && context.mounted) {
       loggedInGoToHome(context, ref);
     }
@@ -435,15 +410,10 @@ Future<void> loggedInGoToHome(BuildContext context, WidgetRef ref) async {
 
 Future<void> _handleLogin(BuildContext context, AccountModel user, WidgetRef ref) async {
   await ref.read(authProvider.notifier).switchUser();
-  await ref.read(sharedUtilityProvider).updateAccountInfo(user.copyWith(
-        lastUsed: DateTime.now(),
-      ));
+  await ref.read(sharedUtilityProvider).updateAccountInfo(user.copyWith(lastUsed: DateTime.now()));
   ref.read(userProvider.notifier).updateUser(user.copyWith(lastUsed: DateTime.now()));
 
-  await ensureLocalNetworkPermissions(
-    [user.credentials.url, user.credentials.localUrl],
-    context,
-  );
+  await ensureLocalNetworkPermissions([user.credentials.url, user.credentials.localUrl], context);
 
   loggedInGoToHome(context, ref);
 }
@@ -466,7 +436,7 @@ void tapLoggedInAccount(BuildContext context, AccountModel user, WidgetRef ref) 
           if (newPin == user.localPin) {
             loginFunction();
           } else {
-            FladderSnack.show(context.localized.incorrectPinTryAgain, context: context);
+            DriftfinSnack.show(context.localized.incorrectPinTryAgain, context: context);
           }
         });
       }

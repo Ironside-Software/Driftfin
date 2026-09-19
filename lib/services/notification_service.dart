@@ -12,7 +12,7 @@ class NotificationService {
   NotificationService._();
 
   static final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
-  static const String _channelId = 'fladder_updates';
+  static const String _channelId = 'driftfin_updates';
   static const String _channelName = 'Update notifications';
   static const String _channelDesc = 'Notifications for newly added items';
 
@@ -37,13 +37,7 @@ class NotificationService {
     );
 
     await _plugin.initialize(
-      settings: InitializationSettings(
-        android: android,
-        iOS: darwin,
-        macOS: darwin,
-        linux: linux,
-        windows: windows,
-      ),
+      settings: InitializationSettings(android: android, iOS: darwin, macOS: darwin, linux: linux, windows: windows),
       onDidReceiveNotificationResponse: (NotificationResponse resp) {
         _selectNotificationController.add(resp.payload);
       },
@@ -125,7 +119,7 @@ class NotificationService {
     if (notifications.isEmpty) return;
 
     final baseId = DateTime.now().millisecond;
-    final groupKey = 'fladder_group_$groupId';
+    final groupKey = 'driftfin_group_$groupId';
 
     if (notifications.length == 1) {
       final single = notifications.first;
@@ -185,18 +179,20 @@ class NotificationService {
       final iosChild = DarwinNotificationDetails(threadIdentifier: groupKey);
       final linuxChild = const LinuxNotificationDetails(defaultActionName: 'Open notification');
       final windowsChild = const WindowsNotificationDetails();
-      futures.add(_plugin.show(
-        id: childId,
-        title: notification.title,
-        body: notification.subtitle,
-        payload: notification.payLoad,
-        notificationDetails: NotificationDetails(
-          android: androidChild,
-          iOS: iosChild,
-          linux: linuxChild,
-          windows: windowsChild,
+      futures.add(
+        _plugin.show(
+          id: childId,
+          title: notification.title,
+          body: notification.subtitle,
+          payload: notification.payLoad,
+          notificationDetails: NotificationDetails(
+            android: androidChild,
+            iOS: iosChild,
+            linux: linuxChild,
+            windows: windowsChild,
+          ),
         ),
-      ));
+      );
     }
 
     await Future.wait(futures);

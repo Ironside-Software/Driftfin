@@ -7,7 +7,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/screens/shared/detail_scaffold.dart';
 import 'package:driftfin/screens/shared/media/components/poster_placeholder.dart';
 import 'package:driftfin/theme.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/router_extension.dart';
@@ -26,11 +26,7 @@ class EmptyItem extends ConsumerWidget {
       actions: (context) => item.generateActions(
         context,
         ref,
-        exclude: {
-          ItemActions.play,
-          ItemActions.playFromStart,
-          ItemActions.details,
-        },
+        exclude: {ItemActions.play, ItemActions.playFromStart, ItemActions.details},
         onDeleteSuccesFully: (item) {
           if (context.mounted) {
             context.router.popBack();
@@ -52,23 +48,17 @@ class EmptyItem extends ConsumerWidget {
                     elevation: 6,
                     color: Theme.of(context).colorScheme.secondaryContainer,
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1.0,
-                        color: Colors.white.withValues(alpha: 0.10),
-                      ),
+                      side: BorderSide(width: 1.0, color: Colors.white.withValues(alpha: 0.10)),
                       borderRadius: FladderTheme.defaultShape.borderRadius,
                     ),
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: item.getPosters?.primary ?? item.getPosters?.backDrop?.lastOrNull,
                       placeHolder: PosterPlaceholder(item: item),
                     ),
                   ),
                 ),
               ),
-              Text(
-                item.title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              Text(item.title, style: Theme.of(context).textTheme.titleLarge),
               Text("Type of (Jelly.${item.jellyType?.name.capitalize()}) has not been implemented yet."),
             ].addInBetween(const SizedBox(height: 32)),
           ),

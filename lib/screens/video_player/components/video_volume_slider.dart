@@ -7,7 +7,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/providers/settings/video_player_settings_provider.dart';
 import 'package:driftfin/util/list_padding.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 
 class VideoVolumeSlider extends ConsumerStatefulWidget {
   final double? width;
@@ -74,7 +74,7 @@ class _VideoVolumeSliderState extends ConsumerState<VideoVolumeSlider> {
               child: SizedBox(
                 height: 30,
                 width: 75,
-                child: FladderSlider(
+                child: DriftfinSlider(
                   min: 0,
                   max: 100,
                   value: volume,

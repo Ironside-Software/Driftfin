@@ -6,9 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:driftfin/util/theme_extensions.dart';
 
-class FladderIcon extends StatelessWidget {
+class DriftfinIcon extends StatelessWidget {
   final double size;
-  const FladderIcon({this.size = 100, super.key});
+  const DriftfinIcon({this.size = 100, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +18,10 @@ class FladderIcon extends StatelessWidget {
       children: [
         ShaderMask(
           shaderCallback: (Rect bounds) {
-            return ui.Gradient.linear(
-              const Offset(30, 30),
-              const Offset(80, 80),
-              [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.secondary,
-              ],
-            );
+            return ui.Gradient.linear(const Offset(30, 30), const Offset(80, 80), [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.secondary,
+            ]);
           },
           child: SvgPicture.asset(
             "icons/driftfin_icon.svg",
@@ -38,10 +34,10 @@ class FladderIcon extends StatelessWidget {
   }
 }
 
-class FladderIconOutlined extends StatelessWidget {
+class DriftfinIconOutlined extends StatelessWidget {
   final double size;
   final Color? color;
-  const FladderIconOutlined({this.size = 100, this.color, super.key});
+  const DriftfinIconOutlined({this.size = 100, this.color, super.key});
 
   @override
   Widget build(BuildContext context) {

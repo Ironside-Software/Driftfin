@@ -8,7 +8,7 @@ import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/screens/shared/flat_button.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
 const videoPlayerHeroTag = "HeroPlayer";
@@ -41,10 +41,7 @@ class FloatingPlayerBarPreview extends StatelessWidget {
             children: [
               Hero(
                 tag: videoPlayerHeroTag,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: child,
-                ),
+                child: ClipRRect(borderRadius: BorderRadius.circular(4), child: child),
               ),
               Positioned.fill(
                 child: Tooltip(
@@ -62,7 +59,7 @@ class FloatingPlayerBarPreview extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -72,12 +69,7 @@ class FloatingPlayerBarPreview extends StatelessWidget {
 }
 
 class FloatingPlayerBarTitle extends StatelessWidget {
-  const FloatingPlayerBarTitle({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    this.onTap,
-  });
+  const FloatingPlayerBarTitle({super.key, required this.title, required this.subtitle, this.onTap});
 
   final String title;
   final String subtitle;
@@ -91,21 +83,14 @@ class FloatingPlayerBarTitle extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium,
-              maxLines: 1,
-            ),
-          ),
+          Flexible(child: Text(title, style: Theme.of(context).textTheme.titleMedium, maxLines: 1)),
           if (subtitle.isNotEmpty)
             Flexible(
               child: Text(
                 subtitle,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65),
-                    ),
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.65)),
                 maxLines: 1,
               ),
             ),
@@ -137,9 +122,7 @@ class FloatingPlayerBarActionsRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         if (constraints.maxWidth > 500)
-          Flexible(
-            child: Text("${lastPosition.readAbleDuration} / ${playbackInfo.duration.readAbleDuration}"),
-          ),
+          Flexible(child: Text("${lastPosition.readAbleDuration} / ${playbackInfo.duration.readAbleDuration}")),
         Flexible(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -161,17 +144,14 @@ class FloatingPlayerBarActionsRow extends StatelessWidget {
             ),
             children: itemActions.map((e) => e.toButton()).toList(),
           ),
-        )
+        ),
       ],
     );
   }
 }
 
 class FloatingPlayerBarProgress extends ConsumerStatefulWidget {
-  const FloatingPlayerBarProgress({
-    super.key,
-    required this.onSeek,
-  });
+  const FloatingPlayerBarProgress({super.key, required this.onSeek});
 
   final Future<void> Function(Duration) onSeek;
 
@@ -184,16 +164,13 @@ class _FloatingPlayerBarProgressState extends ConsumerState<FloatingPlayerBarPro
 
   @override
   Widget build(BuildContext context) {
-    final playback = ref.watch(mediaPlaybackProvider.select((s) => (
-          position: s.position,
-          duration: s.duration,
-        )));
+    final playback = ref.watch(mediaPlaybackProvider.select((s) => (position: s.position, duration: s.duration)));
     final position = _dragPosition ?? playback.position;
 
     return AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer
         ? SizedBox(
             height: 8,
-            child: FladderSlider(
+            child: DriftfinSlider(
               value: position.inMilliseconds.toDouble(),
               min: 0.0,
               max: playback.duration.inMilliseconds.toDouble(),

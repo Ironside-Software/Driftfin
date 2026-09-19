@@ -7,19 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/providers/items/item_details_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 @RoutePage()
 class DetailsScreen extends ConsumerStatefulWidget {
   final String id;
   final ItemBaseModel? item;
   final Object? tag;
-  const DetailsScreen({
-    @QueryParam() this.id = '',
-    this.item,
-    this.tag,
-    super.key,
-  });
+  const DetailsScreen({@QueryParam() this.id = '', this.item, this.tag, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _DetailsScreenState();
@@ -74,18 +69,15 @@ class _DetailsScreenState extends ConsumerState<DetailsScreen> {
         Hero(
           tag: widget.tag ?? UniqueKey(),
           child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface.withValues(alpha: 1.0),
-            ),
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface.withValues(alpha: 1.0)),
             //Small offset to match detailscaffold
             child: Transform.translate(
-                offset: const Offset(0, -5), child: FladderImage(image: widget.item?.getPosters?.primary)),
+              offset: const Offset(0, -5),
+              child: DriftfinImage(image: widget.item?.getPosters?.primary),
+            ),
           ),
         ),
-        AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
-          child: currentWidget,
-        )
+        AnimatedSwitcher(duration: const Duration(seconds: 1), child: currentWidget),
       ],
     );
   }

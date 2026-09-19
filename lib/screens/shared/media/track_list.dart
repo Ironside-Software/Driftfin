@@ -10,7 +10,7 @@ import 'package:driftfin/providers/sync/sync_provider_helpers.dart';
 import 'package:driftfin/screens/syncing/sync_button.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -207,10 +207,8 @@ class _TrackListState extends ConsumerState<TrackList> {
 
   Widget _buildHeaderLabel(BuildContext context, _TrackColumn column) {
     final active = column.sortable && _sortColumn == column.sortColumn;
-    final style = Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          fontWeight: FontWeight.bold,
-        );
+    final style = Theme.of(context).textTheme.labelMedium
+        ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.bold);
 
     if (!column.sortable) {
       return Align(
@@ -284,34 +282,33 @@ class _TrackListState extends ConsumerState<TrackList> {
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: [
               if (widget.showHeader) _buildHeaderRow(context),
-              ...visibleTracks.mapIndexed(
-                (index, track) {
-                  final containsMultipleDiscs = visibleTracks.map((t) => t.discNumber).toSet().length > 1;
-                  final previousTrackDisk = index > 0 ? visibleTracks[index - 1].discNumber : null;
-                  return TableRow(
-                    children: [
-                      _TrackListItem(
-                        index: widget.showAlbum ? index + 1 : track.trackNumber ?? index + 1,
-                        track: track,
-                        actions: _buildTrackActions(context, track),
-                        onTap: _selectionEnabled ? (_) => _handleTrackTap(track, index) : widget.onTrackTap,
-                        onTrackPlayTap: widget.onTrackPlayTap,
-                        onArtistTap: widget.onTrackArtistTap,
-                        onSecondaryTap: widget.onTrackSecondaryTap,
-                        showAlbum: widget.showAlbum,
-                        showDiscSplit: widget.showDiscSplit &&
-                                containsMultipleDiscs &&
-                                track.discNumber != null &&
-                                track.discNumber != previousTrackDisk
-                            ? track.discNumber
-                            : null,
-                        showSyncStatus: widget.showSyncStatus,
-                        isSelected: _selectionEnabled && _selectedTrackIds.contains(track.id),
-                      ),
-                    ],
-                  );
-                },
-              ),
+              ...visibleTracks.mapIndexed((index, track) {
+                final containsMultipleDiscs = visibleTracks.map((t) => t.discNumber).toSet().length > 1;
+                final previousTrackDisk = index > 0 ? visibleTracks[index - 1].discNumber : null;
+                return TableRow(
+                  children: [
+                    _TrackListItem(
+                      index: widget.showAlbum ? index + 1 : track.trackNumber ?? index + 1,
+                      track: track,
+                      actions: _buildTrackActions(context, track),
+                      onTap: _selectionEnabled ? (_) => _handleTrackTap(track, index) : widget.onTrackTap,
+                      onTrackPlayTap: widget.onTrackPlayTap,
+                      onArtistTap: widget.onTrackArtistTap,
+                      onSecondaryTap: widget.onTrackSecondaryTap,
+                      showAlbum: widget.showAlbum,
+                      showDiscSplit:
+                          widget.showDiscSplit &&
+                              containsMultipleDiscs &&
+                              track.discNumber != null &&
+                              track.discNumber != previousTrackDisk
+                          ? track.discNumber
+                          : null,
+                      showSyncStatus: widget.showSyncStatus,
+                      isSelected: _selectionEnabled && _selectedTrackIds.contains(track.id),
+                    ),
+                  ],
+                );
+              }),
             ],
           ),
         ],
@@ -321,55 +318,49 @@ class _TrackListState extends ConsumerState<TrackList> {
 
   TableRow _buildHeaderRow(BuildContext context) {
     return TableRow(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-      ),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
       children: [
-        LayoutBuilder(builder: (context, constraints) {
-          final compactLayout = constraints.maxWidth < 550;
-          final phoneSize = constraints.maxWidth < 450;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12).add(const EdgeInsets.only(left: 4, right: 16)),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: _TrackColumn.position.width,
-                  child: _buildHeaderLabel(context, _TrackColumn.position),
-                ),
-                const SizedBox(width: _trackCellSpacing),
-                Expanded(flex: _TrackColumn.title.flex!, child: _buildHeaderLabel(context, _TrackColumn.title)),
-                if (!compactLayout && widget.showAlbum) ...[
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final compactLayout = constraints.maxWidth < 550;
+            final phoneSize = constraints.maxWidth < 450;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12).add(const EdgeInsets.only(left: 4, right: 16)),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: _TrackColumn.position.width,
+                    child: _buildHeaderLabel(context, _TrackColumn.position),
+                  ),
                   const SizedBox(width: _trackCellSpacing),
-                  Expanded(flex: _TrackColumn.album.flex!, child: _buildHeaderLabel(context, _TrackColumn.album)),
-                ],
-                if (!compactLayout) ...[
+                  Expanded(flex: _TrackColumn.title.flex!, child: _buildHeaderLabel(context, _TrackColumn.title)),
+                  if (!compactLayout && widget.showAlbum) ...[
+                    const SizedBox(width: _trackCellSpacing),
+                    Expanded(flex: _TrackColumn.album.flex!, child: _buildHeaderLabel(context, _TrackColumn.album)),
+                  ],
+                  if (!compactLayout) ...[
+                    const SizedBox(width: _trackCellSpacing),
+                    SizedBox(width: _TrackColumn.plays.width!, child: _buildHeaderLabel(context, _TrackColumn.plays)),
+                  ],
+                  if (widget.showSyncStatus) ...[
+                    const SizedBox(width: _trackCellSpacing),
+                    SizedBox(width: _TrackColumn.sync.width!, child: _buildHeaderLabel(context, _TrackColumn.sync)),
+                  ],
                   const SizedBox(width: _trackCellSpacing),
                   SizedBox(
-                    width: _TrackColumn.plays.width!,
-                    child: _buildHeaderLabel(context, _TrackColumn.plays),
+                    width: _TrackColumn.duration.width!,
+                    child: _buildHeaderLabel(context, _TrackColumn.duration),
                   ),
+                  if (!phoneSize) ...[
+                    const SizedBox(width: _trackCellSpacing),
+                    SizedBox(width: _TrackColumn.action.width!),
+                  ],
                 ],
-                if (widget.showSyncStatus) ...[
-                  const SizedBox(width: _trackCellSpacing),
-                  SizedBox(
-                    width: _TrackColumn.sync.width!,
-                    child: _buildHeaderLabel(context, _TrackColumn.sync),
-                  ),
-                ],
-                const SizedBox(width: _trackCellSpacing),
-                SizedBox(
-                  width: _TrackColumn.duration.width!,
-                  child: _buildHeaderLabel(context, _TrackColumn.duration),
-                ),
-                if (!phoneSize) ...[
-                  const SizedBox(width: _trackCellSpacing),
-                  SizedBox(width: _TrackColumn.action.width!),
-                ],
-              ],
-            ),
-          );
-        }),
+              ),
+            );
+          },
+        ),
       ],
     );
   }
@@ -411,11 +402,7 @@ class _TrackListItemState extends ConsumerState<_TrackListItem> {
 
   Future<void> _showContextMenu(Offset globalPosition) async {
     final position = RelativeRect.fromLTRB(globalPosition.dx, globalPosition.dy, globalPosition.dx, globalPosition.dy);
-    await showMenu(
-      context: context,
-      position: position,
-      items: widget.actions.popupMenuItems(useIcons: true),
-    );
+    await showMenu(context: context, position: position, items: widget.actions.popupMenuItems(useIcons: true));
   }
 
   void _handleHover(bool hovering) {
@@ -424,219 +411,214 @@ class _TrackListItemState extends ConsumerState<_TrackListItem> {
 
   @override
   Widget build(BuildContext context) {
-    final trackArtists = widget.track.artists.isNotEmpty
-        ? widget.track.artists
-            .map(
-              (e) => e.name,
-            )
-            .join(', ')
-        : null;
+    final trackArtists = widget.track.artists.isNotEmpty ? widget.track.artists.map((e) => e.name).join(', ') : null;
     final durationText = widget.track.overview.runTime?.readAbleDuration;
     final playCountText = widget.track.userData.playCount > 0 ? 'x${widget.track.userData.playCount}' : '-';
 
     final radius = FladderTheme.smallShape.borderRadius;
 
-    return LayoutBuilder(builder: (context, constraints) {
-      final compactLayout = constraints.maxWidth < 550;
-      final phoneSize = constraints.maxWidth < 450;
-      return Column(
-        children: [
-          if (widget.showDiscSplit != null) ...[
-            if (widget.showDiscSplit != 1) const Divider(),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Text(
-                  context.localized.disc(widget.showDiscSplit ?? 1),
-                  style: Theme.of(context).textTheme.titleMedium,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compactLayout = constraints.maxWidth < 550;
+        final phoneSize = constraints.maxWidth < 450;
+        return Column(
+          children: [
+            if (widget.showDiscSplit != null) ...[
+              if (widget.showDiscSplit != 1) const Divider(),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    context.localized.disc(widget.showDiscSplit ?? 1),
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ),
-            ),
-          ],
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color:
-                  widget.isSelected ? Theme.of(context).colorScheme.primaryContainer.withAlpha(80) : Colors.transparent,
-            ),
-            child: FocusButton(
-              onHover: _handleHover,
-              onTap: widget.onTap != null ? () => widget.onTap?.call(widget.track) : null,
-              onLongPress: () {
-                if (widget.onSecondaryTap != null) {
-                  showBottomSheetPill(
-                    context: context,
-                    item: widget.track,
-                    content: (scrollContext, scrollController) => ListView(
-                      shrinkWrap: true,
-                      controller: scrollController,
-                      children: widget.track
-                          .generateActions(
-                            context,
-                            ref,
-                          )
-                          .listTileItems(scrollContext, useIcons: true),
-                    ),
-                  );
-                }
-              },
-              onSecondaryTapDown: (details) async {
-                if (widget.actions.isNotEmpty) {
-                  await _showContextMenu(details.globalPosition);
-                  return;
-                }
-                widget.onSecondaryTap?.call(widget.track, details);
-              },
-              borderRadius: BorderRadius.circular(12),
-              onFocusChanged: (focus) {
-                if (focus) {
-                  context.ensureVisible();
-                }
-              },
-              overlays: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12).add(const EdgeInsets.only(left: 4, right: 16)),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: _TrackColumn.position.width!,
-                        child: AspectRatio(
-                          aspectRatio: 1,
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                if (widget.showAlbum)
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: radius,
-                                      color: Theme.of(context).colorScheme.surfaceContainer,
-                                    ),
-                                    foregroundDecoration: BoxDecoration(
-                                      borderRadius: radius,
-                                      border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
-                                    ),
-                                    clipBehavior: Clip.hardEdge,
-                                    child: FladderImage(
-                                      image: widget.track.images?.primary,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                else if (!_hovering)
-                                  Text('${widget.index}', style: Theme.of(context).textTheme.bodyLarge),
-                                if (widget.track.userData.isFavourite == true)
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: Transform.translate(
-                                      offset: const Offset(6, -6),
-                                      child: Icon(
-                                        IconsaxPlusBold.heart,
-                                        color: Theme.of(context).colorScheme.primary,
+            ],
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: widget.isSelected
+                    ? Theme.of(context).colorScheme.primaryContainer.withAlpha(80)
+                    : Colors.transparent,
+              ),
+              child: FocusButton(
+                onHover: _handleHover,
+                onTap: widget.onTap != null ? () => widget.onTap?.call(widget.track) : null,
+                onLongPress: () {
+                  if (widget.onSecondaryTap != null) {
+                    showBottomSheetPill(
+                      context: context,
+                      item: widget.track,
+                      content: (scrollContext, scrollController) => ListView(
+                        shrinkWrap: true,
+                        controller: scrollController,
+                        children: widget.track
+                            .generateActions(context, ref)
+                            .listTileItems(scrollContext, useIcons: true),
+                      ),
+                    );
+                  }
+                },
+                onSecondaryTapDown: (details) async {
+                  if (widget.actions.isNotEmpty) {
+                    await _showContextMenu(details.globalPosition);
+                    return;
+                  }
+                  widget.onSecondaryTap?.call(widget.track, details);
+                },
+                borderRadius: BorderRadius.circular(12),
+                onFocusChanged: (focus) {
+                  if (focus) {
+                    context.ensureVisible();
+                  }
+                },
+                overlays: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12).add(const EdgeInsets.only(left: 4, right: 16)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: _TrackColumn.position.width!,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  if (widget.showAlbum)
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: radius,
+                                        color: Theme.of(context).colorScheme.surfaceContainer,
+                                      ),
+                                      foregroundDecoration: BoxDecoration(
+                                        borderRadius: radius,
+                                        border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
+                                      ),
+                                      clipBehavior: Clip.hardEdge,
+                                      child: DriftfinImage(image: widget.track.images?.primary, fit: BoxFit.cover),
+                                    )
+                                  else if (!_hovering)
+                                    Text('${widget.index}', style: Theme.of(context).textTheme.bodyLarge),
+                                  if (widget.track.userData.isFavourite == true)
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Transform.translate(
+                                        offset: const Offset(6, -6),
+                                        child: Icon(
+                                          IconsaxPlusBold.heart,
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                if (_hovering)
-                                  IconButton(
-                                    onPressed: widget.onTrackPlayTap != null
-                                        ? () => widget.onTrackPlayTap?.call(widget.track)
-                                        : null,
-                                    icon: const Icon(IconsaxPlusBold.play),
-                                  )
-                              ],
+                                  if (_hovering)
+                                    IconButton(
+                                      onPressed: widget.onTrackPlayTap != null
+                                          ? () => widget.onTrackPlayTap?.call(widget.track)
+                                          : null,
+                                      icon: const Icon(IconsaxPlusBold.play),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: _trackCellSpacing),
-                      Expanded(
-                        flex: _TrackColumn.title.flex!,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(widget.track.name, style: Theme.of(context).textTheme.titleMedium),
-                            if (trackArtists != null) ...[
-                              const SizedBox(height: 4),
-                              ClickableText(
-                                text: trackArtists,
-                                style: Theme.of(context).textTheme.bodySmall,
-                                onTap: widget.onArtistTap != null ? () => widget.onArtistTap?.call(widget.track) : null,
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      if (!compactLayout && widget.showAlbum && _TrackColumn.album.flex != null) ...[
                         const SizedBox(width: _trackCellSpacing),
                         Expanded(
-                          flex: _TrackColumn.album.flex!,
-                          child: ClickableText(
-                            text: widget.track.album ?? '',
-                            onTap: widget.track.album != null
-                                ? () => widget.track.parentBaseModel.navigateTo(context)
-                                : null,
+                          flex: _TrackColumn.title.flex!,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(widget.track.name, style: Theme.of(context).textTheme.titleMedium),
+                              if (trackArtists != null) ...[
+                                const SizedBox(height: 4),
+                                ClickableText(
+                                  text: trackArtists,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                  onTap: widget.onArtistTap != null
+                                      ? () => widget.onArtistTap?.call(widget.track)
+                                      : null,
+                                ),
+                              ],
+                            ],
                           ),
                         ),
-                      ],
-                      if (!compactLayout) ...[
+                        if (!compactLayout && widget.showAlbum && _TrackColumn.album.flex != null) ...[
+                          const SizedBox(width: _trackCellSpacing),
+                          Expanded(
+                            flex: _TrackColumn.album.flex!,
+                            child: ClickableText(
+                              text: widget.track.album ?? '',
+                              onTap: widget.track.album != null
+                                  ? () => widget.track.parentBaseModel.navigateTo(context)
+                                  : null,
+                            ),
+                          ),
+                        ],
+                        if (!compactLayout) ...[
+                          const SizedBox(width: _trackCellSpacing),
+                          SizedBox(
+                            width: _TrackColumn.plays.width,
+                            child: Text(
+                              playCountText,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white54),
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
+                        ],
+                        if (widget.showSyncStatus) ...[
+                          const SizedBox(width: _trackCellSpacing),
+                          SizedBox(
+                            width: _TrackColumn.sync.width,
+                            child: ref
+                                .watch(syncedItemProvider(widget.track))
+                                .when(
+                                  error: (error, stackTrace) => const SizedBox.shrink(),
+                                  data: (syncedItem) {
+                                    if (syncedItem == null) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return Align(
+                                      alignment: Alignment.centerRight,
+                                      child: SyncButton(item: widget.track, syncedItem: syncedItem),
+                                    );
+                                  },
+                                  loading: () => const SizedBox.shrink(),
+                                ),
+                          ),
+                        ],
                         const SizedBox(width: _trackCellSpacing),
                         SizedBox(
-                          width: _TrackColumn.plays.width,
+                          width: _TrackColumn.duration.width,
                           child: Text(
-                            playCountText,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white54),
+                            durationText ?? '',
+                            style: Theme.of(context).textTheme.bodySmall,
                             textAlign: TextAlign.end,
                           ),
                         ),
-                      ],
-                      if (widget.showSyncStatus) ...[
-                        const SizedBox(width: _trackCellSpacing),
-                        SizedBox(
-                          width: _TrackColumn.sync.width,
-                          child: ref.watch(syncedItemProvider(widget.track)).when(
-                                error: (error, stackTrace) => const SizedBox.shrink(),
-                                data: (syncedItem) {
-                                  if (syncedItem == null) {
-                                    return const SizedBox.shrink();
-                                  }
-                                  return Align(
-                                    alignment: Alignment.centerRight,
-                                    child: SyncButton(item: widget.track, syncedItem: syncedItem),
-                                  );
-                                },
-                                loading: () => const SizedBox.shrink(),
-                              ),
-                        ),
-                      ],
-                      const SizedBox(width: _trackCellSpacing),
-                      SizedBox(
-                        width: _TrackColumn.duration.width,
-                        child: Text(
-                          durationText ?? '',
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.end,
-                        ),
-                      ),
-                      if (!phoneSize) ...[
-                        const SizedBox(width: _trackCellSpacing),
-                        SizedBox(
-                          width: _TrackColumn.action.width,
-                          child: PopupMenuButton(
-                            itemBuilder: (context) => widget.actions.popupMenuItems(useIcons: true),
+                        if (!phoneSize) ...[
+                          const SizedBox(width: _trackCellSpacing),
+                          SizedBox(
+                            width: _TrackColumn.action.width,
+                            child: PopupMenuButton(
+                              itemBuilder: (context) => widget.actions.popupMenuItems(useIcons: true),
+                            ),
                           ),
-                        ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
-                )
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 }

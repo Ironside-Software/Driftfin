@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/models/items/images_models.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 class MediaHeader extends ConsumerWidget {
   final String name;
@@ -29,9 +29,7 @@ class MediaHeader extends ConsumerWidget {
       child: SelectableText(
         name,
         textAlign: textAlign,
-        style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-              fontSize: 55,
-            ),
+        style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 55),
       ),
     );
 
@@ -43,7 +41,7 @@ class MediaHeader extends ConsumerWidget {
       child: Stack(
         children: [
           logo != null
-              ? FladderImage(
+              ? DriftfinImage(
                   image: logo,
                   disableBlur: true,
                   alignment: alignment,
@@ -52,12 +50,7 @@ class MediaHeader extends ConsumerWidget {
                   fit: BoxFit.contain,
                 )
               : textWidget,
-          if (onTap != null)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: onTap,
-              ),
-            ),
+          if (onTap != null) Positioned.fill(child: GestureDetector(onTap: onTap)),
         ],
       ),
     );

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout_model.dart';
 import 'package:driftfin/util/poster_defaults.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 
 const _touchModel = AdaptiveLayoutModel(
   viewSize: ViewSize.phone,
@@ -33,16 +33,11 @@ const _dpadModel = AdaptiveLayoutModel(
   statusBarHeight: 0,
 );
 
-Widget _harness(
-  Widget slider, {
-  AdaptiveLayoutModel model = _touchModel,
-}) {
+Widget _harness(Widget slider, {AdaptiveLayoutModel model = _touchModel}) {
   return MaterialApp(
     home: AdaptiveLayout(
       data: model,
-      child: Scaffold(
-        body: SizedBox(width: 300, child: slider),
-      ),
+      child: Scaffold(body: SizedBox(width: 300, child: slider)),
     ),
   );
 }
@@ -51,28 +46,26 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('renders without throwing at default values', (tester) async {
-    await tester.pumpWidget(_harness(const FladderSlider(value: 0.5)));
+    await tester.pumpWidget(_harness(const DriftfinSlider(value: 0.5)));
     await tester.pumpAndSettle();
-    expect(find.byType(FladderSlider), findsOneWidget);
+    expect(find.byType(DriftfinSlider), findsOneWidget);
   });
 
   testWidgets('renders with divisions and shows division dots', (tester) async {
-    await tester.pumpWidget(_harness(const FladderSlider(value: 0.4, divisions: 4)));
+    await tester.pumpWidget(_harness(const DriftfinSlider(value: 0.4, divisions: 4)));
     await tester.pumpAndSettle();
-    expect(find.byType(FladderSlider), findsOneWidget);
+    expect(find.byType(DriftfinSlider), findsOneWidget);
   });
 
   testWidgets('tap invokes onChanged and onChangeEnd', (tester) async {
     double? changed;
     double? changedEnd;
-    await tester.pumpWidget(_harness(FladderSlider(
-      value: 0.2,
-      onChanged: (v) => changed = v,
-      onChangeEnd: (v) => changedEnd = v,
-    )));
+    await tester.pumpWidget(
+      _harness(DriftfinSlider(value: 0.2, onChanged: (v) => changed = v, onChangeEnd: (v) => changedEnd = v)),
+    );
     await tester.pumpAndSettle();
 
-    await tester.tapAt(tester.getCenter(find.byType(FladderSlider)));
+    await tester.tapAt(tester.getCenter(find.byType(DriftfinSlider)));
     await tester.pumpAndSettle();
 
     expect(changed, isNotNull);
@@ -83,15 +76,19 @@ void main() {
     double? start;
     double? changed;
     double? end;
-    await tester.pumpWidget(_harness(FladderSlider(
-      value: 0.5,
-      onChangeStart: (v) => start = v,
-      onChanged: (v) => changed = v,
-      onChangeEnd: (v) => end = v,
-    )));
+    await tester.pumpWidget(
+      _harness(
+        DriftfinSlider(
+          value: 0.5,
+          onChangeStart: (v) => start = v,
+          onChanged: (v) => changed = v,
+          onChangeEnd: (v) => end = v,
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
-    await tester.drag(find.byType(FladderSlider), const Offset(50, 0));
+    await tester.drag(find.byType(DriftfinSlider), const Offset(50, 0));
     await tester.pumpAndSettle();
 
     expect(start, isNotNull);
@@ -100,7 +97,7 @@ void main() {
   });
 
   testWidgets('updating value via didUpdateWidget triggers animation', (tester) async {
-    Widget build(double value) => _harness(FladderSlider(value: value));
+    Widget build(double value) => _harness(DriftfinSlider(value: value));
     await tester.pumpWidget(build(0.1));
     await tester.pumpAndSettle();
 
@@ -108,28 +105,27 @@ void main() {
     await tester.pump();
     await tester.pumpAndSettle();
 
-    expect(find.byType(FladderSlider), findsOneWidget);
+    expect(find.byType(DriftfinSlider), findsOneWidget);
   });
 
   testWidgets('renders as a FocusButton and handles dpad key input on dpad devices', (tester) async {
     double? changed;
     double? end;
-    await tester.pumpWidget(_harness(
-      FladderSlider(value: 0.5, onChanged: (v) => changed = v, onChangeEnd: (v) => end = v),
-      model: _dpadModel,
-    ));
+    await tester.pumpWidget(
+      _harness(
+        DriftfinSlider(value: 0.5, onChanged: (v) => changed = v, onChangeEnd: (v) => end = v),
+        model: _dpadModel,
+      ),
+    );
     await tester.pumpAndSettle();
 
-    // FladderSlider builds its own internal FocusButton with its own Focus
+    // DriftfinSlider builds its own internal FocusButton with its own Focus
     // widget/node as a descendant. Focus.of() searches ancestors, so it can't
     // resolve this node from any context in or under the tree; grab the
     // Focus widget itself and request focus on its node directly.
-    final focusWidget = tester.widget<Focus>(find
-        .descendant(
-          of: find.byType(FladderSlider),
-          matching: find.byType(Focus),
-        )
-        .first);
+    final focusWidget = tester.widget<Focus>(
+      find.descendant(of: find.byType(DriftfinSlider), matching: find.byType(Focus)).first,
+    );
     focusWidget.focusNode!.requestFocus();
     await tester.pumpAndSettle();
 
@@ -143,8 +139,8 @@ void main() {
   });
 
   testWidgets('showThumb false hides the thumb without throwing', (tester) async {
-    await tester.pumpWidget(_harness(const FladderSlider(value: 0.6, showThumb: false)));
+    await tester.pumpWidget(_harness(const DriftfinSlider(value: 0.6, showThumb: false)));
     await tester.pumpAndSettle();
-    expect(find.byType(FladderSlider), findsOneWidget);
+    expect(find.byType(DriftfinSlider), findsOneWidget);
   });
 }

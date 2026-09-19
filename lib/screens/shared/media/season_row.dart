@@ -7,7 +7,7 @@ import 'package:driftfin/providers/sync/sync_provider_helpers.dart';
 import 'package:driftfin/screens/syncing/sync_button.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -35,14 +35,9 @@ class SeasonsRow extends ConsumerWidget {
       items: seasons ?? [],
       height: AdaptiveLayout.poster(context).size,
       contentPadding: contentPadding,
-      itemBuilder: (
-        context,
-        index,
-      ) {
+      itemBuilder: (context, index) {
         final season = (seasons ?? [])[index];
-        return SeasonPoster(
-          season: season,
-        );
+        return SeasonPoster(season: season);
       },
     );
   }
@@ -64,11 +59,7 @@ class SeasonPoster extends ConsumerWidget {
             color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.65),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.titleMedium),
             ),
           ),
         ),
@@ -90,8 +81,9 @@ class SeasonPoster extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.surfaceContainer,
                   ),
                   foregroundDecoration: FladderTheme.defaultPosterDecoration,
-                  child: FladderImage(
-                    image: season.getPosters?.primary ??
+                  child: DriftfinImage(
+                    image:
+                        season.getPosters?.primary ??
                         season.parentImages?.backDrop?.firstOrNull ??
                         season.parentImages?.primary,
                     placeHolder: placeHolder(season.name),
@@ -99,12 +91,17 @@ class SeasonPoster extends ConsumerWidget {
                 ),
                 onSecondaryTapDown: (details) async {
                   Offset localPosition = details.globalPosition;
-                  RelativeRect position =
-                      RelativeRect.fromLTRB(localPosition.dx, localPosition.dy, localPosition.dx, localPosition.dy);
+                  RelativeRect position = RelativeRect.fromLTRB(
+                    localPosition.dx,
+                    localPosition.dy,
+                    localPosition.dx,
+                    localPosition.dy,
+                  );
                   await showMenu(
-                      context: context,
-                      position: position,
-                      items: season.generateActions(context, ref).popupMenuItems(useIcons: true));
+                    context: context,
+                    position: position,
+                    items: season.generateActions(context, ref).popupMenuItems(useIcons: true),
+                  );
                 },
                 onTap: () async {
                   await season.navigateTo(context, ref: ref, tag: myKey);
@@ -125,17 +122,16 @@ class SeasonPoster extends ConsumerWidget {
                     : null,
                 overlays: [
                   if (season.images?.primary == null)
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: placeHolder(season.name),
-                    ),
+                    Align(alignment: Alignment.topLeft, child: placeHolder(season.name)),
                   Align(
                     alignment: Alignment.topRight,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ref.watch(syncedItemProvider(season)).when(
+                        ref
+                            .watch(syncedItemProvider(season))
+                            .when(
                               error: (error, stackTrace) => const SizedBox.shrink(),
                               data: (syncedItem) {
                                 if (syncedItem == null) {
@@ -169,9 +165,7 @@ class SeasonPoster extends ConsumerWidget {
                             alignment: Alignment.topRight,
                             child: StatusCard(
                               color: Theme.of(context).colorScheme.primary,
-                              child: const Icon(
-                                Icons.check_rounded,
-                              ),
+                              child: const Icon(Icons.check_rounded),
                             ),
                           ),
                       ],

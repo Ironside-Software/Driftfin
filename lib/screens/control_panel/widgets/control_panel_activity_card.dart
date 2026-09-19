@@ -6,7 +6,7 @@ import 'package:driftfin/providers/control_panel/control_activity_provider.dart'
 import 'package:driftfin/screens/shared/user_icon.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/humanize_duration.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -15,10 +15,7 @@ import 'package:driftfin/widgets/shared/trick_play_image.dart';
 
 class ControlPanelActivityCard extends StatefulWidget {
   final ControlActivityModel activity;
-  const ControlPanelActivityCard({
-    required this.activity,
-    super.key,
-  });
+  const ControlPanelActivityCard({required this.activity, super.key});
 
   @override
   State<ControlPanelActivityCard> createState() => _ControlPanelActivityCardState();
@@ -75,13 +72,8 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                     if (nowPlayingItem != null)
                       Positioned.fill(
                         child: trickPlayModel == null
-                            ? FladderImage(
-                                image: nowPlayingItem.images?.primary,
-                              )
-                            : TrickPlayImage(
-                                trickPlayModel,
-                                position: widget.activity.playState?.currentPosition,
-                              ),
+                            ? DriftfinImage(image: nowPlayingItem.images?.primary)
+                            : TrickPlayImage(trickPlayModel, position: widget.activity.playState?.currentPosition),
                       ),
                     Container(
                       decoration: BoxDecoration(
@@ -105,18 +97,16 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                             Row(
                               spacing: 8,
                               children: [
-                                SizedBox.square(
-                                  dimension: 36,
-                                  child: UserIcon(user: widget.activity.user),
-                                ),
+                                SizedBox.square(dimension: 36, child: UserIcon(user: widget.activity.user)),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(widget.activity.user?.name ?? "--"),
                                     Text(
-                                        "${widget.activity.client} (${widget.activity.deviceName ?? "--"}) - ${widget.activity.applicationVersion ?? "--"}"),
+                                      "${widget.activity.client} (${widget.activity.deviceName ?? "--"}) - ${widget.activity.applicationVersion ?? "--"}",
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                           ],
@@ -127,16 +117,10 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                       Align(
                         alignment: Alignment.center,
                         child: Container(
-                          decoration: const BoxDecoration(
-                            color: Colors.black45,
-                            shape: BoxShape.circle,
-                          ),
+                          decoration: const BoxDecoration(color: Colors.black45, shape: BoxShape.circle),
                           child: const Padding(
                             padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              IconsaxPlusBold.pause,
-                              size: 32,
-                            ),
+                            child: Icon(IconsaxPlusBold.pause, size: 32),
                           ),
                         ),
                       ),
@@ -178,7 +162,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                                     Text(
                                       "${playState.currentPosition.humanizeSmall ?? ""} / -${(nowPlayingItem.overview.runTime ?? Duration.zero - playState.currentPosition).humanizeSmall}",
                                     ),
-                                  ]
+                                  ],
                                 ],
                               ),
                             ),
@@ -193,7 +177,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                                   Theme.of(context).colorScheme.onTertiaryContainer,
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       )
@@ -202,27 +186,30 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                         padding: const EdgeInsets.all(8.0),
                         child: Align(
                           alignment: Alignment.bottomLeft,
-                          child: Builder(builder: (context) {
-                            final lastActivityInMinutes =
-                                DateTime.now().difference(widget.activity.lastActivityDate!).inMinutes;
-                            if (lastActivityInMinutes <= 5) {
+                          child: Builder(
+                            builder: (context) {
+                              final lastActivityInMinutes = DateTime.now()
+                                  .difference(widget.activity.lastActivityDate!)
+                                  .inMinutes;
+                              if (lastActivityInMinutes <= 5) {
+                                return Text(
+                                  "${context.localized.lastActivity}: $lastActivityInMinutes ${context.localized.minutes(lastActivityInMinutes)} ago",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  textAlign: TextAlign.start,
+                                  maxLines: 1,
+                                );
+                              }
                               return Text(
-                                "${context.localized.lastActivity}: $lastActivityInMinutes ${context.localized.minutes(lastActivityInMinutes)} ago",
+                                "${context.localized.lastActivity}: ${context.localized.formattedTime(widget.activity.lastActivityDate!)}",
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.start,
                                 maxLines: 1,
                               );
-                            }
-                            return Text(
-                              "${context.localized.lastActivity}: ${context.localized.formattedTime(widget.activity.lastActivityDate!)}",
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              textAlign: TextAlign.start,
-                              maxLines: 1,
-                            );
-                          }),
+                            },
+                          ),
                         ),
                       ),
-                    ]
+                    ],
                   ],
                 ),
               ),
@@ -270,7 +257,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                             child: Container(
                               decoration: FladderTheme.defaultPosterDecoration,
                               clipBehavior: Clip.hardEdge,
-                              child: FladderImage(image: nowPlayingItem.getPosters?.primary),
+                              child: DriftfinImage(image: nowPlayingItem.getPosters?.primary),
                             ),
                           ),
                         ),
@@ -278,7 +265,7 @@ class _ControlPanelActivityCardState extends State<ControlPanelActivityCard> {
                     ],
                   ),
                 ),
-              ]
+              ],
             ],
           ),
         ),

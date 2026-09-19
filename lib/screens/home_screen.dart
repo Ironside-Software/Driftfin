@@ -12,7 +12,7 @@ import 'package:driftfin/providers/seerr_requests_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/window_title_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/global_hotkeys.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/localization_helper.dart';

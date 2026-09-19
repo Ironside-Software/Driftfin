@@ -13,11 +13,11 @@ import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/screens/settings/widgets/settings_message_box.dart';
 import 'package:driftfin/screens/shared/adaptive_dialog.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/focused_outlined_text_field.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 final _stackTracePattern = RegExp(r'\n#\d');
@@ -28,10 +28,7 @@ String _sanitizeErrorMessage(Object error) {
 }
 
 Future<void> showSeerrConnectionDialog(BuildContext context) {
-  return showDialogAdaptive(
-    context: context,
-    builder: (context) => const SeerrConnectionDialog(),
-  );
+  return showDialogAdaptive(context: context, builder: (context) => const SeerrConnectionDialog());
 }
 
 enum SeerrAuthTab {
@@ -40,10 +37,10 @@ enum SeerrAuthTab {
   apiKey;
 
   String label(BuildContext context) => switch (this) {
-        SeerrAuthTab.apiKey => context.localized.seerrAuthApiKey,
-        SeerrAuthTab.local => context.localized.seerrAuthLocal,
-        SeerrAuthTab.jellyfin => context.localized.seerrAuthJellyfin,
-      };
+    SeerrAuthTab.apiKey => context.localized.seerrAuthApiKey,
+    SeerrAuthTab.local => context.localized.seerrAuthLocal,
+    SeerrAuthTab.jellyfin => context.localized.seerrAuthJellyfin,
+  };
 }
 
 class SeerrConnectionDialog extends ConsumerStatefulWidget {
@@ -70,7 +67,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
   String? error;
   String? warning;
 
-  bool get _hasPresetSeerrBaseUrl => FladderConfig.seerrBaseUrl?.isNotEmpty == true;
+  bool get _hasPresetSeerrBaseUrl => DriftfinConfig.seerrBaseUrl?.isNotEmpty == true;
 
   /// Whether Seerr is configured server-side by the Driftfin plugin; when true
   /// the connection is locked and the in-dialog controls are read-only.
@@ -81,7 +78,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     super.initState();
     final creds = ref.read(userProvider)?.seerrCredentials;
     apiKeyController = TextEditingController(text: creds?.apiKey ?? '');
-    serverController = TextEditingController(text: FladderConfig.seerrBaseUrl ?? creds?.serverUrl ?? '');
+    serverController = TextEditingController(text: DriftfinConfig.seerrBaseUrl ?? creds?.serverUrl ?? '');
     localEmailController = TextEditingController();
     localPasswordController = TextEditingController();
     jfUsernameController = TextEditingController();
@@ -127,11 +124,11 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
   }
 
   Future<void> _refreshSession() async {
-    final serverUrl = (FladderConfig.seerrBaseUrl?.trim().isNotEmpty == true)
-        ? FladderConfig.seerrBaseUrl?.trim()
+    final serverUrl = (DriftfinConfig.seerrBaseUrl?.trim().isNotEmpty == true)
+        ? DriftfinConfig.seerrBaseUrl?.trim()
         : (serverController.text.trim().isNotEmpty
-            ? serverController.text.trim()
-            : ref.read(userProvider)?.seerrCredentials?.serverUrl.trim());
+              ? serverController.text.trim()
+              : ref.read(userProvider)?.seerrCredentials?.serverUrl.trim());
     if (serverUrl != null && serverUrl.isNotEmpty) {
       if (!_hasPresetSeerrBaseUrl) {
         ref.read(userProvider.notifier).setSeerrServerUrl(serverUrl);
@@ -230,7 +227,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     await _refreshSession();
 
     if (mounted) {
-      FladderSnack.show(context.localized.seerrApiKeySaved, context: context);
+      DriftfinSnack.show(context.localized.seerrApiKeySaved, context: context);
     }
 
     if (mounted) {
@@ -245,7 +242,9 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     if (!await _beginProcessing()) return;
 
     try {
-      final cookie = await ref.read(seerrApiProvider).authenticateLocal(
+      final cookie = await ref
+          .read(seerrApiProvider)
+          .authenticateLocal(
             email: localEmailController.text.trim(),
             password: localPasswordController.text,
             headers: customHeaders.isEmpty ? null : customHeaders,
@@ -254,13 +253,13 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
       ref.read(userProvider.notifier).setSeerrApiKey('');
       await _refreshSession();
       if (mounted) {
-        FladderSnack.show(context.localized.seerrLoggedIn, context: context);
+        DriftfinSnack.show(context.localized.seerrLoggedIn, context: context);
       }
     } catch (e) {
       if (mounted) {
         final message = _sanitizeErrorMessage(e);
         error = message;
-        FladderSnack.show(message, context: context);
+        DriftfinSnack.show(message, context: context);
       }
     } finally {
       if (mounted) {
@@ -276,7 +275,9 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     if (!await _beginProcessing()) return;
 
     try {
-      final cookie = await ref.read(seerrApiProvider).authenticateJellyfin(
+      final cookie = await ref
+          .read(seerrApiProvider)
+          .authenticateJellyfin(
             username: jfUsernameController.text.trim(),
             password: jfPasswordController.text,
             headers: customHeaders.isEmpty ? null : customHeaders,
@@ -285,13 +286,13 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
       ref.read(userProvider.notifier).setSeerrApiKey('');
       await _refreshSession();
       if (mounted) {
-        FladderSnack.show(context.localized.seerrLoggedIn, context: context);
+        DriftfinSnack.show(context.localized.seerrLoggedIn, context: context);
       }
     } catch (e) {
       if (mounted) {
         final message = _sanitizeErrorMessage(e);
         error = message;
-        FladderSnack.show(message, context: context);
+        DriftfinSnack.show(message, context: context);
       }
     } finally {
       if (mounted) {
@@ -320,7 +321,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
       if (mounted) {
         final message = _sanitizeErrorMessage(e);
         error = message;
-        FladderSnack.show(message, context: context);
+        DriftfinSnack.show(message, context: context);
       }
     } finally {
       ref.read(userProvider.notifier).logoutSeerr();
@@ -336,16 +337,8 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
   Widget _header(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-          child: Text(
-            context.localized.seerr,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-        ),
-        IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(IconsaxPlusBold.close_circle),
-        ),
+        Expanded(child: Text(context.localized.seerr, style: Theme.of(context).textTheme.titleLarge)),
+        IconButton(onPressed: () => Navigator.of(context).pop(), icon: const Icon(IconsaxPlusBold.close_circle)),
       ],
     );
   }
@@ -367,9 +360,8 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
               error!,
               maxLines: 4,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onErrorContainer,
-                  ),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: Theme.of(context).colorScheme.onErrorContainer),
             ),
           ),
         ],
@@ -403,21 +395,13 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
                 : CircleAvatar(child: Icon(FladderItemType.person.icon)),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(displayName),
-                Text(seerrUser?.email ?? seerrUser?.username ?? ''),
-              ],
-            )
+              children: [Text(displayName), Text(seerrUser?.email ?? seerrUser?.username ?? '')],
+            ),
           ],
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FilledButton(
-              onPressed: processing ? null : _logout,
-              child: Text(context.localized.logout),
-            ),
-          ],
+          children: [FilledButton(onPressed: processing ? null : _logout, child: Text(context.localized.logout))],
         ),
       ],
     );
@@ -447,10 +431,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: Text(
-                context.localized.seerrCustomHeaders,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              child: Text(context.localized.seerrCustomHeaders, style: Theme.of(context).textTheme.bodySmall),
             ),
             Row(
               children: [
@@ -475,10 +456,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                IconButton(
-                  onPressed: _addHeader,
-                  icon: const Icon(IconsaxPlusBold.add_circle),
-                ),
+                IconButton(onPressed: _addHeader, icon: const Icon(IconsaxPlusBold.add_circle)),
               ],
             ),
             const SizedBox(height: 8),
@@ -487,12 +465,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
                 spacing: 8,
                 runSpacing: 8,
                 children: customHeaders.entries
-                    .map(
-                      (e) => InputChip(
-                        label: Text('${e.key}: ${e.value}'),
-                        onDeleted: () => _removeHeader(e.key),
-                      ),
-                    )
+                    .map((e) => InputChip(label: Text('${e.key}: ${e.value}'), onDeleted: () => _removeHeader(e.key)))
                     .toList(),
               ),
           ],
@@ -501,12 +474,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: SegmentedButton<SeerrAuthTab>(
             segments: SeerrAuthTab.values
-                .map(
-                  (tab) => ButtonSegment(
-                    value: tab,
-                    label: Text(tab.label(context)),
-                  ),
-                )
+                .map((tab) => ButtonSegment(value: tab, label: Text(tab.label(context))))
                 .toList(),
             selected: {selectedTab},
             onSelectionChanged: (value) {
@@ -633,10 +601,7 @@ class _SeerrConnectionDialogState extends ConsumerState<SeerrConnectionDialog> {
     // Rebuild when the plugin-managed state changes (used via [_seerrManaged]).
     ref.watch(serverIntegrationConfigProvider);
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth: 640,
-        maxHeight: MediaQuery.sizeOf(context).height * 0.85,
-      ),
+      constraints: BoxConstraints(maxWidth: 640, maxHeight: MediaQuery.sizeOf(context).height * 0.85),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

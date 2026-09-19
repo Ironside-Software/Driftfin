@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:driftfin/jellyfin/enum_models.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/enum_selection.dart';
@@ -14,10 +14,7 @@ import 'package:driftfin/widgets/shared/item_actions.dart';
 Future<void> showRefreshPopup(BuildContext context, String itemId, String itemName) async {
   return showDialog(
     context: context,
-    builder: (context) => RefreshPopupDialog(
-      itemId: itemId,
-      name: itemName,
-    ),
+    builder: (context) => RefreshPopupDialog(itemId: itemId, name: itemName),
   );
 }
 
@@ -43,7 +40,8 @@ class _RefreshPopupDialogState extends ConsumerState<RefreshPopupDialog> {
         color: Theme.of(context).colorScheme.surface,
         child: ConstrainedBox(
           constraints: BoxConstraints(
-              maxWidth: AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer ? 700 : double.infinity),
+            maxWidth: AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer ? 700 : double.infinity,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -72,12 +70,14 @@ class _RefreshPopupDialogState extends ConsumerState<RefreshPopupDialog> {
                   current: refreshMode.label(context),
                   autoFocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
                   itemBuilder: (context) => MetadataRefresh.values
-                      .map((value) => ItemActionButton(
-                            label: Text(value.label(context)),
-                            action: () => setState(() {
-                              refreshMode = value;
-                            }),
-                          ))
+                      .map(
+                        (value) => ItemActionButton(
+                          label: Text(value.label(context)),
+                          action: () => setState(() {
+                            refreshMode = value;
+                          }),
+                        ),
+                      )
                       .toList(),
                 ),
               ),
@@ -114,23 +114,26 @@ class _RefreshPopupDialogState extends ConsumerState<RefreshPopupDialog> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       FilledButton(
-                          onPressed: () async {
-                            await FladderSnack.showResponse(
-                              ref.read(userProvider.notifier).refreshMetaData(
-                                    widget.itemId,
-                                    metadataRefreshMode: refreshMode,
-                                    replaceAllMetadata: replaceAllMetadata,
-                                  ),
-                              successTitle: context.localized.scanningName(widget.name),
-                            );
+                        onPressed: () async {
+                          await DriftfinSnack.showResponse(
+                            ref
+                                .read(userProvider.notifier)
+                                .refreshMetaData(
+                                  widget.itemId,
+                                  metadataRefreshMode: refreshMode,
+                                  replaceAllMetadata: replaceAllMetadata,
+                                ),
+                            successTitle: context.localized.scanningName(widget.name),
+                          );
 
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(context.localized.refresh)),
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(context.localized.refresh),
+                      ),
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),

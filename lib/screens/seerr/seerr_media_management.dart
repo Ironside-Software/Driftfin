@@ -7,7 +7,7 @@ import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/external_urls.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
@@ -35,10 +35,7 @@ Future<void> showMediaManagementSheet({
           Flexible(child: Text(mediaInfo.title, style: Theme.of(context).textTheme.headlineSmall)),
         ],
       ),
-      content: _MediaManagementActions(
-        poster: mediaInfo,
-        onActionComplete: onActionComplete,
-      ),
+      content: _MediaManagementActions(poster: mediaInfo, onActionComplete: onActionComplete),
     );
   } else {
     await showBottomSheetPill(
@@ -57,11 +54,7 @@ class _MediaManagementActions extends ConsumerStatefulWidget {
   final VoidCallback onActionComplete;
   final ScrollController? scrollController;
 
-  const _MediaManagementActions({
-    required this.poster,
-    required this.onActionComplete,
-    this.scrollController,
-  });
+  const _MediaManagementActions({required this.poster, required this.onActionComplete, this.scrollController});
 
   @override
   ConsumerState<_MediaManagementActions> createState() => _MediaManagementActionsState();
@@ -83,9 +76,7 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
     final itemModel = widget.poster.itemBaseModel;
 
     if (mediaInfo == null) {
-      return Center(
-        child: Text(context.localized.unknown),
-      );
+      return Center(child: Text(context.localized.unknown));
     }
 
     final actions = [
@@ -159,17 +150,12 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
                 padding: const EdgeInsets.all(12),
                 child: Row(
                   children: [
-                    Icon(
-                      IconsaxPlusLinear.danger,
-                      color: theme.colorScheme.onErrorContainer,
-                    ),
+                    Icon(IconsaxPlusLinear.danger, color: theme.colorScheme.onErrorContainer),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         _errorMessage!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onErrorContainer,
-                        ),
+                        style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onErrorContainer),
                       ),
                     ),
                   ],
@@ -179,19 +165,10 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
           ),
         if (_isLoading)
           const Center(
-            child: Padding(
-              padding: EdgeInsets.all(24),
-              child: CircularProgressIndicator(),
-            ),
+            child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()),
           )
         else
-          ...actions
-              .listTileItems(
-                context,
-                useIcons: true,
-                shouldPop: false,
-              )
-              .addInBetween(const SizedBox(height: 6)),
+          ...actions.listTileItems(context, useIcons: true, shouldPop: false).addInBetween(const SizedBox(height: 6)),
       ],
     );
   }
@@ -205,7 +182,7 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
     try {
       await action();
       if (mounted) {
-        FladderSnack.show(successMessage);
+        DriftfinSnack.show(successMessage);
         Navigator.of(context).pop();
         widget.onActionComplete();
       }
@@ -241,29 +218,20 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
           isTvSeries ? context.localized.removeSeriesFromSonarrConfirm : context.localized.removeMovieFromRadarrConfirm,
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.localized.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.localized.delete),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(context.localized.cancel)),
+          FilledButton(onPressed: () => Navigator.of(context).pop(true), child: Text(context.localized.delete)),
         ],
       ),
     );
 
     if (confirmed != true) return;
 
-    await _handleAction(
-      () async {
-        final mediaId = widget.poster.mediaInfo?.id;
-        if (mediaId == null) throw Exception('Media ID is null');
+    await _handleAction(() async {
+      final mediaId = widget.poster.mediaInfo?.id;
+      if (mediaId == null) throw Exception('Media ID is null');
 
-        await seerrService.deleteMediaFile(mediaId: mediaId);
-      },
-      isTvSeries ? context.localized.removedFromSonarr : context.localized.removedFromRadarr,
-    );
+      await seerrService.deleteMediaFile(mediaId: mediaId);
+    }, isTvSeries ? context.localized.removedFromSonarr : context.localized.removedFromRadarr);
   }
 
   Future<void> _markAsAvailable() async {
@@ -276,32 +244,19 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
           isTvSeries ? context.localized.markAllSeasonsAsAvailableConfirm : context.localized.markAsAvailableConfirm,
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.localized.cancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(context.localized.ok),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(context.localized.cancel)),
+          FilledButton(onPressed: () => Navigator.of(context).pop(true), child: Text(context.localized.ok)),
         ],
       ),
     );
 
     if (confirmed != true) return;
 
-    await _handleAction(
-      () async {
-        final mediaId = widget.poster.mediaInfo?.id;
-        if (mediaId == null) throw Exception('Media ID is null');
-        await seerrService.updateMediaStatus(
-          mediaId: mediaId,
-          status: 'available',
-          body: {},
-        );
-      },
-      context.localized.markedAsAvailable,
-    );
+    await _handleAction(() async {
+      final mediaId = widget.poster.mediaInfo?.id;
+      if (mediaId == null) throw Exception('Media ID is null');
+      await seerrService.updateMediaStatus(mediaId: mediaId, status: 'available', body: {});
+    }, context.localized.markedAsAvailable);
   }
 
   Future<void> _deleteData() async {
@@ -310,18 +265,11 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
       context: context,
       builder: (context) => AlertDialog(
         title: Text(context.localized.delete),
-        content: Text(
-          context.localized.deleteSeerrDataConfirm(isTvSeries ? "Sonarr" : "Radarr"),
-        ),
+        content: Text(context.localized.deleteSeerrDataConfirm(isTvSeries ? "Sonarr" : "Radarr")),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(context.localized.cancel),
-          ),
+          TextButton(onPressed: () => Navigator.of(context).pop(false), child: Text(context.localized.cancel)),
           FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(context.localized.delete),
           ),
@@ -331,13 +279,10 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
 
     if (confirmed != true) return;
 
-    await _handleAction(
-      () async {
-        final mediaId = widget.poster.mediaInfo?.id;
-        if (mediaId == null) throw Exception('Media ID is null');
-        await seerrService.deleteMedia(mediaId: mediaId);
-      },
-      context.localized.dataDeleted,
-    );
+    await _handleAction(() async {
+      final mediaId = widget.poster.mediaInfo?.id;
+      if (mediaId == null) throw Exception('Media ID is null');
+      await seerrService.deleteMedia(mediaId: mediaId);
+    }, context.localized.dataDeleted);
   }
 }

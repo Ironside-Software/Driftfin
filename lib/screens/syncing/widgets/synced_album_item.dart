@@ -13,16 +13,12 @@ import 'package:driftfin/screens/syncing/sync_widgets.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_options_button.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_progress_builder.dart';
 import 'package:driftfin/screens/syncing/widgets/synced_audio_item.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/size_formatting.dart';
 
 class SyncedAlbumItem extends ConsumerStatefulWidget {
-  const SyncedAlbumItem({
-    required this.syncedItem,
-    required this.album,
-    super.key,
-  });
+  const SyncedAlbumItem({required this.syncedItem, required this.album, super.key});
 
   final SyncedItem syncedItem;
   final AlbumModel album;
@@ -56,9 +52,7 @@ class _SyncedAlbumItemState extends ConsumerState<SyncedAlbumItem> {
                     return context.maybePop();
                   },
                   child: Card(
-                    child: FladderImage(
-                      image: album.getPosters?.primary ?? album.getPosters?.backDrop?.firstOrNull,
-                    ),
+                    child: DriftfinImage(image: album.getPosters?.primary ?? album.getPosters?.backDrop?.firstOrNull),
                   ),
                 ),
               ),
@@ -94,16 +88,14 @@ class _SyncedAlbumItemState extends ConsumerState<SyncedAlbumItem> {
                           ),
                         ),
                       Flexible(
-                        child: SyncSubtitle(
-                          syncItem: syncedItem,
-                          children: trackChildren,
-                        ),
+                        child: SyncSubtitle(syncItem: syncedItem, children: trackChildren),
                       ),
                       Flexible(
                         child: Consumer(
                           builder: (context, ref, child) => SyncLabel(
-                            label: context.localized
-                                .totalSize(ref.watch(syncSizeProvider(syncedItem, trackChildren))?.byteFormat ?? '--'),
+                            label: context.localized.totalSize(
+                              ref.watch(syncSizeProvider(syncedItem, trackChildren))?.byteFormat ?? '--',
+                            ),
                             status: combinedStream?.status ?? TaskStatus.notFound,
                           ),
                         ),
@@ -124,10 +116,7 @@ class _SyncedAlbumItemState extends ConsumerState<SyncedAlbumItem> {
             .map(
               (item) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
-                child: SyncedAudioItem(
-                  audio: item.itemModel as AudioModel,
-                  syncedItem: item,
-                ),
+                child: SyncedAudioItem(audio: item.itemModel as AudioModel, syncedItem: item),
               ),
             )
             .toList(),

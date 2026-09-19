@@ -32,7 +32,7 @@ import 'package:driftfin/screens/metadata/identifty_screen.dart';
 import 'package:driftfin/screens/metadata/info_screen.dart';
 import 'package:driftfin/screens/metadata/refresh_metadata.dart';
 import 'package:driftfin/screens/playlists/add_to_playlists.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/syncing/sync_button.dart';
 import 'package:driftfin/screens/syncing/sync_item_details.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
@@ -202,7 +202,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
             action: () async {
               final launched = await ref.read(externalPlayerProvider.notifier).launch(this);
               if (!launched && context.mounted) {
-                FladderSnack.show(context.localized.externalPlayerFailed);
+                DriftfinSnack.show(context.localized.externalPlayerFailed);
               }
             },
           ),
@@ -358,7 +358,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
               final currentlyFavourite = series.body?.userData.isFavourite ?? false;
               await ref.read(userProvider.notifier).setAsFavorite(!currentlyFavourite, seriesId);
               if (context.mounted) {
-                FladderSnack.show(
+                DriftfinSnack.show(
                   currentlyFavourite
                       ? context.localized.removedShowFromFavorites
                       : context.localized.addedShowToFavorites,
@@ -479,7 +479,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
         ItemActionButton(
           icon: Container(child: const Icon(IconsaxPlusLinear.trash)),
           action: () async {
-            final response = await FladderSnack.showResponse(
+            final response = await DriftfinSnack.showResponse(
               showDeleteDialog(context, this, ref),
               successTitle: context.localized.deletedItem(name),
             );

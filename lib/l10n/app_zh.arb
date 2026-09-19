@@ -1101,7 +1101,7 @@
   "passwordNotRequired": "并非必填项，留空则链接中不包含密码",
   "authLinkButtonToolTip": "打开身份验证链接对话框",
   "connectWithAuthLink": "使用身份验证链接",
-  "pasteDriftfinAuthLink": "粘贴 fladder 身份验证链接 driftfin:///login?authLink=...",
+  "pasteDriftfinAuthLink": "粘贴 driftfin 身份验证链接 driftfin:///login?authLink=...",
   "connect": "连接",
   "authLinkDesc": "请服务器管理员提供身份验证链接。该链接包含身份验证信息，请务必妥善保管。",
   "deletedItem": "删除 {itemName}",

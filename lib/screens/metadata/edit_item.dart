@@ -10,7 +10,7 @@ import 'package:driftfin/screens/metadata/edit_screens/edit_fields.dart';
 import 'package:driftfin/screens/metadata/edit_screens/edit_image_content.dart';
 import 'package:driftfin/screens/shared/adaptive_dialog.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
@@ -25,12 +25,12 @@ enum MetaEditOptions {
   const MetaEditOptions();
 
   String label(BuildContext context) => switch (this) {
-        MetaEditOptions.general => context.localized.general,
-        MetaEditOptions.primary => context.localized.primary,
-        MetaEditOptions.logo => context.localized.logo(1),
-        MetaEditOptions.backdrops => context.localized.backdrop(1),
-        MetaEditOptions.advanced => context.localized.advanced
-      };
+    MetaEditOptions.general => context.localized.general,
+    MetaEditOptions.primary => context.localized.primary,
+    MetaEditOptions.logo => context.localized.logo(1),
+    MetaEditOptions.backdrops => context.localized.backdrop(1),
+    MetaEditOptions.advanced => context.localized.advanced,
+  };
 }
 
 Future<ItemBaseModel?> showEditItemPopup(
@@ -130,11 +130,10 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
                 ),
               ),
               IconButton(
-                  autofocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
-                  onPressed: () => refreshEditor(),
-                  icon: const Icon(
-                    IconsaxPlusLinear.refresh,
-                  ))
+                autofocus: AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad,
+                onPressed: () => refreshEditor(),
+                icon: const Icon(IconsaxPlusLinear.refresh),
+              ),
             ],
           ),
         ),
@@ -142,12 +141,7 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: SegmentedButton(
             segments: widgets.keys
-                .map(
-                  (value) => ButtonSegment(
-                    value: value,
-                    label: Text(value.label(context)),
-                  ),
-                )
+                .map((value) => ButtonSegment(value: value, label: Text(value.label(context))))
                 .toList(),
             selected: {widgets.keys.elementAt(selectedTabIndex)},
             showSelectedIcon: false,
@@ -158,11 +152,7 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
             },
           ),
         ),
-        Flexible(
-          child: AnimatedFadeSize(
-            child: widgets.values.elementAt(selectedTabIndex),
-          ),
-        ),
+        Flexible(child: AnimatedFadeSize(child: widgets.values.elementAt(selectedTabIndex))),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 16),
           child: Row(
@@ -175,7 +165,7 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
                 onPressed: saving
                     ? null
                     : () async {
-                        final response = await FladderSnack.showResponse(
+                        final response = await DriftfinSnack.showResponse(
                           ref.read(editItemProvider.notifier).saveInformation(widgets.keys.toSet()),
                           successTitle: context.localized.metaDataSavedFor(
                             currentItem?.detailedName(context.localized) ?? currentItem?.name ?? "",
@@ -191,13 +181,15 @@ class _EditDialogSwitcherState extends ConsumerState<EditDialogSwitcher> with Ti
                         width: 21,
                         height: 21,
                         child: CircularProgressIndicator(
-                            backgroundColor: Theme.of(context).colorScheme.onPrimary, strokeCap: StrokeCap.round),
+                          backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                          strokeCap: StrokeCap.round,
+                        ),
                       )
                     : Text(context.localized.save),
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

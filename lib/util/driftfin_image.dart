@@ -8,7 +8,7 @@ import 'package:driftfin/models/items/images_models.dart';
 import 'package:driftfin/providers/arguments_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 
-class FladderImage extends ConsumerWidget {
+class DriftfinImage extends ConsumerWidget {
   final ImageData? image;
   final Widget Function(BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded)? frameBuilder;
   final Widget Function(BuildContext context, Object object, StackTrace? stack)? imageErrorBuilder;
@@ -21,7 +21,7 @@ class FladderImage extends ConsumerWidget {
   final bool blurOnly;
   final int decodeHeight;
   final bool cachedImage;
-  const FladderImage({
+  const DriftfinImage({
     required this.image,
     this.frameBuilder,
     this.imageErrorBuilder,
@@ -54,11 +54,7 @@ class FladderImage extends ConsumerWidget {
         children: [
           if (!disableBlur && useBluredPlaceHolder && newImage.hash.isNotEmpty || blurOnly && newImage.hash.isNotEmpty)
             Image(
-              image: BlurHashImage(
-                newImage.hash,
-                decodingHeight: 16,
-                decodingWidth: 16,
-              ),
+              image: BlurHashImage(newImage.hash, decodingHeight: 16, decodingWidth: 16),
               fit: blurFit ?? fit,
               height: 16,
             ),
@@ -70,13 +66,9 @@ class FladderImage extends ConsumerWidget {
               alignment: alignment ?? Alignment.center,
               imageErrorBuilder: imageErrorBuilder,
               image: leanBackMode
-                  ? ResizeImage(
-                      imageProvider,
-                      policy: ResizeImagePolicy.fit,
-                      height: decodeHeight,
-                    )
+                  ? ResizeImage(imageProvider, policy: ResizeImagePolicy.fit, height: decodeHeight)
                   : imageProvider,
-            )
+            ),
         ],
       );
     }

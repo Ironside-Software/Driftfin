@@ -12,7 +12,7 @@ import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/items/overview_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
 
@@ -92,27 +92,27 @@ class PhotoModel extends ItemBaseModel with PhotoModelMappable {
 
   @override
   PhotoAlbumModel get parentBaseModel => PhotoAlbumModel(
-        photos: [],
-        name: "",
-        id: parentId ?? "",
-        overview: overview,
-        parentId: parentId,
-        playlistId: playlistId,
-        images: images,
-        childCount: childCount,
-        primaryRatio: primaryRatio,
-        userData: userData,
-      );
+    photos: [],
+    name: "",
+    id: parentId ?? "",
+    overview: overview,
+    parentId: parentId,
+    playlistId: playlistId,
+    images: images,
+    childCount: childCount,
+    primaryRatio: primaryRatio,
+    userData: userData,
+  );
 
   @override
   ImagesData? get getPosters => thumbnail;
 
   @override
   bool get galleryItem => switch (internalType) {
-        FladderItemType.photo => albumId?.isNotEmpty == true,
-        FladderItemType.video => parentId?.isNotEmpty == true,
-        _ => false,
-      };
+    FladderItemType.photo => albumId?.isNotEmpty == true,
+    FladderItemType.video => parentId?.isNotEmpty == true,
+    _ => false,
+  };
 
   @override
   bool get unWatched => false;
@@ -153,7 +153,7 @@ class PhotoModel extends ItemBaseModel with PhotoModelMappable {
 
   Future<void> navigateToAlbum(BuildContext context) async {
     if ((albumId ?? parentId) == null) {
-      FladderSnack.show(context.localized.notPartOfAlbum, context: context);
+      DriftfinSnack.show(context.localized.notPartOfAlbum, context: context);
       return;
     }
     await parentBaseModel.navigateTo(context);

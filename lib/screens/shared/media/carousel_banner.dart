@@ -7,7 +7,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/screens/shared/media/banner_play_button.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
@@ -21,12 +21,7 @@ class CarouselBanner extends ConsumerStatefulWidget {
   final PageController? controller;
   final List<ItemBaseModel> items;
   final double maxHeight;
-  const CarouselBanner({
-    this.controller,
-    required this.items,
-    this.maxHeight = 250,
-    super.key,
-  });
+  const CarouselBanner({this.controller, required this.items, this.maxHeight = 250, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _CarouselBannerState();
@@ -99,7 +94,11 @@ class _CarouselBannerState extends ConsumerState<CarouselBanner> {
                                   : (details) async {
                                       Offset localPosition = details.globalPosition;
                                       RelativeRect position = RelativeRect.fromLTRB(
-                                          localPosition.dx, localPosition.dy, localPosition.dx, localPosition.dy);
+                                        localPosition.dx,
+                                        localPosition.dy,
+                                        localPosition.dx,
+                                        localPosition.dy,
+                                      );
                                       final poster = widget.items[index];
 
                                       await showMenu(
@@ -110,17 +109,14 @@ class _CarouselBannerState extends ConsumerState<CarouselBanner> {
                                     },
                               child: Stack(
                                 children: [
-                                  FladderImage(image: item.bannerImage),
+                                  DriftfinImage(image: item.bannerImage),
                                   Container(
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                         begin: Alignment.bottomLeft,
                                         end: Alignment.topCenter,
                                         colors: [
-                                          ThemesData.of(context)
-                                              .dark
-                                              .colorScheme
-                                              .primaryContainer
+                                          ThemesData.of(context).dark.colorScheme.primaryContainer
                                               .withValues(alpha: opacity.clamp(0, 1)),
                                           Colors.transparent,
                                         ],
@@ -140,9 +136,7 @@ class _CarouselBannerState extends ConsumerState<CarouselBanner> {
                                             maxLines: 2,
                                             softWrap: item.title.length > 25,
                                             overflow: TextOverflow.fade,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium
+                                            style: Theme.of(context).textTheme.headlineMedium
                                                 ?.copyWith(color: Colors.white),
                                           ),
                                           if (item.label(context.localized) != null || item.subText != null)
@@ -151,9 +145,7 @@ class _CarouselBannerState extends ConsumerState<CarouselBanner> {
                                               maxLines: 2,
                                               softWrap: false,
                                               overflow: TextOverflow.fade,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium
+                                              style: Theme.of(context).textTheme.titleMedium
                                                   ?.copyWith(color: Colors.white),
                                             ),
                                         ].addInBetween(const SizedBox(height: 4)),
@@ -163,25 +155,18 @@ class _CarouselBannerState extends ConsumerState<CarouselBanner> {
                                   IgnorePointer(
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.white.withValues(alpha: 0.1),
-                                          width: 1.0,
-                                        ),
+                                        border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 1.0),
                                         borderRadius: border,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              overlays: [
-                                ExcludeFocus(
-                                  child: BannerPlayButton(item: widget.items[index]),
-                                ),
-                              ],
+                              overlays: [ExcludeFocus(child: BannerPlayButton(item: widget.items[index]))],
                             );
                           },
                         ),
-                      )
+                      ),
                     ],
                   ),
                   if (AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer)
@@ -202,16 +187,22 @@ class _CarouselBannerState extends ConsumerState<CarouselBanner> {
                                   IconButton.filledTonal(
                                     onPressed: () {
                                       final currentPos = carouselController.position;
-                                      carouselController.animateTo(currentPos.pixels - itemExtent,
-                                          curve: Curves.easeInOutCubic, duration: const Duration(milliseconds: 250));
+                                      carouselController.animateTo(
+                                        currentPos.pixels - itemExtent,
+                                        curve: Curves.easeInOutCubic,
+                                        duration: const Duration(milliseconds: 250),
+                                      );
                                     },
                                     icon: const Icon(IconsaxPlusLinear.arrow_left_1),
                                   ),
                                   IconButton.filledTonal(
                                     onPressed: () {
                                       final currentPos = carouselController.position;
-                                      carouselController.animateTo(currentPos.pixels + itemExtent,
-                                          curve: Curves.easeInOutCubic, duration: const Duration(milliseconds: 250));
+                                      carouselController.animateTo(
+                                        currentPos.pixels + itemExtent,
+                                        curve: Curves.easeInOutCubic,
+                                        duration: const Duration(milliseconds: 250),
+                                      );
                                     },
                                     icon: const Icon(IconsaxPlusLinear.arrow_right_3),
                                   ),

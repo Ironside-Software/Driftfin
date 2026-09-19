@@ -7,7 +7,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/models/settings/key_combinations.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/providers/settings/video_player_settings_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/ensure_visible.dart';
@@ -20,12 +20,7 @@ class KeyCombinationWidget extends StatelessWidget {
   final KeyCombination defaultKey;
   final Function(KeyCombination value) onChanged;
 
-  const KeyCombinationWidget({
-    required this.currentKey,
-    required this.defaultKey,
-    required this.onChanged,
-    super.key,
-  });
+  const KeyCombinationWidget({required this.currentKey, required this.defaultKey, required this.onChanged, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,20 +37,13 @@ class KeyCombinationWidget extends StatelessWidget {
             children: [
               KeyListenerWidget(
                 currentKey: comboKey,
-                onChanged: (value) => onChanged(comboKey.setKeys(
-                  value?.key,
-                  modifier: value?.modifier,
-                )),
+                onChanged: (value) => onChanged(comboKey.setKeys(value?.key, modifier: value?.modifier)),
               ),
               if (comboKey.key != null) ...[
                 const Opacity(opacity: 0.25, child: Text("alt")),
                 KeyListenerWidget(
                   currentKey: comboKey.altSet,
-                  onChanged: (value) => onChanged(comboKey.setKeys(
-                    value?.key,
-                    modifier: value?.modifier,
-                    alt: true,
-                  )),
+                  onChanged: (value) => onChanged(comboKey.setKeys(value?.key, modifier: value?.modifier, alt: true)),
                 ),
               ],
               AnimatedSwitcher(
@@ -65,7 +53,7 @@ class KeyCombinationWidget extends StatelessWidget {
                   iconSize: 24,
                   icon: const Icon(IconsaxPlusBold.broom),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -78,11 +66,7 @@ class KeyListenerWidget extends ConsumerStatefulWidget {
   final KeyCombination? currentKey;
   final Function(KeyCombination? value) onChanged;
 
-  KeyListenerWidget({
-    required this.currentKey,
-    required this.onChanged,
-    super.key,
-  });
+  KeyListenerWidget({required this.currentKey, required this.onChanged, super.key});
 
   @override
   KeyListenerWidgetState createState() => KeyListenerWidgetState();
@@ -128,10 +112,7 @@ class KeyListenerWidgetState extends ConsumerState<KeyListenerWidget> {
     setState(() {
       setIsListening(false);
       if (_pressedKey != null) {
-        final newKeyComb = KeyCombination(
-          key: _pressedKey!,
-          modifier: _pressedModifier,
-        );
+        final newKeyComb = KeyCombination(key: _pressedKey!, modifier: _pressedModifier);
         widget.onChanged(newKeyComb);
       }
       _pressedKey = null;
@@ -162,7 +143,7 @@ class KeyListenerWidgetState extends ConsumerState<KeyListenerWidget> {
               _stopListening();
             } else {
               if (context.mounted) {
-                FladderSnack.show(context.localized.shortCutAlreadyAssigned(currentHotKey.label), context: context);
+                DriftfinSnack.show(context.localized.shortCutAlreadyAssigned(currentHotKey.label), context: context);
               }
               _stopListening();
             }
@@ -246,28 +227,18 @@ class KeyListenerWidgetState extends ConsumerState<KeyListenerWidget> {
                                 setIsListening(false);
                                 widget.onChanged(null);
                               },
-                              child: const Icon(
-                                IconsaxPlusLinear.trash,
-                                size: 17,
-                              ),
+                              child: const Icon(IconsaxPlusLinear.trash, size: 17),
                             ),
                           Text(
                             currentHotKey?.label ?? "+",
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
                         ],
                       ),
                     ),
                     if (_isListening)
-                      const Positioned.fill(
-                        child: Opacity(
-                          opacity: 0.25,
-                          child: LinearProgressIndicator(),
-                        ),
-                      ),
+                      const Positioned.fill(child: Opacity(opacity: 0.25, child: LinearProgressIndicator())),
                   ],
                 ),
               ),

@@ -12,7 +12,7 @@ import 'package:driftfin/screens/shared/media/components/media_play_button.dart'
 import 'package:driftfin/screens/shared/media/components/small_detail_widgets.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/item_base_model/play_item_helpers.dart';
@@ -146,7 +146,11 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
                   child: FadeTransition(opacity: animation, child: child),
                 );
               },
-              child: FladderImage(key: ValueKey(_currentItem.id), image: _currentItem.tvPosterLarge, fit: BoxFit.cover),
+              child: DriftfinImage(
+                key: ValueKey(_currentItem.id),
+                image: _currentItem.tvPosterLarge,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           overlays: [

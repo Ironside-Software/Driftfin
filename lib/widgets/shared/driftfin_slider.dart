@@ -6,7 +6,7 @@ import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/num_extension.dart';
 import 'package:driftfin/widgets/gapped_container_shape.dart';
 
-class FladderSlider extends StatefulWidget {
+class DriftfinSlider extends StatefulWidget {
   final double value;
   final double min;
   final double max;
@@ -20,7 +20,7 @@ class FladderSlider extends StatefulWidget {
   final Function(double value)? onChangeStart;
   final Function(double value)? onChangeEnd;
 
-  const FladderSlider({
+  const DriftfinSlider({
     required this.value,
     this.min = 0.0,
     this.max = 1.0,
@@ -37,10 +37,10 @@ class FladderSlider extends StatefulWidget {
   }) : assert(value >= min || value <= max);
 
   @override
-  FladderSliderState createState() => FladderSliderState();
+  DriftfinSliderState createState() => DriftfinSliderState();
 }
 
-class FladderSliderState extends State<FladderSlider> with SingleTickerProviderStateMixin {
+class DriftfinSliderState extends State<DriftfinSlider> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   double _currentValue = 0.0;
@@ -58,7 +58,7 @@ class FladderSliderState extends State<FladderSlider> with SingleTickerProviderS
   }
 
   @override
-  void didUpdateWidget(covariant FladderSlider oldWidget) {
+  void didUpdateWidget(covariant DriftfinSlider oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.value != widget.value || oldWidget.divisions != widget.divisions) {
@@ -152,27 +152,26 @@ class FladderSliderState extends State<FladderSlider> with SingleTickerProviderS
                         ),
                       ),
                       if (widget.divisions != null && stepSize > divisionSize * 3)
-                        ...List.generate(
-                          widget.divisions! + 1,
-                          (index) {
-                            final offset =
-                                (stepSize * index).clamp(divisionSize / 1.2, constraints.maxWidth - divisionSize / 1.2);
-                            final active = (1.0 / widget.divisions!) * index > relativeValue;
-                            return Positioned(
-                              left: offset - divisionSize / 2,
-                              child: Container(
-                                width: divisionSize,
-                                height: divisionSize,
-                                decoration: BoxDecoration(
-                                  color: active
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context).colorScheme.onPrimary,
-                                  shape: BoxShape.circle,
-                                ),
+                        ...List.generate(widget.divisions! + 1, (index) {
+                          final offset = (stepSize * index).clamp(
+                            divisionSize / 1.2,
+                            constraints.maxWidth - divisionSize / 1.2,
+                          );
+                          final active = (1.0 / widget.divisions!) * index > relativeValue;
+                          return Positioned(
+                            left: offset - divisionSize / 2,
+                            child: Container(
+                              width: divisionSize,
+                              height: divisionSize,
+                              decoration: BoxDecoration(
+                                color: active
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Theme.of(context).colorScheme.onPrimary,
+                                shape: BoxShape.circle,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        }),
                       // Thumb
                       if (widget.showThumb)
                         Positioned(

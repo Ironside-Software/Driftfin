@@ -31,7 +31,7 @@ import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/item_base_model/play_item_helpers.dart';
 import 'package:driftfin/util/list_extensions.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -663,7 +663,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
     if (itemsToPlay.isNotEmpty) {
       await itemsToPlay.playLibraryItems(context, ref, shuffle: shuffle);
     } else {
-      FladderSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
+      DriftfinSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
     }
   }
 
@@ -675,7 +675,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
         if (started) {
           return;
         } else {
-          FladderSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
+          DriftfinSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
         }
       }
     } else {
@@ -692,7 +692,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
       if (itemsToPlay.isNotEmpty) {
         await itemsToPlay.playMusicItems(context, ref, shuffle: shuffle);
       } else {
-        FladderSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
+        DriftfinSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
       }
     }
   }
@@ -884,7 +884,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
         PhotoViewerRoute(items: loadPhotos, selected: selected?.id, photoQueueSource: photoSource),
       );
     } else {
-      FladderSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
+      DriftfinSnack.show(context.localized.libraryFetchNoItemsFound, context: context);
     }
   }
 

@@ -16,9 +16,7 @@ List<BaseItemDto> _baseItems = [
     startDate: DateTime.now(),
     officialRating: "PG3",
     runTimeTicks: const Duration(minutes: 30).inMilliseconds * 10000,
-    userData: const UserItemDataDto(
-      isFavorite: true,
-    ),
+    userData: const UserItemDataDto(isFavorite: true),
   ),
   BaseItemDto(
     parentId: FakeHelper.fakeMoviesView.id,
@@ -28,10 +26,7 @@ List<BaseItemDto> _baseItems = [
     startDate: DateTime.now(),
     officialRating: "PG3",
     runTimeTicks: const Duration(hours: 1).inMilliseconds * 10000,
-    userData: const UserItemDataDto(
-      isFavorite: false,
-      played: true,
-    ),
+    userData: const UserItemDataDto(isFavorite: false, played: true),
   ),
   BaseItemDto(
     parentId: FakeHelper.fakeMoviesView.id,
@@ -41,11 +36,7 @@ List<BaseItemDto> _baseItems = [
     startDate: DateTime.now(),
     officialRating: "PG3",
     runTimeTicks: const Duration(hours: 1, minutes: 15).inMilliseconds * 10000,
-    userData: const UserItemDataDto(
-      isFavorite: false,
-      played: false,
-      playedPercentage: 20,
-    ),
+    userData: const UserItemDataDto(isFavorite: false, played: false, playedPercentage: 20),
   ),
   BaseItemDto(
     parentId: FakeHelper.fakeSeriesView.id,
@@ -68,10 +59,7 @@ List<BaseItemDto> _baseItems = [
     type: BaseItemKind.season,
     overview: "What is this mysterious creature",
     runTimeTicks: const Duration(minutes: 4).inMilliseconds * 10000,
-    userData: const UserItemDataDto(
-      isFavorite: true,
-      played: true,
-    ),
+    userData: const UserItemDataDto(isFavorite: true, played: true),
   ),
   BaseItemDto(
     parentId: FakeHelper.fakeSeriesView.id,
@@ -84,10 +72,7 @@ List<BaseItemDto> _baseItems = [
     type: BaseItemKind.episode,
     overview: "What is this mysterious creature",
     runTimeTicks: const Duration(minutes: 4).inMilliseconds * 10000,
-    userData: const UserItemDataDto(
-      isFavorite: true,
-      played: true,
-    ),
+    userData: const UserItemDataDto(isFavorite: true, played: true),
   ),
   BaseItemDto(
     parentId: FakeHelper.fakeSeriesView.id,
@@ -100,11 +85,7 @@ List<BaseItemDto> _baseItems = [
     type: BaseItemKind.episode,
     overview: "Daily look at cappybara's in the wild",
     runTimeTicks: const Duration(minutes: 4).inMilliseconds * 10000,
-    userData: const UserItemDataDto(
-      isFavorite: true,
-      played: true,
-      playedPercentage: 20,
-    ),
+    userData: const UserItemDataDto(isFavorite: true, played: true, playedPercentage: 20),
   ),
 ].mapIndexed((index, e) => e.id == null ? e.copyWith(id: index.toString()) : e).toList();
 
@@ -113,10 +94,8 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
   Type get definitionType => throw UnimplementedError();
 
   @override
-  Future<chopper.Response<List<UserDto>>> usersPublicGet() async => chopper.Response(
-        FakeHelper.fakeCorrectResponse,
-        FakeHelper.fakeUsers,
-      );
+  Future<chopper.Response<List<UserDto>>> usersPublicGet() async =>
+      chopper.Response(FakeHelper.fakeCorrectResponse, FakeHelper.fakeUsers);
 
   @override
   Future<chopper.Response<AuthenticationResult>> usersAuthenticateByNamePost({
@@ -124,10 +103,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
   }) async {
     if (body?.username == FakeHelper.fakeCorrectUser.name && body?.pw == FakeHelper.fakeCorrectPassword) {
       log(FakeHelper.fakeAuthResult.accessToken ?? "Null");
-      return chopper.Response(
-        FakeHelper.fakeCorrectResponse,
-        FakeHelper.fakeAuthResult,
-      );
+      return chopper.Response(FakeHelper.fakeCorrectResponse, FakeHelper.fakeAuthResult);
     } else {
       return chopper.Response(http.Response("You clicked the wrong one dummy", 401), null);
     }
@@ -136,10 +112,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
   ///Gets public information about the server.
   @override
   Future<chopper.Response<PublicSystemInfo>> systemInfoPublicGet() async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      FakeHelper.fakePublicSystemInfo,
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, FakeHelper.fakePublicSystemInfo);
   }
 
   @override
@@ -150,39 +123,28 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     bool? includeHidden,
   }) async {
     return chopper.Response(
-        FakeHelper.fakeCorrectResponse,
-        BaseItemDtoQueryResult(
-          items: [
-            FakeHelper.fakeMoviesView,
-            FakeHelper.fakeSeriesView,
-          ],
-          totalRecordCount: 2,
-          startIndex: 0,
-        ));
+      FakeHelper.fakeCorrectResponse,
+      BaseItemDtoQueryResult(
+        items: [FakeHelper.fakeMoviesView, FakeHelper.fakeSeriesView],
+        totalRecordCount: 2,
+        startIndex: 0,
+      ),
+    );
   }
 
   @override
   Future<chopper.Response<UserDto>> usersMeGet() async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      FakeHelper.fakeCorrectUser,
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, FakeHelper.fakeCorrectUser);
   }
 
   @override
   Future<chopper.Response<bool>> quickConnectEnabledGet() async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      FakeHelper.fakeServerConfig.quickConnectAvailable,
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, FakeHelper.fakeServerConfig.quickConnectAvailable);
   }
 
   @override
   Future<chopper.Response<ServerConfiguration>> systemConfigurationGet() async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      FakeHelper.fakeServerConfig,
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, FakeHelper.fakeServerConfig);
   }
 
   @override
@@ -209,15 +171,12 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
         items: _baseItems
             .where((e) => {BaseItemKind.movie, BaseItemKind.episode}.contains(e.type))
             .where((e) => e.userData?.played != true && e.userData?.playedPercentage != 0)
-            .fold<Map<String?, BaseItemDto>>(
-              {},
-              (map, item) {
-                if (!map.containsKey(item.seriesId)) {
-                  map[item.seriesId] = item;
-                }
-                return map;
-              },
-            )
+            .fold<Map<String?, BaseItemDto>>({}, (map, item) {
+              if (!map.containsKey(item.seriesId)) {
+                map[item.seriesId] = item;
+              }
+              return map;
+            })
             .values
             .toList(),
       ),
@@ -238,10 +197,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     int? limit,
     bool? groupItems,
   }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      _baseItems.where((e) => e.parentId == parentId).toList(),
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, _baseItems.where((e) => e.parentId == parentId).toList());
   }
 
   @override
@@ -257,21 +213,12 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     bool? isSeries,
     bool? recursive,
   }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      const QueryFilters(),
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, const QueryFilters());
   }
 
   @override
-  Future<chopper.Response<BaseItemDto>> itemsItemIdGet({
-    String? userId,
-    required String? itemId,
-  }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      _baseItems.firstWhere((item) => item.id == itemId),
-    );
+  Future<chopper.Response<BaseItemDto>> itemsItemIdGet({String? userId, required String? itemId}) async {
+    return chopper.Response(FakeHelper.fakeCorrectResponse, _baseItems.firstWhere((item) => item.id == itemId));
   }
 
   @override
@@ -282,10 +229,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     int? limit,
     List<enums.ItemFields>? fields,
   }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      const BaseItemDtoQueryResult(items: []),
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, const BaseItemDtoQueryResult(items: []));
   }
 
   @override
@@ -412,7 +356,8 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     return chopper.Response(
       FakeHelper.fakeCorrectResponse,
       BaseItemDtoQueryResult(
-          items: _baseItems.where((e) => e.type == BaseItemKind.season && e.seriesId == seriesId).toList()),
+        items: _baseItems.where((e) => e.type == BaseItemKind.season && e.seriesId == seriesId).toList(),
+      ),
     );
   }
 
@@ -437,7 +382,8 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     return chopper.Response(
       FakeHelper.fakeCorrectResponse,
       BaseItemDtoQueryResult(
-          items: _baseItems.where((e) => e.type == BaseItemKind.episode && e.seriesId == seriesId).toList()),
+        items: _baseItems.where((e) => e.type == BaseItemKind.episode && e.seriesId == seriesId).toList(),
+      ),
     );
   }
 
@@ -471,15 +417,10 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
   }
 
   @override
-  Future<chopper.Response<LyricDto>> audioItemIdLyricsGet({
-    required String? itemId,
-  }) async {
+  Future<chopper.Response<LyricDto>> audioItemIdLyricsGet({required String? itemId}) async {
     return chopper.Response(
       FakeHelper.fakeCorrectResponse,
-      const LyricDto(
-        metadata: LyricMetadata(isSynced: false),
-        lyrics: [],
-      ),
+      const LyricDto(metadata: LyricMetadata(isSynced: false), lyrics: []),
     );
   }
 
@@ -489,39 +430,18 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     required String? itemId,
     DateTime? datePlayed,
   }) async {
-    final item = await _updateUserData(
-      itemId,
-      (data) => UserItemDataDto(
-        played: true,
-        isFavorite: data?.isFavorite,
-      ),
-    );
+    final item = await _updateUserData(itemId, (data) => UserItemDataDto(played: true, isFavorite: data?.isFavorite));
     if (item.type == BaseItemKind.series) {
       for (var element in _baseItems.where((e) => e.seriesId == item.id)) {
-        await _updateUserData(
-          element.id,
-          (data) => UserItemDataDto(
-            played: true,
-            isFavorite: data?.isFavorite,
-          ),
-        );
+        await _updateUserData(element.id, (data) => UserItemDataDto(played: true, isFavorite: data?.isFavorite));
       }
     }
     if (item.type == BaseItemKind.season) {
       for (var element in _baseItems.where((e) => e.seasonId == item.id)) {
-        await _updateUserData(
-          element.id,
-          (data) => UserItemDataDto(
-            played: true,
-            isFavorite: data?.isFavorite,
-          ),
-        );
+        await _updateUserData(element.id, (data) => UserItemDataDto(played: true, isFavorite: data?.isFavorite));
       }
     }
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      item.userData,
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, item.userData);
   }
 
   @override
@@ -529,36 +449,18 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     String? userId,
     required String? itemId,
   }) async {
-    final item = await _updateUserData(
-      itemId,
-      (data) => UserItemDataDto(played: false, isFavorite: data?.isFavorite),
-    );
+    final item = await _updateUserData(itemId, (data) => UserItemDataDto(played: false, isFavorite: data?.isFavorite));
     if (item.type == BaseItemKind.series) {
       for (var element in _baseItems.where((e) => e.seriesId == item.id)) {
-        await _updateUserData(
-          element.id,
-          (data) => UserItemDataDto(
-            played: false,
-            isFavorite: data?.isFavorite,
-          ),
-        );
+        await _updateUserData(element.id, (data) => UserItemDataDto(played: false, isFavorite: data?.isFavorite));
       }
     }
     if (item.type == BaseItemKind.season) {
       for (var element in _baseItems.where((e) => e.seasonId == item.id)) {
-        await _updateUserData(
-          element.id,
-          (data) => UserItemDataDto(
-            played: false,
-            isFavorite: data?.isFavorite,
-          ),
-        );
+        await _updateUserData(element.id, (data) => UserItemDataDto(played: false, isFavorite: data?.isFavorite));
       }
     }
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      item.userData,
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, item.userData);
   }
 
   @override
@@ -577,10 +479,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     String? userId,
     bool? enableImages,
   }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      const BaseItemDtoQueryResult(),
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, const BaseItemDtoQueryResult());
   }
 
   @override
@@ -588,16 +487,8 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     String? userId,
     required String? itemId,
   }) async {
-    final item = await _updateUserData(
-      itemId,
-      (data) => data?.copyWith(
-        isFavorite: false,
-      ),
-    );
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      item.userData,
-    );
+    final item = await _updateUserData(itemId, (data) => data?.copyWith(isFavorite: false));
+    return chopper.Response(FakeHelper.fakeCorrectResponse, item.userData);
   }
 
   @override
@@ -605,23 +496,13 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     String? userId,
     required String? itemId,
   }) async {
-    final item = await _updateUserData(
-      itemId,
-      (data) => data?.copyWith(
-        isFavorite: true,
-      ),
-    );
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      item.userData,
-    );
+    final item = await _updateUserData(itemId, (data) => data?.copyWith(isFavorite: true));
+    return chopper.Response(FakeHelper.fakeCorrectResponse, item.userData);
   }
 
   Future<BaseItemDto> _updateUserData(String? id, Function(UserItemDataDto? old) userData) async {
     final currentItem = _baseItems.firstWhere((e) => e.id == id);
-    final updatedItem = currentItem.copyWith(
-      userData: userData(currentItem.userData),
-    );
+    final updatedItem = currentItem.copyWith(userData: userData(currentItem.userData));
 
     _baseItems = _baseItems.map((orig) => orig.id == id ? updatedItem : orig).toList();
 
@@ -649,10 +530,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     bool? enableImages,
     bool? enableTotalRecordCount,
   }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      const BaseItemDtoQueryResult(),
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, const BaseItemDtoQueryResult());
   }
 
   @override
@@ -674,10 +552,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     bool? allowAudioStreamCopy,
     required PlaybackInfoDto? body,
   }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      FakeHelper.bigBuckBunny,
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, FakeHelper.bigBuckBunny);
   }
 
   @override
@@ -685,27 +560,22 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
     required String? itemId,
     List<enums.MediaSegmentType>? includeSegmentTypes,
   }) async {
-    return chopper.Response(
-      FakeHelper.fakeCorrectResponse,
-      const MediaSegmentDtoQueryResult(
-        items: [],
-      ),
-    );
+    return chopper.Response(FakeHelper.fakeCorrectResponse, const MediaSegmentDtoQueryResult(items: []));
   }
 
   @override
   Future<chopper.Response<BrandingOptionsDto>> brandingConfigurationGet() async => chopper.Response(
-        FakeHelper.fakeCorrectResponse,
-        const BrandingOptionsDto(
-            loginDisclaimer:
-                "This is a local test server, meant for evaluation purposes only.\nTo login, use the following user+password \nuser: User 1\npassword: Txnw6RWYb8yEtD"),
-      );
+    FakeHelper.fakeCorrectResponse,
+    const BrandingOptionsDto(
+      loginDisclaimer: "This is a local test server, meant for evaluation purposes only.\nTo login, use the following user+password \nuser: User 1\npassword: Txnw6RWYb8yEtD",
+    ),
+  );
 }
 
 class FakeHelper {
   static http.BaseResponse fakeCorrectResponse = http.Response('', 200);
 
-  static String fakeTestServerUrl = "http://22b469df.fladder.nl";
+  static String fakeTestServerUrl = "http://22b469df.driftfin.app";
 
   static UserDto fakeCorrectUser = const UserDto(id: '1', name: 'User 1', configuration: UserConfiguration());
   static String fakeCorrectPassword = "Txnw6RWYb8yEtD";
@@ -749,10 +619,7 @@ class FakeHelper {
     childCount: 5,
   );
 
-  static List<UserDto> fakeUsers = [
-    fakeCorrectUser,
-    const UserDto(id: '2', name: 'Incorrect User 2'),
-  ];
+  static List<UserDto> fakeUsers = [fakeCorrectUser, const UserDto(id: '2', name: 'Incorrect User 2')];
 
   static AuthenticationResult fakeAuthResult = AuthenticationResult(
     user: fakeCorrectUser,
@@ -780,9 +647,9 @@ class FakeHelper {
         "MediaAttachments": [],
         "Formats": [],
         "Bitrate": 1741204,
-        "HasSegments": true
-      }
+        "HasSegments": true,
+      },
     ],
-    "PlaySessionId": "asdf234qwafsdfsdf"
+    "PlaySessionId": "asdf234qwafsdfsdf",
   });
 }

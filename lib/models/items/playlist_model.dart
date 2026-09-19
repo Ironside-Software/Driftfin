@@ -9,7 +9,7 @@ import 'package:driftfin/models/items/images_models.dart';
 import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/items/overview_model.dart';
 import 'package:driftfin/theme.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 part 'playlist_model.mapper.dart';
 
@@ -53,31 +53,21 @@ class PlaylistModel extends ItemBaseModel with PlaylistModelMappable {
   @override
   bool get playAble => true;
 
-  Widget iconWidget(
-    BuildContext context, {
-    bool usePoster = false,
-    Color? backgroundColor = Colors.transparent,
-  }) {
+  Widget iconWidget(BuildContext context, {bool usePoster = false, Color? backgroundColor = Colors.transparent}) {
     if (usePoster) {
       return SizedBox.square(
         dimension: 45,
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: FladderTheme.smallShape.borderRadius,
-            color: backgroundColor,
-          ),
+          decoration: BoxDecoration(borderRadius: FladderTheme.smallShape.borderRadius, color: backgroundColor),
           clipBehavior: Clip.hardEdge,
           padding: const EdgeInsets.all(2),
           child: ClipRRect(
             borderRadius: FladderTheme.smallShape.borderRadius,
-            child: FladderImage(
+            child: DriftfinImage(
               image: images?.primary,
               placeHolder: Container(
                 color: backgroundColor,
-                child: Icon(
-                  FladderItemType.playlist.icon,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                child: Icon(FladderItemType.playlist.icon, color: Theme.of(context).colorScheme.onSurface),
               ),
               fit: BoxFit.cover,
             ),
@@ -85,10 +75,7 @@ class PlaylistModel extends ItemBaseModel with PlaylistModelMappable {
         ),
       );
     } else {
-      return Icon(
-        FladderItemType.playlist.icon,
-        color: Theme.of(context).colorScheme.onSurface,
-      );
+      return Icon(FladderItemType.playlist.icon, color: Theme.of(context).colorScheme.onSurface);
     }
   }
 }

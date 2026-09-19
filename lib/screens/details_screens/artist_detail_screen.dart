@@ -12,12 +12,12 @@ import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/screens/details_screens/tracks_detail_screen.dart';
 import 'package:driftfin/screens/shared/detail_scaffold.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
 import 'package:driftfin/screens/shared/media/track_list.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/color_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/item_base_model/play_item_helpers.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -63,11 +63,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
       onRefresh: () async {
         await provider.fetchDetails(widget.item);
       },
-      actions: (context) => current.generateActions(
-        context,
-        ref,
-        exclude: {ItemActions.details},
-      ),
+      actions: (context) => current.generateActions(context, ref, exclude: {ItemActions.details}),
       content: (detailsContext, padding) {
         final tracks = current.tracks;
         final albums = current.albums;
@@ -84,7 +80,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                   height: 200,
                   width: double.infinity,
                   alignment: Alignment.center,
-                  child: FladderImage(
+                  child: DriftfinImage(
                     image: artist?.getPosters?.logo,
                     placeHolder: placeHolder,
                     disableBlur: true,
@@ -124,10 +120,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                           context: detailsContext,
                           item: current,
                           ref: ref,
-                          queueSource: ArtistInstantMixQueueSource(
-                            artistId: current.id,
-                            limit: 200,
-                          ),
+                          queueSource: ArtistInstantMixQueueSource(artistId: current.id, limit: 200),
                         ),
                         icon: IconsaxPlusLinear.blend_2,
                         label: context.localized.instantMix,
@@ -146,9 +139,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
               ),
               Container(
                 color: Theme.of(detailsContext).colorScheme.surface,
-                constraints: BoxConstraints(
-                  minHeight: MediaQuery.sizeOf(detailsContext).height,
-                ),
+                constraints: BoxConstraints(minHeight: MediaQuery.sizeOf(detailsContext).height),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   spacing: 8,
@@ -174,18 +165,14 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                                 onAddToQueueSelected: (selected) async {
                                   await ref.read(videoPlayerProvider.notifier).addToTemporaryQueue(selected);
                                   if (detailsContext.mounted) {
-                                    FladderSnack.show(
+                                    DriftfinSnack.show(
                                       detailsContext.localized.addedToQueue(selected.length),
                                       context: detailsContext,
                                     );
                                   }
                                 },
                                 onTrackSecondaryTap: (track, details) {
-                                  track.showDetailsMenu(
-                                    context,
-                                    ref,
-                                    details.globalPosition,
-                                  );
+                                  track.showDetailsMenu(context, ref, details.globalPosition);
                                 },
                               ),
                             ),
@@ -209,10 +196,7 @@ class _ArtistDetailScreenState extends ConsumerState<ArtistDetailScreen> {
                             context: detailsContext,
                             item: current,
                             ref: ref,
-                            queueSource: ArtistFavoriteQueueSource(
-                              artistId: current.id,
-                              limit: 300,
-                            ),
+                            queueSource: ArtistFavoriteQueueSource(artistId: current.id, limit: 300),
                           );
                         },
                         contentPadding: padding,

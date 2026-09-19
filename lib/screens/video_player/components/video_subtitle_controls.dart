@@ -11,12 +11,9 @@ import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/widget_extensions.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 
-Future<void> showSubtitleControls({
-  required BuildContext context,
-  String? label,
-}) async {
+Future<void> showSubtitleControls({required BuildContext context, String? label}) async {
   await showDialog(
     context: context,
     barrierColor: Colors.black.withValues(alpha: 0.1),
@@ -24,8 +21,9 @@ Future<void> showSubtitleControls({
       backgroundColor: Colors.transparent,
       elevation: 0,
       content: ConstrainedBox(
-          constraints: BoxConstraints(minWidth: MediaQuery.sizeOf(context).width * 0.75),
-          child: VideoSubtitleControls(label: label)),
+        constraints: BoxConstraints(minWidth: MediaQuery.sizeOf(context).width * 0.75),
+        child: VideoSubtitleControls(label: label),
+      ),
     ),
   );
   return;
@@ -49,9 +47,9 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
   bool hideControls = false;
 
   void setOpacity(Key? key) => setState(() {
-        activeKey = key;
-        showPartial = !(activeKey != null);
-      });
+    activeKey = key;
+    showPartial = !(activeKey != null);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +61,9 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
       duration: const Duration(milliseconds: 250),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        color:
-            controlsHidden ? Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.8) : Colors.transparent,
+        color: controlsHidden
+            ? Theme.of(context).colorScheme.surfaceContainer.withValues(alpha: 0.8)
+            : Colors.transparent,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -75,14 +74,8 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    widget.label!,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  IconButton(
-                    onPressed: () => context.maybePop(),
-                    icon: const Icon(IconsaxPlusBold.close_circle),
-                  )
+                  Text(widget.label!, style: Theme.of(context).textTheme.headlineMedium),
+                  IconButton(onPressed: () => context.maybePop(), icon: const Icon(IconsaxPlusBold.close_circle)),
                 ],
               ).addVisiblity(activeKey == null ? controlsHidden : activeKey == const Key('title')),
             IconButton.filledTonal(
@@ -124,8 +117,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                           Consumer(
                             builder: (context, ref, _) {
                               final delay = ref.watch(subtitleDelayProvider);
-                              void setDelay(Duration value) =>
-                                  ref.read(subtitleDelayProvider.notifier).state = value;
+                              void setDelay(Duration value) => ref.read(subtitleDelayProvider.notifier).state = value;
                               return Column(
                                 spacing: 8,
                                 children: [
@@ -166,18 +158,24 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                             multiSelectionEnabled: false,
                             segments: [
                               ButtonSegment(
-                                label:
-                                    Text(context.localized.light, style: const TextStyle(fontWeight: FontWeight.w100)),
+                                label: Text(
+                                  context.localized.light,
+                                  style: const TextStyle(fontWeight: FontWeight.w100),
+                                ),
                                 value: FontWeight.w100,
                               ),
                               ButtonSegment(
-                                label:
-                                    Text(context.localized.normal, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                label: Text(
+                                  context.localized.normal,
+                                  style: const TextStyle(fontWeight: FontWeight.w500),
+                                ),
                                 value: FontWeight.normal,
                               ),
                               ButtonSegment(
-                                label:
-                                    Text(context.localized.bold, style: const TextStyle(fontWeight: FontWeight.w900)),
+                                label: Text(
+                                  context.localized.bold,
+                                  style: const TextStyle(fontWeight: FontWeight.w900),
+                                ),
                                 value: FontWeight.bold,
                               ),
                             ],
@@ -194,7 +192,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                 children: [
                                   const Icon(Icons.format_size_rounded),
                                   Flexible(
-                                    child: FladderSlider(
+                                    child: DriftfinSlider(
                                       min: 8.0,
                                       max: 160.0,
                                       onChangeStart: (value) => setOpacity(const Key('fontSize')),
@@ -205,10 +203,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                   ),
                                   ConstrainedBox(
                                     constraints: const BoxConstraints(minWidth: 35),
-                                    child: Text(
-                                      subSettings.fontSize.toStringAsFixed(0),
-                                      textAlign: TextAlign.center,
-                                    ),
+                                    child: Text(subSettings.fontSize.toStringAsFixed(0), textAlign: TextAlign.center),
                                   ),
                                 ],
                               ),
@@ -223,7 +218,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                 children: [
                                   const Icon(Icons.height_rounded),
                                   Flexible(
-                                    child: FladderSlider(
+                                    child: DriftfinSlider(
                                       min: 0.0,
                                       max: 1.0,
                                       divisions: 80,
@@ -234,9 +229,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                     ),
                                   ),
                                   ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 35,
-                                    ),
+                                    constraints: const BoxConstraints(minWidth: 35),
                                     child: Text(
                                       subSettings.verticalOffset.toStringAsFixed(2),
                                       textAlign: TextAlign.center,
@@ -258,11 +251,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                   ...[Colors.white, Colors.yellow, Colors.black, Colors.grey].map(
                                     (e) => FocusButton(
                                       onTap: () => provider.setSubColor(e),
-                                      child: Container(
-                                        height: 35,
-                                        width: 35,
-                                        color: e,
-                                      ),
+                                      child: Container(height: 35, width: 35, color: e),
                                     ),
                                   ),
                                 ],
@@ -280,17 +269,15 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                   const Icon(Icons.border_color_rounded),
                                   ...[Colors.white, Colors.yellow, Colors.black, Colors.grey, Colors.transparent].map(
                                     (e) => FocusButton(
-                                      onTap: () => provider
-                                          .setOutlineColor(e == Colors.transparent ? e : e.withValues(alpha: 0.85)),
+                                      onTap: () => provider.setOutlineColor(
+                                        e == Colors.transparent ? e : e.withValues(alpha: 0.85),
+                                      ),
                                       child: Container(
                                         height: 35,
                                         width: 35,
                                         color: e == Colors.transparent ? Colors.white : e,
                                         child: e == Colors.transparent
-                                            ? const Icon(
-                                                Icons.disabled_by_default_outlined,
-                                                color: Colors.red,
-                                              )
+                                            ? const Icon(Icons.disabled_by_default_outlined, color: Colors.red)
                                             : null,
                                       ),
                                     ),
@@ -308,7 +295,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                 children: [
                                   const Icon(Icons.border_style),
                                   Flexible(
-                                    child: FladderSlider(
+                                    child: DriftfinSlider(
                                       min: 1,
                                       max: 25,
                                       divisions: 24,
@@ -319,9 +306,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                     ),
                                   ),
                                   ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 35,
-                                    ),
+                                    constraints: const BoxConstraints(minWidth: 35),
                                     child: Text(
                                       subSettings.outlineSize.toStringAsFixed(2),
                                       textAlign: TextAlign.center,
@@ -340,7 +325,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                 children: [
                                   const Icon(Icons.square_rounded),
                                   Flexible(
-                                    child: FladderSlider(
+                                    child: DriftfinSlider(
                                       min: 0,
                                       max: 1,
                                       divisions: 20,
@@ -351,9 +336,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                     ),
                                   ),
                                   ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 35,
-                                    ),
+                                    constraints: const BoxConstraints(minWidth: 35),
                                     child: Text(
                                       subSettings.backGroundColor.a.toStringAsFixed(2),
                                       textAlign: TextAlign.center,
@@ -364,7 +347,8 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                               Text(context.localized.backgroundOpacity),
                             ],
                           ).addVisiblity(
-                              activeKey == null ? controlsHidden : activeKey == const Key('backGroundOpacity')),
+                            activeKey == null ? controlsHidden : activeKey == const Key('backGroundOpacity'),
+                          ),
                           Column(
                             spacing: 8,
                             children: [
@@ -376,11 +360,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                   ...[Colors.white, Colors.yellow, Colors.black, Colors.grey].map(
                                     (e) => FocusButton(
                                       onTap: () => provider.setBackgroundColor(e),
-                                      child: Container(
-                                        height: 35,
-                                        width: 35,
-                                        color: e,
-                                      ),
+                                      child: Container(height: 35, width: 35, color: e),
                                     ),
                                   ),
                                 ],
@@ -396,7 +376,7 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                 children: [
                                   const Icon(Icons.blur_circular_rounded),
                                   Flexible(
-                                    child: FladderSlider(
+                                    child: DriftfinSlider(
                                       min: 0,
                                       max: 1,
                                       divisions: 20,
@@ -407,17 +387,12 @@ class _VideoSubtitleControlsState extends ConsumerState<VideoSubtitleControls> {
                                     ),
                                   ),
                                   ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 35,
-                                    ),
-                                    child: Text(
-                                      subSettings.shadow.toStringAsFixed(2),
-                                      textAlign: TextAlign.center,
-                                    ),
+                                    constraints: const BoxConstraints(minWidth: 35),
+                                    child: Text(subSettings.shadow.toStringAsFixed(2), textAlign: TextAlign.center),
                                   ),
                                 ],
                               ),
-                              Text(context.localized.shadow)
+                              Text(context.localized.shadow),
                             ],
                           ).addVisiblity(activeKey == null ? controlsHidden : activeKey == const Key('shadowSlider')),
                         ].addPadding(const EdgeInsets.symmetric(vertical: 12)).addInBetween(const Divider()),

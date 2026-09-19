@@ -10,7 +10,7 @@ import 'package:driftfin/screens/video_player/components/video_subtitle_controls
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout_model.dart';
 import 'package:driftfin/util/poster_defaults.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 
 const _phoneModel = AdaptiveLayoutModel(
   viewSize: ViewSize.phone,
@@ -27,19 +27,12 @@ const _phoneModel = AdaptiveLayoutModel(
 
 Widget _harness(SharedPreferences prefs, {String? label}) {
   return ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-    ],
+    overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) => AdaptiveLayout(
-        data: _phoneModel,
-        child: child!,
-      ),
-      home: Scaffold(
-        body: VideoSubtitleControls(label: label),
-      ),
+      builder: (context, child) => AdaptiveLayout(data: _phoneModel, child: child!),
+      home: Scaffold(body: VideoSubtitleControls(label: label)),
     ),
   );
 }
@@ -112,7 +105,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Change the font size slider to make "Clear Changes" active.
-    await tester.drag(find.byType(FladderSlider).first, const Offset(50, 0));
+    await tester.drag(find.byType(DriftfinSlider).first, const Offset(50, 0));
     await tester.pumpAndSettle();
     expect(find.text(l10n.clearChanges), findsOneWidget);
   });

@@ -26,7 +26,7 @@ import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/themes_data.dart';
-import 'package:driftfin/widgets/navigation_scaffold/components/fladder_app_bar.dart';
+import 'package:driftfin/widgets/navigation_scaffold/components/driftfin_app_bar.dart';
 import 'package:driftfin/widgets/shared/animated_icon.dart';
 import 'package:driftfin/widgets/shared/elevated_icon.dart';
 import 'package:driftfin/widgets/shared/hover_widget.dart';
@@ -38,12 +38,7 @@ class PhotoViewerScreen extends ConsumerStatefulWidget {
   final List<PhotoModel>? items;
   final String? selected;
   final PhotoQueueSource? photoQueueSource;
-  const PhotoViewerScreen({
-    this.items,
-    @QueryParam("selectedId") this.selected,
-    this.photoQueueSource,
-    super.key,
-  });
+  const PhotoViewerScreen({this.items, @QueryParam("selectedId") this.selected, this.photoQueueSource, super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PhotoViewerScreenState();
@@ -73,13 +68,17 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.resumed:
-        SystemChrome.setEnabledSystemUIMode(!showInterface ? SystemUiMode.leanBack : SystemUiMode.edgeToEdge,
-            overlays: []);
-        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarDividerColor: Colors.transparent,
-        ));
+        SystemChrome.setEnabledSystemUIMode(
+          !showInterface ? SystemUiMode.leanBack : SystemUiMode.edgeToEdge,
+          overlays: [],
+        );
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarDividerColor: Colors.transparent,
+          ),
+        );
       default:
         break;
     }
@@ -121,15 +120,14 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
       showInterface = show ?? !showInterface;
     });
 
-    SystemChrome.setEnabledSystemUIMode(
-      !showInterface ? SystemUiMode.leanBack : SystemUiMode.edgeToEdge,
-      overlays: [],
+    SystemChrome.setEnabledSystemUIMode(!showInterface ? SystemUiMode.leanBack : SystemUiMode.edgeToEdge, overlays: []);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
     );
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ));
   }
 
   final gestureConfig = GestureConfig(
@@ -159,16 +157,9 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
           onExit: (event) => setState(() => _showOverlay(show: false)),
           child: Scaffold(
             appBar: photos.isEmpty
-                ? FladderAppBar(
-                    automaticallyImplyLeading: true,
-                    isDesktop: AdaptiveLayout.of(context).isDesktop,
-                  )
+                ? DriftfinAppBar(automaticallyImplyLeading: true, isDesktop: AdaptiveLayout.of(context).isDesktop)
                 : null,
-            body: photos.isEmpty
-                ? Center(
-                    child: Text(context.localized.noItemsToShow),
-                  )
-                : buildViewer(context),
+            body: photos.isEmpty ? Center(child: Text(context.localized.noItemsToShow)) : buildViewer(context),
           ),
         ),
       ),
@@ -187,26 +178,17 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                   key: Key(currentPhoto.id),
                   opacity: 0.7,
                   child: SizedBox.expand(
-                    child: Image(
-                      fit: BoxFit.cover,
-                      image: BlurHashImage(imageHash),
-                    ),
+                    child: Image(fit: BoxFit.cover, image: BlurHashImage(imageHash)),
                   ),
                 )
-              : Container(
-                  color: Colors.black,
-                ),
+              : Container(color: Colors.black),
         ),
         GestureDetector(
           onTapUp: (details) => _showOverlay(),
           onDoubleTapDown: AdaptiveLayout.of(context).isDesktop
               ? null
               : (details) async {
-                  await openOptions(
-                    context,
-                    currentPhoto,
-                    removePhoto,
-                  );
+                  await openOptions(context, currentPhoto, removePhoto);
                 },
           onLongPress: () {
             if (currentPhoto.userData.isFavourite == true) {
@@ -223,8 +205,10 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
               setState(() {
                 currentPage = index;
                 cacheNeighbors(index, 3);
-                SystemChrome.setEnabledSystemUIMode(!showInterface ? SystemUiMode.leanBack : SystemUiMode.edgeToEdge,
-                    overlays: []);
+                SystemChrome.setEnabledSystemUIMode(
+                  !showInterface ? SystemUiMode.leanBack : SystemUiMode.edgeToEdge,
+                  overlays: [],
+                );
               });
               if (photos.length - index <= _fetchThreshold) {
                 unawaited(_fetchMorePhotos());
@@ -257,43 +241,41 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                           ),
                         ),
                       switch (state.extendedImageLoadState) {
-                        LoadState.loading => const Center(
-                            child: CircularProgressIndicator(strokeCap: StrokeCap.round),
-                          ),
+                        LoadState.loading => const Center(child: CircularProgressIndicator(strokeCap: StrokeCap.round)),
                         LoadState.completed => switch (photo.internalType) {
-                            FladderItemType.video => SimpleVideoPlayer(
-                                onTapped: _showOverlay,
-                                showOverlay: showInterface,
-                                video: photos[index],
-                              ),
-                            _ => state.completedWidget,
-                          },
+                          FladderItemType.video => SimpleVideoPlayer(
+                            onTapped: _showOverlay,
+                            showOverlay: showInterface,
+                            video: photos[index],
+                          ),
+                          _ => state.completedWidget,
+                        },
                         LoadState.failed || _ => Align(
-                            alignment: Alignment.topRight,
-                            child: Padding(
-                              padding: const EdgeInsets.all(24).copyWith(top: topPadding + 85),
-                              child: Card(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(24),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        context.localized.failedToLoadImage,
-                                        style: Theme.of(context).textTheme.bodyLarge,
-                                      ),
-                                      const SizedBox(height: 6),
-                                      FilledButton.tonal(
-                                        onPressed: () => state.reLoadImage(),
-                                        child: Text(context.localized.retry),
-                                      )
-                                    ],
-                                  ),
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(24).copyWith(top: topPadding + 85),
+                            child: Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      context.localized.failedToLoadImage,
+                                      style: Theme.of(context).textTheme.bodyLarge,
+                                    ),
+                                    const SizedBox(height: 6),
+                                    FilledButton.tonal(
+                                      onPressed: () => state.reLoadImage(),
+                                      child: Text(context.localized.retry),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
-                      }
+                        ),
+                      },
                     ],
                   );
                 },
@@ -344,8 +326,9 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                     width: 50,
                     height: MediaQuery.sizeOf(context).height * 0.5,
                     child: IconButton.filledTonal(
-                      style:
-                          IconButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                      style: IconButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
                       onPressed: () =>
                           controller.nextPage(duration: const Duration(milliseconds: 125), curve: Curves.easeInOut),
                       icon: const Icon(IconsaxPlusBold.arrow_right_1),
@@ -368,8 +351,9 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                     width: 50,
                     height: MediaQuery.sizeOf(context).height * 0.5,
                     child: IconButton.filledTonal(
-                      style:
-                          IconButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                      style: IconButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
                       onPressed: () =>
                           controller.previousPage(duration: const Duration(milliseconds: 125), curve: Curves.easeInOut),
                       icon: const Icon(IconsaxPlusBold.arrow_left),
@@ -386,8 +370,8 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
             opacity: showInterface
                 ? 1
                 : toolbarHover
-                    ? 1
-                    : 0,
+                ? 1
+                : 0,
             child: Align(
               alignment: Alignment.topCenter,
               widthFactor: 1,
@@ -396,23 +380,14 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.5),
-                      Colors.black.withValues(alpha: 0),
-                    ],
+                    colors: [Colors.black.withValues(alpha: 0.5), Colors.black.withValues(alpha: 0)],
                   ),
                 ),
                 height: 45,
                 child: MouseRegion(
                   onEnter: (event) => setState(() => toolbarHover = true),
                   onExit: (event) => setState(() => toolbarHover = false),
-                  child: const Column(
-                    children: [
-                      DefaultTitleBar(
-                        brightness: Brightness.dark,
-                      ),
-                    ],
-                  ),
+                  child: const Column(children: [DefaultTitleBar(brightness: Brightness.dark)]),
                 ),
               ),
             ),
@@ -428,7 +403,7 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
               outlinedIcon: IconsaxPlusLinear.heart,
             ),
           ),
-        )
+        ),
       ],
     );
   }
@@ -445,49 +420,51 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Consumer(builder: (context, ref, child) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ElevatedIconButtonLabel(
-                          label: context.localized.loop,
-                          onPressed: () => ref
-                              .read(photoViewSettingsProvider.notifier)
-                              .update((state) => state.copyWith(repeat: !state.repeat)),
-                          icon: ref.watch(photoViewSettingsProvider.select((value) => value.repeat))
-                              ? IconsaxPlusLinear.repeat
-                              : IconsaxPlusLinear.repeate_one,
-                        ),
-                        ElevatedIconButtonLabel(
-                          label: context.localized.audio(1),
-                          onPressed: () => ref
-                              .read(photoViewSettingsProvider.notifier)
-                              .update((state) => state.copyWith(mute: !state.mute)),
-                          icon: ref.watch(photoViewSettingsProvider.select((value) => value.mute))
-                              ? IconsaxPlusLinear.volume_slash
-                              : IconsaxPlusLinear.volume_high,
-                        ),
-                        ElevatedIconButtonLabel(
-                          label: context.localized.autoPlay,
-                          onPressed: () => ref
-                              .read(photoViewSettingsProvider.notifier)
-                              .update((state) => state.copyWith(autoPlay: !state.autoPlay)),
-                          icon: ref.watch(photoViewSettingsProvider.select((value) => value.autoPlay))
-                              ? IconsaxPlusLinear.play_remove
-                              : IconsaxPlusLinear.play,
-                        ),
-                        ElevatedIconButtonLabel(
-                          label: context.localized.backgroundBlur,
-                          onPressed: () => ref
-                              .read(photoViewSettingsProvider.notifier)
-                              .update((state) => state.copyWith(theaterMode: !state.theaterMode)),
-                          icon: ref.watch(photoViewSettingsProvider.select((value) => value.theaterMode))
-                              ? IconsaxPlusLinear.filter_remove
-                              : IconsaxPlusLinear.filter,
-                        ),
-                      ].addInBetween(const SizedBox(width: 16)),
-                    );
-                  }),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      return Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ElevatedIconButtonLabel(
+                            label: context.localized.loop,
+                            onPressed: () => ref
+                                .read(photoViewSettingsProvider.notifier)
+                                .update((state) => state.copyWith(repeat: !state.repeat)),
+                            icon: ref.watch(photoViewSettingsProvider.select((value) => value.repeat))
+                                ? IconsaxPlusLinear.repeat
+                                : IconsaxPlusLinear.repeate_one,
+                          ),
+                          ElevatedIconButtonLabel(
+                            label: context.localized.audio(1),
+                            onPressed: () => ref
+                                .read(photoViewSettingsProvider.notifier)
+                                .update((state) => state.copyWith(mute: !state.mute)),
+                            icon: ref.watch(photoViewSettingsProvider.select((value) => value.mute))
+                                ? IconsaxPlusLinear.volume_slash
+                                : IconsaxPlusLinear.volume_high,
+                          ),
+                          ElevatedIconButtonLabel(
+                            label: context.localized.autoPlay,
+                            onPressed: () => ref
+                                .read(photoViewSettingsProvider.notifier)
+                                .update((state) => state.copyWith(autoPlay: !state.autoPlay)),
+                            icon: ref.watch(photoViewSettingsProvider.select((value) => value.autoPlay))
+                                ? IconsaxPlusLinear.play_remove
+                                : IconsaxPlusLinear.play,
+                          ),
+                          ElevatedIconButtonLabel(
+                            label: context.localized.backgroundBlur,
+                            onPressed: () => ref
+                                .read(photoViewSettingsProvider.notifier)
+                                .update((state) => state.copyWith(theaterMode: !state.theaterMode)),
+                            icon: ref.watch(photoViewSettingsProvider.select((value) => value.theaterMode))
+                                ? IconsaxPlusLinear.filter_remove
+                                : IconsaxPlusLinear.filter,
+                          ),
+                        ].addInBetween(const SizedBox(width: 16)),
+                      );
+                    },
+                  ),
                 ),
               ),
               const Divider(),
@@ -495,11 +472,7 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
                   .generateActions(
                     context,
                     ref,
-                    exclude: {
-                      ItemActions.details,
-                      ItemActions.markPlayed,
-                      ItemActions.markUnplayed,
-                    },
+                    exclude: {ItemActions.details, ItemActions.markPlayed, ItemActions.markUnplayed},
                     onDeleteSuccesFully: onRemove,
                   )
                   .listTileItems(context, useIcons: true),
@@ -515,7 +488,9 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
       int index = photos.indexOf(photo);
       photos.remove(photo);
       photos.insert(
-          index, photo.copyWith(userData: photo.userData.copyWith(isFavourite: value ?? !photo.userData.isFavourite)));
+        index,
+        photo.copyWith(userData: photo.userData.copyWith(isFavourite: value ?? !photo.userData.isFavourite)),
+      );
     });
   }
 
@@ -523,10 +498,7 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
     if (_isFetchingMore || _isFetchDepleted || widget.photoQueueSource == null) return;
     setState(() => _isFetchingMore = true);
     try {
-      final result = await widget.photoQueueSource!.fetchPhotos(
-        ref.read,
-        startIndex: _nextFetchStartIndex,
-      );
+      final result = await widget.photoQueueSource!.fetchPhotos(ref.read, startIndex: _nextFetchStartIndex);
       if (!mounted) return;
       final newPhotos = result.items.where((p) => !_loadedPhotoIds.contains(p.id)).toList();
       _loadedPhotoIds.addAll(result.items.map((p) => p.id));
@@ -546,22 +518,18 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
   }
 
   void cacheNeighbors(int index, int range) {
-    photos
-        .getRange((index - range).clamp(0, photos.length - 1), (index + range).clamp(0, photos.length - 1))
-        .forEach((element) {
+    photos.getRange((index - range).clamp(0, photos.length - 1), (index + range).clamp(0, photos.length - 1)).forEach((
+      element,
+    ) {
       precacheImage(
-          CachedNetworkImageProvider(
-            element.thumbnail?.primary?.path ?? "",
-            cacheManager: CustomCacheManager.instance,
-          ),
-          context);
+        CachedNetworkImageProvider(element.thumbnail?.primary?.path ?? "", cacheManager: CustomCacheManager.instance),
+        context,
+      );
       if (AdaptiveLayout.of(context).isDesktop) {
         precacheImage(
-            CachedNetworkImageProvider(
-              element.images?.primary?.path ?? "",
-              cacheManager: CustomCacheManager.instance,
-            ),
-            context);
+          CachedNetworkImageProvider(element.images?.primary?.path ?? "", cacheManager: CustomCacheManager.instance),
+          context,
+        );
       }
     });
   }

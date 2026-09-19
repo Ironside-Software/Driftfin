@@ -7,7 +7,7 @@ import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/providers/control_panel/control_active_tasks_provider.dart';
 import 'package:driftfin/providers/control_panel/control_livetv_provider.dart';
 import 'package:driftfin/screens/control_panel/control_livetv/listing_provider_edit_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
 
@@ -19,10 +19,7 @@ class RefreshGuideButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeTasks = ref.watch(controlActiveTasksProvider);
-    final refreshTask = activeTasks.firstWhere(
-      (task) => task.id == refreshGuideTaskId,
-      orElse: () => const TaskInfo(),
-    );
+    final refreshTask = activeTasks.firstWhere((task) => task.id == refreshGuideTaskId, orElse: () => const TaskInfo());
     final isRunning = refreshTask.state == TaskState.running;
     final progress = refreshTask.currentProgressPercentage;
 
@@ -42,7 +39,7 @@ class RefreshGuideButton extends ConsumerWidget {
                   builder: (context) => ListingProviderEditDialog(availableTuners: tunerHosts),
                 );
                 if (result != null && context.mounted) {
-                  final response = await FladderSnack.showResponse<ListingsProviderInfo>(
+                  final response = await DriftfinSnack.showResponse<ListingsProviderInfo>(
                     ref.read(controlLiveTvProvider.notifier).addListingProvider(result),
                     successTitle: context.localized.epgProviderAddedSuccessfully,
                     errorTitle: (err) => context.localized.failedToAddEpgProvider(err),
@@ -84,17 +81,13 @@ class RefreshGuideButton extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Text(
-                    "${progress?.toStringAsFixed(1) ?? '0'}%",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
+                  Text("${progress?.toStringAsFixed(1) ?? '0'}%", style: Theme.of(context).textTheme.bodySmall),
                 ],
               ),
               Text(
                 refreshTask.name ?? context.localized.refresh,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.65),
-                    ),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.65)),
               ),
             ],
           ),

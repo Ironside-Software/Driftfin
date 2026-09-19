@@ -13,16 +13,12 @@ import 'package:driftfin/screens/syncing/sync_widgets.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_options_button.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_progress_builder.dart';
 import 'package:driftfin/screens/syncing/widgets/synced_episode_item.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/size_formatting.dart';
 
 class SyncedSeasonPoster extends ConsumerStatefulWidget {
-  const SyncedSeasonPoster({
-    super.key,
-    required this.syncedItem,
-    required this.season,
-  });
+  const SyncedSeasonPoster({super.key, required this.syncedItem, required this.season});
 
   final SyncedItem syncedItem;
   final SeasonModel season;
@@ -57,8 +53,9 @@ class _SyncedSeasonPosterState extends ConsumerState<SyncedSeasonPoster> {
                         return context.maybePop();
                       },
                       child: Card(
-                        child: FladderImage(
-                          image: season.getPosters?.primary ??
+                        child: DriftfinImage(
+                          image:
+                              season.getPosters?.primary ??
                               season.parentImages?.backDrop?.firstOrNull ??
                               season.parentImages?.primary,
                         ),
@@ -85,22 +82,20 @@ class _SyncedSeasonPosterState extends ConsumerState<SyncedSeasonPoster> {
                             ),
                           ),
                           Flexible(
-                            child: SyncSubtitle(
-                              syncItem: syncedItem,
-                              children: children,
-                            ),
+                            child: SyncSubtitle(syncItem: syncedItem, children: children),
                           ),
                           Flexible(
                             child: Consumer(
                               builder: (context, ref, child) => SyncLabel(
-                                label: context.localized
-                                    .totalSize(ref.watch(syncSizeProvider(syncedItem, children))?.byteFormat ?? '--'),
+                                label: context.localized.totalSize(
+                                  ref.watch(syncSizeProvider(syncedItem, children))?.byteFormat ?? '--',
+                                ),
                                 status: combinedStream?.status ?? TaskStatus.notFound,
                               ),
                             ),
                           ),
                           if (combinedStream != null && combinedStream.hasDownload == true)
-                            SyncProgressBar(item: syncedItem, task: combinedStream)
+                            SyncProgressBar(item: syncedItem, task: combinedStream),
                         ],
                       );
                     },
@@ -109,18 +104,13 @@ class _SyncedSeasonPosterState extends ConsumerState<SyncedSeasonPoster> {
               ],
             ),
             trailing: SyncOptionsButton(syncedItem: syncedItem, children: children),
-            children: children.map(
-              (item) {
-                final baseItem = item.itemModel;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: SyncedEpisodeItem(
-                    episode: baseItem as EpisodeModel,
-                    syncedItem: item,
-                  ),
-                );
-              },
-            ).toList(),
+            children: children.map((item) {
+              final baseItem = item.itemModel;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: SyncedEpisodeItem(episode: baseItem as EpisodeModel, syncedItem: item),
+              );
+            }).toList(),
           );
         },
       ),

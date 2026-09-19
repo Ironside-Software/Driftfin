@@ -10,7 +10,7 @@ import 'package:driftfin/providers/live_tv_provider.dart';
 import 'package:driftfin/screens/live_tv/widgets/channel_row.dart';
 import 'package:driftfin/screens/live_tv/widgets/guide_constants.dart';
 import 'package:driftfin/screens/live_tv/widgets/timeline_header.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 class LiveTvGuide extends ConsumerStatefulWidget {
   final ChannelModel? currentChannel;
@@ -83,19 +83,12 @@ class _LiveTvGuideState extends ConsumerState<LiveTvGuide> {
     _isSyncingScroll = true;
     final offset = source.offset;
 
-    final allControllers = [
-      widget.horizontalScrollController,
-      ..._channelScrollControllers,
-    ];
+    final allControllers = [widget.horizontalScrollController, ..._channelScrollControllers];
 
     for (var controller in allControllers) {
       if (controller != source && controller.hasClients && controller.offset != offset) {
         if (animate) {
-          controller.animateTo(
-            offset,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
+          controller.animateTo(offset, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
         } else {
           controller.jumpTo(offset);
         }
@@ -152,9 +145,7 @@ class _LiveTvGuideState extends ConsumerState<LiveTvGuide> {
     final timeLabels = _generateTimeLabels(startDate, endDate, 30);
 
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
       width: double.infinity,
       child: Stack(
         children: [
@@ -217,10 +208,7 @@ class _LiveTvGuideState extends ConsumerState<LiveTvGuide> {
                                       child: channel.images != null
                                           ? AspectRatio(
                                               aspectRatio: 1,
-                                              child: FladderImage(
-                                                image: channel.images?.primary,
-                                                fit: BoxFit.contain,
-                                              ),
+                                              child: DriftfinImage(image: channel.images?.primary, fit: BoxFit.contain),
                                             )
                                           : const Icon(Icons.tv),
                                     ),
@@ -289,13 +277,18 @@ class _LiveTvGuideState extends ConsumerState<LiveTvGuide> {
           AnimatedBuilder(
             animation: widget.horizontalScrollController,
             builder: (context, child) {
-              final scrollOffset =
-                  widget.horizontalScrollController.hasClients ? widget.horizontalScrollController.offset : 0.0;
+              final scrollOffset = widget.horizontalScrollController.hasClients
+                  ? widget.horizontalScrollController.offset
+                  : 0.0;
               final start = (GuideConstants.leftColumnWidth + nowLeft - scrollOffset);
-              final lineStart =
-                  start.clamp(GuideConstants.leftColumnWidth, GuideConstants.leftColumnWidth + timelineWidth);
-              final bubbleStart =
-                  (start - 24).clamp(GuideConstants.leftColumnWidth, GuideConstants.leftColumnWidth + timelineWidth);
+              final lineStart = start.clamp(
+                GuideConstants.leftColumnWidth,
+                GuideConstants.leftColumnWidth + timelineWidth,
+              );
+              final bubbleStart = (start - 24).clamp(
+                GuideConstants.leftColumnWidth,
+                GuideConstants.leftColumnWidth + timelineWidth,
+              );
               return Stack(
                 children: [
                   PositionedDirectional(
@@ -303,10 +296,7 @@ class _LiveTvGuideState extends ConsumerState<LiveTvGuide> {
                     top: 0,
                     bottom: 0,
                     child: IgnorePointer(
-                      child: Container(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.primary.withAlpha(200),
-                      ),
+                      child: Container(width: 2, color: Theme.of(context).colorScheme.primary.withAlpha(200)),
                     ),
                   ),
                   PositionedDirectional(
@@ -314,16 +304,11 @@ class _LiveTvGuideState extends ConsumerState<LiveTvGuide> {
                     top: 0,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-                      decoration: BoxDecoration(
-                        color: Colors.black87,
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
+                      decoration: BoxDecoration(color: Colors.black87, borderRadius: BorderRadius.circular(4.0)),
                       child: Text(
                         "${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -345,9 +330,11 @@ List<DateTime> _generateTimeLabels(DateTime start, DateTime end, int intervalMin
   }
 
   final labels = <DateTime>[];
-  for (var t = alignToInterval(start);
-      t.isBefore(end.add(const Duration(minutes: 1)));
-      t = t.add(Duration(minutes: intervalMinutes))) {
+  for (
+    var t = alignToInterval(start);
+    t.isBefore(end.add(const Duration(minutes: 1)));
+    t = t.add(Duration(minutes: intervalMinutes))
+  ) {
     labels.add(t);
   }
   return labels;
