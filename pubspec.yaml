@@ -164,6 +164,13 @@ dependencies:
   uuid: any
 # Playback forks are pinned until their native behavior is verified against upstream.
 dependency_overrides:
+  # Bonsoir 6.1.0 omits Foundation under SPM. Pin its upstream fix; Bonsoir 7
+  # changes the service.host field that cast_plus 2.2.0 uses for discovery.
+  bonsoir_darwin:
+    git:
+      url: https://github.com/Skyost/Bonsoir.git
+      ref: ce155549130e0337ed3fd9a34a4cffafe70797f5
+      path: packages/bonsoir_darwin
   pip:
     git:
       url: https://github.com/DonutWare/pip.git
@@ -210,6 +217,7 @@ dependency_overrides:
       path: libs/linux/media_kit_libs_linux
 
 dev_dependencies:
+  yaml: ^3.1.3 # Release workflow regression tests.
   local_auth_platform_interface: ^1.1.0
   flutter_test:
     sdk: flutter
@@ -241,7 +249,8 @@ dev_dependencies:
   dart_mappable_builder: ^4.5.0
   auto_route_generator: ^10.2.3
   icons_launcher: ^3.0.2
-  pigeon: ^29.0.2
+  # Pigeon 28+ changes native callbacks to coroutines; migrate callers before upgrading.
+  pigeon: 27.3.2
 
 flutter:
   # The following line ensures that the Material Icons font is
