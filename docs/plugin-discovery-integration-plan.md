@@ -60,8 +60,14 @@ Status: implementation in progress. Updated 2026-09-19.
   Focused client tests (42), backend tests (83), script checks (8), and the full
   combined smoke fixture pass; analysis is clean. The migration checkpoint full
   suite passes 1,676 tests with three credential-dependent skips.
-- Still required: complete arr/Trakt provenance and preference/export migration,
-  deployed arr-version
+- Arr and Trakt now record credential provenance. Unknown stored credentials
+  remain visible but inactive until explicitly confirmed; known plugin copies
+  are removed from local preferences and inactive accounts. Manual settings
+  survive managed overlays. Legacy Trakt OAuth sessions cannot persist server
+  secrets or overwrite a personal application's tokens; changing applications
+  invalidates tokens and late OAuth results. Export tests verify that account,
+  integration and OAuth secrets are excluded from the settings backup.
+- Still required: deployed arr-version
   verification before rollout, platform gates, final regression/coverage, and PR
   review. No feature release or merge has been performed.
 

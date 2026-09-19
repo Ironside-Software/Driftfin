@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:driftfin/util/managed_arr_client.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 
@@ -216,6 +217,7 @@ class SonarrSettings {
   final String baseUrl;
   final String apiKey;
   final bool enabled;
+  final CredentialOrigin origin;
 
   /// True when these values come from the Driftfin server plugin. Transient —
   /// never persisted — so the user's local config survives plugin removal.
@@ -227,26 +229,41 @@ class SonarrSettings {
     this.baseUrl = '',
     this.apiKey = '',
     this.enabled = false,
+    this.origin = CredentialOrigin.unknown,
     this.managed = false,
     this.viaPlugin = false,
   });
 
-  bool get isConfigured => enabled && (viaPlugin || baseUrl.trim().isNotEmpty && apiKey.trim().isNotEmpty);
+  bool get isConfigured =>
+      enabled &&
+      (viaPlugin ||
+          (managed || origin == CredentialOrigin.manual) && baseUrl.trim().isNotEmpty && apiKey.trim().isNotEmpty);
 
-  SonarrSettings copyWith({String? baseUrl, String? apiKey, bool? enabled, bool? managed}) => SonarrSettings(
-    baseUrl: baseUrl ?? this.baseUrl,
-    apiKey: apiKey ?? this.apiKey,
-    enabled: enabled ?? this.enabled,
-    managed: managed ?? this.managed,
-    viaPlugin: viaPlugin,
-  );
+  SonarrSettings copyWith({String? baseUrl, String? apiKey, bool? enabled, bool? managed, CredentialOrigin? origin}) =>
+      SonarrSettings(
+        baseUrl: baseUrl ?? this.baseUrl,
+        apiKey: apiKey ?? this.apiKey,
+        enabled: enabled ?? this.enabled,
+        managed: managed ?? this.managed,
+        viaPlugin: viaPlugin,
+        origin: origin ?? this.origin,
+      );
 
-  Map<String, dynamic> toJson() => {'baseUrl': baseUrl, 'apiKey': apiKey, 'enabled': enabled};
+  Map<String, dynamic> toJson() => {
+    'baseUrl': managed || origin == CredentialOrigin.plugin ? '' : baseUrl,
+    'apiKey': managed || origin == CredentialOrigin.plugin ? '' : apiKey,
+    'enabled': enabled,
+    'origin': origin.name,
+  };
 
   factory SonarrSettings.fromJson(Map<String, dynamic> json) => SonarrSettings(
     baseUrl: json['baseUrl'] as String? ?? '',
     apiKey: json['apiKey'] as String? ?? '',
     enabled: json['enabled'] as bool? ?? false,
+    origin: CredentialOrigin.values.firstWhere(
+      (value) => value.name == json['origin'],
+      orElse: () => CredentialOrigin.unknown,
+    ),
   );
 }
 
@@ -268,6 +285,7 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
   late final http.Client _client;
 
   static SonarrSettings _initialState(Ref ref) {
+    final local = _load(ref);
     if (ref.read(managedIntegrationsProvider)) {
       final capabilities = ref.read(serverIntegrationConfigProvider)?.capabilities;
       return SonarrSettings(
@@ -287,14 +305,19 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
         managed: true,
       );
     }
-    return _load(ref);
+    return local;
   }
 
   static SonarrSettings _load(Ref ref) {
     try {
       final raw = ref.read(sharedPreferencesProvider).getString(_sonarrSettingsKey);
       if (raw == null || raw.isEmpty) return const SonarrSettings();
-      return SonarrSettings.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      final saved = SonarrSettings.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      if (saved.origin == CredentialOrigin.plugin) {
+        ref.read(sharedPreferencesProvider).remove(_sonarrSettingsKey);
+        return const SonarrSettings();
+      }
+      return saved;
     } catch (_) {
       return const SonarrSettings();
     }
@@ -316,7 +339,7 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
 
   void setApiKey(String value) {
     if (state.managed) return;
-    state = state.copyWith(apiKey: value.trim());
+    state = state.copyWith(apiKey: value.trim(), origin: CredentialOrigin.manual);
     _persist();
   }
 

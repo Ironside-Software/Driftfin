@@ -1,3 +1,5 @@
+import 'package:driftfin/models/seerr_credentials_model.dart';
+
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -22,14 +24,26 @@ void main() {
 
   group('SonarrSettings', () {
     test('isConfigured requires enabled + url + key', () {
-      expect(const SonarrSettings(enabled: true, baseUrl: 'x', apiKey: 'k').isConfigured, isTrue);
-      expect(const SonarrSettings(enabled: false, baseUrl: 'x', apiKey: 'k').isConfigured, isFalse);
-      expect(const SonarrSettings(enabled: true, baseUrl: '', apiKey: 'k').isConfigured, isFalse);
-      expect(const SonarrSettings(enabled: true, baseUrl: 'x', apiKey: '').isConfigured, isFalse);
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: 'x', apiKey: 'k').isConfigured,
+        isTrue,
+      );
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: false, baseUrl: 'x', apiKey: 'k').isConfigured,
+        isFalse,
+      );
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: '', apiKey: 'k').isConfigured,
+        isFalse,
+      );
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: 'x', apiKey: '').isConfigured,
+        isFalse,
+      );
     });
 
     test('json round-trip', () {
-      const settings = SonarrSettings(enabled: true, baseUrl: 'http://h', apiKey: 'k');
+      const settings = SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: 'http://h', apiKey: 'k');
       final restored = SonarrSettings.fromJson(settings.toJson());
       expect(restored.enabled, isTrue);
       expect(restored.baseUrl, 'http://h');

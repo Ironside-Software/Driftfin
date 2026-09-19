@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:driftfin/models/account_model.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/models/last_seen_notifications_model.dart';
 import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/models/settings/home_settings_model.dart';
@@ -137,7 +138,13 @@ class SharedHelper {
   List<AccountModel> getAccounts() {
     final savedAccounts = sharedPreferences.getStringList(SharedKeys._loginCredentialsKey);
     try {
-      return savedAccounts != null ? savedAccounts.map((e) => AccountModel.fromJson(jsonDecode(e))).toList() : [];
+      final accounts = savedAccounts?.map((value) => AccountModel.fromJson(jsonDecode(value))).toList() ?? [];
+      if (accounts.any((account) => account.seerrCredentials?.origin == CredentialOrigin.plugin)) {
+        final cleaned = accounts.map(_withoutPluginCredentials).toList();
+        unawaited(saveAccounts(cleaned));
+        return cleaned;
+      }
+      return accounts;
     } catch (_, stacktrace) {
       log(stacktrace.toString());
       return [];
@@ -159,8 +166,13 @@ class SharedHelper {
     }
   }
 
-  Future<bool?> saveAccounts(List<AccountModel> accounts) async =>
-      sharedPreferences.setStringList(SharedKeys._loginCredentialsKey, accounts.map((e) => jsonEncode(e)).toList());
+  static AccountModel _withoutPluginCredentials(AccountModel account) =>
+      account.seerrCredentials?.origin == CredentialOrigin.plugin ? account.copyWith(seerrCredentials: null) : account;
+
+  Future<bool?> saveAccounts(List<AccountModel> accounts) async => sharedPreferences.setStringList(
+    SharedKeys._loginCredentialsKey,
+    accounts.map((account) => jsonEncode(_withoutPluginCredentials(account))).toList(),
+  );
 
   ClientSettingsModel get clientSettings {
     try {

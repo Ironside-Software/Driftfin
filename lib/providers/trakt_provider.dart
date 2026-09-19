@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:driftfin/models/item_base_model.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/models/items/episode_model.dart';
 import 'package:driftfin/models/items/movie_model.dart';
 import 'package:driftfin/models/items/series_model.dart';
@@ -238,6 +239,7 @@ class TraktSettings {
   final String clientId;
   final String clientSecret;
   final bool enabled;
+  final CredentialOrigin origin;
   final TraktTokens? tokens;
 
   /// True when the client id/secret come from the Driftfin server plugin.
@@ -249,11 +251,13 @@ class TraktSettings {
     this.clientId = '',
     this.clientSecret = '',
     this.enabled = false,
+    this.origin = CredentialOrigin.unknown,
     this.tokens,
     this.managed = false,
   });
 
-  bool get hasCredentials => clientId.trim().isNotEmpty && clientSecret.trim().isNotEmpty;
+  bool get hasCredentials =>
+      (managed || origin == CredentialOrigin.manual) && clientId.trim().isNotEmpty && clientSecret.trim().isNotEmpty;
   bool get isAuthenticated => tokens != null && tokens!.accessToken.isNotEmpty;
   bool get isActive => enabled && hasCredentials && isAuthenticated;
 
@@ -263,6 +267,7 @@ class TraktSettings {
     bool? enabled,
     TraktTokens? tokens,
     bool? managed,
+    CredentialOrigin? origin,
     bool clearTokens = false,
   }) => TraktSettings(
     clientId: clientId ?? this.clientId,
@@ -270,19 +275,25 @@ class TraktSettings {
     enabled: enabled ?? this.enabled,
     tokens: clearTokens ? null : (tokens ?? this.tokens),
     managed: managed ?? this.managed,
+    origin: origin ?? this.origin,
   );
 
   Map<String, dynamic> toJson() => {
-    'clientId': clientId,
-    'clientSecret': clientSecret,
+    'clientId': managed || origin == CredentialOrigin.plugin ? '' : clientId,
+    'clientSecret': managed || origin == CredentialOrigin.plugin ? '' : clientSecret,
     'enabled': enabled,
-    'tokens': tokens?.toJson(),
+    'tokens': managed || origin == CredentialOrigin.plugin ? null : tokens?.toJson(),
+    'origin': origin.name,
   };
 
   factory TraktSettings.fromJson(Map<String, dynamic> json) => TraktSettings(
     clientId: json['clientId'] as String? ?? '',
     clientSecret: json['clientSecret'] as String? ?? '',
     enabled: json['enabled'] as bool? ?? false,
+    origin: CredentialOrigin.values.firstWhere(
+      (value) => value.name == json['origin'],
+      orElse: () => CredentialOrigin.unknown,
+    ),
     tokens: json['tokens'] == null ? null : TraktTokens.fromJson(json['tokens'] as Map<String, dynamic>),
   );
 }
@@ -306,12 +317,14 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
     final local = _load(ref);
     final server = ref.read(serverIntegrationConfigProvider)?.trakt;
     if (server != null && server.isManaged) {
-      // Overlay server credentials but keep the user's local OAuth tokens.
+      // OAuth tokens belong to their client application, not a replacement server app.
       return local.copyWith(
         clientId: server.clientId.trim(),
         clientSecret: server.clientSecret.trim(),
         enabled: true,
         managed: true,
+        origin: CredentialOrigin.plugin,
+        clearTokens: local.origin != CredentialOrigin.manual || local.clientId != server.clientId.trim(),
       );
     }
     return local;
@@ -321,28 +334,34 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
     try {
       final raw = ref.read(sharedPreferencesProvider).getString(_traktSettingsKey);
       if (raw == null || raw.isEmpty) return const TraktSettings();
-      return TraktSettings.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      final saved = TraktSettings.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      if (saved.origin == CredentialOrigin.plugin) {
+        ref.read(sharedPreferencesProvider).remove(_traktSettingsKey);
+        return const TraktSettings();
+      }
+      return saved;
     } catch (_) {
       return const TraktSettings();
     }
   }
 
-  /// Overlays server-managed credentials (keeping local tokens), or reverts to
-  /// local prefs when the plugin no longer manages Trakt.
+  /// Rebuild from saved manual settings when the server application changes.
   void _applyServer(TraktServerConfig? server) {
-    if (server != null && server.isManaged) {
-      state = state.copyWith(
-        clientId: server.clientId.trim(),
-        clientSecret: server.clientSecret.trim(),
-        enabled: true,
-        managed: true,
-      );
-    } else if (state.managed) {
-      state = _load(ref);
+    if (state.managed &&
+        server?.isManaged == true &&
+        state.clientId == server!.clientId.trim() &&
+        state.clientSecret == server.clientSecret.trim()) {
+      return;
     }
+    state = _initialState(ref);
   }
 
-  void _persist() => ref.read(sharedPreferencesProvider).setString(_traktSettingsKey, jsonEncode(state.toJson()));
+  void _persist() {
+    // Legacy server-app sessions stay in memory; never overwrite a personal app
+    // or persist server secrets. New managed plugins require personal Trakt setup.
+    if (state.managed) return;
+    ref.read(sharedPreferencesProvider).setString(_traktSettingsKey, jsonEncode(state.toJson()));
+  }
 
   void setEnabled(bool value) {
     if (state.managed) return;
@@ -352,13 +371,13 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
 
   void setClientId(String value) {
     if (state.managed) return;
-    state = state.copyWith(clientId: value.trim());
+    state = state.copyWith(clientId: value.trim(), clearTokens: value.trim() != state.clientId);
     _persist();
   }
 
   void setClientSecret(String value) {
     if (state.managed) return;
-    state = state.copyWith(clientSecret: value.trim());
+    state = state.copyWith(clientSecret: value.trim(), origin: CredentialOrigin.manual, clearTokens: true);
     _persist();
   }
 
@@ -378,7 +397,10 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
   }
 
   Future<TraktPollResult> pollDeviceToken(String deviceCode) async {
+    if (!state.hasCredentials) return const TraktPollResult(TraktPollStatus.invalid);
+    final snapshot = state;
     final result = await _api().pollDeviceToken(deviceCode);
+    if (!mounted || !identical(state, snapshot)) return const TraktPollResult(TraktPollStatus.invalid);
     if (result.status == TraktPollStatus.success && result.tokens != null) {
       state = state.copyWith(tokens: result.tokens, enabled: true);
       _persist();
@@ -388,10 +410,12 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
 
   /// Returns a usable access token, refreshing if needed. Null if not logged in.
   Future<String?> _validAccessToken(int nowSeconds) async {
+    final snapshot = state;
     final tokens = state.tokens;
     if (tokens == null || tokens.accessToken.isEmpty) return null;
     if (!tokens.expiredAt(nowSeconds)) return tokens.accessToken;
     final refreshed = await _api().refresh(tokens.refreshToken);
+    if (!mounted || !identical(state, snapshot)) return null;
     if (refreshed == null) return tokens.accessToken; // fall back to current
     state = state.copyWith(tokens: refreshed);
     _persist();
@@ -412,7 +436,7 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
   }) async {
     if (!state.isActive || ref.read(incognitoProvider)) return;
     final token = await _validAccessToken(nowSeconds);
-    if (token == null) return;
+    if (token == null || !mounted || !state.isActive || state.tokens?.accessToken != token) return;
     final api = _api(accessToken: token);
     try {
       if (item is MovieModel) {
@@ -428,7 +452,7 @@ class TraktNotifier extends StateNotifier<TraktSettings> {
           showIds = series is SeriesModel ? traktIdsFromProviderIds(series.providerIds) : {};
           _showIdsCache[seriesId] = showIds;
         }
-        if (showIds.isEmpty) return;
+        if (!mounted || !state.isActive || state.tokens?.accessToken != token || showIds.isEmpty) return;
         await api.scrobbleEpisodeByShow(
           action,
           showIds: showIds,

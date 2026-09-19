@@ -45,6 +45,8 @@ keys already copied to older clients.
 4. Reconnect integrations whose old local credentials have unknown provenance.
    Personal Trakt OAuth remains local; the new plugin no longer distributes
    Trakt application secrets. Configure a personal Trakt application explicitly.
+   When using an older plugin, server-provided Trakt sessions last for the app
+   session; they never overwrite saved personal Trakt credentials or tokens.
 5. After migration, administrators should rotate previously distributed
    integration keys in each service and update the plugin dashboard. Rotation
    is deliberately manual.
