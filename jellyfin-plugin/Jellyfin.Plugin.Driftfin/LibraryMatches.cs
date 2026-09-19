@@ -76,7 +76,7 @@ namespace Jellyfin.Plugin.Driftfin
                     IsVirtualItem = false, IsMissing = false, IsPlaceHolder = false,
                 }, false).OfType<Episode>();
                 foreach (var group in episodes.GroupBy(episode => episode.ParentIndexNumber ?? 0))
-                    counts[group.Key] = group.Select(episode => episode.IndexNumber).Where(number => number.HasValue).Distinct().Count();
+                    counts[group.Key] = group.SelectMany(EpisodeNumbers).Distinct().Count();
                 var seasons = SeerrResponses.Property(catalog, "seasons");
                 if (seasons.ValueKind == JsonValueKind.Array)
                     foreach (var season in seasons.EnumerateArray()) expected[SeerrResponses.Int(season, "seasonNumber")] = SeerrResponses.Int(season, "episodeCount");
@@ -88,6 +88,16 @@ namespace Jellyfin.Plugin.Driftfin
                 if (counts.Values.Sum() == 0) return _matches[key] = null;
             }
             return _matches[key] = new LibraryMatch(item.Id.ToString("N"), _playable, status, counts, expected);
+        }
+
+        private static IEnumerable<int> EpisodeNumbers(Episode episode)
+        {
+            if (episode.IndexNumber is not int start || start < 0) return Array.Empty<int>();
+            var end = episode.IndexNumberEnd ?? start;
+            // Treat malformed ranges as one episode, never an enormous allocation
+            // or a false claim that every episode is available.
+            var count = (long)end - start + 1;
+            return Enumerable.Range(start, count is > 0 and <= 1000 ? (int)count : 1);
         }
     }
 }

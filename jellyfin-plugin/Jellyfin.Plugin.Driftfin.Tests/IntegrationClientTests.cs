@@ -18,6 +18,27 @@ namespace Jellyfin.Plugin.Driftfin.Tests
         };
 
         [Fact]
+        public async Task LocalSeriesGetEpisodeTotalsEvenWhenSeerrDoesNotTrackThem()
+        {
+            var calls = 0;
+            using var http = new HttpClient(new Handler(request =>
+            {
+                calls++;
+                Assert.EndsWith("/tv/7", request.RequestUri!.AbsolutePath);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(
+                    "{\"id\":7,\"numberOfEpisodes\":2,\"seasons\":[{\"seasonNumber\":1,\"episodeCount\":2}]}") };
+            }));
+            var response = JsonSerializer.Deserialize<JsonElement>("""
+                {"results":[{"id":7,"mediaType":"tv","name":"Owned"},{"id":8,"mediaType":"tv","name":"Unowned"}]}
+                """);
+            var enriched = await new IntegrationClient(http).EnrichCatalogRequests(Config, response,
+                new SeerrIdentity(42, 32), default, item => item.GetProperty("id").GetInt32() == 7);
+            Assert.Equal(1, calls);
+            Assert.Equal(2, enriched.GetProperty("results")[0].GetProperty("numberOfEpisodes").GetInt32());
+            Assert.False(enriched.GetProperty("results")[1].TryGetProperty("numberOfEpisodes", out _));
+        }
+
+        [Fact]
         public void ConfigurationChangesCannotRetargetAnInFlightIdentityLookup()
         {
             var saved = Config;

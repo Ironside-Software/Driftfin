@@ -121,6 +121,8 @@ def main():
             if args.with_seerr:
                 from seerr_smoke import check_seerr
                 check_seerr(request, admin, member, original, info['Id'])
+            from library_smoke import check_library
+            check_library(request, admin, member, original, info['Id'], name, config)
             print('PASS: Jellyfin 12 loads plugin; saved config, admin/user permissions, and SyncPlay membership work.')
         finally:
             subprocess.run(['docker', 'rm', '-f', name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

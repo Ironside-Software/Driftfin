@@ -10,16 +10,16 @@ Status: implementation in progress. Updated 2026-09-19.
 - Plugin capabilities, admin diagnostics, bounded HTTP transport, exact Seerr
   identity/pairing checks, explicit Seerr operations, response projection, and the
   discovery endpoint are implemented. The native library matcher uses provider
-  IDs and user-scoped Jellyfin queries; its populated-library smoke coverage is
-  still required.
+  IDs and user-scoped Jellyfin queries. The populated-library fixture verifies
+  renamed movies, title-only decoys, partial TV, combined-episode files, and
+  playback/folder restrictions on a real Jellyfin 12 server.
 - The disposable Jellyfin 12 + real Seerr 3.4.1 smoke test proves two-user
   attribution, distinct quotas, pending requests, manager-only approval,
   missing mappings, spoofed identity rejection, discovery request state, and
   parental-policy rejection. The test caught and fixed Seerr search omitting
   request ownership; tracked catalog results now fetch detail ownership before
   projection. CI runs this fixture before packaging the plugin.
-  Current backend checkpoint: 65 C# tests, seven Python checks, workflow
-  actionlint, and the live Jellyfin/Seerr smoke test pass.
+  The combined Jellyfin/Seerr/arr/populated-library smoke test passes.
 - The operation inventory test covers every current `SeerrChopperService` route.
   Password/cookie login and logout remain direct-mode-only; managed calls use
   Jellyfin sessions. Managed request ownership is always the caller, so the app's
@@ -35,18 +35,26 @@ Status: implementation in progress. Updated 2026-09-19.
   upstream, then build payloads from a fresh server lookup. A disposable Jellyfin 12
   smoke test with controlled arr upstreams proves admin success, member denial,
   validated destinations, nested response projection, and redacted upstream errors.
-  Current backend checkpoint: 82 C# tests and eight Python checks pass.
-- Frontend checkpoint: the full suite passes 1,650 tests with three
-  credential-dependent skips. Subsequent diagnostics widget/provider checks pass
-  (31 tests), and the Sonarr failure-path suite passes (17 tests). Analysis is
-  clean; combined full-suite and diagnostics coverage is 65% of changed lines
-  against `origin/develop`, above the 60% gate. Re-run the full gate after the
-  remaining search and migration work.
-- Still required: active unified-search UI, complete provenance/export migration
-  (including unknown-origin handling and retirement of legacy secret responses),
-  populated-library matching tests, deployed arr-version verification, platform
-  gates, full regression/coverage, and final PR review. No feature release or merge
-  has been performed.
+  Current backend checkpoint: 83 C# tests and eight Python checks pass.
+- Unified search is implemented in the active `LibrarySearchScreen`: All,
+  Library and Discover scopes, independent source pagination, stable-ID/type
+  deduplication, five availability labels, retry beside working library results,
+  and shared detail/request UI. Scoped and advanced filters stay in Library mode.
+  Query changes, logout/server switches and disposal discard late results. The
+  global library query now paginates and includes provider IDs.
+- The populated-library fixture exposed two TV issues, now fixed: owned series
+  absent from Seerr still need catalog episode totals, and a file containing
+  multiple episodes must count every distinct episode in its range.
+- Frontend checkpoint: 1,672 full-suite tests pass with three credential-dependent
+  skips; analysis is clean and changed-line coverage is 73% against
+  `origin/develop`. Subsequent refresh behavior checks pass (11 widget tests),
+  including refreshing discovery without resubmitting mutations. Detail/request
+  return paths use the same refresh mechanism.
+  Re-run the full gate after migration is complete.
+- Still required: complete provenance/export migration (including unknown-origin
+  handling and retirement of legacy secret responses), deployed arr-version
+  verification before rollout, platform gates, final regression/coverage, and PR
+  review. No feature release or merge has been performed.
 
 ## Agreed scope
 

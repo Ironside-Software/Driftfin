@@ -112,11 +112,11 @@ def check_seerr(request, admin, member, configuration, server_id):
             assert movie['availability'] == 'requested' and not movie['canPlay'] and movie['libraryItemId'] is None
             assert key not in json.dumps(search) and 'serviceUrl' not in json.dumps(search)
             policy = request('/Users/Me', token=member, device='member')['Policy']
-            policy['MaxParentalRating'] = 10
-            request(f'/Users/{member_id}/Policy', policy, token=admin, status=204)
+            request(f'/Users/{member_id}/Policy', dict(policy, MaxParentalRating=10), token=admin, status=204)
             restricted = request('/Driftfin/v1/capabilities', token=member, device='member')
             assert restricted['features']['discovery']['reason'] == 'content_restricted'
             request('/Driftfin/v1/discovery/search?query=Fight%20Club', token=member, device='member', status=403)
+            request(f'/Users/{member_id}/Policy', policy, token=admin, status=204)
             print('PASS: real Seerr 3.4.1 preserves two-user attribution, quotas, approvals and missing mappings.')
         except Exception:
             logs = subprocess.run(['docker', 'logs', '--tail', '80', name], capture_output=True, text=True)

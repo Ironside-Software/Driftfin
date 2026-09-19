@@ -48,10 +48,20 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       textEditingController.text = ref.read(
         librarySearchProvider(widget.key!).select((value) => value.filters.searchQuery),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    debouncer.dispose();
+    textEditingController.dispose();
+    focusNode.dispose();
+    if (widget.suggestionsBoxController == null) suggestionsBoxController.dispose();
+    super.dispose();
   }
 
   @override
@@ -90,6 +100,7 @@ class _SearchBarState extends ConsumerState<SuggestionSearchBar> {
             suggestionsBoxController.close();
           },
           onChanged: (value) {
+            widget.onChanged?.call(value);
             setState(() {
               isEmpty = value.isEmpty;
             });
