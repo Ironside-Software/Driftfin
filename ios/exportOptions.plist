@@ -3,12 +3,19 @@
 <plist version="1.0">
 	<dict>
 		<key>method</key>
-		<string>release-testing</string>
+		<string>app-store</string>
 		<key>compileBitcode</key>
 		<false/>
 		<key>destination</key>
 		<string>export</string>
+		<key>teamID</key>
+		<string>79758DD3NW</string>
 		<key>signingStyle</key>
 		<string>manual</string>
+		<key>provisioningProfiles</key>
+		<dict>
+			<key>app.driftfin.79758DD3NW</key>
+			<string>AppStore app.driftfin.79758DD3NW</string>
+		</dict>
 	</dict>
 </plist>
