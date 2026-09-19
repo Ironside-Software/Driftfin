@@ -10,6 +10,7 @@ import 'package:driftfin/providers/dashboard_mode_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
 import 'package:driftfin/providers/seerr_requests_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/window_title_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
@@ -114,7 +115,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final canDownload = ref.watch(showSyncButtonProviderProvider);
     final isMusicDashboardMode = ref.watch(musicDashboardModeProvider);
-    final seerrAuthenticated = ref.watch(userProvider.select((user) => user?.seerrCredentials?.isConfigured ?? false));
+    final seerrAuthenticated = ref.watch(seerrAvailableProvider);
     final pendingRequests = seerrAuthenticated ? (ref.watch(pendingRequestsCountProvider).value ?? 0) : 0;
     final destinations = HomeTabs.values
         .map((e) {

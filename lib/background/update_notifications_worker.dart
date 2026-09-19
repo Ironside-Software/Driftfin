@@ -8,6 +8,8 @@ import 'package:workmanager/workmanager.dart';
 
 import 'package:driftfin/l10n/generated/app_localizations.dart';
 import 'package:driftfin/models/account_model.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
+import 'package:driftfin/seerr/seerr_chopper_service.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/last_seen_notifications_model.dart';
 import 'package:driftfin/models/notification_model.dart';
@@ -76,7 +78,9 @@ Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck({
       final baseUrl = account.credentials.url.isNotEmpty
           ? account.credentials.url
           : (account.credentials.localUrl ?? '');
-      if (baseUrl.isEmpty && !(account.seerrRequestsEnabled && account.seerrCredentials?.isConfigured == true)) {
+      if (baseUrl.isEmpty &&
+          !(account.seerrRequestsEnabled &&
+              (account.managedIntegrations || account.seerrCredentials?.isConfigured == true))) {
         continue;
       }
 
@@ -99,7 +103,8 @@ Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck({
           accountNotifications.addAll(newNotifications);
         }
 
-        if (account.seerrRequestsEnabled && account.seerrCredentials?.isConfigured == true) {
+        if (account.seerrRequestsEnabled &&
+            (account.managedIntegrations || account.seerrCredentials?.isConfigured == true)) {
           final seerrNotifications = await _fetchAndNotifySeerrRequestsForAccount(
             account,
             l10n,
@@ -196,15 +201,19 @@ Future<List<NotificationModel>> _fetchAndNotifySeerrRequestsForAccount(
   bool debug,
   DateTime lastUpdateCheck,
 ) async {
+  SeerrChopperService? seerrApi;
   try {
-    final seerrCredentials = account.seerrCredentials;
-    if (seerrCredentials == null || !seerrCredentials.isConfigured) return [];
+    final seerrCredentials = account.seerrCredentials ?? const SeerrCredentialsModel();
+    if (!account.managedIntegrations && !seerrCredentials.isConfigured) return [];
 
     final seerrBase = seerrCredentials.serverUrl.endsWith('/')
         ? seerrCredentials.serverUrl.substring(0, seerrCredentials.serverUrl.length - 1)
         : seerrCredentials.serverUrl;
 
-    final seerrApi = NotificationHelpers.createSeerrClient(seerrCredentials);
+    seerrApi = NotificationHelpers.createSeerrClient(
+      seerrCredentials,
+      jellyfin: account.managedIntegrations ? account.credentials : null,
+    );
 
     final newRequests = await NotificationHelpers.fetchSeerrRequests(
       seerrApi,
@@ -262,7 +271,7 @@ Future<List<NotificationModel>> _fetchAndNotifySeerrRequestsForAccount(
       }
     }
 
-    final serverName = seerrCredentials.serverUrl;
+    final serverName = account.managedIntegrations ? account.credentials.serverName : seerrCredentials.serverUrl;
     final summaryText = l10n.notificationNewRequests(seerrNotifications.length);
 
     await NotificationService.showGroupedNotifications(
@@ -274,7 +283,9 @@ Future<List<NotificationModel>> _fetchAndNotifySeerrRequestsForAccount(
 
     return seerrNotifications;
   } catch (e) {
-    log('Error fetching Seerr requests for account ${account.id}: $e');
+    log('Error fetching Seerr requests (${e.runtimeType})');
     return [];
+  } finally {
+    seerrApi?.client.dispose();
   }
 }

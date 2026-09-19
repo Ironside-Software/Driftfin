@@ -7,6 +7,7 @@ import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/external_urls.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
@@ -80,19 +81,20 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
     }
 
     final actions = [
-      ItemActionButton(
-        icon: const Icon(IconsaxPlusBold.discover),
-        label: Text(context.localized.openInSeerr),
-        backgroundColor: Colors.deepPurpleAccent.shade700,
-        action: () {
-          final seerrUrl = ref.read(userProvider.select((value) => value?.seerrCredentials?.serverUrl));
-          if (isTvSeries) {
-            launchUrl(context, '$seerrUrl/tv/${widget.poster.tmdbId}');
-          } else {
-            launchUrl(context, '$seerrUrl/movie/${widget.poster.tmdbId}');
-          }
-        },
-      ),
+      if (!ref.watch(managedIntegrationsProvider))
+        ItemActionButton(
+          icon: const Icon(IconsaxPlusBold.discover),
+          label: Text(context.localized.openInSeerr),
+          backgroundColor: Colors.deepPurpleAccent.shade700,
+          action: () {
+            final seerrUrl = ref.read(userProvider.select((value) => value?.seerrCredentials?.serverUrl));
+            if (isTvSeries) {
+              launchUrl(context, '$seerrUrl/tv/${widget.poster.tmdbId}');
+            } else {
+              launchUrl(context, '$seerrUrl/movie/${widget.poster.tmdbId}');
+            }
+          },
+        ),
       if (itemModel != null)
         ItemActionButton(
           icon: Icon(itemModel.type.icon),

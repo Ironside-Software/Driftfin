@@ -25,10 +25,28 @@ Status: implementation in progress. Updated 2026-09-19.
   Jellyfin sessions. Managed request ownership is always the caller, so the app's
   on-behalf-of user selector must be hidden in managed mode. Advanced profiles,
   tags and opaque folder IDs are validated against saved service options.
-- Still required: app status UI/lifecycle, Sonarr/Radarr adapters, managed app and
-  background-worker transports, active unified-search UI, migration/provenance,
-  populated-library matching tests, platform gates, full regression/coverage, and
-  final PR review. No feature release or merge has been performed.
+- App capability/status UI, administrator connection checks, managed Seerr and
+  background-worker transports, and account-bound Sonarr/Radarr transports are
+  implemented. Re-login preserves the migrated-account marker and manual settings;
+  known plugin-injected Seerr credentials are removed when managed mode activates.
+  Account-switch, local-address, missing/old-plugin, and managed-header tests pass.
+- Sonarr/Radarr routes cover the existing client operation inventory. Add operations
+  resolve opaque root-folder IDs and approved quality profiles against the saved
+  upstream, then build payloads from a fresh server lookup. A disposable Jellyfin 12
+  smoke test with controlled arr upstreams proves admin success, member denial,
+  validated destinations, nested response projection, and redacted upstream errors.
+  Current backend checkpoint: 82 C# tests and eight Python checks pass.
+- Frontend checkpoint: the full suite passes 1,650 tests with three
+  credential-dependent skips. Subsequent diagnostics widget/provider checks pass
+  (31 tests), and the Sonarr failure-path suite passes (17 tests). Analysis is
+  clean; combined full-suite and diagnostics coverage is 65% of changed lines
+  against `origin/develop`, above the 60% gate. Re-run the full gate after the
+  remaining search and migration work.
+- Still required: active unified-search UI, complete provenance/export migration
+  (including unknown-origin handling and retirement of legacy secret responses),
+  populated-library matching tests, deployed arr-version verification, platform
+  gates, full regression/coverage, and final PR review. No feature release or merge
+  has been performed.
 
 ## Agreed scope
 
