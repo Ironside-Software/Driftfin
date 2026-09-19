@@ -192,6 +192,9 @@ void main() {
         await Future<void>.delayed(Duration.zero);
         subscription.close();
         await container.pump();
+        expect(container.exists(seerrUserProvider), isTrue, reason: 'Awaited work keeps the profile alive');
+        container.invalidate(seerrUserProvider);
+        await container.pump();
         expect(container.exists(seerrUserProvider), isFalse);
 
         if (fail) {

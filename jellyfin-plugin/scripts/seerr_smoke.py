@@ -14,7 +14,6 @@ def check_seerr(request, admin, member, configuration, server_id):
     name = 'driftfin-seerr-test-' + secrets.token_hex(4)
     with tempfile.TemporaryDirectory(prefix='driftfin-seerr-test-') as directory:
         root = Path(directory)
-        root.chmod(0o777)  # Disposable fixture; the image runs as its own node UID.
         key = secrets.token_urlsafe(32)
         settings = {
             'main': {'apiKey': key, 'mediaServerType': 2, 'versionCheck': False},
@@ -22,9 +21,10 @@ def check_seerr(request, admin, member, configuration, server_id):
             'jellyfin': {'serverId': server_id, 'apiKey': secrets.token_urlsafe(32)},
         }
         (root / 'settings.json').write_text(json.dumps(settings))
-        (root / 'settings.json').chmod(0o666)
+        (root / 'settings.json').chmod(0o600)
         try:
             subprocess.run(['docker', 'run', '-d', '--name', name,
+                            '--user', f'{os.getuid()}:{os.getgid()}',
                             '-p', '127.0.0.1::5055', '-v', f'{root}:/app/config',
                             'ghcr.io/seerr-team/seerr:v3.4.1'], check=True, stdout=subprocess.DEVNULL)
             port = subprocess.check_output(['docker', 'port', name, '5055'], text=True).strip().split(':')[-1]
@@ -53,6 +53,9 @@ def check_seerr(request, admin, member, configuration, server_id):
             manager_id = request('/Users/New', {'Name': 'request-manager', 'Password': password}, token=admin)['Id']
             manager = request('/Users/AuthenticateByName', {'Username': 'request-manager', 'Pw': password},
                               device='manager')['AccessToken']
+            four_k_id = request('/Users/New', {'Name': 'four-k', 'Password': password}, token=admin)['Id']
+            four_k = request('/Users/AuthenticateByName', {'Username': 'four-k', 'Pw': password},
+                             device='four-k')['AccessToken']
             request('/Users/New', {'Name': 'unlinked', 'Password': password}, token=admin)
             unlinked = request('/Users/AuthenticateByName', {'Username': 'unlinked', 'Pw': password},
                                device='unlinked')['AccessToken']
@@ -64,6 +67,7 @@ def check_seerr(request, admin, member, configuration, server_id):
                     (42, member_id, 32, 1),
                     (43, admin_id, 32, 2),
                     (44, manager_id, 32 | 16, 0),
+                    (45, four_k_id, 2048, 2),
                 ):
                     database.execute('INSERT INTO "user" (id,email,username,avatar,permissions,userType,jellyfinUserId,'
                                      'movieQuotaLimit,movieQuotaDays) VALUES (?,?,?,?,?,?,?,?,?)',
@@ -106,6 +110,11 @@ def check_seerr(request, admin, member, configuration, server_id):
             approved = request(prefix + f'/request/{first["id"]}/approve', {}, token=manager, device='manager')
             assert approved['status'] == 2 and approved['modifiedBy']['id'] == 44
             assert approved['requestedBy']['id'] == 42
+            request(prefix + '/request', {'mediaType': 'movie', 'mediaId': 550, 'is4k': False},
+                    token=four_k, device='four-k', status=403)
+            four_k_request = request(prefix + '/request', {'mediaType': 'movie', 'mediaId': 550, 'is4k': True},
+                                     token=four_k, device='four-k')
+            assert four_k_request['is4k'] is True and four_k_request['requestedBy']['id'] == 45
             request(prefix + '/settings/main', token=member, device='member', status=404)
             search = request('/Driftfin/v1/discovery/search?query=Fight%20Club', token=member, device='member')
             movie = next(item for item in search['results'] if item['tmdbId'] == 550 and item['mediaType'] == 'movie')

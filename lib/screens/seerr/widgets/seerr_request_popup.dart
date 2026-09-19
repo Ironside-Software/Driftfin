@@ -102,7 +102,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                   mainAxisSize: MainAxisSize.min,
                   spacing: 8,
                   children: [
-                    AutoApproveBanner(user: currentUser, isTv: requestState.isTv),
+                    AutoApproveBanner(user: currentUser, isTv: requestState.isTv, is4k: requestState.use4k),
                     if (requestState.activeQuota != null && requestState.activeQuota?.hasRestrictions == true)
                       QuotaLimitCard(quota: requestState.activeQuota!, type: model.type),
                     Row(
@@ -270,6 +270,14 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                         ),
                       ],
                     ),
+                    if (requestState.has4k && currentUser?.canRequestMedia(isTv: requestState.isTv, is4k: true) == true)
+                      SwitchListTile.adaptive(
+                        title: const Text('4K'),
+                        value: requestState.use4k,
+                        onChanged: currentUser?.canRequestMedia(isTv: requestState.isTv, is4k: false) == true
+                            ? notifier.toggle4k
+                            : null,
+                      ),
                     if (model.type == SeerrMediaType.tvshow && seasons.isNotEmpty) ...[
                       const Divider(),
                       SeerrSeasonsSection(

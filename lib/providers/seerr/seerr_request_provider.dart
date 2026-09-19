@@ -1,5 +1,6 @@
 import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,6 +8,7 @@ import 'package:driftfin/models/api_result.dart';
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
+import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/seerr_helpers.dart';
 
@@ -16,99 +18,121 @@ part 'seerr_request_provider.g.dart';
 @riverpod
 class SeerrRequest extends _$SeerrRequest {
   late final api = ref.read(seerrApiProvider);
+  int _generation = 0;
+
+  bool _isCurrent(int generation) => ref.mounted && generation == _generation;
 
   @override
   SeerrRequestModel build() {
+    _generation++;
+    ref.watch(userProvider.select((user) => (user?.id, user?.credentials.serverId, user?.credentials.token)));
     return SeerrRequestModel();
   }
 
   Future<void> initialize(SeerrDashboardPosterModel poster) async {
-    state = state.copyWith(poster: poster);
+    final generation = ++_generation;
+    try {
+      state = SeerrRequestModel(poster: poster);
 
-    final currentUserBody = await ref.read(seerrUserProvider.notifier).refreshUser();
-    final isTv = poster.type == SeerrMediaType.tvshow;
+      final currentUserBody = await ref.read(seerrUserProvider.notifier).refreshUser();
+      if (!_isCurrent(generation)) return;
+      final isTv = poster.type == SeerrMediaType.tvshow;
+      final use4k =
+          currentUserBody?.canRequestMedia(isTv: isTv, is4k: false) != true &&
+          currentUserBody?.canRequestMedia(isTv: isTv, is4k: true) == true;
+      state = state.copyWith(currentUser: currentUserBody, selectedUser: currentUserBody, use4k: use4k);
 
-    SeerrDashboardPosterModel updatedPoster = poster;
-    if (isTv) {
-      final tvDetailsResponse = await api.tvDetails(tvId: poster.tmdbId);
-      if (tvDetailsResponse.isSuccessful && tvDetailsResponse.body != null) {
-        final details = tvDetailsResponse.body!;
+      SeerrDashboardPosterModel updatedPoster = poster;
+      if (isTv) {
+        final tvDetailsResponse = await api.tvDetails(tvId: poster.tmdbId);
+        if (!_isCurrent(generation)) return;
+        if (tvDetailsResponse.isSuccessful && tvDetailsResponse.body != null) {
+          final details = tvDetailsResponse.body!;
 
-        final isAnime = SeerrHelpers.isAnime(details);
-        final seasonStatusMap = SeerrHelpers.buildSeasonStatusMap(details);
+          final isAnime = SeerrHelpers.isAnime(details);
+          final seasonStatusMap = SeerrHelpers.buildSeasonStatusMap(details, is4k: state.use4k);
 
-        updatedPoster = poster.copyWith(
-          seasons: details.seasons,
-          seasonStatuses: seasonStatusMap.isEmpty ? poster.seasonStatuses : seasonStatusMap,
-          mediaInfo: details.mediaInfo,
+          updatedPoster = poster.copyWith(
+            seasons: details.seasons,
+            seasonStatuses: seasonStatusMap.isEmpty ? poster.seasonStatuses : seasonStatusMap,
+            mediaInfo: details.mediaInfo,
+          );
+          final userRegion = currentUserBody?.settings?.discoverRegion ?? 'US';
+          final contentRating = SeerrHelpers.extractContentRating(details.contentRatings, userRegion);
+          state = state.copyWith(
+            poster: updatedPoster,
+            isAnime: isAnime,
+            genres: details.genres ?? [],
+            voteAverage: details.voteAverage,
+            contentRating: contentRating,
+            releaseDate: details.firstAirDate,
+          );
+        }
+      } else if (!isTv) {
+        final movieDetailsResponse = await api.movieDetails(tmdbId: poster.tmdbId);
+        if (!_isCurrent(generation)) return;
+        if (movieDetailsResponse.isSuccessful && movieDetailsResponse.body != null) {
+          final details = movieDetailsResponse.body!;
+          updatedPoster = poster.copyWith(mediaInfo: details.mediaInfo);
+          final userRegion = currentUserBody?.settings?.discoverRegion ?? 'US';
+          final contentRating = SeerrHelpers.extractContentRating(details.contentRatings, userRegion);
+          state = state.copyWith(
+            poster: updatedPoster,
+            genres: details.genres ?? [],
+            voteAverage: details.voteAverage,
+            contentRating: contentRating,
+            releaseDate: details.releaseDate,
+          );
+        }
+      }
+
+      if (isTv) {
+        _initializeSeasonSelection(updatedPoster);
+      }
+
+      await _loadQuotaForUser(currentUserBody?.id, force: true);
+      if (!_isCurrent(generation)) return;
+
+      if (isTv) {
+        final loaded = await api.sonarrServers();
+        if (!_isCurrent(generation)) return;
+        final servers = loaded
+            .where((server) => currentUserBody?.canRequestMedia(isTv: isTv, is4k: server.is4k == true) == true)
+            .toList();
+        final nextState = state.copyWith(sonarrServers: servers, use4k: state.use4k);
+        final selectedServer = nextState.activeSonarr;
+        state = nextState.copyWith(
+          selectedSonarrServer: selectedServer,
+          selectedProfile: nextState.pickProfileForServer(selectedServer),
+          selectedRootFolder: nextState.pickRootFolderForServer(selectedServer),
+          currentUser: currentUserBody,
+          selectedUser: currentUserBody,
         );
-        final userRegion = currentUserBody?.settings?.discoverRegion ?? 'US';
-        final contentRating = SeerrHelpers.extractContentRating(details.contentRatings, userRegion);
-        state = state.copyWith(
-          poster: updatedPoster,
-          isAnime: isAnime,
-          genres: details.genres ?? [],
-          voteAverage: details.voteAverage,
-          contentRating: contentRating,
-          releaseDate: details.firstAirDate,
+      } else {
+        final loaded = await api.radarrServers();
+        if (!_isCurrent(generation)) return;
+        final servers = loaded
+            .where((server) => currentUserBody?.canRequestMedia(isTv: isTv, is4k: server.is4k == true) == true)
+            .toList();
+        final nextState = state.copyWith(radarrServers: servers, use4k: state.use4k);
+        final selectedServer = nextState.activeRadarr;
+        state = nextState.copyWith(
+          selectedRadarrServer: selectedServer,
+          selectedProfile: nextState.pickProfileForServer(selectedServer),
+          selectedRootFolder: nextState.pickRootFolderForServer(selectedServer),
+          currentUser: currentUserBody,
+          selectedUser: currentUserBody,
         );
       }
-    } else if (!isTv) {
-      final movieDetailsResponse = await api.movieDetails(tmdbId: poster.tmdbId);
-      if (movieDetailsResponse.isSuccessful && movieDetailsResponse.body != null) {
-        final details = movieDetailsResponse.body!;
-        updatedPoster = poster.copyWith(mediaInfo: details.mediaInfo);
-        final userRegion = currentUserBody?.settings?.discoverRegion ?? 'US';
-        final contentRating = SeerrHelpers.extractContentRating(details.contentRatings, userRegion);
-        state = state.copyWith(
-          poster: updatedPoster,
-          genres: details.genres ?? [],
-          voteAverage: details.voteAverage,
-          contentRating: contentRating,
-          releaseDate: details.releaseDate,
-        );
-      }
-    }
-
-    if (isTv) {
-      _initializeSeasonSelection(updatedPoster);
-    }
-
-    await _loadQuotaForUser(currentUserBody?.id, force: true);
-
-    if (isTv) {
-      final servers = await api.sonarrServers();
-      final nextState = state.copyWith(
-        sonarrServers: servers,
-        use4k: state.use4k && servers.firstWhereOrNull((s) => s.is4k == true) != null,
-      );
-      final selectedServer = nextState.activeSonarr;
-      state = nextState.copyWith(
-        selectedSonarrServer: selectedServer,
-        selectedProfile: nextState.pickProfileForServer(selectedServer),
-        selectedRootFolder: nextState.pickRootFolderForServer(selectedServer),
-        currentUser: currentUserBody,
-        selectedUser: currentUserBody,
-      );
-    } else {
-      final servers = await api.radarrServers();
-      final nextState = state.copyWith(
-        radarrServers: servers,
-        use4k: state.use4k && servers.firstWhereOrNull((s) => s.is4k == true) != null,
-      );
-      final selectedServer = nextState.activeRadarr;
-      state = nextState.copyWith(
-        selectedRadarrServer: selectedServer,
-        selectedProfile: nextState.pickProfileForServer(selectedServer),
-        selectedRootFolder: nextState.pickRootFolderForServer(selectedServer),
-        currentUser: currentUserBody,
-        selectedUser: currentUserBody,
-      );
+    } catch (_) {
+      if (_isCurrent(generation)) rethrow;
     }
   }
 
   Future<void> loadUsers() async {
+    final generation = _generation;
     final users = await api.users();
+    if (!_isCurrent(generation)) return;
     state = state.copyWith(availableUsers: users);
   }
 
@@ -116,7 +140,9 @@ class SeerrRequest extends _$SeerrRequest {
     if (userId == null) return;
     if (!force && state.userQuotas.containsKey(userId)) return;
 
+    final generation = _generation;
     final quota = await api.userQuota(userId: userId);
+    if (!_isCurrent(generation)) return;
     if (quota != null) {
       state = state.copyWith(userQuotas: {...state.userQuotas, userId: quota});
     } else if (force && state.userQuotas.containsKey(userId)) {
@@ -150,8 +176,7 @@ class SeerrRequest extends _$SeerrRequest {
   }
 
   void selectServer(SeerrServer? server) {
-    if (server == null) {
-      state = state.copyWith(use4k: false);
+    if (server == null || state.currentUser?.canRequestMedia(isTv: state.isTv, is4k: server.is4k == true) != true) {
       return;
     }
 
@@ -160,23 +185,24 @@ class SeerrRequest extends _$SeerrRequest {
         selectedSonarrServer: server,
         selectedProfile: state.pickProfileForServer(server),
         selectedRootFolder: state.pickRootFolderForServer(server),
-        use4k: server.is4k == true && state.has4k,
+        use4k: server.is4k == true,
       );
     } else if (server is SeerrRadarrServer) {
       state = state.copyWith(
         selectedRadarrServer: server,
         selectedProfile: state.pickProfileForServer(server),
         selectedRootFolder: state.pickRootFolderForServer(server),
-        use4k: server.is4k == true && state.has4k,
+        use4k: server.is4k == true,
       );
     }
+    if (state.isTv && state.poster != null) _initializeSeasonSelection(state.poster!);
   }
 
   void toggle4k(bool enabled) {
     final poster = state.poster;
-    if (poster == null) return;
-
-    final nextState = state.copyWith(use4k: enabled && state.has4k);
+    if (poster == null || state.currentUser?.canRequestMedia(isTv: state.isTv, is4k: enabled) != true) return;
+    if (enabled && !state.has4k) return;
+    final nextState = state.copyWith(use4k: enabled);
 
     if (poster.type == SeerrMediaType.tvshow) {
       final selectedServer = nextState.activeSonarr;
@@ -193,11 +219,12 @@ class SeerrRequest extends _$SeerrRequest {
         selectedRootFolder: nextState.pickRootFolderForServer(selectedServer),
       );
     }
+    if (state.isTv) _initializeSeasonSelection(poster);
   }
 
   Future<ApiResult<SeerrMediaRequest?>?> submitRequest() async {
     final poster = state.poster;
-    if (poster == null) return null;
+    if (poster == null || !state.canSubmitRequest) return null;
 
     final canOverrideUser = !ref.read(managedIntegrationsProvider) && (state.currentUser?.canManageUsers ?? false);
     final userId = canOverrideUser ? state.selectedUser?.id ?? state.currentUser?.id : null;
@@ -213,7 +240,7 @@ class SeerrRequest extends _$SeerrRequest {
     if (isTv) {
       return (await api.requestSeries(
         tmdbId: poster.tmdbId,
-        is4k: selectedServer?.is4k ?? false,
+        is4k: state.use4k,
         userId: userId,
         serverId: serverId,
         profileId: profileId,
@@ -224,7 +251,7 @@ class SeerrRequest extends _$SeerrRequest {
     } else {
       return (await api.requestMovie(
         tmdbId: poster.tmdbId,
-        is4k: selectedServer?.is4k ?? false,
+        is4k: state.use4k,
         userId: userId,
         serverId: serverId,
         profileId: profileId,
@@ -244,7 +271,10 @@ class SeerrRequest extends _$SeerrRequest {
 
   void _initializeSeasonSelection(SeerrDashboardPosterModel poster) {
     final seasons = poster.seasons ?? const <SeerrSeason>[];
-    final statuses = poster.seasonStatuses ?? const <int, SeerrMediaStatus>{};
+    final statuses = SeerrHelpers.buildSeasonStatusMap(
+      SeerrTvDetails(seasons: poster.seasons, mediaInfo: poster.mediaInfo),
+      is4k: state.use4k,
+    );
 
     final selection = <int, bool>{};
     for (final season in seasons) {
@@ -322,16 +352,7 @@ abstract class SeerrRequestModel with _$SeerrRequestModel {
 
   bool get canDeleteRequest => (currentUser?.canManageRequests ?? false) && activeRequestId != null;
 
-  bool? get hasRequestPermission {
-    final user = currentUser;
-    if (user == null) return null;
-
-    final baseRequest = user.hasPermission(SeerrPermission.request);
-    if (isTv) {
-      return baseRequest || user.hasPermission(SeerrPermission.requestTv);
-    }
-    return baseRequest || user.hasPermission(SeerrPermission.requestMovie);
-  }
+  bool? get hasRequestPermission => currentUser?.canRequestMedia(isTv: isTv, is4k: activeServer?.is4k ?? use4k);
 
   SeerrQuotaEntry? get activeQuota {
     final userId = requestingUser?.id;
@@ -356,12 +377,14 @@ abstract class SeerrRequestModel with _$SeerrRequestModel {
   SeerrRadarrServer? get fourKRadarr => radarrServers.firstWhereOrNull((s) => s.is4k == true);
 
   SeerrSonarrServer? get defaultSonarr =>
-      sonarrServers.firstWhereOrNull((s) => s.isDefault == true) ?? sonarrServers.firstOrNull;
+      sonarrServers.firstWhereOrNull((s) => s.is4k != true && s.isDefault == true) ??
+      sonarrServers.firstWhereOrNull((s) => s.is4k != true);
   SeerrRadarrServer? get defaultRadarr =>
-      radarrServers.firstWhereOrNull((s) => s.isDefault == true) ?? radarrServers.firstOrNull;
+      radarrServers.firstWhereOrNull((s) => s.is4k != true && s.isDefault == true) ??
+      radarrServers.firstWhereOrNull((s) => s.is4k != true);
 
-  SeerrSonarrServer? get activeSonarr => (use4k ? fourKSonarr : null) ?? defaultSonarr ?? fourKSonarr;
-  SeerrRadarrServer? get activeRadarr => (use4k ? fourKRadarr : null) ?? defaultRadarr ?? fourKRadarr;
+  SeerrSonarrServer? get activeSonarr => use4k ? fourKSonarr : defaultSonarr;
+  SeerrRadarrServer? get activeRadarr => use4k ? fourKRadarr : defaultRadarr;
 
   bool get has4k => isTv ? fourKSonarr != null : fourKRadarr != null;
 
@@ -403,7 +426,9 @@ abstract class SeerrRequestModel with _$SeerrRequestModel {
     final currentUserId = currentUser?.id;
     if (currentUserId == null) return true;
 
-    final hasUserRequest = requests.any((request) => request.requestedBy?.id == currentUserId);
+    final hasUserRequest = _activeRequests.any(
+      (request) => request.requestedBy?.id == currentUserId && (request.is4k ?? false) == use4k,
+    );
     return !hasUserRequest;
   }
 

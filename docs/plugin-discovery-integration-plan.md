@@ -67,6 +67,18 @@ Status: implementation in progress. Updated 2026-09-19.
   secrets or overwrite a personal application's tokens; changing applications
   invalidates tokens and late OAuth results. Export tests verify that account,
   integration and OAuth secrets are excluded from the settings backup.
+- The request audit found and fixed 4K-only permission handling, normal/4K
+  season-state separation, and quality selection for users without advanced
+  permissions. The real Seerr fixture proves a 4K-only user can request 4K and
+  cannot request normal quality. Popup tests cover submission, account changes
+  and disposal. Profile refresh stays alive while callers await it and rejects
+  stale results. Current focused checks: 64 Flutter tests, 84 backend tests,
+  eight script checks, the full smoke fixture, and whole-project analysis pass.
+  The preceding migration full suite passed 1,682 tests (three skips) with 74%
+  changed-line coverage.
+- [PR #77](https://github.com/Ironside-Software/Driftfin/pull/77) is open as a draft.
+  The first CI run exposed a fixture UID mismatch and one test lint; both are
+  fixed. Final checks must run on the updated head.
 - Still required: deployed arr-version
   verification before rollout, platform gates, final regression/coverage, and PR
   review. No feature release or merge has been performed.
