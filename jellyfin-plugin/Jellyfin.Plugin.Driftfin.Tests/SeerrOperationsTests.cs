@@ -84,11 +84,31 @@ namespace Jellyfin.Plugin.Driftfin.Tests
             Assert.Throws<IntegrationException>(() => SeerrOperations.RequestBody(Json("{\"mediaType\":\"movie\",\"mediaId\":1}"), user));
         }
 
+        [Theory]
+        [InlineData(32, false, false)]
+        [InlineData(2048, true, false)]
+        [InlineData(32 | 8192, false, true)]
+        [InlineData(32 | 16, false, true)]
+        [InlineData(2, false, true)]
+        public void AdvancedOverridesRequirePermission(int permissions, bool fourK, bool allowed)
+        {
+            var input = JsonSerializer.SerializeToElement(new
+            {
+                mediaType = "movie", mediaId = 1, is4k = fourK,
+                serverId = 0, profileId = 2, rootFolder = "folder:4", tags = new[] { 3 },
+            });
+            var body = SeerrOperations.RequestBody(input, new SeerrIdentity(42, permissions));
+            foreach (var key in new[] { "serverId", "profileId", "rootFolder", "tags" })
+                Assert.Equal(allowed, body.ContainsKey(key));
+            Assert.Equal(fourK, body["is4k"]!.GetValue<bool>());
+            Assert.Equal(1, body["mediaId"]!.GetValue<int>());
+        }
+
         [Fact]
         public void FolderAliasesResolveOnlyAgainstSavedServiceOptions()
         {
             var options = Json("{\"profiles\":[{\"id\":2}],\"tags\":[{\"id\":3}],\"rootFolders\":[{\"id\":4,\"path\":\"/media/movies\"}]}");
-            var body = SeerrOperations.RequestBody(Json("{\"mediaType\":\"movie\",\"mediaId\":1,\"profileId\":2,\"tags\":[3],\"rootFolder\":\"folder:4\"}"), Member);
+            var body = SeerrOperations.RequestBody(Json("{\"mediaType\":\"movie\",\"mediaId\":1,\"profileId\":2,\"tags\":[3],\"rootFolder\":\"folder:4\"}"), new SeerrIdentity(42, 32 | 8192));
             DriftfinSeerrController.ResolveRequestOptions(body, options);
             Assert.Equal("/media/movies", body["rootFolder"]!.GetValue<string>());
             body["rootFolder"] = "folder:999";

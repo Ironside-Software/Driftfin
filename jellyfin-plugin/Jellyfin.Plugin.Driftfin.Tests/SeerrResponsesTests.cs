@@ -55,6 +55,25 @@ namespace Jellyfin.Plugin.Driftfin.Tests
             Assert.DoesNotContain("secret", result.ToJsonString());
         }
 
+        [Theory]
+        [InlineData(1, 2)]
+        [InlineData(2, 3)]
+        [InlineData(3, 1)]
+        [InlineData(4, 1)]
+        [InlineData(5, 1)]
+        public void OnlyActiveRequestsSetAvailability(int requestStatus, int expectedStatus)
+        {
+            var input = JsonSerializer.SerializeToElement(new
+            {
+                id = 1, title = "Movie", mediaInfo = new
+                {
+                    status = 5, requests = new[] { new { id = 8, status = requestStatus, requestedBy = new { id = 42 } } },
+                },
+            });
+            var result = Member.Project("movie/1", input);
+            Assert.Equal(expectedStatus, result["mediaInfo"]!["status"]!.GetValue<int>());
+        }
+
         [Fact]
         public void SeasonRequestsAreScopedToVisibleRequests()
         {

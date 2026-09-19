@@ -39,6 +39,23 @@ namespace Jellyfin.Plugin.Driftfin.Tests
         }
 
         [Fact]
+        public async Task MediaListsUseCatalogIdsToLoadEpisodeTotals()
+        {
+            using var http = new HttpClient(new Handler(request =>
+            {
+                Assert.EndsWith("/tv/1399", request.RequestUri!.AbsolutePath);
+                return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(
+                    """{"id":1399,"numberOfEpisodes":73,"seasons":[{"seasonNumber":1,"episodeCount":10}]}""") };
+            }));
+            var response = JsonSerializer.Deserialize<JsonElement>(
+                """{"results":[{"id":7,"tmdbId":1399,"mediaType":"tv"}]}""");
+            var enriched = await new IntegrationClient(http).EnrichCatalogRequests(Config, response,
+                new SeerrIdentity(42, 16), default, _ => true);
+            Assert.Equal(73, enriched.GetProperty("results")[0].GetProperty("numberOfEpisodes").GetInt32());
+            Assert.Equal(7, enriched.GetProperty("results")[0].GetProperty("id").GetInt32());
+        }
+
+        [Fact]
         public void ConfigurationChangesCannotRetargetAnInFlightIdentityLookup()
         {
             var saved = Config;

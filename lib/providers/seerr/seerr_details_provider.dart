@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,6 +8,7 @@ import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
+import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/seerr_helpers.dart';
 
@@ -16,13 +18,18 @@ part 'seerr_details_provider.g.dart';
 @riverpod
 class SeerrDetails extends _$SeerrDetails {
   late final api = ref.read(seerrApiProvider);
+  int _generation = 0;
+
+  bool _isCurrent(int generation) => ref.mounted && generation == _generation;
 
   @override
   SeerrDetailsModel build({required int tmdbId, required SeerrMediaType mediaType, SeerrDashboardPosterModel? poster}) {
+    ref.watch(userProvider.select((user) => (user?.id, user?.credentials.serverId, user?.credentials.token)));
+    final initialBuild = _generation++ == 0;
     state = SeerrDetailsModel(
       tmdbId: tmdbId,
       mediaType: mediaType,
-      poster: poster,
+      poster: initialBuild ? poster : null,
       recommended: const [],
       similar: const [],
     );
@@ -33,6 +40,15 @@ class SeerrDetails extends _$SeerrDetails {
   }
 
   Future<void> fetch() async {
+    final generation = ++_generation;
+    try {
+      await _fetch(generation);
+    } catch (_) {
+      if (_isCurrent(generation)) rethrow;
+    }
+  }
+
+  Future<void> _fetch(int generation) async {
     final currentTmdbId = state.tmdbId;
     final currentMediaType = state.mediaType;
     if (currentTmdbId == null || currentMediaType == null) return;
@@ -40,6 +56,7 @@ class SeerrDetails extends _$SeerrDetails {
     SeerrDashboardPosterModel? poster = state.poster;
 
     final refreshedPoster = await api.fetchDashboardPosterFromIds(tmdbId: currentTmdbId, mediaType: currentMediaType);
+    if (!_isCurrent(generation)) return;
 
     poster = refreshedPoster ?? poster;
     if (poster == null) return;
@@ -47,9 +64,11 @@ class SeerrDetails extends _$SeerrDetails {
     state = state.copyWith(poster: poster);
 
     final currentUserBody = await ref.read(seerrUserProvider.notifier).refreshUser();
+    if (!_isCurrent(generation)) return;
     final isTv = currentMediaType == SeerrMediaType.tvshow;
     if (isTv) {
       final tvDetailsResponse = await api.tvDetails(tvId: poster.tmdbId);
+      if (!_isCurrent(generation)) return;
       if (tvDetailsResponse.isSuccessful && tvDetailsResponse.body != null) {
         final details = tvDetailsResponse.body!;
 
@@ -59,6 +78,7 @@ class SeerrDetails extends _$SeerrDetails {
         final contentRating = SeerrHelpers.extractContentRating(details.contentRatings, userRegion);
 
         final ratings = await api.tvRatings(poster.tmdbId);
+        if (!_isCurrent(generation)) return;
 
         final updatedPoster = poster.copyWith(
           seasons: details.seasons,
@@ -81,6 +101,7 @@ class SeerrDetails extends _$SeerrDetails {
       }
     } else {
       final movieDetailsResponse = await api.movieDetails(tmdbId: poster.tmdbId);
+      if (!_isCurrent(generation)) return;
       if (movieDetailsResponse.isSuccessful && movieDetailsResponse.body != null) {
         final details = movieDetailsResponse.body!;
         final userRegion = currentUserBody?.settings?.discoverRegion ?? 'US';
@@ -89,6 +110,7 @@ class SeerrDetails extends _$SeerrDetails {
         final updatedPoster = poster.copyWith(mediaInfo: details.mediaInfo);
 
         final ratings = await api.movieRatings(poster.tmdbId);
+        if (!_isCurrent(generation)) return;
 
         state = state.copyWith(
           poster: updatedPoster,
@@ -106,18 +128,19 @@ class SeerrDetails extends _$SeerrDetails {
 
     if (currentMediaType == SeerrMediaType.movie) {
       final recommended = await api.discoverRecommendedMovies(tmdbId: poster.tmdbId);
+      if (!_isCurrent(generation)) return;
       final related = await api.discoverRelatedMovies(tmdbId: poster.tmdbId);
+      if (!_isCurrent(generation)) return;
       state = state.copyWith(recommended: recommended, similar: related);
     } else {
       final recommended = await api.discoverRecommendedSeries(tmdbId: poster.tmdbId);
+      if (!_isCurrent(generation)) return;
       final related = await api.discoverRelatedSeries(tmdbId: poster.tmdbId);
+      if (!_isCurrent(generation)) return;
       state = state.copyWith(recommended: recommended, similar: related);
     }
 
-    state = state.copyWith(
-      currentUser: currentUserBody,
-      poster: poster.copyWith(mediaInfo: refreshedPoster?.mediaInfo == null ? null : poster.mediaInfo),
-    );
+    state = state.copyWith(currentUser: currentUserBody);
   }
 
   List<Person> _mapCredits(SeerrCredits? credits) {
@@ -195,7 +218,9 @@ class SeerrDetails extends _$SeerrDetails {
     final poster = state.poster;
     if (poster == null) return;
 
+    final generation = _generation;
     final response = await api.seasonDetails(tvId: poster.tmdbId, seasonNumber: seasonNumber);
+    if (!_isCurrent(generation)) return;
 
     if (response.isSuccessful && response.body != null) {
       final episodes = response.body!.episodes ?? [];
@@ -206,15 +231,17 @@ class SeerrDetails extends _$SeerrDetails {
   }
 
   Future<void> approveRequest(int requestId) async {
+    final generation = _generation;
     final response = await api.approveRequest(requestId: requestId);
-    if (response.isSuccessful) {
+    if (_isCurrent(generation) && response.isSuccessful) {
       await fetch();
     }
   }
 
   Future<void> declineRequest(int requestId) async {
+    final generation = _generation;
     final response = await api.deleteRequest(requestId: requestId);
-    if (response.isSuccessful) {
+    if (_isCurrent(generation) && response.isSuccessful) {
       await fetch();
     }
   }

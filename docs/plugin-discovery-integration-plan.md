@@ -76,6 +76,23 @@ Status: implementation in progress. Updated 2026-09-19.
   eight script checks, the full smoke fixture, and whole-project analysis pass.
   The preceding migration full suite passed 1,682 tests (three skips) with 74%
   changed-line coverage.
+- Final review corrections: ordinary Seerr requests now discard advanced server,
+  profile, folder and tag overrides unless the mapped user has advanced-request
+  or request-management permission; `is4k` still selects quality. Raw media-list
+  enrichment uses TMDB IDs rather than Seerr database IDs. Declined, failed and
+  completed requests no longer create a pending availability badge. All 95 C#
+  tests and the combined live smoke fixture pass.
+- Details loading now discards late responses/errors after disposal, refresh or
+  account changes, and retains the latest detailed media state. The focused
+  request/details/lifecycle suite passes 23 tests; full coverage is running.
+- Windows portable/installer builds and platform UI checks passed in
+  [run 35475977615](https://github.com/Ironside-Software/Driftfin/actions/runs/35475977615).
+  Flutter CI passed in
+  [run 35475964560](https://github.com/Ironside-Software/Driftfin/actions/runs/35475964560).
+  Both validate commit `9bc0582c`; the review corrections need updated CI.
+  Signed iOS verification is queued in
+  [run 35475986802](https://github.com/Ironside-Software/Driftfin/actions/runs/35475986802)
+  with TestFlight publishing disabled.
 - [PR #77](https://github.com/Ironside-Software/Driftfin/pull/77) is open as a draft.
   The first CI run exposed a fixture UID mismatch and one test lint; both are
   fixed. Final checks must run on the updated head.
