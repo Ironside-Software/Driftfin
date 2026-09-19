@@ -19,7 +19,7 @@ void main() {
       expect(jobs[job]['if'], r'${{ !inputs.ios_only }}', reason: job);
     }
     expect(jobs['ios']['if'], isNull);
-    expect(jobs['testflight']['needs'], 'ios');
+    expect(jobs['testflight']['needs'], containsAll(['prepare', 'ios']));
   });
 
   test('all build jobs and Pages check out the same resolved commit', () {
@@ -34,7 +34,7 @@ void main() {
   test('publishing consumes artifacts and requires successful producers', () {
     expect(jobs['release']['needs'], containsAll(platforms));
     expect(jobs['pages']['needs'], contains('web'));
-    expect(jobs['testflight']['needs'], 'ios');
+    expect(jobs['testflight']['needs'], containsAll(['prepare', 'ios']));
     for (final job in ['release', 'pages', 'testflight']) {
       expect(steps(job).any((step) => '${step['uses']}'.startsWith('actions/download-artifact@')), isTrue);
       expect(steps(job).any((step) => '${step['run']}'.contains('flutter build')), isFalse);
@@ -43,7 +43,7 @@ void main() {
     for (final job in ['release', 'pages']) {
       expect(jobs[job]['if'], contains("github.event_name == 'push'"));
     }
-    expect(jobs['testflight']['if'], contains('inputs.testflight == true'));
+    expect(jobs['testflight']['if'], "needs.prepare.outputs.testflight == 'true'");
     for (final job in platforms) {
       final upload = steps(job).singleWhere((step) => '${step['uses']}'.startsWith('actions/upload-artifact@'));
       expect(upload['with']['if-no-files-found'], 'error', reason: job);
@@ -55,10 +55,28 @@ void main() {
     expect(iosBuilds, hasLength(2));
     expect(
       iosBuilds.map((step) => step['if']),
-      unorderedEquals(['inputs.testflight == true', 'inputs.testflight != true']),
+      unorderedEquals(["needs.prepare.outputs.testflight == 'true'", "needs.prepare.outputs.testflight != 'true'"]),
     );
     expect(jobs['android']['strategy']['matrix']['mode'], unorderedEquals(['release', 'debug']));
     expect(jobs['android']['strategy']['fail-fast'], isFalse);
+  });
+
+  test('tag releases and opt-in manual runs sign and upload the same iOS artifact', () {
+    expect(jobs['prepare']['outputs']['testflight'], r"${{ github.event_name == 'push' || inputs.testflight }}");
+    expect(workflow['on']['push']['tags'], ['v*']);
+    expect(workflow['on']['workflow_dispatch']['inputs']['testflight']['default'], isFalse);
+    expect(jobs['ios']['environment'], r"${{ needs.prepare.outputs.testflight == 'true' && 'testflight' || '' }}");
+    for (final name in [
+      'Import App Store distribution certificate',
+      'Download App Store provisioning profile',
+      'Build signed production IPA',
+      'Collect signed IPA',
+    ]) {
+      expect(steps('ios').singleWhere((step) => step['name'] == name)['if'], jobs['testflight']['if'], reason: name);
+    }
+    final download = steps('testflight')
+        .singleWhere((step) => '${step['uses']}'.startsWith('actions/download-artifact@'));
+    expect(download['with']['name'], 'ios');
   });
 
   group('Unix runner scripts', () {
