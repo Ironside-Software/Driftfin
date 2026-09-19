@@ -43,9 +43,9 @@ protected if uploads should require approval.
 
 ## Running it
 
-Run **iOS TestFlight** from the Actions tab with `ref=develop` for the first
-proof build. Deliberate release builds can be triggered by pushing a tag such
-as `ios-v0.11.1`.
+Run **iOS TestFlight** manually from the Actions tab with `ref=develop` for a
+proof build. The workflow has no tag trigger and does not submit the build for
+App Review or release it to the App Store.
 
 An upload is not the final acceptance check: wait for Apple processing, assign
 the build to the internal group, install it through TestFlight, and exercise
