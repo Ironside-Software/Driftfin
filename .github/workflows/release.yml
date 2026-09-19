@@ -1,8 +1,8 @@
 name: Release Driftfin
 
 # Fork-owned release pipeline. Builds the desktop/mobile/web targets and
-# publishes a GitHub Release with the binaries. A manual dispatch can instead
-# run the signed iOS TestFlight path only.
+# publishes a GitHub Release with the binaries. A manual dispatch can also add
+# a signed iOS TestFlight upload to the normal build jobs.
 # The upstream Fladder pipeline (build.yml.disabled) is disabled — it needs
 # secrets (Android keystore, Play Console, a GitHub App) this fork does not have.
 #
@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       testflight:
-        description: Upload a signed iOS build to TestFlight instead of building release artifacts
+        description: Also upload a signed iOS build to TestFlight
         required: true
         default: false
         type: boolean
@@ -55,7 +55,6 @@ jobs:
           echo "Driftfin version: $V"
 
   web:
-    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -74,7 +73,6 @@ jobs:
           path: Driftfin-Web-*.zip
 
   windows:
-    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-windows-2025
     steps:
@@ -106,7 +104,6 @@ jobs:
   # The app must use --base-href "/Driftfin/app/" because it's served from that
   # subpath; without it Flutter requests assets from "/" and the page renders blank.
   pages:
-    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -133,7 +130,6 @@ jobs:
           keep_files: true
 
   ios:
-    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-6vcpu-macos-latest
     steps:
@@ -163,7 +159,6 @@ jobs:
   #  - debug (`-debug` suffix) — slower, but has Flutter assertions on and readable
   #    logs; handy for reproducing/diagnosing bug reports. Doubles this job's runtime.
   android:
-    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
@@ -222,7 +217,6 @@ jobs:
           path: dist-apk/*.apk
 
   macos_desktop:
-    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-6vcpu-macos-latest
     steps:
@@ -244,7 +238,6 @@ jobs:
           path: Driftfin-macOS-*.zip
 
   linux:
-    if: github.event_name != 'workflow_dispatch' || inputs.testflight != true
     needs: version
     runs-on: blacksmith-2vcpu-ubuntu-2404
     steps:
