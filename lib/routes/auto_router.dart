@@ -94,7 +94,6 @@ final List<AutoRoute> detailsRoutes = [
     usesPathAsKey: true,
   ),
   AutoRoute(page: TonightRoute.page, path: 'tonight'),
-  AutoRoute(page: TastePassportRoute.page, path: 'taste-passport'),
   AutoRoute(page: LiveTvRoute.page, path: 'live-tv'),
   AutoRoute(page: SeerrSearchRoute.page, path: 'seerr-search'),
   AutoRoute(page: SeerrRequestsRoute.page, path: 'seerr-requests'),
