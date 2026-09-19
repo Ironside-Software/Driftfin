@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 // ignore_for_file: public_member_api_docs, sort_constructors_first
@@ -10,12 +10,7 @@ import 'package:driftfin/util/string_extensions.dart';
 part 'application_info.freezed.dart';
 
 final applicationInfoProvider = StateProvider<ApplicationInfo>((ref) {
-  return ApplicationInfo(
-    name: "",
-    version: "",
-    buildNumber: "",
-    platform: defaultTargetPlatform,
-  );
+  return ApplicationInfo(name: "", version: "", buildNumber: "", platform: defaultTargetPlatform);
 });
 
 @Freezed(toJson: false, fromJson: false)

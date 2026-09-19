@@ -75,15 +75,12 @@ class OverviewHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mainStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.bold,
-        );
-    final subStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          fontSize: 18,
-        );
+    final mainStyle = Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold);
+    final subStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 18);
 
-    final fullHeight =
-        (MediaQuery.sizeOf(context).height - (MediaQuery.paddingOf(context).top + 50)).clamp(50, 1250).toDouble();
+    final fullHeight = (MediaQuery.sizeOf(context).height - (MediaQuery.paddingOf(context).top + 50))
+        .clamp(50, 1250)
+        .toDouble();
 
     final isPhone = AdaptiveLayout.viewSizeOf(context) == ViewSize.phone;
 
@@ -104,26 +101,21 @@ class OverviewHeader extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              Icon(
-                IconsaxPlusLinear.video_square,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-              ),
-              Text(
-                mediaStreamHelper?.mediaStream.currentVersionStream?.detailedResolutionLabel ?? "",
-              ),
+              Icon(IconsaxPlusLinear.video_square, color: Theme.of(context).colorScheme.onPrimaryContainer),
+              Text(mediaStreamHelper?.mediaStream.currentVersionStream?.detailedResolutionLabel ?? ""),
             ],
           ),
           itemBuilder: (context) => mediaStreamHelper!.mediaStream.versionStreams
-              .mapIndexed((index, e) => ItemActionButton(
-                    selected: mediaStreamHelper!.mediaStream.currentVersionStream == e,
-                    label: Text(e.name),
-                    action: () {
-                      final newItem = mediaStreamHelper!.mediaStream.copyWith(
-                        versionStreamIndex: e.index,
-                      );
-                      mediaStreamHelper!.onItemChanged?.call(newItem);
-                    },
-                  ))
+              .mapIndexed(
+                (index, e) => ItemActionButton(
+                  selected: mediaStreamHelper!.mediaStream.currentVersionStream == e,
+                  label: Text(e.name),
+                  action: () {
+                    final newItem = mediaStreamHelper!.mediaStream.copyWith(versionStreamIndex: e.index);
+                    mediaStreamHelper!.onItemChanged?.call(newItem);
+                  },
+                ),
+              )
               .toList(),
         ),
       ),
@@ -139,26 +131,21 @@ class OverviewHeader extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              Icon(
-                IconsaxPlusLinear.audio_square,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-              ),
-              Text(
-                mediaStreamHelper?.mediaStream.currentAudioStream?.shortTitle ?? "",
-              ),
+              Icon(IconsaxPlusLinear.audio_square, color: Theme.of(context).colorScheme.onPrimaryContainer),
+              Text(mediaStreamHelper?.mediaStream.currentAudioStream?.shortTitle ?? ""),
             ],
           ),
           itemBuilder: (context) => [AudioStreamModel.no(), ...mediaStreamHelper!.mediaStream.audioStreams]
-              .mapIndexed((index, e) => ItemActionButton(
-                    selected: mediaStreamHelper!.mediaStream.currentAudioStream == e,
-                    label: Text(e.displayTitle),
-                    action: () {
-                      final newItem = mediaStreamHelper!.mediaStream.copyWith(
-                        defaultAudioStreamIndex: e.index,
-                      );
-                      mediaStreamHelper!.onItemChanged?.call(newItem);
-                    },
-                  ))
+              .mapIndexed(
+                (index, e) => ItemActionButton(
+                  selected: mediaStreamHelper!.mediaStream.currentAudioStream == e,
+                  label: Text(e.displayTitle),
+                  action: () {
+                    final newItem = mediaStreamHelper!.mediaStream.copyWith(defaultAudioStreamIndex: e.index);
+                    mediaStreamHelper!.onItemChanged?.call(newItem);
+                  },
+                ),
+              )
               .toList(),
         ),
       ),
@@ -174,35 +161,30 @@ class OverviewHeader extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              Icon(
-                IconsaxPlusLinear.subtitle,
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
-              ),
+              Icon(IconsaxPlusLinear.subtitle, color: Theme.of(context).colorScheme.onPrimaryContainer),
               Text(
                 (mediaStreamHelper?.mediaStream.currentSubStream?.shortTitle ?? context.localized.off).toUpperCase(),
               ),
             ],
           ),
           itemBuilder: (context) => [SubStreamModel.no(), ...mediaStreamHelper!.mediaStream.subStreams]
-              .mapIndexed((index, e) => ItemActionButton(
-                    selected: mediaStreamHelper!.mediaStream.currentSubStream == e,
-                    label: Text(e.displayTitle),
-                    action: () {
-                      final newItem = mediaStreamHelper!.mediaStream.copyWith(
-                        defaultSubStreamIndex: e.index,
-                      );
-                      mediaStreamHelper!.onItemChanged?.call(newItem);
-                    },
-                  ))
+              .mapIndexed(
+                (index, e) => ItemActionButton(
+                  selected: mediaStreamHelper!.mediaStream.currentSubStream == e,
+                  label: Text(e.displayTitle),
+                  action: () {
+                    final newItem = mediaStreamHelper!.mediaStream.copyWith(defaultSubStreamIndex: e.index);
+                    mediaStreamHelper!.onItemChanged?.call(newItem);
+                  },
+                ),
+              )
               .toList(),
         ),
-      )
+      ),
     ].withPositionProvider(context: context);
 
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        minHeight: minHeight ?? fullHeight,
-      ),
+      constraints: BoxConstraints(minHeight: minHeight ?? fullHeight),
       child: Padding(
         padding: padding ?? EdgeInsets.zero,
         child: Column(
@@ -217,7 +199,7 @@ class OverviewHeader extends ConsumerWidget {
                   spacing: 16,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (poster != null) poster!,
+                    ?poster,
                     Flexible(
                       child: ExcludeFocus(
                         child: Center(
@@ -229,7 +211,7 @@ class OverviewHeader extends ConsumerWidget {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               )
@@ -240,7 +222,7 @@ class OverviewHeader extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (poster != null) poster!,
+                  ?poster,
                   ExcludeFocus(
                     child: Center(
                       child: MediaHeader(
@@ -250,7 +232,7 @@ class OverviewHeader extends ConsumerWidget {
                         alignment: logoAlignment,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             Column(
@@ -259,19 +241,10 @@ class OverviewHeader extends ConsumerWidget {
               children: [
                 if (subTitle != null && name.toLowerCase() != subTitle!.toLowerCase())
                   Flexible(
-                    child: SelectableText(
-                      subTitle ?? "",
-                      textAlign: TextAlign.center,
-                      style: mainStyle,
-                      maxLines: 1,
-                    ),
+                    child: SelectableText(subTitle ?? "", textAlign: TextAlign.center, style: mainStyle, maxLines: 1),
                   ),
                 if (name.toLowerCase() != originalTitle?.toLowerCase() && originalTitle != null)
-                  SelectableText(
-                    originalTitle.toString(),
-                    textAlign: TextAlign.center,
-                    style: subStyle,
-                  ),
+                  SelectableText(originalTitle.toString(), textAlign: TextAlign.center, style: subStyle),
               ].addInBetween(const SizedBox(height: 4)),
             ),
             Column(
@@ -286,11 +259,7 @@ class OverviewHeader extends ConsumerWidget {
                   communityRating: communityRating,
                 ),
                 if (mediaStreamHelper != null) MediaBadges(streams: mediaStreamHelper!.mediaStream),
-                if (genres.isNotEmpty)
-                  Genres(
-                    genres: genres.take(6).toList(),
-                    onGenreClicked: onGenreClicked,
-                  ),
+                if (genres.isNotEmpty) Genres(genres: genres.take(6).toList(), onGenreClicked: onGenreClicked),
                 if (additionalLabels.isNotEmpty)
                   Wrap(
                     spacing: 8,
@@ -303,36 +272,33 @@ class OverviewHeader extends ConsumerWidget {
                   ),
               ],
             ),
-            if (summary != null) summary!,
+            ?summary,
             if (AdaptiveLayout.viewSizeOf(context) <= ViewSize.phone)
               Column(
                 mainAxisSize: MainAxisSize.min,
                 spacing: 6,
-                children: [
-                  if (mainButton != null) mainButton!,
-                  if (mediaStreamHelper != null)
-                    Center(
-                      child: FittedBox(
-                        child: Row(
-                          spacing: 4,
-                          mainAxisSize: MainAxisSize.min,
-                          children: streamOptionsButtons,
+                children:
+                    [
+                      ?mainButton,
+                      if (mediaStreamHelper != null)
+                        Center(
+                          child: FittedBox(
+                            child: Row(spacing: 4, mainAxisSize: MainAxisSize.min, children: streamOptionsButtons),
+                          ),
+                        ),
+                      ?centerButtons,
+                    ].addInBetween(
+                      Center(
+                        child: Container(
+                          width: 12,
+                          height: 2,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.onSurface.withAlpha(64),
+                            borderRadius: FladderTheme.smallShape.borderRadius,
+                          ),
                         ),
                       ),
                     ),
-                  if (centerButtons != null) centerButtons!,
-                ].addInBetween(
-                  Center(
-                    child: Container(
-                      width: 12,
-                      height: 2,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSurface.withAlpha(64),
-                        borderRadius: FladderTheme.smallShape.borderRadius,
-                      ),
-                    ),
-                  ),
-                ),
               )
             else
               Flexible(
@@ -342,16 +308,13 @@ class OverviewHeader extends ConsumerWidget {
                     spacing: 8,
                     runSpacing: 8,
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      mainButton,
-                      if (mediaStreamHelper != null)
-                        Row(
-                          spacing: 4,
-                          mainAxisSize: MainAxisSize.min,
-                          children: streamOptionsButtons,
-                        ),
-                      centerButtons,
-                    ].nonNulls.toList().addInBetween(
+                    children:
+                        [
+                          mainButton,
+                          if (mediaStreamHelper != null)
+                            Row(spacing: 4, mainAxisSize: MainAxisSize.min, children: streamOptionsButtons),
+                          centerButtons,
+                        ].nonNulls.toList().addInBetween(
                           Container(
                             width: 4,
                             height: 12,
@@ -403,38 +366,26 @@ class MetadataLabels extends StatelessWidget {
       runAlignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        if (officialRating != null)
-          SimpleLabel(
-            icon: null,
-            label: Text(officialRating.toString()),
-          ),
+        if (officialRating != null) SimpleLabel(icon: null, label: Text(officialRating.toString())),
         if (productionYear != null)
           SimpleLabel(
             icon: IconsaxPlusBold.calendar,
             color: Theme.of(context).colorScheme.surfaceBright,
-            label: SelectableText(
-              productionYear.toString(),
-              textAlign: TextAlign.center,
-            ),
+            label: SelectableText(productionYear.toString(), textAlign: TextAlign.center),
           ),
         if (runTime != null && (runTime?.inSeconds ?? 0) > 1)
           SimpleLabel(
             icon: IconsaxPlusBold.timer,
             color: Theme.of(context).colorScheme.surfaceBright,
             iconColor: Theme.of(context).colorScheme.onSurface,
-            label: SelectableText(
-              runTime.humanize.toString(),
-              textAlign: TextAlign.center,
-            ),
+            label: SelectableText(runTime.humanize.toString(), textAlign: TextAlign.center),
           ),
         if (communityRating != null && communityRating != 0.0)
           SimpleLabel(
             icon: IconsaxPlusBold.star_1,
             color: Theme.of(context).colorScheme.tertiaryContainer,
             iconColor: Theme.of(context).colorScheme.onTertiaryContainer,
-            label: Text(
-              communityRating?.toStringAsFixed(2) ?? "",
-            ),
+            label: Text(communityRating?.toStringAsFixed(2) ?? ""),
           ),
         if (favourite != null)
           SimpleLabel(
@@ -455,10 +406,7 @@ class MetadataLabels extends StatelessWidget {
             iconColor: Theme.of(context).colorScheme.primary,
           ),
         ...additionalLabels,
-      ].addInBetween(CircleAvatar(
-        radius: 3,
-        backgroundColor: Theme.of(context).colorScheme.onSurface,
-      )),
+      ].addInBetween(CircleAvatar(radius: 3, backgroundColor: Theme.of(context).colorScheme.onSurface)),
     );
   }
 }
@@ -469,44 +417,30 @@ class SimpleLabel extends StatelessWidget {
   final Widget? label;
   final Color? color;
   final Color? iconColor;
-  const SimpleLabel({
-    this.icon,
-    this.iconWidget,
-    this.label,
-    this.color,
-    this.iconColor,
-    super.key,
-  });
+  const SimpleLabel({this.icon, this.iconWidget, this.label, this.color, this.iconColor, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = (color ?? Theme.of(context).colorScheme.surfaceBright)
-        .harmonizeWith(Theme.of(context).colorScheme.primaryContainer);
+    final backgroundColor = (color ?? Theme.of(context).colorScheme.surfaceBright).harmonizeWith(
+      Theme.of(context).colorScheme.primaryContainer,
+    );
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: FladderTheme.smallShape.borderRadius,
         color: backgroundColor.withAlpha(200),
-        border: Border.all(
-          color: backgroundColor.withAlpha(255),
-        ),
+        border: Border.all(color: backgroundColor.withAlpha(255)),
       ),
       child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              color: iconColor ?? Theme.of(context).colorScheme.onSurface,
-            ),
+        style: Theme.of(context).textTheme.bodyMedium!
+            .copyWith(color: iconColor ?? Theme.of(context).colorScheme.onSurface),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           spacing: 4,
           children: [
-            if (icon != null)
-              Icon(
-                icon,
-                size: 21,
-                color: iconColor ?? Theme.of(context).colorScheme.onSurface,
-              ),
-            if (iconWidget != null) iconWidget!,
-            if (label != null) label!
+            if (icon != null) Icon(icon, size: 21, color: iconColor ?? Theme.of(context).colorScheme.onSurface),
+            ?iconWidget,
+            ?label,
           ],
         ),
       ),

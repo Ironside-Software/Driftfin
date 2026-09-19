@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:logging/logging.dart' as logging;
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
@@ -14,8 +15,10 @@ import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
 
-final artistDetailsProvider =
-    StateNotifierProvider.autoDispose.family<ArtistDetailsNotifier, ArtistModel?, String>((ref, id) {
+final artistDetailsProvider = StateNotifierProvider.autoDispose.family<ArtistDetailsNotifier, ArtistModel?, String>((
+  ref,
+  id,
+) {
   return ArtistDetailsNotifier(ref);
 });
 
@@ -88,7 +91,8 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
           limit: 10,
         );
 
-        final downloadableAlbumIds = tracksResponse.body?.items
+        final downloadableAlbumIds =
+            tracksResponse.body?.items
                 .whereType<AudioModel>()
                 .where((track) => track.canDownload == true)
                 .map((track) => track.albumId ?? track.parentId)
@@ -98,16 +102,19 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
         state = state?.copyWith(
           albums: albums
               .map(
-                (album) => album.copyWith(
-                  canDownload: album.canDownload == true || downloadableAlbumIds.contains(album.id),
-                ),
+                (album) =>
+                    album.copyWith(canDownload: album.canDownload == true || downloadableAlbumIds.contains(album.id)),
               )
               .toList(),
         );
       }
     } catch (error, stack) {
-      log('Failed to fetch albums for artist ${state?.id} due to $error',
-          level: logging.Level.WARNING.value, error: error, stackTrace: stack);
+      log(
+        'Failed to fetch albums for artist ${state?.id} due to $error',
+        level: logging.Level.WARNING.value,
+        error: error,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -134,21 +141,20 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
         enableUserData: true,
         recursive: true,
         isFavorite: true,
-        sortBy: [
-          ItemSortBy.isfavoriteorliked,
-          ItemSortBy.sortname,
-        ],
-        fields: [
-          ItemFields.candownload,
-        ],
+        sortBy: [ItemSortBy.isfavoriteorliked, ItemSortBy.sortname],
+        fields: [ItemFields.candownload],
       );
 
       final favoriteTracks = response.body?.items.whereType<AudioModel>().toList() ?? [];
 
       state = state?.copyWith(favoriteTracks: favoriteTracks);
     } catch (error, stack) {
-      log('Failed to fetch favorite tracks for artist ${state?.id} due to $error',
-          level: logging.Level.WARNING.value, error: error, stackTrace: stack);
+      log(
+        'Failed to fetch favorite tracks for artist ${state?.id} due to $error',
+        level: logging.Level.WARNING.value,
+        error: error,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -172,8 +178,12 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
       final tracks = await fetchArtistLatestTracks(api, state!.id, limit: limit);
       state = state?.copyWith(tracks: tracks);
     } catch (error, stack) {
-      log('Failed to fetch tracks for artist ${state?.id} due to $error',
-          level: logging.Level.WARNING.value, error: error, stackTrace: stack);
+      log(
+        'Failed to fetch tracks for artist ${state?.id} due to $error',
+        level: logging.Level.WARNING.value,
+        error: error,
+        stackTrace: stack,
+      );
     }
   }
 
@@ -184,10 +194,7 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
       enableUserData: true,
       enableImages: true,
       imageTypeLimit: 1,
-      fields: [
-        ItemFields.primaryimageaspectratio,
-        ItemFields.parentid,
-      ],
+      fields: [ItemFields.primaryimageaspectratio, ItemFields.parentid],
       sortBy: [
         ItemSortBy.airtime,
         ItemSortBy.productionyear,
@@ -202,11 +209,7 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
     return response.body?.items.whereType<AlbumModel>().toList() ?? [];
   }
 
-  Future<List<AudioModel>> fetchArtistLatestTracks(
-    JellyService api,
-    String artistId, {
-    int limit = 10,
-  }) async {
+  Future<List<AudioModel>> fetchArtistLatestTracks(JellyService api, String artistId, {int limit = 10}) async {
     final response = await api.itemsGet(
       parentId: artistId,
       includeItemTypes: [BaseItemKind.audio],
@@ -237,12 +240,7 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
         recursive: true,
         imageTypeLimit: 1,
         fields: [ItemFields.primaryimageaspectratio],
-        sortBy: [
-          ItemSortBy.productionyear,
-          ItemSortBy.premieredate,
-          ItemSortBy.datecreated,
-          ItemSortBy.sortname,
-        ],
+        sortBy: [ItemSortBy.productionyear, ItemSortBy.premieredate, ItemSortBy.datecreated, ItemSortBy.sortname],
         sortOrder: [SortOrder.descending],
         limit: limit,
       );
@@ -260,8 +258,10 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
 
     try {
       final response = await api.itemsItemIdSimilarGet(itemId: state!.id, limit: 12);
-      final related =
-          response.body?.items?.map((item) => ItemBaseModel.fromBaseDto(item, ref)).whereType<ArtistModel>().toList();
+      final related = response.body?.items
+          ?.map((item) => ItemBaseModel.fromBaseDto(item, ref))
+          .whereType<ArtistModel>()
+          .toList();
       if (related != null) {
         final current = state!;
         state = ArtistModel(
@@ -284,8 +284,12 @@ class ArtistDetailsNotifier extends StateNotifier<ArtistModel?> {
         );
       }
     } catch (error, stack) {
-      log('Failed to fetch similar artists for ${state?.id} due to $error',
-          level: logging.Level.WARNING.value, error: error, stackTrace: stack);
+      log(
+        'Failed to fetch similar artists for ${state?.id} due to $error',
+        level: logging.Level.WARNING.value,
+        error: error,
+        stackTrace: stack,
+      );
     }
   }
 }

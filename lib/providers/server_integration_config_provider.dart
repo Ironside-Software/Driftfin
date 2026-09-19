@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:driftfin/models/server_integration_config.dart';
@@ -33,22 +34,14 @@ enum ServerIntegrationConfigStatus { ok, notLoggedIn, noPlugin, httpError, inval
 /// Same fetch as [fetchServerIntegrationConfig], but reports *why* there's no
 /// config instead of collapsing every failure mode into `null`.
 Future<({ServerIntegrationConfig? config, ServerIntegrationConfigStatus status, String? detail})>
-    fetchServerIntegrationConfigDiagnostic(
-  String url,
-  Map<String, String> headers,
-  http.Client client,
-) async {
+fetchServerIntegrationConfigDiagnostic(String url, Map<String, String> headers, http.Client client) async {
   try {
     final response = await client.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 8));
     if (response.statusCode == 404) {
       return (config: null, status: ServerIntegrationConfigStatus.noPlugin, detail: null);
     }
     if (response.statusCode != 200 || response.body.isEmpty) {
-      return (
-        config: null,
-        status: ServerIntegrationConfigStatus.httpError,
-        detail: response.statusCode.toString(),
-      );
+      return (config: null, status: ServerIntegrationConfigStatus.httpError, detail: response.statusCode.toString());
     }
     final decoded = jsonDecode(response.body);
     if (decoded is! Map<String, dynamic>) {
@@ -66,13 +59,11 @@ Future<({ServerIntegrationConfig? config, ServerIntegrationConfigStatus status, 
 /// (see [User.updateInformation]) and cleared on logout.
 final serverIntegrationConfigProvider =
     StateNotifierProvider<ServerIntegrationConfigNotifier, ServerIntegrationConfig?>(
-  (ref) => ServerIntegrationConfigNotifier(ref),
-);
+      (ref) => ServerIntegrationConfigNotifier(ref),
+    );
 
 class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationConfig?> {
-  ServerIntegrationConfigNotifier(this.ref, {http.Client? client})
-      : _client = client ?? http.Client(),
-        super(null);
+  ServerIntegrationConfigNotifier(this.ref, {http.Client? client}) : _client = client ?? http.Client(), super(null);
 
   final Ref ref;
   final http.Client _client;

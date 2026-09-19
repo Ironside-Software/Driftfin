@@ -17,7 +17,7 @@ part 'credentials_model.g.dart';
 abstract class CredentialsModel with _$CredentialsModel {
   const CredentialsModel._();
 
-  factory CredentialsModel.internal({
+  factory CredentialsModel({
     @Default("") String token,
     @Default("") String url,
     String? localUrl,
@@ -26,20 +26,21 @@ abstract class CredentialsModel with _$CredentialsModel {
     @Default("") String deviceId,
   }) = _CredentialsModel;
 
-  factory CredentialsModel.createNewCredentials() => CredentialsModel.internal(deviceId: Xid().toString());
+  factory CredentialsModel.createNewCredentials() => CredentialsModel(deviceId: Xid().toString());
 
   Map<String, String> header(Ref ref) {
     final application = ref.read(applicationInfoProvider);
     final leanbackMode = ref.read(argumentsStateProvider).leanBackMode;
     final os = switch (application.platform) {
-      TargetPlatform.android => kIsWeb
-          ? "${application.platform.name.capitalize()} Web"
-          : (leanbackMode ? "${application.platform.name.capitalize()} TV" : application.platform.name.capitalize()),
+      TargetPlatform.android =>
+        kIsWeb
+            ? "${application.platform.name.capitalize()} Web"
+            : (leanbackMode ? "${application.platform.name.capitalize()} TV" : application.platform.name.capitalize()),
       _ => !kIsWeb ? application.platform.name.capitalize() : "${application.platform.name.capitalize()} Web",
     };
     final headers = {
       'authorization':
-          'MediaBrowser Token="$token", Client="${application.name}", Device="$os", DeviceId="$deviceId", Version="${application.version}"'
+          'MediaBrowser Token="$token", Client="${application.name}", Device="$os", DeviceId="$deviceId", Version="${application.version}"',
     };
     return headers;
   }
@@ -49,7 +50,7 @@ abstract class CredentialsModel with _$CredentialsModel {
   factory CredentialsModel.fromJsonString(String source) => CredentialsModel.fromMap(json.decode(source));
 
   factory CredentialsModel.fromMap(Map<String, dynamic> map) {
-    return CredentialsModel.internal(
+    return CredentialsModel(
       token: map['token'] ?? '',
       url: map['server'] ?? '',
       serverName: map['serverName'] ?? '',

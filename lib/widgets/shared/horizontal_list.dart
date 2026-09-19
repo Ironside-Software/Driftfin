@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
@@ -155,22 +156,13 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
       return;
     }
 
-    final controller = AnimationController(
-      vsync: this,
-      duration: duration ?? scrollMaxDuration,
-    );
+    final controller = AnimationController(vsync: this, duration: duration ?? scrollMaxDuration);
 
     _scrollAnimation = controller;
 
-    final tween = Tween<double>(
-      begin: _scrollController.offset,
-      end: target.toDouble(),
-    );
+    final tween = Tween<double>(begin: _scrollController.offset, end: target.toDouble());
 
-    final animation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.fastOutSlowIn,
-    );
+    final animation = CurvedAnimation(parent: controller, curve: Curves.fastOutSlowIn);
 
     controller.addListener(() {
       if (_scrollController.hasClients) {
@@ -185,11 +177,7 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
   }
 
   void _scrollToStart() {
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.fastOutSlowIn,
-    );
+    _scrollController.animateTo(0, duration: const Duration(milliseconds: 250), curve: Curves.fastOutSlowIn);
   }
 
   Future<void> _scrollToEnd() async {
@@ -227,13 +215,12 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
                     child: ExcludeFocus(
                       child: Text(
                         widget.subtext!,
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                            ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5)),
                       ),
                     ),
                   ),
-                ...widget.titleActions
+                ...widget.titleActions,
               ],
             ),
           ),
@@ -249,39 +236,35 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
                       GestureDetector(
                         onLongPress: () => _scrollToStart(),
                         child: IconButton(
-                            onPressed: () {
-                              _scrollController.animateTo(
-                                  _scrollController.offset + -(MediaQuery.of(context).size.width / 1.75),
-                                  duration: const Duration(milliseconds: 250),
-                                  curve: Curves.easeInOut);
-                            },
-                            icon: const Icon(
-                              IconsaxPlusLinear.arrow_left_1,
-                              size: 20,
-                            )),
+                          onPressed: () {
+                            _scrollController.animateTo(
+                              _scrollController.offset + -(MediaQuery.of(context).size.width / 1.75),
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          icon: const Icon(IconsaxPlusLinear.arrow_left_1, size: 20),
+                        ),
                       ),
                     if (widget.startIndex != null)
                       IconButton(
-                          tooltip: "Scroll to current",
-                          onPressed: () => _scrollToPosition(widget.startIndex!),
-                          icon: const Icon(
-                            Icons.circle,
-                            size: 16,
-                          )),
+                        tooltip: "Scroll to current",
+                        onPressed: () => _scrollToPosition(widget.startIndex!),
+                        icon: const Icon(Icons.circle, size: 16),
+                      ),
                     if (hasPointer)
                       GestureDetector(
                         onLongPress: () => _scrollToEnd(),
                         child: IconButton(
-                            onPressed: () {
-                              _scrollController.animateTo(
-                                  _scrollController.offset + (MediaQuery.of(context).size.width / 1.75),
-                                  duration: const Duration(milliseconds: 250),
-                                  curve: Curves.easeInOut);
-                            },
-                            icon: const Icon(
-                              IconsaxPlusLinear.arrow_right_3,
-                              size: 20,
-                            )),
+                          onPressed: () {
+                            _scrollController.animateTo(
+                              _scrollController.offset + (MediaQuery.of(context).size.width / 1.75),
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          icon: const Icon(IconsaxPlusLinear.arrow_right_3, size: 20),
+                        ),
                       ),
                   ],
                 ),
@@ -343,8 +326,9 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
             },
             onGroupFocused: (groupNode) {
               final nodesOnSameRow = _nodesInRow(parentNode);
-              final currentNode =
-                  nodesOnSameRow.contains(lastFocused) ? lastFocused : _firstFullyVisibleNode(context, nodesOnSameRow);
+              final currentNode = nodesOnSameRow.contains(lastFocused)
+                  ? lastFocused
+                  : _firstFullyVisibleNode(context, nodesOnSameRow);
 
               if (currentNode != null) {
                 lastFocused = currentNode;
@@ -358,7 +342,8 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
               }
             },
             child: SizedBox(
-              height: widget.height ??
+              height:
+                  widget.height ??
                   ((AdaptiveLayout.poster(context).size *
                               ref.watch(clientSettingsProvider.select((value) => value.posterSize))) /
                           math.pow((widget.dominantRatio ?? 1.0), 0.55)) *
@@ -369,16 +354,13 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
                 clipBehavior: Clip.none,
                 scrollDirection: Axis.horizontal,
                 padding: widget.contentPadding,
-                cacheExtent: _firstItemWidth ?? 250,
+                scrollCacheExtent: ScrollCacheExtent.pixels(_firstItemWidth ?? 250),
                 itemBuilder: (context, index) => index == widget.items.length
                     ? PosterPlaceHolder(
                         onTap: widget.onLabelClick ?? () {},
                         aspectRatio: widget.dominantRatio ?? AdaptiveLayout.poster(context).ratio,
                       )
-                    : Container(
-                        key: index == 0 ? _firstItemKey : null,
-                        child: widget.itemBuilder(context, index),
-                      ),
+                    : Container(key: index == 0 ? _firstItemKey : null, child: widget.itemBuilder(context, index)),
                 separatorBuilder: (context, index) => SizedBox(width: contentPadding),
                 itemCount: widget.onLabelClick != null && AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad
                     ? widget.items.length + 1
@@ -427,10 +409,7 @@ class _HorizontalListState extends ConsumerState<HorizontalList> with TickerProv
   }
 }
 
-FocusNode? _firstFullyVisibleNode(
-  BuildContext context,
-  List<FocusNode> nodes,
-) {
+FocusNode? _firstFullyVisibleNode(BuildContext context, List<FocusNode> nodes) {
   if (nodes.isEmpty) return null;
   final isRtl = Directionality.of(context) == TextDirection.rtl;
 
@@ -447,7 +426,8 @@ FocusNode? _firstFullyVisibleNode(
 
       final nodeRect = Rect.fromPoints(topLeft, bottomRight);
 
-      final fullyVisible = nodeRect.left >= 0 &&
+      final fullyVisible =
+          nodeRect.left >= 0 &&
           nodeRect.right <= viewportSize.width &&
           nodeRect.top >= 0 &&
           nodeRect.bottom <= viewportSize.height;

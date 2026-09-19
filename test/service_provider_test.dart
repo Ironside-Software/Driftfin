@@ -30,10 +30,7 @@ class _FakeUser extends User {
   AccountModel? build() => initial;
 }
 
-ProviderContainer _containerWith({
-  AccountModel? user,
-  LoginScreenModel? auth,
-}) {
+ProviderContainer _containerWith({AccountModel? user, LoginScreenModel? auth}) {
   return ProviderContainer(
     overrides: [
       if (user != null) userProvider.overrideWith(() => _FakeUser(user)),
@@ -48,7 +45,7 @@ AccountModel _accountWithUrl(String url) {
     id: 'user-id',
     avatar: '',
     lastUsed: DateTime(2024),
-    credentials: CredentialsModel.internal(url: url),
+    credentials: CredentialsModel(url: url),
   );
 }
 
@@ -77,11 +74,7 @@ void main() {
 
       final dto1 = const BaseItemDto(id: 'a', name: 'Alpha');
       final dto2 = const BaseItemDto(id: 'b', name: 'Beta');
-      final baseQuery = BaseItemDtoQueryResult(
-        items: [dto1, dto2],
-        totalRecordCount: 42,
-        startIndex: 5,
-      );
+      final baseQuery = BaseItemDtoQueryResult(items: [dto1, dto2], totalRecordCount: 42, startIndex: 5);
 
       final result = ServerQueryResult.fromBaseQuery(baseQuery, _refOf(container));
 
@@ -106,11 +99,7 @@ void main() {
 
   group('ServerQueryResult.copyWith', () {
     test('overrides only the provided fields', () {
-      final original = ServerQueryResult(
-        items: const [],
-        totalRecordCount: 1,
-        startIndex: 0,
-      );
+      final original = ServerQueryResult(items: const [], totalRecordCount: 1, startIndex: 0);
 
       final copy = original.copyWith(totalRecordCount: 99);
 
@@ -120,11 +109,7 @@ void main() {
     });
 
     test('with no arguments returns equivalent values', () {
-      final original = ServerQueryResult(
-        items: const [],
-        totalRecordCount: 3,
-        startIndex: 1,
-      );
+      final original = ServerQueryResult(items: const [], totalRecordCount: 3, startIndex: 1);
 
       final copy = original.copyWith();
 
@@ -148,12 +133,7 @@ void main() {
     });
 
     test('parses "true"/"false" case-insensitively to bool', () {
-      final result = {
-        'a': 'true',
-        'b': 'FALSE',
-        'c': 'True',
-        'd': 'false',
-      }.parseValues();
+      final result = {'a': 'true', 'b': 'FALSE', 'c': 'True', 'd': 'false'}.parseValues();
       expect(result['a'], isTrue);
       expect(result['b'], isFalse);
       expect(result['c'], isTrue);
@@ -183,13 +163,7 @@ void main() {
     });
 
     test('mixed map parses each entry independently', () {
-      final result = {
-        'count': '10',
-        'ratio': '0.5',
-        'enabled': 'TRUE',
-        'name': 'driftfin',
-        'raw': 7,
-      }.parseValues();
+      final result = {'count': '10', 'ratio': '0.5', 'enabled': 'TRUE', 'name': 'driftfin', 'raw': 7}.parseValues();
       expect(result['count'], 10);
       expect(result['ratio'], 0.5);
       expect(result['enabled'], true);
@@ -248,11 +222,7 @@ void main() {
       addTearDown(container.dispose);
       final service = JellyService(_refOf(container), fakeJellyfinOpenApiStub());
 
-      final url = service.buildVideoStreamUrl(
-        itemId: 'item1',
-        container: 'mp4',
-        deviceId: 'device id&with=chars',
-      );
+      final url = service.buildVideoStreamUrl(itemId: 'item1', container: 'mp4', deviceId: 'device id&with=chars');
 
       expect(url, contains(Uri.encodeComponent('device id&with=chars')));
       expect(url, isNot(contains('device id&with=chars')));
@@ -279,9 +249,7 @@ void main() {
       final container = _containerWith(
         user: _accountWithUrl('http://user-server.local'),
         auth: LoginScreenModel(
-          serverLoginModel: ServerLoginModel(
-            tempCredentials: CredentialsModel.internal(url: 'http://temp-server.local'),
-          ),
+          serverLoginModel: ServerLoginModel(tempCredentials: CredentialsModel(url: 'http://temp-server.local')),
         ),
       );
       addTearDown(container.dispose);
@@ -401,8 +369,7 @@ class _FakeRawSessionsApi extends JellyfinOpenApi {
     required String? displayPreferencesId,
     String? userId,
     required String? $client,
-  }) async =>
-      Response(http.Response('', 200), DisplayPreferencesDto(customPrefs: customPrefs));
+  }) async => Response(http.Response('', 200), DisplayPreferencesDto(customPrefs: customPrefs));
 
   List<SessionInfoDto> sessions = const [];
   String? capturedControllableByUserId;

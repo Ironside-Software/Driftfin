@@ -5,9 +5,12 @@ import 'package:driftfin/models/items/photos_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
-final photoDetailsProvider =
-    StateNotifierProvider.autoDispose.family<PhotoDetailsNotifier, PhotoAlbumModel?, String>((ref, id) {
+final photoDetailsProvider = StateNotifierProvider.autoDispose.family<PhotoDetailsNotifier, PhotoAlbumModel?, String>((
+  ref,
+  id,
+) {
   return PhotoDetailsNotifier(ref);
 });
 
@@ -33,12 +36,7 @@ class PhotoDetailsNotifier extends StateNotifier<PhotoAlbumModel?> {
       parentId: albumId,
       fields: [ItemFields.primaryimageaspectratio],
       sortBy: [ItemSortBy.sortname],
-      includeItemTypes: [
-        BaseItemKind.folder,
-        BaseItemKind.photoalbum,
-        BaseItemKind.photo,
-        BaseItemKind.video,
-      ],
+      includeItemTypes: [BaseItemKind.folder, BaseItemKind.photoalbum, BaseItemKind.photo, BaseItemKind.video],
       sortOrder: [SortOrder.ascending],
     );
     if (response.body == null) return null;

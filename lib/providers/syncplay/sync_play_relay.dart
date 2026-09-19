@@ -31,11 +31,7 @@ Future<bool> postSyncPlayRelayMessage(
         .post(
           Uri.parse(url),
           headers: {...headers, 'content-type': 'application/json'},
-          body: jsonEncode({
-            'kind': kind.name,
-            if (text != null) 'text': text,
-            if (emoji != null) 'emoji': emoji,
-          }),
+          body: jsonEncode({'kind': kind.name, 'text': ?text, 'emoji': ?emoji}),
         )
         .timeout(const Duration(seconds: 5));
     return response.statusCode >= 200 && response.statusCode < 300;

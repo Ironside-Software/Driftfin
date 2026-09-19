@@ -1,3 +1,5 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -21,16 +23,11 @@ class BackgroundDownloader extends _$BackgroundDownloader {
 
   @override
   FileDownloader build() {
-    ref.onDispose(
-      () => updateListener.cancel(),
-    );
+    ref.onDispose(() => updateListener.cancel());
 
     final maxDownloads = ref.read(clientSettingsProvider.select((value) => value.maxConcurrentDownloads));
     final downloader = FileDownloader()
-      ..configure(
-        globalConfig: globalConfig(maxDownloads),
-        androidConfig: (Config.runInForeground, Config.always),
-      )
+      ..configure(globalConfig: globalConfig(maxDownloads), androidConfig: (Config.runInForeground, Config.always))
       ..trackTasks();
     updateListener = downloader.updates.listen(updateTask);
     return downloader;
@@ -40,9 +37,7 @@ class BackgroundDownloader extends _$BackgroundDownloader {
     switch (update) {
       case TaskStatusUpdate():
         final status = update.status;
-        ref.read(downloadTasksProvider(update.task.taskId).notifier).update(
-              (state) => state.copyWith(status: status),
-            );
+        ref.read(downloadTasksProvider(update.task.taskId).notifier).update((state) => state.copyWith(status: status));
 
         if (status == TaskStatus.complete || status == TaskStatus.canceled) {
           ref.read(downloadTasksProvider(update.task.taskId).notifier).update((state) => DownloadStream.empty());
@@ -58,7 +53,9 @@ class BackgroundDownloader extends _$BackgroundDownloader {
         }
       case TaskProgressUpdate():
         final progress = update.progress;
-        ref.read(downloadTasksProvider(update.task.taskId).notifier).update(
+        ref
+            .read(downloadTasksProvider(update.task.taskId).notifier)
+            .update(
               (state) => state.copyWith(
                 progress: progress > 0 && progress < 1 ? progress : null,
                 downloadSpeed: update.networkSpeedAsString,
@@ -68,10 +65,7 @@ class BackgroundDownloader extends _$BackgroundDownloader {
   }
 
   void setMaxConcurrent(int value) {
-    state.configure(
-      globalConfig: globalConfig(value),
-      androidConfig: (Config.runInForeground, Config.always),
-    );
+    state.configure(globalConfig: globalConfig(value), androidConfig: (Config.runInForeground, Config.always));
   }
 
   void updateTranslations(BuildContext context) async {
@@ -86,14 +80,7 @@ class BackgroundDownloader extends _$BackgroundDownloader {
   }
 
   (String, dynamic) globalConfig(int value) => value == 0
-      ? (
-          Config.holdingQueue,
-          (
-            null,
-            null,
-            null,
-          )
-        )
+      ? (Config.holdingQueue, (null, null, null))
       : (
           Config.holdingQueue,
           (

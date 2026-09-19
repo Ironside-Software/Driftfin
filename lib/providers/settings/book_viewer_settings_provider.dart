@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
 import 'package:driftfin/providers/shared_provider.dart';
@@ -121,9 +122,7 @@ class BookViewerSettingsNotifier extends StateNotifier<BookViewerSettingsModel> 
   }
 
   void setScreenBrightness(double? value) async {
-    state = state.copyWith(
-      screenBrightness: () => value,
-    );
+    state = state.copyWith(screenBrightness: () => value);
     if (state.screenBrightness != null) {
       ScreenBrightness().setApplicationScreenBrightness(state.screenBrightness!);
     } else {

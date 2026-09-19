@@ -7,73 +7,64 @@ part of 'library_filter_model.dart';
 // **************************************************************************
 
 _LibraryFilterModel _$LibraryFilterModelFromJson(Map<String, dynamic> json) => _LibraryFilterModel(
-      searchQuery: json['searchQuery'] as String? ?? "",
-      genres: (json['genres'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as bool),
-          ) ??
-          const {},
-      itemFilters: (json['itemFilters'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry($enumDecode(_$ItemFilterEnumMap, k), e as bool),
-          ) ??
-          const {ItemFilter.isplayed: false, ItemFilter.isunplayed: false, ItemFilter.isresumable: false},
-      studios: json['studios'] == null ? const {} : const StudioEncoder().fromJson(json['studios'] as String),
-      tags: (json['tags'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as bool),
-          ) ??
-          const {},
-      years: (json['years'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(int.parse(k), e as bool),
-          ) ??
-          const {},
-      officialRatings: (json['officialRatings'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry(k, e as bool),
-          ) ??
-          const {},
-      types: (json['types'] as Map<String, dynamic>?)?.map(
-            (k, e) => MapEntry($enumDecode(_$FladderItemTypeEnumMap, k), e as bool),
-          ) ??
-          const {
-            FladderItemType.audio: false,
-            FladderItemType.boxset: false,
-            FladderItemType.book: false,
-            FladderItemType.collectionFolder: false,
-            FladderItemType.episode: false,
-            FladderItemType.folder: false,
-            FladderItemType.movie: false,
-            FladderItemType.musicAlbum: false,
-            FladderItemType.musicVideo: false,
-            FladderItemType.photo: false,
-            FladderItemType.person: false,
-            FladderItemType.photoAlbum: false,
-            FladderItemType.series: false,
-            FladderItemType.video: false
-          },
-      sortingOption: $enumDecodeNullable(_$SortingOptionsEnumMap, json['sortingOption']) ?? SortingOptions.sortName,
-      sortOrder: $enumDecodeNullable(_$SortingOrderEnumMap, json['sortOrder']) ?? SortingOrder.ascending,
-      favourites: json['favourites'] as bool?,
-      hideEmptyShows: json['hideEmptyShows'] as bool? ?? true,
-      recursive: json['recursive'] as bool? ?? false,
-      groupBy: $enumDecodeNullable(_$GroupByEnumMap, json['groupBy']) ?? GroupBy.none,
-      isDefault: json['isDefault'] as bool? ?? false,
-    );
+  searchQuery: json['searchQuery'] as String? ?? "",
+  genres: (json['genres'] as Map<String, dynamic>?)?.map((k, e) => MapEntry(k, e as bool)) ?? const {},
+  itemFilters:
+      (json['itemFilters'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry($enumDecode(_$ItemFilterEnumMap, k), e as bool),
+      ) ??
+      const {ItemFilter.isplayed: false, ItemFilter.isunplayed: false, ItemFilter.isresumable: false},
+  studios: json['studios'] == null ? const {} : const StudioEncoder().fromJson(json['studios'] as String),
+  tags: (json['tags'] as Map<String, dynamic>?)?.map((k, e) => MapEntry(k, e as bool)) ?? const {},
+  years: (json['years'] as Map<String, dynamic>?)?.map((k, e) => MapEntry(int.parse(k), e as bool)) ?? const {},
+  officialRatings:
+      (json['officialRatings'] as Map<String, dynamic>?)?.map((k, e) => MapEntry(k, e as bool)) ?? const {},
+  types:
+      (json['types'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry($enumDecode(_$FladderItemTypeEnumMap, k), e as bool),
+      ) ??
+      const {
+        FladderItemType.audio: false,
+        FladderItemType.boxset: false,
+        FladderItemType.book: false,
+        FladderItemType.collectionFolder: false,
+        FladderItemType.episode: false,
+        FladderItemType.folder: false,
+        FladderItemType.movie: false,
+        FladderItemType.musicAlbum: false,
+        FladderItemType.musicVideo: false,
+        FladderItemType.photo: false,
+        FladderItemType.person: false,
+        FladderItemType.photoAlbum: false,
+        FladderItemType.series: false,
+        FladderItemType.video: false,
+      },
+  sortingOption: $enumDecodeNullable(_$SortingOptionsEnumMap, json['sortingOption']) ?? SortingOptions.sortName,
+  sortOrder: $enumDecodeNullable(_$SortingOrderEnumMap, json['sortOrder']) ?? SortingOrder.ascending,
+  favourites: json['favourites'] as bool?,
+  hideEmptyShows: json['hideEmptyShows'] as bool? ?? true,
+  recursive: json['recursive'] as bool? ?? false,
+  groupBy: $enumDecodeNullable(_$GroupByEnumMap, json['groupBy']) ?? GroupBy.none,
+  isDefault: json['isDefault'] as bool? ?? false,
+);
 
 Map<String, dynamic> _$LibraryFilterModelToJson(_LibraryFilterModel instance) => <String, dynamic>{
-      'searchQuery': instance.searchQuery,
-      'genres': instance.genres,
-      'itemFilters': instance.itemFilters.map((k, e) => MapEntry(_$ItemFilterEnumMap[k], e)),
-      'studios': const StudioEncoder().toJson(instance.studios),
-      'tags': instance.tags,
-      'years': instance.years.map((k, e) => MapEntry(k.toString(), e)),
-      'officialRatings': instance.officialRatings,
-      'types': instance.types.map((k, e) => MapEntry(_$FladderItemTypeEnumMap[k]!, e)),
-      'sortingOption': _$SortingOptionsEnumMap[instance.sortingOption]!,
-      'sortOrder': _$SortingOrderEnumMap[instance.sortOrder]!,
-      'favourites': instance.favourites,
-      'hideEmptyShows': instance.hideEmptyShows,
-      'recursive': instance.recursive,
-      'groupBy': _$GroupByEnumMap[instance.groupBy]!,
-      'isDefault': instance.isDefault,
-    };
+  'searchQuery': instance.searchQuery,
+  'genres': instance.genres,
+  'itemFilters': instance.itemFilters.map((k, e) => MapEntry(_$ItemFilterEnumMap[k], e)),
+  'studios': const StudioEncoder().toJson(instance.studios),
+  'tags': instance.tags,
+  'years': instance.years.map((k, e) => MapEntry(k.toString(), e)),
+  'officialRatings': instance.officialRatings,
+  'types': instance.types.map((k, e) => MapEntry(_$FladderItemTypeEnumMap[k]!, e)),
+  'sortingOption': _$SortingOptionsEnumMap[instance.sortingOption]!,
+  'sortOrder': _$SortingOrderEnumMap[instance.sortOrder]!,
+  'favourites': instance.favourites,
+  'hideEmptyShows': instance.hideEmptyShows,
+  'recursive': instance.recursive,
+  'groupBy': _$GroupByEnumMap[instance.groupBy]!,
+  'isDefault': instance.isDefault,
+};
 
 const _$ItemFilterEnumMap = {
   ItemFilter.swaggerGeneratedUnknown: null,
@@ -125,10 +116,7 @@ const _$SortingOptionsEnumMap = {
   SortingOptions.random: 'random',
 };
 
-const _$SortingOrderEnumMap = {
-  SortingOrder.ascending: 'ascending',
-  SortingOrder.descending: 'descending',
-};
+const _$SortingOrderEnumMap = {SortingOrder.ascending: 'ascending', SortingOrder.descending: 'descending'};
 
 const _$GroupByEnumMap = {
   GroupBy.none: 'none',

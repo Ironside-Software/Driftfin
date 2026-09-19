@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/item_base_model.dart';
@@ -17,9 +18,7 @@ import 'package:driftfin/util/localization_helper.dart';
 Future<void> showIdentifyScreen(BuildContext context, ItemBaseModel item) async {
   return showDialogAdaptive(
     context: context,
-    builder: (context) => IdentifyScreen(
-      item: item,
-    ),
+    builder: (context) => IdentifyScreen(item: item),
   );
 }
 
@@ -36,13 +35,13 @@ enum IdentifyScreenTab {
   result;
 
   String label(BuildContext context) => switch (this) {
-        IdentifyScreenTab.search => context.localized.search,
-        IdentifyScreenTab.result => context.localized.result,
-      };
+    IdentifyScreenTab.search => context.localized.search,
+    IdentifyScreenTab.result => context.localized.result,
+  };
 }
 
 class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
-  AutoDisposeStateNotifierProvider<IdentifyNotifier, IdentifyModel> get provider => identifyProvider(widget.item.id);
+  StateNotifierProvider<IdentifyNotifier, IdentifyModel> get provider => identifyProvider(widget.item.id);
 
   late final TextEditingController _nameController;
   late final TextEditingController _yearController;
@@ -151,12 +150,7 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
               selectedForegroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
             ),
             segments: IdentifyScreenTab.values
-                .map(
-                  (tab) => ButtonSegment(
-                    value: tab,
-                    label: Text(tab.label(context)),
-                  ),
-                )
+                .map((tab) => ButtonSegment(value: tab, label: Text(tab.label(context))))
                 .toList(),
             selected: {selectedTab},
             showSelectedIcon: false,
@@ -167,21 +161,14 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
             },
           ),
         ),
-        Flexible(
-          child: AnimatedFadeSize(
-            child: contentWidgets[selectedTab]!,
-          ),
-        ),
+        Flexible(child: AnimatedFadeSize(child: contentWidgets[selectedTab]!)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 16),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text(context.localized.cancel),
-              ),
+              ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.cancel)),
               const SizedBox(width: 16),
               FilledButton(
                 onPressed: !processing
@@ -243,57 +230,56 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: posters
-                .map((result) => ListTile(
-                      title: Row(
-                        children: [
-                          SizedBox(
-                            width: 75,
-                            child: Card(
-                              child: CachedNetworkImage(
-                                imageUrl: result.imageUrl ?? "",
-                                cacheManager: CustomCacheManager.instance,
-                                errorWidget: (context, url, error) => SizedBox(
-                                  height: 75,
-                                  child: Card(
-                                    child: Center(
-                                      child: Text(result.name?.getInitials() ?? ""),
-                                    ),
-                                  ),
-                                ),
+                .map(
+                  (result) => ListTile(
+                    title: Row(
+                      children: [
+                        SizedBox(
+                          width: 75,
+                          child: Card(
+                            child: CachedNetworkImage(
+                              imageUrl: result.imageUrl ?? "",
+                              cacheManager: CustomCacheManager.instance,
+                              errorWidget: (context, url, error) => SizedBox(
+                                height: 75,
+                                child: Card(child: Center(child: Text(result.name?.getInitials() ?? ""))),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                    "${result.name ?? ""}${result.productionYear != null ? " (${result.productionYear})" : ""}"),
-                                Opacity(opacity: 0.65, child: Text(result.providerIds?.keys.join(', ') ?? ""))
-                              ],
-                            ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${result.name ?? ""}${result.productionYear != null ? " (${result.productionYear})" : ""}",
+                              ),
+                              Opacity(opacity: 0.65, child: Text(result.providerIds?.keys.join(', ') ?? "")),
+                            ],
                           ),
-                          Tooltip(
-                            message: context.localized.set,
-                            child: IconButton(
-                              onPressed: !processing
-                                  ? () async {
-                                      await FladderSnack.showResponse(
-                                        ref.read(provider.notifier).setIdentity(result),
-                                        successTitle: context.localized.setIdentityTo(result.name ?? ""),
-                                      );
-                                      if (context.mounted) {
-                                        Navigator.of(context).pop();
-                                      }
+                        ),
+                        Tooltip(
+                          message: context.localized.set,
+                          child: IconButton(
+                            onPressed: !processing
+                                ? () async {
+                                    await FladderSnack.showResponse(
+                                      ref.read(provider.notifier).setIdentity(result),
+                                      successTitle: context.localized.setIdentityTo(result.name ?? ""),
+                                    );
+                                    if (context.mounted) {
+                                      Navigator.of(context).pop();
                                     }
-                                  : null,
-                              icon: const Icon(IconsaxPlusBold.tag_2),
-                            ),
-                          )
-                        ],
-                      ),
-                    ))
+                                  }
+                                : null,
+                            icon: const Icon(IconsaxPlusBold.tag_2),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
                 .toList(),
           ),
         ),
@@ -311,10 +297,11 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             FilledButton(
-                onPressed: () {
-                  ref.read(provider.notifier).clearFields();
-                },
-                child: Text(context.localized.clear)),
+              onPressed: () {
+                ref.read(provider.notifier).clearFields();
+              },
+              child: Text(context.localized.clear),
+            ),
           ],
         ),
         const SizedBox(height: 6),
@@ -334,47 +321,37 @@ class _IdentifyScreenState extends ConsumerState<IdentifyScreen> {
           keyboardType: TextInputType.number,
           onChanged: (value) {
             if (value.isEmpty) {
-              ref.read(provider.notifier).update((state) => state.copyWith(
-                    year: () => null,
-                  ));
+              ref.read(provider.notifier).update((state) => state.copyWith(year: () => null));
               return;
             }
             final newYear = int.tryParse(value);
             if (newYear != null) {
-              ref.read(provider.notifier).update((state) => state.copyWith(
-                    year: () => newYear,
-                  ));
+              ref.read(provider.notifier).update((state) => state.copyWith(year: () => newYear));
             } else {
               _yearController.text = state.year?.toString() ?? "";
             }
           },
           onSubmitted: (value) {
             if (value.isEmpty) {
-              ref.read(provider.notifier).update((state) => state.copyWith(
-                    year: () => null,
-                  ));
+              ref.read(provider.notifier).update((state) => state.copyWith(year: () => null));
             }
             final newYear = int.tryParse(value);
             if (newYear != null) {
-              ref.read(provider.notifier).update((state) => state.copyWith(
-                    year: () => newYear,
-                  ));
+              ref.read(provider.notifier).update((state) => state.copyWith(year: () => newYear));
             }
           },
         ),
-        ...state.keys.entries.map(
-          (searchKey) {
-            final controller = _dynamicControllers[searchKey.key];
-            return FocusedOutlinedTextField(
-              label: searchKey.key,
-              controller: controller,
-              onChanged: (value) {
-                ref.read(provider.notifier).updateKey(MapEntry(searchKey.key, value));
-              },
-              onSubmitted: (value) => ref.read(provider.notifier).updateKey(MapEntry(searchKey.key, value)),
-            );
-          },
-        ),
+        ...state.keys.entries.map((searchKey) {
+          final controller = _dynamicControllers[searchKey.key];
+          return FocusedOutlinedTextField(
+            label: searchKey.key,
+            controller: controller,
+            onChanged: (value) {
+              ref.read(provider.notifier).updateKey(MapEntry(searchKey.key, value));
+            },
+            onSubmitted: (value) => ref.read(provider.notifier).updateKey(MapEntry(searchKey.key, value)),
+          );
+        }),
       ].addInBetween(const SizedBox(height: 12)),
     );
   }

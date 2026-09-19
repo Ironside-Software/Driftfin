@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/information_model.dart';
@@ -14,9 +15,7 @@ import 'package:driftfin/widgets/shared/clickable_text.dart';
 Future<void> showInfoScreen(BuildContext context, ItemBaseModel item) async {
   return showDialogAdaptive(
     context: context,
-    builder: (context) => ItemInfoScreen(
-      item: item,
-    ),
+    builder: (context) => ItemInfoScreen(item: item),
   );
 }
 
@@ -29,7 +28,7 @@ class ItemInfoScreen extends ConsumerStatefulWidget {
 }
 
 class ItemInfoScreenState extends ConsumerState<ItemInfoScreen> {
-  AutoDisposeStateNotifierProvider<InformationNotifier, InformationProviderModel> get provider =>
+  StateNotifierProvider<InformationNotifier, InformationProviderModel> get provider =>
       informationProvider(widget.item.id);
 
   FocusNode focusNode = FocusNode();
@@ -75,8 +74,9 @@ class ItemInfoScreenState extends ConsumerState<ItemInfoScreen> {
                       ),
                     ),
                     IconButton(
-                        onPressed: () => context.copyToClipboard(info.model.toString()),
-                        icon: const Icon(Icons.copy_all_rounded)),
+                      onPressed: () => context.copyToClipboard(info.model.toString()),
+                      icon: const Icon(Icons.copy_all_rounded),
+                    ),
                     IconButton(
                       onPressed: () => ref.read(provider.notifier).getItemInformation(widget.item),
                       icon: const Icon(IconsaxPlusLinear.refresh),
@@ -108,11 +108,7 @@ class ItemInfoScreenState extends ConsumerState<ItemInfoScreen> {
                                 crossAxisAlignment: WrapCrossAlignment.start,
                                 runSpacing: 16,
                                 spacing: 16,
-                                children: [
-                                  ...videoStreams,
-                                  ...audioStreams,
-                                  ...subStreams,
-                                ],
+                                children: [...videoStreams, ...audioStreams, ...subStreams],
                               ),
                             },
                           ],
@@ -122,7 +118,7 @@ class ItemInfoScreenState extends ConsumerState<ItemInfoScreen> {
                         opacity: info.loading ? 1 : 0,
                         duration: const Duration(milliseconds: 250),
                         child: const Center(child: CircularProgressIndicator(strokeCap: StrokeCap.round)),
-                      )
+                      ),
                     ],
                   ),
                 ],
@@ -131,9 +127,9 @@ class ItemInfoScreenState extends ConsumerState<ItemInfoScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.close))
+                FilledButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.close)),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -153,17 +149,8 @@ class ItemInfoScreenState extends ConsumerState<ItemInfoScreen> {
             style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
         ),
-        Text(
-          ":  ",
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        Flexible(
-          flex: 3,
-          child: SelectableText(
-            value,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ),
+        Text(":  ", style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+        Flexible(flex: 3, child: SelectableText(value, style: Theme.of(context).textTheme.titleMedium)),
       ],
     );
   }
@@ -186,14 +173,15 @@ class ItemInfoScreenState extends ConsumerState<ItemInfoScreen> {
                   ),
                 ),
                 IconButton(
-                    onPressed: () => context.copyToClipboard(InformationModel.mapToString(map)),
-                    icon: const Icon(Icons.copy_all_rounded))
+                  onPressed: () => context.copyToClipboard(InformationModel.mapToString(map)),
+                  icon: const Icon(Icons.copy_all_rounded),
+                ),
               ],
             ),
             const SizedBox(height: 6),
             ...map.entries
                 .where((element) => element.value != null)
-                .map((mapEntry) => tileRow(mapEntry.key, mapEntry.value.toString()))
+                .map((mapEntry) => tileRow(mapEntry.key, mapEntry.value.toString())),
           ],
         ),
       ),

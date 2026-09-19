@@ -21,10 +21,7 @@ class AudioUrlResolver {
 
   String _directUrl(ItemBaseModel item) {
     final token = ref.read(userProvider)?.credentials.token;
-    final params = <String, String?>{
-      'Static': 'true',
-      if (token != null) 'ApiKey': token,
-    };
+    final params = <String, String?>{'Static': 'true', 'ApiKey': ?token};
 
     var streamId = item.id;
     if (item is ItemStreamModel) {

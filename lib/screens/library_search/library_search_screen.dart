@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.enums.swagger.dart';
@@ -96,8 +97,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
   bool loadOnStart = false;
 
   Key get uniqueKey => Key(widget.parentId?.join(',').toString() ?? "EmptySearch");
-  AutoDisposeStateNotifierProvider<LibrarySearchNotifier, LibrarySearchModel> get providerKey =>
-      librarySearchProvider(uniqueKey);
+  StateNotifierProvider<LibrarySearchNotifier, LibrarySearchModel> get providerKey => librarySearchProvider(uniqueKey);
   LibrarySearchNotifier get libraryProvider => ref.read(librarySearchProvider(uniqueKey).notifier);
 
   @override
@@ -118,10 +118,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
 
   Future<void> initLibrary() async {
     await refreshKey.currentState?.show();
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.edgeToEdge,
-      overlays: [],
-    );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
     scrollController.addListener(() {
       scrollPosition();
     });
@@ -149,31 +146,26 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
 
     final toolbarHeight = 55.0;
 
-    ref.listen(
-      providerKey,
-      (previous, next) {
-        if (previous?.shouldRefresh(next) == true) {
-          refreshSearch();
-        }
-      },
-    );
+    ref.listen(providerKey, (previous, next) {
+      if (previous?.shouldRefresh(next) == true) {
+        refreshSearch();
+      }
+    });
 
     final adaptiveLayout = AdaptiveLayout.of(context);
 
     final mediaQuery = MediaQuery.of(context);
 
-    final useBlurredBackground = ref.watch(clientSettingsProvider.select(
-      (value) => value.backgroundImage == BackgroundType.blurred && value.enableBlurEffects,
-    ));
+    final useBlurredBackground = ref.watch(
+      clientSettingsProvider.select(
+        (value) => value.backgroundImage == BackgroundType.blurred && value.enableBlurEffects,
+      ),
+    );
 
     List<ItemAction>? itemActions = librarySearchResults.folderOverwrite.included.firstOrNull?.generateActions(
       context,
       ref,
-      exclude: {
-        ItemActions.details,
-        ItemActions.markPlayed,
-        ItemActions.markUnplayed,
-      },
+      exclude: {ItemActions.details, ItemActions.markPlayed, ItemActions.markUnplayed},
       onItemUpdated: (item) {
         libraryProvider.updateParentItem(item);
       },
@@ -218,29 +210,20 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                           .map(
                             (e) => FilledButton.tonal(
                               style: FilledButtonTheme.of(context).style?.copyWith(
-                                    padding: const WidgetStatePropertyAll(
-                                        EdgeInsets.symmetric(horizontal: 12, vertical: 24)),
-                                    backgroundColor: WidgetStateProperty.resolveWith(
-                                      (states) {
-                                        if (e != currentType) {
-                                          return Colors.transparent;
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                  ),
+                                padding: const WidgetStatePropertyAll(
+                                  EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+                                ),
+                                backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                  if (e != currentType) {
+                                    return Colors.transparent;
+                                  }
+                                  return null;
+                                }),
+                              ),
                               onPressed: () {
                                 ref.read(libraryViewTypeProvider.notifier).state = e;
                               },
-                              child: Row(
-                                children: [
-                                  Icon(e.icon),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    e.label(context),
-                                  )
-                                ],
-                              ),
+                              child: Row(children: [Icon(e.icon), const SizedBox(width: 12), Text(e.label(context))]),
                             ),
                           )
                           .toList()
@@ -290,9 +273,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
       );
     }
 
-    List<ItemAction> generateQuickActions(
-      bool inlinedPlayButtons,
-    ) {
+    List<ItemAction> generateQuickActions(bool inlinedPlayButtons) {
       final isSelectMode = librarySearchResults.selecteMode;
       final selectedCount = librarySearchResults.selectedPosters.length;
       void disableFilters(LibrarySearchModel librarySearchResults, LibrarySearchNotifier libraryProvider) {
@@ -322,10 +303,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
           if (librarySearchResults.showOpenMultiple)
             ItemActionButton(
               action: () {
-                LibrarySearchRoute(
-                  parentId: selectedPostersId,
-                  key: Key(selectedPostersId.join(',')),
-                ).push(context);
+                LibrarySearchRoute(parentId: selectedPostersId, key: Key(selectedPostersId.join(','))).push(context);
               },
               label: Text(context.localized.openSelected),
               icon: const Icon(IconsaxPlusLinear.folder_open),
@@ -341,9 +319,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     label: Text(
                       selectedCount.toString(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .labelMedium
+                      style: Theme.of(context).textTheme.labelMedium
                           ?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                     ),
                     child: const Icon(IconsaxPlusLinear.category_2),
@@ -404,21 +380,24 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
           ),
           if (librarySearchResults.folderOverwrite.included.firstOrNull is BoxSetModel)
             ItemActionButton(
-                action: hasSelection
-                    ? () async {
-                        await libraryProvider.removeSelectedFromCollection();
-                        if (context.mounted) context.refreshData();
-                      }
-                    : null,
-                label: Text(context.localized.removeFromCollection),
-                icon: Container(
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onPrimary, borderRadius: BorderRadius.circular(6)),
-                  child: const Padding(
-                    padding: EdgeInsets.all(3.0),
-                    child: Icon(IconsaxPlusLinear.save_remove, size: 20),
-                  ),
-                )),
+              action: hasSelection
+                  ? () async {
+                      await libraryProvider.removeSelectedFromCollection();
+                      if (context.mounted) context.refreshData();
+                    }
+                  : null,
+              label: Text(context.localized.removeFromCollection),
+              icon: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(3.0),
+                  child: Icon(IconsaxPlusLinear.save_remove, size: 20),
+                ),
+              ),
+            ),
           if (librarySearchResults.folderOverwrite.included.firstOrNull is PlaylistModel)
             ItemActionButton(
               action: hasSelection
@@ -438,10 +417,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                   }
                 : null,
             label: Text(context.localized.addToCollection),
-            icon: const Icon(
-              IconsaxPlusLinear.save_add,
-              size: 20,
-            ),
+            icon: const Icon(IconsaxPlusLinear.save_add, size: 20),
           ),
           ItemActionButton(
             action: hasSelection
@@ -502,9 +478,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                 return libraryProvider.openRandom(context);
               },
               label: Text(context.localized.selectRandom),
-              icon: const Icon(
-                IconsaxPlusBold.slider_vertical,
-              ),
+              icon: const Icon(IconsaxPlusBold.slider_vertical),
             ),
         ];
       }
@@ -592,10 +566,7 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                   onRefresh: () async {
                     final filter = incomingFilter();
                     if (libraryProvider.mounted) {
-                      return libraryProvider.initRefresh(
-                        parentIds: widget.parentId ?? [],
-                        filters: filter,
-                      );
+                      return libraryProvider.initRefresh(parentIds: widget.parentId ?? [], filters: filter);
                     }
                   },
                   refreshOnStart: false,
@@ -628,13 +599,8 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                                             return LinearGradient(
                                               begin: Alignment.topCenter,
                                               end: Alignment.bottomCenter,
-                                              colors: [
-                                                Colors.white.withAlpha(255),
-                                                Colors.white.withAlpha(0),
-                                              ],
-                                            ).createShader(
-                                              Rect.fromLTRB(0, 10, bounds.width, bounds.height),
-                                            );
+                                              colors: [Colors.white.withAlpha(255), Colors.white.withAlpha(0)],
+                                            ).createShader(Rect.fromLTRB(0, 10, bounds.width, bounds.height));
                                           },
                                           blendMode: BlendMode.dstIn,
                                           child: const BackgroundImage(),
@@ -655,28 +621,21 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                                     libraryProvider: libraryProvider,
                                     scrollController: scrollController,
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
                         ),
                         if (AdaptiveLayout.of(context).isDesktop)
                           const SliverToBoxAdapter(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                PosterSizeWidget(),
-                              ],
-                            ),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [PosterSizeWidget()]),
                           ),
                         if (postersList.isNotEmpty)
                           SliverPadding(
                             padding: EdgeInsets.only(
                               left: mediaQuery.padding.left,
                               right: mediaQuery.padding.right,
-                            ).add(
-                              EdgeInsetsDirectional.only(start: adaptiveLayout.sideBarWidth),
-                            ),
+                            ).add(EdgeInsetsDirectional.only(start: adaptiveLayout.sideBarWidth)),
                             sliver: LibraryViews(
                               key: uniqueKey,
                               items: postersList,
@@ -684,12 +643,8 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
                             ),
                           )
                         else
-                          SliverFillRemaining(
-                            child: Center(
-                              child: Text(context.localized.noItemsToShow),
-                            ),
-                          ),
-                        SliverPadding(padding: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height * 0.20))
+                          SliverFillRemaining(child: Center(child: Text(context.localized.noItemsToShow))),
+                        SliverPadding(padding: EdgeInsets.only(bottom: MediaQuery.sizeOf(context).height * 0.20)),
                       ],
                     );
                   },
@@ -739,9 +694,7 @@ class LibraryAppBar extends ConsumerWidget {
         children: [
           IntrinsicHeight(
             child: Padding(
-              padding: EdgeInsets.only(
-                right: AdaptiveLayout.adaptivePadding(context).right,
-              ),
+              padding: EdgeInsets.only(right: AdaptiveLayout.adaptivePadding(context).right),
               child: Row(
                 spacing: 4,
                 children: [
@@ -750,9 +703,7 @@ class LibraryAppBar extends ConsumerWidget {
                       dimension: toolbarHeight,
                       child: PositionRoundedClip(
                         child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceContainerLow,
-                          ),
+                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerLow),
                           child: context.router.backButton(),
                         ),
                       ),
@@ -781,18 +732,20 @@ class LibraryAppBar extends ConsumerWidget {
                     dimension: toolbarHeight,
                     child: PositionRoundedClip(
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainerLow,
-                        ),
+                        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerLow),
                         child: Tooltip(
-                          message: librarySearchResults.folderOverwrite.included.firstOrNull?.type
-                                  .label(context.localized) ??
+                          message:
+                              librarySearchResults.folderOverwrite.included.firstOrNull?.type.label(
+                                context.localized,
+                              ) ??
                               context.localized.library(1),
                           child: AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer
                               ? PopupMenuButton(
                                   tooltip: context.localized.library(1),
-                                  icon: Icon(librarySearchResults.folderOverwrite.included.firstOrNull?.type.icon ??
-                                      IconsaxPlusLinear.document),
+                                  icon: Icon(
+                                    librarySearchResults.folderOverwrite.included.firstOrNull?.type.icon ??
+                                        IconsaxPlusLinear.document,
+                                  ),
                                   itemBuilder: (context) => menuActions.toList().popupMenuItems(useIcons: true),
                                 )
                               : IconButton(
@@ -803,9 +756,7 @@ class LibraryAppBar extends ConsumerWidget {
                                         shrinkWrap: true,
                                         controller: scrollController,
                                         children: menuActions
-                                            .map(
-                                              (e) => e.toListItem(context, useIcons: true, shouldPop: true),
-                                            )
+                                            .map((e) => e.toListItem(context, useIcons: true, shouldPop: true))
                                             .toList(),
                                       ),
                                     );
@@ -815,8 +766,13 @@ class LibraryAppBar extends ConsumerWidget {
                                     child: Icon(
                                       librarySearchResults.folderOverwrite.included.firstOrNull?.type.icon ??
                                           IconsaxPlusLinear.document,
-                                      color: librarySearchResults
-                                                  .folderOverwrite.included.firstOrNull?.userData.isFavourite ==
+                                      color:
+                                          librarySearchResults
+                                                  .folderOverwrite
+                                                  .included
+                                                  .firstOrNull
+                                                  ?.userData
+                                                  .isFavourite ==
                                               true
                                           ? Theme.of(context).colorScheme.primary
                                           : null,
@@ -830,9 +786,7 @@ class LibraryAppBar extends ConsumerWidget {
                   if (AdaptiveLayout.layoutModeOf(context) == LayoutMode.single)
                     SizedBox.square(
                       dimension: toolbarHeight,
-                      child: const PositionRoundedClip(
-                        child: SettingsUserIcon(),
-                      ),
+                      child: const PositionRoundedClip(child: SettingsUserIcon()),
                     ),
                 ].withPositionProvider(),
               ),
@@ -849,11 +803,12 @@ class LibraryAppBar extends ConsumerWidget {
                         ? Tooltip(
                             message: context.localized.scrollToTop,
                             child: IconButton.filled(
-                              onPressed: () => scrollController.animateTo(0,
-                                  duration: const Duration(milliseconds: 500), curve: Curves.easeInOutCubic),
-                              icon: const Icon(
-                                IconsaxPlusLinear.arrow_up,
+                              onPressed: () => scrollController.animateTo(
+                                0,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOutCubic,
                               ),
+                              icon: const Icon(IconsaxPlusLinear.arrow_up),
                             ),
                           )
                         : const SizedBox.shrink(),
@@ -861,27 +816,19 @@ class LibraryAppBar extends ConsumerWidget {
                 ),
               Flexible(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(vertical: 8).add(EdgeInsets.only(
-                    right: AdaptiveLayout.adaptivePadding(context).right,
-                  )),
+                  padding: const EdgeInsets.symmetric(vertical: 8)
+                      .add(EdgeInsets.only(right: AdaptiveLayout.adaptivePadding(context).right)),
                   scrollDirection: Axis.horizontal,
-                  child: LibraryFilterChips(
-                    key: uniqueKey,
-                  ),
+                  child: LibraryFilterChips(key: uniqueKey),
                 ),
               ),
             ],
           ),
           if (AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad)
             Container(
-              padding: EdgeInsets.only(
-                right: AdaptiveLayout.adaptivePadding(context).right,
-              ),
-              child: Row(
-                spacing: 4,
-                children: quickActions.map((e) => e.toButton()).toList(),
-              ),
-            )
+              padding: EdgeInsets.only(right: AdaptiveLayout.adaptivePadding(context).right),
+              child: Row(spacing: 4, children: quickActions.map((e) => e.toButton()).toList()),
+            ),
         ],
       ),
     );

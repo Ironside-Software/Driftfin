@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide RepeatMode;
 
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,7 +58,9 @@ class TranscodePlaybackModel extends PlaybackModel {
 
   @override
   Future<PlaybackModel?> playbackStarted(Duration position, Ref ref) async {
-    await ref.read(jellyApiProvider).sessionsPlayingPost(
+    await ref
+        .read(jellyApiProvider)
+        .sessionsPlayingPost(
           body: PlaybackStartInfo(
             canSeek: true,
             itemId: item.id,
@@ -82,7 +84,9 @@ class TranscodePlaybackModel extends PlaybackModel {
   Future<PlaybackModel?> playbackStopped(Duration position, Duration? totalDuration, Ref ref) async {
     final stopPosition = resolvedStopPosition(position, totalDuration);
 
-    await ref.read(jellyApiProvider).sessionsPlayingStoppedPost(
+    await ref
+        .read(jellyApiProvider)
+        .sessionsPlayingStoppedPost(
           body: PlaybackStopInfo(
             itemId: item.id,
             mediaSourceId: item.id,
@@ -119,11 +123,7 @@ class TranscodePlaybackModel extends PlaybackModel {
 
   @override
   TranscodePlaybackModel? updateUserData(UserData userData) {
-    return copyWith(
-      item: item.copyWith(
-        userData: userData,
-      ),
-    );
+    return copyWith(item: item.copyWith(userData: userData));
   }
 
   @override

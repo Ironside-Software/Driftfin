@@ -18,42 +18,39 @@ class SyncButton extends ConsumerWidget {
     final nested = ref.watch(syncedNestedChildrenProvider(syncedItem));
     return switch (nested) {
       AsyncValue<List<SyncedItem>>(:final value) => Builder(
-          builder: (context) {
-            final download = ref.watch(syncDownloadStatusProvider(syncedItem, value ?? []));
-            final status = download?.status ?? TaskStatus.notFound;
-            final progress = download?.progress ?? 0.0;
+        builder: (context) {
+          final download = ref.watch(syncDownloadStatusProvider(syncedItem, value ?? const []));
+          final status = download?.status ?? TaskStatus.notFound;
+          final progress = download?.progress ?? 0.0;
 
-            return Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(
-                  status == TaskStatus.notFound
-                      ? (progress > 0 ? IconsaxPlusLinear.arrow_down_1 : IconsaxPlusLinear.more_circle)
-                      : status.icon,
-                  color: status.color(context),
-                  size: status == TaskStatus.running && progress > 0 ? 16 : null,
-                ),
-                SizedBox.fromSize(
-                  size: const Size.fromRadius(10),
-                  child: TweenAnimationBuilder(
-                    duration: const Duration(milliseconds: 250),
-                    curve: Curves.easeInOut,
-                    tween: Tween<double>(
-                      begin: 0,
-                      end: progress,
-                    ),
-                    builder: (context, value, child) => CircularProgressIndicator(
-                      strokeCap: StrokeCap.round,
-                      strokeWidth: 2,
-                      color: status.color(context),
-                      value: status == TaskStatus.running ? value.clamp(0.0, 1.0) : 0,
-                    ),
+          return Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                status == TaskStatus.notFound
+                    ? (progress > 0 ? IconsaxPlusLinear.arrow_down_1 : IconsaxPlusLinear.more_circle)
+                    : status.icon,
+                color: status.color(context),
+                size: status == TaskStatus.running && progress > 0 ? 16 : null,
+              ),
+              SizedBox.fromSize(
+                size: const Size.fromRadius(10),
+                child: TweenAnimationBuilder(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  tween: Tween<double>(begin: 0, end: progress),
+                  builder: (context, value, child) => CircularProgressIndicator(
+                    strokeCap: StrokeCap.round,
+                    strokeWidth: 2,
+                    color: status.color(context),
+                    value: status == TaskStatus.running ? value.clamp(0.0, 1.0) : 0,
                   ),
                 ),
-              ],
-            );
-          },
-        ),
+              ),
+            ],
+          );
+        },
+      ),
     };
   }
 }

@@ -89,7 +89,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           },
           child: calendar.when(
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (_, __) => _empty(context),
+            error: (_, _) => _empty(context),
             data: (raw) {
               final byDay = _applyFilter(raw);
               if (byDay.isEmpty) return _empty(context);
@@ -104,22 +104,22 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
   /// Centres and width-constrains content so the page doesn't sprawl on wide
   /// desktop windows.
   Widget _constrained({required Widget child}) => Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 820),
-          child: child,
-        ),
-      );
+    alignment: Alignment.topCenter,
+    child: ConstrainedBox(constraints: const BoxConstraints(maxWidth: 820), child: child),
+  );
 
   Widget _empty(BuildContext context) => ListView(
-        children: [
-          const SizedBox(height: 120),
-          Icon(Icons.event_busy_outlined,
-              size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
-          const SizedBox(height: 12),
-          Center(child: Text(context.localized.calendarEmpty)),
-        ],
-      );
+    children: [
+      const SizedBox(height: 120),
+      Icon(
+        Icons.event_busy_outlined,
+        size: 48,
+        color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+      ),
+      const SizedBox(height: 12),
+      Center(child: Text(context.localized.calendarEmpty)),
+    ],
+  );
 
   Widget _buildAgenda(BuildContext context, Map<DateTime, List<CalendarEntry>> byDay) {
     final days = byDay.keys.toList()..sort();
@@ -175,9 +175,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             setState(() => _focusedMonth = DateTime(_focusedMonth.year, _focusedMonth.month - 1)),
                       ),
                       Expanded(
-                        child: Text(DateFormat('MMMM yyyy').format(_focusedMonth),
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                        child: Text(
+                          DateFormat('MMMM yyyy').format(_focusedMonth),
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.chevron_right),
@@ -192,9 +194,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       for (final d in const ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
                         Expanded(
                           child: Center(
-                            child: Text(d,
-                                style: theme.textTheme.labelMedium
-                                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
+                            child: Text(
+                              d,
+                              style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
                         ),
                     ],
@@ -204,7 +210,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7, childAspectRatio: 1, mainAxisSpacing: 2, crossAxisSpacing: 2),
+                      crossAxisCount: 7,
+                      childAspectRatio: 1,
+                      mainAxisSpacing: 2,
+                      crossAxisSpacing: 2,
+                    ),
                     itemCount: cellCount,
                     itemBuilder: (context, index) {
                       if (index < leadingBlanks) return const SizedBox.shrink();
@@ -216,8 +226,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                       final dayColor = isSelected
                           ? theme.colorScheme.onPrimary
                           : isToday
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.onSurface;
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onSurface;
                       return InkWell(
                         onTap: () => setState(() => _selectedDay = day),
                         borderRadius: BorderRadius.circular(10),
@@ -232,10 +242,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('$dayNum',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: dayColor,
-                                      fontWeight: isToday || isSelected ? FontWeight.bold : FontWeight.normal)),
+                              Text(
+                                '$dayNum',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: dayColor,
+                                  fontWeight: isToday || isSelected ? FontWeight.bold : FontWeight.normal,
+                                ),
+                              ),
                               const SizedBox(height: 3),
                               if (count > 0)
                                 Container(
@@ -249,11 +262,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                                         : theme.colorScheme.primary.withValues(alpha: 0.18),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: Text('$count',
-                                      style: theme.textTheme.labelSmall?.copyWith(
-                                          color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.primary,
-                                          fontWeight: FontWeight.w700,
-                                          height: 1)),
+                                  child: Text(
+                                    '$count',
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.primary,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1,
+                                    ),
+                                  ),
                                 )
                               else
                                 const SizedBox(height: 15),
@@ -273,8 +289,11 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
             Padding(
               padding: const EdgeInsets.all(24),
               child: Center(
-                  child: Text(context.localized.calendarEmpty,
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant))),
+                child: Text(
+                  context.localized.calendarEmpty,
+                  style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                ),
+              ),
             )
           else
             _EntryGroup(entries: selectedEntries),
@@ -309,20 +328,25 @@ class _DayHeader extends StatelessWidget {
             decoration: BoxDecoration(color: badgeColor, borderRadius: BorderRadius.circular(12)),
             child: Column(
               children: [
-                Text(DateFormat('EEE').format(date).toUpperCase(),
-                    style: theme.textTheme.labelSmall?.copyWith(color: badgeFg.withValues(alpha: 0.8), height: 1)),
-                Text('${date.day}',
-                    style:
-                        theme.textTheme.titleLarge?.copyWith(color: badgeFg, fontWeight: FontWeight.bold, height: 1.1)),
+                Text(
+                  DateFormat('EEE').format(date).toUpperCase(),
+                  style: theme.textTheme.labelSmall?.copyWith(color: badgeFg.withValues(alpha: 0.8), height: 1),
+                ),
+                Text(
+                  '${date.day}',
+                  style: theme.textTheme.titleLarge?.copyWith(color: badgeFg, fontWeight: FontWeight.bold, height: 1.1),
+                ),
               ],
             ),
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+            ),
           ),
           if (count > 0)
             Text('$count', style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
@@ -368,9 +392,10 @@ class _CalendarTile extends StatelessWidget {
     final statusText = entry.hasFile ? '✓' : DateFormat.jm().format(entry.airDate);
     final subtitle = entry.isMovie
         ? context.localized.calendarFilterMovies
-        : [entry.codeLabel, if (entry.episodeTitle.isNotEmpty) entry.episodeTitle]
-            .where((s) => s.isNotEmpty)
-            .join(' · ');
+        : [
+            entry.codeLabel,
+            if (entry.episodeTitle.isNotEmpty) entry.episodeTitle,
+          ].where((s) => s.isNotEmpty).join(' · ');
 
     final imagePlaceholder = Container(
       color: theme.colorScheme.surfaceContainerHighest,
@@ -403,24 +428,32 @@ class _CalendarTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(entry.seriesTitle,
+                  Text(
+                    entry.seriesTitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  if (subtitle.isNotEmpty)
+                    Text(
+                      subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600)),
-                  if (subtitle.isNotEmpty)
-                    Text(subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+                      style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
                 ],
               ),
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration:
-                  BoxDecoration(color: statusColor.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(6)),
-              child: Text(statusText,
-                  style: theme.textTheme.labelMedium?.copyWith(color: statusColor, fontWeight: FontWeight.w700)),
+              decoration: BoxDecoration(
+                color: statusColor.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                statusText,
+                style: theme.textTheme.labelMedium?.copyWith(color: statusColor, fontWeight: FontWeight.w700),
+              ),
             ),
           ],
         ),

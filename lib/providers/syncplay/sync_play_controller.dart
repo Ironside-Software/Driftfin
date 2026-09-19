@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -28,8 +29,8 @@ Duration _durationFromTicks(int ticks) => Duration(microseconds: ticks ~/ 10);
 /// buffering/ready so the group waits for slow members.
 class SyncPlayController extends StateNotifier<SyncPlayState> {
   SyncPlayController(this.ref, {http.Client? httpClient, @visibleForTesting SyncPlayState? initialState})
-      : _httpClient = httpClient ?? http.Client(),
-        super(initialState ?? const SyncPlayState());
+    : _httpClient = httpClient ?? http.Client(),
+      super(initialState ?? const SyncPlayState());
 
   final Ref ref;
   final http.Client _httpClient;
@@ -390,8 +391,12 @@ class SyncPlayController extends StateNotifier<SyncPlayState> {
   void _setPresence(String member, {bool? typing, bool? buffering}) {
     if (!mounted || member.isEmpty) return;
     final current = state.presence[member] ?? const SyncPresenceInfo();
-    state =
-        state.copyWith(presence: {...state.presence, member: current.copyWith(typing: typing, buffering: buffering)});
+    state = state.copyWith(
+      presence: {
+        ...state.presence,
+        member: current.copyWith(typing: typing, buffering: buffering),
+      },
+    );
     if (typing == true) {
       _presenceExpiryTimers[member]?.cancel();
       _presenceExpiryTimers[member] = Timer(const Duration(seconds: 6), () {
@@ -476,8 +481,9 @@ class SyncPlayController extends StateNotifier<SyncPlayState> {
     final whenStr = cmd['When']?.toString();
     final when = whenStr != null ? DateTime.tryParse(whenStr) : null;
 
-    final localWhen =
-        (when != null && (_timeSync?.hasSynced ?? false)) ? _timeSync!.serverToLocal(when) : DateTime.now().toUtc();
+    final localWhen = (when != null && (_timeSync?.hasSynced ?? false))
+        ? _timeSync!.serverToLocal(when)
+        : DateTime.now().toUtc();
     var delay = localWhen.difference(DateTime.now().toUtc());
     if (delay.isNegative) delay = Duration.zero;
 
@@ -589,14 +595,22 @@ class SyncPlayController extends StateNotifier<SyncPlayState> {
       _api
           .syncPlayBufferingPost(
             body: BufferRequestDto(
-                when: when, positionTicks: ticks, isPlaying: playing, playlistItemId: _currentPlaylistItemId),
+              when: when,
+              positionTicks: ticks,
+              isPlaying: playing,
+              playlistItemId: _currentPlaylistItemId,
+            ),
           )
           .ignore();
     } else {
       _api
           .syncPlayReadyPost(
             body: ReadyRequestDto(
-                when: when, positionTicks: ticks, isPlaying: playing, playlistItemId: _currentPlaylistItemId),
+              when: when,
+              positionTicks: ticks,
+              isPlaying: playing,
+              playlistItemId: _currentPlaylistItemId,
+            ),
           )
           .ignore();
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/book_model.dart';
@@ -33,7 +34,7 @@ class BookDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
-  AutoDisposeStateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> get provider =>
+  StateNotifierProvider<BookDetailsProviderNotifier, BookProviderModel> get provider =>
       bookDetailsProvider(widget.item.id);
 
   @override
@@ -45,11 +46,7 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
       actions: (context) => details.book?.generateActions(
         context,
         ref,
-        exclude: {
-          ItemActions.play,
-          ItemActions.playFromStart,
-          ItemActions.details,
-        },
+        exclude: {ItemActions.play, ItemActions.playFromStart, ItemActions.details},
         onDeleteSuccesFully: (item) {
           if (context.mounted) {
             context.router.popBack();
@@ -90,9 +87,7 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                                     );
                                   },
                                 ),
-                                image: ImagesData(
-                                  logo: details.book?.getPosters?.primary,
-                                ),
+                                image: ImagesData(logo: details.book?.getPosters?.primary),
                                 productionYear: details.nextUp!.overview.productionYear.toString(),
                                 runTime: details.nextUp!.overview.runTime,
                                 genres: details.nextUp!.overview.genreItems,
@@ -115,8 +110,12 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                                   ),
                                 if (details.parentModel != null)
                                   SelectableIconButton(
-                                    onPressed: () async => await ref.read(userProvider.notifier).setAsFavorite(
-                                        !details.parentModel!.userData.isFavourite, details.parentModel!.id),
+                                    onPressed: () async => await ref
+                                        .read(userProvider.notifier)
+                                        .setAsFavorite(
+                                          !details.parentModel!.userData.isFavourite,
+                                          details.parentModel!.id,
+                                        ),
                                     selected: details.parentModel!.userData.isFavourite,
                                     selectedIcon: IconsaxPlusBold.heart,
                                     icon: IconsaxPlusLinear.heart,
@@ -132,32 +131,33 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                                   ),
 
                                 //This one toggles all books in a collection
-                                Builder(builder: (context) {
-                                  return Tooltip(
-                                    message: "Mark all chapters as read",
-                                    child: SelectableIconButton(
-                                      onPressed: () async => await Future.forEach(
+                                Builder(
+                                  builder: (context) {
+                                    return Tooltip(
+                                      message: "Mark all chapters as read",
+                                      child: SelectableIconButton(
+                                        onPressed: () async => await Future.forEach(
                                           details.allBooks,
                                           (element) async => await ref
                                               .read(userProvider.notifier)
-                                              .markAsPlayed(!details.collectionPlayed, element.id)),
-                                      selected: details.collectionPlayed,
-                                      selectedIcon: Icons.check_circle_rounded,
-                                      icon: Icons.check_circle_outline_rounded,
-                                    ),
-                                  );
-                                }),
+                                              .markAsPlayed(!details.collectionPlayed, element.id),
+                                        ),
+                                        selected: details.collectionPlayed,
+                                        selectedIcon: Icons.check_circle_rounded,
+                                        icon: Icons.check_circle_outline_rounded,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),
                     ],
                   ).padding(padding),
                   if (details.nextUp!.overview.summary.isNotEmpty == true)
-                    ExpandingText(
-                      text: details.nextUp!.overview.summary,
-                    ).padding(padding),
+                    ExpandingText(text: details.nextUp!.overview.summary).padding(padding),
                   if (details.chapters.length > 1)
                     Builder(
                       builder: (context) {
@@ -166,43 +166,37 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(context.localized.chapter(details.chapters.length),
-                                style: Theme.of(context).textTheme.titleLarge),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Divider(),
+                            Text(
+                              context.localized.chapter(details.chapters.length),
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            ...details.chapters.map(
-                              (e) {
-                                final current = e == details.nextUp;
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 2),
-                                  child: Opacity(
-                                    opacity: e.userData.played ? 0.65 : 1,
-                                    child: Card(
-                                      color: current ? Theme.of(context).colorScheme.surfaceContainerHighest : null,
-                                      child: PosterListItem(
-                                        poster: e,
-                                        onPressed: (action, item) => showBottomSheetPill(
-                                          context: context,
-                                          item: item,
-                                          content: (context, scrollController) => ListView(
-                                            shrinkWrap: true,
-                                            controller: scrollController,
-                                            children: item
-                                                .generateActions(
-                                                  parentContext,
-                                                  ref,
-                                                )
-                                                .listTileItems(context, useIcons: true),
-                                          ),
+                            const Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Divider()),
+                            ...details.chapters.map((e) {
+                              final current = e == details.nextUp;
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 2),
+                                child: Opacity(
+                                  opacity: e.userData.played ? 0.65 : 1,
+                                  child: Card(
+                                    color: current ? Theme.of(context).colorScheme.surfaceContainerHighest : null,
+                                    child: PosterListItem(
+                                      poster: e,
+                                      onPressed: (action, item) => showBottomSheetPill(
+                                        context: context,
+                                        item: item,
+                                        content: (context, scrollController) => ListView(
+                                          shrinkWrap: true,
+                                          controller: scrollController,
+                                          children: item
+                                              .generateActions(parentContext, ref)
+                                              .listTileItems(context, useIcons: true),
                                         ),
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            )
+                                ),
+                              );
+                            }),
                           ],
                         ).padding(padding);
                       },
@@ -210,10 +204,8 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                   if (details.nextUp?.overview.externalUrls?.isNotEmpty == true)
                     Padding(
                       padding: padding,
-                      child: ExternalUrlsRow(
-                        urls: details.nextUp?.overview.externalUrls,
-                      ),
-                    )
+                      child: ExternalUrlsRow(urls: details.nextUp?.overview.externalUrls),
+                    ),
                 ].addPadding(const EdgeInsets.symmetric(vertical: 16)),
               ),
             )

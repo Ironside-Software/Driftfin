@@ -19,7 +19,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 0.11.1+1
 
 environment:
-  sdk: ">=3.1.3 <4.0.0"
+  sdk: ">=3.13.0 <4.0.0"
+  flutter: ">=3.47.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -41,16 +42,16 @@ dependencies:
 
   # Network and HTTP
   chopper: ^8.3.0
-  cached_network_image: ^3.4.1
+  cached_network_image: ^4.0.0
   http: ^1.5.0
   web_socket_channel: ^3.0.1
   flutter_cache_manager: ^3.4.1
   connectivity_plus: ^7.0.0
-  punycoder: ^0.2.2
+  punycoder: ^0.3.0
 
   # State Management
-  flutter_riverpod: ^2.6.1
-  riverpod_annotation: ^2.6.1
+  flutter_riverpod: ^3.4.3
+  riverpod_annotation: ^4.0.7
 
   # JSON and Serialization
   json_annotation: ^4.9.0
@@ -64,7 +65,7 @@ dependencies:
   meta: ^1.16.0
 
   # Crash reporting (opt-in, off by default — see clientSettingsProvider.enableCrashReporting)
-  sentry_flutter: ^9.22.0
+  sentry_flutter: ^9.30.0
 
   # Internationalization
   intl: ^0.20.2
@@ -80,7 +81,7 @@ dependencies:
   audio_service: ^0.18.18
   audio_service_mpris: ^0.2.0
   audio_session: ^0.2.4
-  fvp: ^0.35.0
+  fvp: ^0.38.1
   pip: ^0.0.3
   video_player: ^2.10.0
   cast_plus: ^2.2.0 # Chromecast (pure-Dart CASTV2 sender; bonsoir 6.x fork of `cast`).
@@ -89,9 +90,10 @@ dependencies:
   image: ^4.5.4 # For saving screenshots.
 
   # UI Components
-  dynamic_color: ^1.8.1
+  material_ui: ^1.3.0
+  dynamic_color: ^2.1.0
   flutter_svg: ^2.2.0
-  animations: ^2.0.11
+  animations: ^3.0.0
   automatic_animated_list: ^1.1.0
   page_transition: ^2.2.1
   sticky_headers: ^0.3.0+2
@@ -101,7 +103,7 @@ dependencies:
   flutter_blurhash: ^0.9.1
   extended_image: ^10.0.1
   flutter_widget_from_html: ^0.17.0
-  font_awesome_flutter: ^10.9.1
+  font_awesome_flutter: ^11.0.0
   reorderable_grid: ^1.0.12
   overflow_view: ^0.5.0
   flutter_sticky_header: ^0.8.0
@@ -109,45 +111,44 @@ dependencies:
   palette_generator_master: ^1.0.1
 
   # Navigation
-  auto_route: ^10.1.2
+  auto_route: ^11.1.0
   url_launcher: ^6.3.2
   flutter_custom_tabs: ^2.4.0
 
   # Utility
   path: ^1.9.1
-  file_picker: ^10.3.2
+  file_picker: ^13.1.0
   transparent_image: ^2.0.1
   universal_html: ^2.2.4
   collection: ^1.19.1
 
   # Device and System
-  local_auth: ^2.3.0
-  package_info_plus: ^9.0.0
+  local_auth: ^3.0.2
+  package_info_plus: ^10.2.1
   wakelock_plus: ^1.3.2
   screen_brightness: ^2.1.7
-  volume_controller: 3.4.1
+  volume_controller: ^3.7.1
   window_manager: ^0.5.1
   smtc_windows: ^1.1.0
   background_downloader: ^9.2.3
   screen_retriever: ^0.2.0
   desktop_multi_window: ^0.3.0
-  workmanager: ^0.9.0+3
-  flutter_local_notifications: ^20.1.0
+  workmanager: ^0.10.10
+  flutter_local_notifications: ^22.3.1
   permission_handler: ^13.0.1
 
   # Data
   drift: ^2.28.1
-  drift_flutter: ^0.2.5
-  drift_sync: ^0.14.0
+  drift_flutter: ^0.3.1
   drift_db_viewer: ^2.1.0
 
   # Other
   async: ^2.13.0
   xid: ^1.2.1
-  desktop_drop: ^0.6.1
+  desktop_drop: ^0.8.4
   flexible_scrollbar: ^0.1.3
-  flutter_typeahead: ^5.2.0
-  share_plus: ^12.0.0
+  flutter_typeahead: ^6.0.0
+  share_plus: ^13.3.0
   pretty_qr_code: ^3.0.1
   archive: ^4.0.7
   dart_mappable: ^4.6.0
@@ -157,48 +158,59 @@ dependencies:
   # Fix cjk font rendering issue on Windows
   chinese_font_library: ^1.2.0
 
+  material_color_utilities: any
+  local_auth_android: any
+  local_auth_darwin: any
+  uuid: any
+# Playback forks are pinned until their native behavior is verified against upstream.
 dependency_overrides:
   pip:
     git:
       url: https://github.com/DonutWare/pip.git
-      ref: 0.0.3.1
+      ref: 3eaa141d09dbd7fca995bf6c535c055aa173dba8
   media_kit:
     git:
       url: https://github.com/DonutWare/media-kit.git
-      ref: main
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: ./media_kit
   media_kit_video:
     git:
       url: https://github.com/DonutWare/media-kit.git
-      ref: main
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: ./media_kit_video
   media_kit_libs_video:
     git:
       url: https://github.com/DonutWare/media-kit.git
-      ref: main
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: ./libs/universal/media_kit_libs_video
   media_kit_libs_android_video:
     git:
       url: https://github.com/DonutWare/media-kit.git
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: libs/android/media_kit_libs_android_video
   media_kit_libs_ios_video:
     git:
       url: https://github.com/DonutWare/media-kit.git
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: libs/ios/media_kit_libs_ios_video
   media_kit_libs_macos_video:
     git:
       url: https://github.com/DonutWare/media-kit.git
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: libs/macos/media_kit_libs_macos_video
   media_kit_libs_windows_video:
     git:
       url: https://github.com/DonutWare/media-kit.git
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: libs/windows/media_kit_libs_windows_video
   media_kit_libs_linux:
     git:
       url: https://github.com/DonutWare/media-kit.git
+      ref: cb56b5a6149f1e51086eba473c7e48041c54ab12
       path: libs/linux/media_kit_libs_linux
 
 dev_dependencies:
+  local_auth_platform_interface: ^1.1.0
   flutter_test:
     sdk: flutter
 
@@ -222,14 +234,14 @@ dev_dependencies:
   build_runner: ^2.5.4
   chopper_generator: ^8.2.0
   json_serializable: ^6.9.5
-  custom_lint: ^0.7.6
-  freezed: ^3.1.0
-  swagger_dart_code_generator: ^3.0.3
-  riverpod_generator: ^2.6.5
+  # Analyzer 14 is not yet supported by Chopper/AutoRoute generators.
+  freezed: 4.0.1
+  swagger_dart_code_generator: ^4.1.1
+  riverpod_generator: ^4.0.9
   dart_mappable_builder: ^4.5.0
   auto_route_generator: ^10.2.3
   icons_launcher: ^3.0.2
-  pigeon: ^26.0.1
+  pigeon: ^29.0.2
 
 flutter:
   # The following line ensures that the Material Icons font is

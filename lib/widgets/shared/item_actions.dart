@@ -89,15 +89,15 @@ class ItemActionButton extends ItemAction {
 
   @override
   MenuItemButton toMenuItemButton() => MenuItemButton(
-        leadingIcon: icon,
-        onPressed: action,
-        style: ButtonStyle(
-          backgroundColor: backgroundColor == null ? null : WidgetStatePropertyAll(backgroundColor),
-          foregroundColor: foregroundColor == null ? null : WidgetStatePropertyAll(foregroundColor),
-          iconColor: foregroundColor == null ? null : WidgetStatePropertyAll(foregroundColor),
-        ),
-        child: label,
-      );
+    leadingIcon: icon,
+    onPressed: action,
+    style: ButtonStyle(
+      backgroundColor: backgroundColor == null ? null : WidgetStatePropertyAll(backgroundColor),
+      foregroundColor: foregroundColor == null ? null : WidgetStatePropertyAll(foregroundColor),
+      iconColor: foregroundColor == null ? null : WidgetStatePropertyAll(foregroundColor),
+    ),
+    child: label,
+  );
 
   @override
   Widget toButton() => backgroundColor != null
@@ -123,14 +123,15 @@ class ItemActionButton extends ItemAction {
       child: Builder(
         builder: (context) {
           final backgroundColor = useColors ? _resolveBackgroundColor(context) : Colors.transparent;
-          final resolvedForegroundColor =
-              useColors ? _resolveForegroundColor(context) : Theme.of(context).colorScheme.onSurface;
+          final resolvedForegroundColor = useColors
+              ? _resolveForegroundColor(context)
+              : Theme.of(context).colorScheme.onSurface;
           final child = useIcons
               ? Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Row(
                     children: [
-                      if (icon != null) icon!,
+                      ?icon,
                       const SizedBox(width: 8),
                       if (label != null) Flexible(child: label!),
                     ],
@@ -144,10 +145,7 @@ class ItemActionButton extends ItemAction {
                 );
 
           return Container(
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(16),
-            ),
+            decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(16)),
             padding: const EdgeInsets.all(6.0),
             child: IconTheme(
               data: IconThemeData(color: resolvedForegroundColor),
@@ -194,7 +192,7 @@ class ItemActionButton extends ItemAction {
                   data: IconThemeData(color: foregroundColor),
                   child: Row(
                     children: [
-                      if (icon != null) icon!,
+                      ?icon,
                       const SizedBox(width: 8),
                       if (label != null) Flexible(child: label!),
                     ],
@@ -211,18 +209,17 @@ class ItemActionButton extends ItemAction {
 
   @override
   Widget toGroupButton(BuildContext context, {required bool useIcons, required bool shouldPop}) {
-    final backgroundColor =
-        selected ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).colorScheme.surfaceContainer;
-    final foregroundColor =
-        selected ? Theme.of(context).colorScheme.onPrimaryContainer : Theme.of(context).colorScheme.onSurface;
+    final backgroundColor = selected
+        ? Theme.of(context).colorScheme.primaryContainer
+        : Theme.of(context).colorScheme.surfaceContainer;
+    final foregroundColor = selected
+        ? Theme.of(context).colorScheme.onPrimaryContainer
+        : Theme.of(context).colorScheme.onSurface;
 
     final labelWidget = label ?? const Text("");
     final textStyle =
         Theme.of(context).textTheme.bodyLarge?.copyWith(color: foregroundColor, fontWeight: FontWeight.bold) ??
-            TextStyle(
-              color: foregroundColor,
-              fontWeight: FontWeight.bold,
-            );
+        TextStyle(color: foregroundColor, fontWeight: FontWeight.bold);
     return Builder(
       builder: (buttonContext) {
         return FocusButton(
@@ -234,24 +231,15 @@ class ItemActionButton extends ItemAction {
           },
           onFocusChanged: (focus) {
             if (focus) {
-              buttonContext.ensureVisible(
-                alignment: 0,
-                onlyNearest: true,
-              );
+              buttonContext.ensureVisible(alignment: 0, onlyNearest: true);
             }
           },
           child: Container(
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
+            decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(8)),
             alignment: Alignment.center,
             constraints: const BoxConstraints(minHeight: 40, minWidth: 60),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: DefaultTextStyle(
-              style: textStyle,
-              child: labelWidget,
-            ),
+            child: DefaultTextStyle(style: textStyle, child: labelWidget),
           ),
         );
       },
@@ -260,9 +248,10 @@ class ItemActionButton extends ItemAction {
 }
 
 extension ItemActionExtension on List<ItemAction> {
-  List<PopupMenuEntry> popupMenuItems({bool useIcons = false}) => map((e) => e.toPopupMenuItem(useIcons: useIcons))
-      .whereNotIndexed((index, element) => (index == 0 && element is PopupMenuDivider))
-      .toList();
+  List<PopupMenuEntry> popupMenuItems({bool useIcons = false}) =>
+      map((e) => e.toPopupMenuItem(useIcons: useIcons))
+          .whereNotIndexed((index, element) => (index == 0 && element is PopupMenuDivider))
+          .toList();
 
   List<Widget> menuItemButtonItems() =>
       map((e) => e.toMenuItemButton()).whereNotIndexed((index, element) => (index == 0 && element is Divider)).toList();

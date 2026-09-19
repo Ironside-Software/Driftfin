@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/models/settings/home_settings_model.dart';
 import 'package:driftfin/providers/shared_provider.dart';
@@ -38,6 +39,5 @@ class HomeSettingsNotifier extends StateNotifier<HomeSettingsModel> {
 
   /// Replaces the pinned-collection list (used to reorder/remove from the
   /// manage screen). Order is preserved on the dashboard.
-  void setPinnedCollections(List<String> collectionIds) =>
-      state = state.copyWith(pinnedCollectionIds: collectionIds);
+  void setPinnedCollections(List<String> collectionIds) => state = state.copyWith(pinnedCollectionIds: collectionIds);
 }

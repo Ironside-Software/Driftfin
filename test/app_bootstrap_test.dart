@@ -18,10 +18,10 @@ class _FakePathProviderPlatform extends PathProviderPlatform {
   Future<String?> getApplicationCachePath() async => '.';
 }
 
-ClientSettingsModel _clientSettings({required bool enableCrashReporting}) => ClientSettingsModel.internal(
-      transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
-      enableCrashReporting: enableCrashReporting,
-    );
+ClientSettingsModel _clientSettings({required bool enableCrashReporting}) => ClientSettingsModel(
+  transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
+  enableCrashReporting: enableCrashReporting,
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

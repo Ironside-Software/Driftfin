@@ -34,36 +34,40 @@ ProviderContainer _container(Future<http.Response> Function(http.Request) handle
     client: MockClient(handler),
     converter: const SeerrJsonConverter(),
   );
-  final container = ProviderContainer(overrides: [
-    offlineStateProvider.overrideWithValue(false),
-    seerrUserProvider.overrideWith(_User.new),
-    seerrApiProvider.overrideWith(() => _Api(client)),
-    seerrRequestsProvider.overrideWith(SeerrRequestsNotifier.new),
-  ]);
-  container.listen(seerrRequestsProvider, (_, __) {});
+  final container = ProviderContainer(
+    overrides: [
+      offlineStateProvider.overrideWithValue(false),
+      seerrUserProvider.overrideWith(_User.new),
+      seerrApiProvider.overrideWith(() => _Api(client)),
+      seerrRequestsProvider.overrideWith(SeerrRequestsNotifier.new),
+    ],
+  );
+  container.listen(seerrRequestsProvider, (_, _) {});
   addTearDown(container.dispose);
   addTearDown(client.dispose);
   return container;
 }
 
 http.Response _page({int id = 1, int pages = 1, String type = 'movie'}) => http.Response(
-    jsonEncode({
-      'pageInfo': {'pages': pages},
-      'results': [
-        {
-          'id': id,
-          'status': 1,
-          'media': {'tmdbId': id, 'mediaType': type}
-        }
-      ],
-    }),
-    200);
+  jsonEncode({
+    'pageInfo': {'pages': pages},
+    'results': [
+      {
+        'id': id,
+        'status': 1,
+        'media': {'tmdbId': id, 'mediaType': type},
+      },
+    ],
+  }),
+  200,
+);
 
 void main() {
   test('requests appear even when metadata never completes', () async {
     final poster = Completer<http.Response>();
-    final container =
-        _container((request) async => request.url.path.endsWith('/request') ? _page() : await poster.future);
+    final container = _container(
+      (request) async => request.url.path.endsWith('/request') ? _page() : await poster.future,
+    );
     await container.read(seerrRequestsProvider.notifier).load();
     expect(container.read(seerrRequestsProvider).loading, isFalse);
     expect(container.read(seerrRequestsProvider).entries.single.request.id, 1);

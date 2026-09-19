@@ -26,22 +26,18 @@ class AuthService {
     if (isBiometricSupported) {
       try {
         isAuthenticated = await localAuthentication.authenticate(
-          localizedReason:
-              context.localized.authenticateWithBiometrics("(${user.name} - ${user.credentials.serverName})"),
-          authMessages: <AuthMessages>[
-            AndroidAuthMessages(
-              signInTitle: 'Fladder',
-              biometricHint: context.localized.scanBiometricHint,
-            ),
-            IOSAuthMessages(
-              cancelButton: context.localized.cancel,
-            )
-          ],
-          options: AuthenticationOptions(
-            stickyAuth: stickyAuth,
-            sensitiveTransaction: sensitiveTransaction,
+          localizedReason: context.localized.authenticateWithBiometrics(
+            "(${user.name} - ${user.credentials.serverName})",
           ),
+          authMessages: <AuthMessages>[
+            const AndroidAuthMessages(signInTitle: 'Fladder'),
+            IOSAuthMessages(cancelButton: context.localized.cancel),
+          ],
+          persistAcrossBackgrounding: stickyAuth,
+          sensitiveTransaction: sensitiveTransaction,
         );
+      } on LocalAuthException catch (e) {
+        debugPrint('Error during authentication: ${e.code}');
       } on PlatformException catch (e) {
         debugPrint('Error during authentication: $e');
       }

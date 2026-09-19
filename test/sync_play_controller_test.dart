@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:driftfin/models/syncplay/sync_play_models.dart';
@@ -60,19 +61,14 @@ final _testInGroupControllerProvider = StateNotifierProvider<SyncPlayController,
 );
 
 Map<String, dynamic> _generalCommand(String name, Map<String, dynamic> arguments) => {
-      'MessageType': 'GeneralCommand',
-      'Data': {'Name': name, 'Arguments': arguments},
-    };
+  'MessageType': 'GeneralCommand',
+  'Data': {'Name': name, 'Arguments': arguments},
+};
 
 Map<String, dynamic> _relayDisplayMessage(SyncRelayKind kind, {required String sender, String? text, String? emoji}) =>
     _generalCommand('DisplayMessage', {
       'Header': syncRelayMarker,
-      'Text': jsonEncode({
-        'k': kind.name,
-        's': sender,
-        if (text != null) 't': text,
-        if (emoji != null) 'e': emoji,
-      }),
+      'Text': jsonEncode({'k': kind.name, 's': sender, 't': ?text, 'e': ?emoji}),
     });
 
 void main() {
@@ -204,9 +200,7 @@ void main() {
     });
 
     test('debugHandleMessage: chat relay message appends a not-mine chat line', () {
-      groupController.debugHandleMessage(
-        _relayDisplayMessage(SyncRelayKind.chat, sender: 'Alice', text: 'hi there'),
-      );
+      groupController.debugHandleMessage(_relayDisplayMessage(SyncRelayKind.chat, sender: 'Alice', text: 'hi there'));
       expect(groupController.state.chat, hasLength(1));
       final message = groupController.state.chat.single;
       expect(message.sender, 'Alice');
@@ -215,9 +209,7 @@ void main() {
     });
 
     test('debugHandleMessage: reaction relay message appends a not-mine reaction', () {
-      groupController.debugHandleMessage(
-        _relayDisplayMessage(SyncRelayKind.reaction, sender: 'Bob', emoji: '🎉'),
-      );
+      groupController.debugHandleMessage(_relayDisplayMessage(SyncRelayKind.reaction, sender: 'Bob', emoji: '🎉'));
       expect(groupController.state.reactions, hasLength(1));
       final reaction = groupController.state.reactions.single;
       expect(reaction.sender, 'Bob');
@@ -226,21 +218,15 @@ void main() {
     });
 
     test('debugHandleMessage: typing relay sets and then clears presence', () {
-      groupController.debugHandleMessage(
-        _relayDisplayMessage(SyncRelayKind.typing, sender: 'Alice', text: 'start'),
-      );
+      groupController.debugHandleMessage(_relayDisplayMessage(SyncRelayKind.typing, sender: 'Alice', text: 'start'));
       expect(groupController.state.typingMembers, ['Alice']);
 
-      groupController.debugHandleMessage(
-        _relayDisplayMessage(SyncRelayKind.typing, sender: 'Alice', text: 'stop'),
-      );
+      groupController.debugHandleMessage(_relayDisplayMessage(SyncRelayKind.typing, sender: 'Alice', text: 'stop'));
       expect(groupController.state.typingMembers, isEmpty);
     });
 
     test('debugHandleMessage: buffering relay sets presence', () {
-      groupController.debugHandleMessage(
-        _relayDisplayMessage(SyncRelayKind.buffering, sender: 'Bob', text: 'start'),
-      );
+      groupController.debugHandleMessage(_relayDisplayMessage(SyncRelayKind.buffering, sender: 'Bob', text: 'start'));
       expect(groupController.state.bufferingMembers, ['Bob']);
     });
 
@@ -257,16 +243,15 @@ void main() {
 
     test('debugHandleMessage: an unrelated GeneralCommand name is ignored', () {
       groupController.debugHandleMessage(_generalCommand('ToggleMute', {'Header': 'x', 'Text': 'y'}));
-      expect(groupController.state,
-          const SyncPlayState(inGroup: true, groupId: 'g1', groupName: 'Movie night', members: ['Alice', 'Bob']));
+      expect(
+        groupController.state,
+        const SyncPlayState(inGroup: true, groupId: 'g1', groupName: 'Movie night', members: ['Alice', 'Bob']),
+      );
     });
 
     test('debugHandleMessage: malformed payloads never throw', () {
       expect(() => groupController.debugHandleMessage(const {'MessageType': 'GeneralCommand'}), returnsNormally);
-      expect(
-        () => groupController.debugHandleMessage(_generalCommand('DisplayMessage', const {})),
-        returnsNormally,
-      );
+      expect(() => groupController.debugHandleMessage(_generalCommand('DisplayMessage', const {})), returnsNormally);
       expect(
         () => groupController.debugHandleMessage({
           'MessageType': 'GeneralCommand',

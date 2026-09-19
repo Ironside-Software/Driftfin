@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:driftfin/models/server_integration_config.dart';
@@ -9,13 +10,7 @@ import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 
 /// Outcome of a direct-Sonarr episode request.
-enum SonarrRequestResult {
-  success,
-  notConfigured,
-  seriesNotFound,
-  episodeNotFound,
-  failed,
-}
+enum SonarrRequestResult { success, notConfigured, seriesNotFound, episodeNotFound, failed }
 
 /// Normalizes a user-entered Sonarr base URL: trims whitespace and strips any
 /// trailing slashes so '/api/v3/...' joins cleanly.
@@ -83,8 +78,9 @@ class SonarrApi {
     final response = await _client.get(_uri('episode', {'seriesId': '$seriesId'}), headers: _headers);
     if (response.statusCode != 200) return null;
     final list = jsonDecode(response.body) as List<dynamic>;
-    final match =
-        list.firstWhereOrNull((entry) => entry['seasonNumber'] == season && entry['episodeNumber'] == episode);
+    final match = list.firstWhereOrNull(
+      (entry) => entry['seasonNumber'] == season && entry['episodeNumber'] == episode,
+    );
     return match?['id'] as int?;
   }
 
@@ -230,19 +226,19 @@ class SonarrSettings {
   bool get isConfigured => enabled && baseUrl.trim().isNotEmpty && apiKey.trim().isNotEmpty;
 
   SonarrSettings copyWith({String? baseUrl, String? apiKey, bool? enabled, bool? managed}) => SonarrSettings(
-        baseUrl: baseUrl ?? this.baseUrl,
-        apiKey: apiKey ?? this.apiKey,
-        enabled: enabled ?? this.enabled,
-        managed: managed ?? this.managed,
-      );
+    baseUrl: baseUrl ?? this.baseUrl,
+    apiKey: apiKey ?? this.apiKey,
+    enabled: enabled ?? this.enabled,
+    managed: managed ?? this.managed,
+  );
 
   Map<String, dynamic> toJson() => {'baseUrl': baseUrl, 'apiKey': apiKey, 'enabled': enabled};
 
   factory SonarrSettings.fromJson(Map<String, dynamic> json) => SonarrSettings(
-        baseUrl: json['baseUrl'] as String? ?? '',
-        apiKey: json['apiKey'] as String? ?? '',
-        enabled: json['enabled'] as bool? ?? false,
-      );
+    baseUrl: json['baseUrl'] as String? ?? '',
+    apiKey: json['apiKey'] as String? ?? '',
+    enabled: json['enabled'] as bool? ?? false,
+  );
 }
 
 const String _sonarrSettingsKey = 'sonarrSettings';
@@ -265,7 +261,11 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
     final server = ref.read(serverIntegrationConfigProvider)?.sonarr;
     if (server != null && server.isManaged) {
       return SonarrSettings(
-          baseUrl: normalizeSonarrUrl(server.url), apiKey: server.apiKey.trim(), enabled: true, managed: true);
+        baseUrl: normalizeSonarrUrl(server.url),
+        apiKey: server.apiKey.trim(),
+        enabled: true,
+        managed: true,
+      );
     }
     return _load(ref);
   }
@@ -285,7 +285,11 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
   void _applyServer(ArrServerConfig? server) {
     if (server != null && server.isManaged) {
       state = SonarrSettings(
-          baseUrl: normalizeSonarrUrl(server.url), apiKey: server.apiKey.trim(), enabled: true, managed: true);
+        baseUrl: normalizeSonarrUrl(server.url),
+        apiKey: server.apiKey.trim(),
+        enabled: true,
+        managed: true,
+      );
     } else if (state.managed) {
       state = _load(ref);
     }
@@ -325,8 +329,11 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
     required int episode,
   }) async {
     if (!state.isConfigured) return SonarrRequestResult.notConfigured;
-    return SonarrApi(baseUrl: state.baseUrl, apiKey: state.apiKey, client: _client)
-        .requestEpisodeByTvdb(tvdbId: tvdbId, season: season, episode: episode, addIfMissing: true);
+    return SonarrApi(
+      baseUrl: state.baseUrl,
+      apiKey: state.apiKey,
+      client: _client,
+    ).requestEpisodeByTvdb(tvdbId: tvdbId, season: season, episode: episode, addIfMissing: true);
   }
 
   @override

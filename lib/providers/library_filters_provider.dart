@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:driftfin/models/library_filters_model.dart';
@@ -10,13 +11,16 @@ class LibraryFilters extends _$LibraryFilters {
   @override
   List<LibraryFiltersModel> build(List<String> ids) {
     if (ids.isEmpty) {
-      return ref
-          .watch(userProvider.select((value) => value?.userSettings?.libraryFilters ?? value?.libraryFilters ?? []));
+      return ref.watch(
+        userProvider.select((value) => value?.userSettings?.libraryFilters ?? value?.libraryFilters ?? []),
+      );
     }
     return ref.watch(
-      userProvider.select((value) => (value?.userSettings?.libraryFilters ?? value?.libraryFilters ?? [])
-          .where((element) => element.containsSameIds(ids))
-          .toList()),
+      userProvider.select(
+        (value) => (value?.userSettings?.libraryFilters ?? value?.libraryFilters ?? [])
+            .where((element) => element.containsSameIds(ids))
+            .toList(),
+      ),
     );
   }
 

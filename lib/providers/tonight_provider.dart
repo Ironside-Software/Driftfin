@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/item_base_model.dart';
@@ -24,11 +25,7 @@ class TonightNotifier extends StateNotifier<TonightModel> {
 
   late final JellyService api = ref.read(jellyApiProvider);
 
-  static const _fieldsToFetch = [
-    ItemFields.overview,
-    ItemFields.primaryimageaspectratio,
-    ItemFields.parentid,
-  ];
+  static const _fieldsToFetch = [ItemFields.overview, ItemFields.primaryimageaspectratio, ItemFields.parentid];
 
   Future<void> fetchTonightPicks({Duration? timeAvailable, TonightMood? mood}) async {
     if (state.loading) return;
@@ -38,8 +35,11 @@ class TonightNotifier extends StateNotifier<TonightModel> {
       mood: mood,
     );
 
-    final viewTypes =
-        ref.read(viewsProvider.select((value) => value.dashboardViews)).map((e) => e.collectionType).toSet().toList();
+    final viewTypes = ref
+        .read(viewsProvider.select((value) => value.dashboardViews))
+        .map((e) => e.collectionType)
+        .toSet()
+        .toList();
 
     final candidates = <ItemBaseModel>[];
 

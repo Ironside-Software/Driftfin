@@ -1,5 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/items/item_shared_models.dart';
@@ -14,8 +15,10 @@ import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 
-final personDetailsProvider =
-    StateNotifierProvider.autoDispose.family<PersonDetailsNotifier, PersonModel?, String>((ref, id) {
+final personDetailsProvider = StateNotifierProvider.autoDispose.family<PersonDetailsNotifier, PersonModel?, String>((
+  ref,
+  id,
+) {
   return PersonDetailsNotifier(ref);
 });
 
@@ -45,12 +48,8 @@ class PersonDetailsNotifier extends StateNotifier<PersonModel?> {
       sortBy: [ItemSortBy.premieredate, ItemSortBy.communityrating, ItemSortBy.sortname, ItemSortBy.productionyear],
       sortOrder: [SortOrder.descending],
       recursive: true,
-      fields: [
-        ItemFields.primaryimageaspectratio,
-      ],
-      includeItemTypes: [
-        BaseItemKind.movie,
-      ],
+      fields: [ItemFields.primaryimageaspectratio],
+      includeItemTypes: [BaseItemKind.movie],
     );
 
     final series = await api.itemsGet(
@@ -59,12 +58,8 @@ class PersonDetailsNotifier extends StateNotifier<PersonModel?> {
       sortBy: [ItemSortBy.premieredate, ItemSortBy.communityrating, ItemSortBy.sortname, ItemSortBy.productionyear],
       sortOrder: [SortOrder.descending],
       recursive: true,
-      fields: [
-        ItemFields.primaryimageaspectratio,
-      ],
-      includeItemTypes: [
-        BaseItemKind.series,
-      ],
+      fields: [ItemFields.primaryimageaspectratio],
+      includeItemTypes: [BaseItemKind.series],
     );
 
     state = state?.copyWith(

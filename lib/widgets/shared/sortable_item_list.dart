@@ -32,8 +32,8 @@ class SortableItemList<T> extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
-      onReorder: (oldIndex, newIndex) {
-        onReorder?.call(items.reordered(oldIndex, newIndex));
+      onReorderItem: (oldIndex, newIndex) {
+        onReorder?.call(items.reordered(oldIndex, newIndex > oldIndex ? newIndex + 1 : newIndex));
       },
       buildDefaultDragHandles: false,
       itemBuilder: (context, index) {
@@ -109,12 +109,8 @@ class SortableItemList<T> extends StatelessWidget {
     );
     if (maxHeight != null) {
       return ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: maxHeight ?? 150,
-        ),
-        child: SingleChildScrollView(
-          child: list,
-        ),
+        constraints: BoxConstraints(maxHeight: maxHeight ?? 150),
+        child: SingleChildScrollView(child: list),
       );
     }
     return list;

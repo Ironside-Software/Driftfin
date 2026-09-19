@@ -4,9 +4,12 @@ import 'package:driftfin/models/items/folder_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
-final folderDetailsProvider =
-    StateNotifierProvider.autoDispose.family<FolderDetailsNotifier, FolderModel?, String>((ref, id) {
+final folderDetailsProvider = StateNotifierProvider.autoDispose.family<FolderDetailsNotifier, FolderModel?, String>((
+  ref,
+  id,
+) {
   return FolderDetailsNotifier(ref);
 });
 
@@ -30,10 +33,7 @@ class FolderDetailsNotifier extends StateNotifier<FolderModel?> {
       parentId: id,
       sortBy: [ItemSortBy.sortname, ItemSortBy.name],
       sortOrder: [SortOrder.ascending],
-      fields: [
-        ItemFields.primaryimageaspectratio,
-        ItemFields.childcount,
-      ],
+      fields: [ItemFields.primaryimageaspectratio, ItemFields.childcount],
     );
 
     state = state?.copyWith(items: response.body?.items.where((element) => element.childCount != 0).toList());

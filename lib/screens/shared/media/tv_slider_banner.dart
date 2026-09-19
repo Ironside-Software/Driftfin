@@ -31,12 +31,7 @@ class TVSliderBanner extends ConsumerStatefulWidget {
   final Function(ItemBaseModel selected) onSelect;
   final double maxHeight;
 
-  const TVSliderBanner({
-    required this.items,
-    required this.onSelect,
-    required this.maxHeight,
-    super.key,
-  });
+  const TVSliderBanner({required this.items, required this.onSelect, required this.maxHeight, super.key});
 
   @override
   ConsumerState<TVSliderBanner> createState() => _FocusedFullBannerState();
@@ -132,10 +127,7 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
             }
           },
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: radius,
-              color: Theme.of(context).colorScheme.surfaceContainer,
-            ),
+            decoration: BoxDecoration(borderRadius: radius, color: Theme.of(context).colorScheme.surfaceContainer),
             foregroundDecoration: BoxDecoration(
               borderRadius: radius,
               border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
@@ -147,24 +139,14 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
                 final offsetAnimation = Tween<Offset>(
                   begin: Offset(_slideDirection == _SlideDirection.right ? 0.1 : -0.1, 0.0),
                   end: Offset.zero,
-                ).animate(CurvedAnimation(
-                  parent: animation,
-                  curve: Curves.easeInOut,
-                ));
+                ).animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut));
 
                 return SlideTransition(
                   position: offsetAnimation,
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  ),
+                  child: FadeTransition(opacity: animation, child: child),
                 );
               },
-              child: FladderImage(
-                key: ValueKey(_currentItem.id),
-                image: _currentItem.tvPosterLarge,
-                fit: BoxFit.cover,
-              ),
+              child: FladderImage(key: ValueKey(_currentItem.id), image: _currentItem.tvPosterLarge, fit: BoxFit.cover),
             ),
           ),
           overlays: [
@@ -179,9 +161,7 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
                   spacing: 8,
                   children: [
                     Flexible(
-                      child: IgnorePointer(
-                        child: _BannerInfoOverlay(poster: _currentItem),
-                      ),
+                      child: IgnorePointer(child: _BannerInfoOverlay(poster: _currentItem)),
                     ),
                     Row(
                       spacing: 16,
@@ -208,16 +188,17 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
                               currentIndex: _currentIndex,
                               onTap: (index) {
                                 setState(() {
-                                  _slideDirection =
-                                      index > _currentIndex ? _SlideDirection.right : _SlideDirection.left;
+                                  _slideDirection = index > _currentIndex
+                                      ? _SlideDirection.right
+                                      : _SlideDirection.left;
                                   _currentIndex = index;
                                 });
                               },
                             ),
                           ),
-                        )
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -235,12 +216,7 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
       content: (scrollContext, scrollController) => ListView(
         shrinkWrap: true,
         controller: scrollController,
-        children: _currentItem
-            .generateActions(
-              context,
-              ref,
-            )
-            .listTileItems(scrollContext, useIcons: true),
+        children: _currentItem.generateActions(context, ref).listTileItems(scrollContext, useIcons: true),
       ),
     );
   }
@@ -250,12 +226,7 @@ class _FocusedFullBannerState extends ConsumerState<TVSliderBanner> {
     await showMenu(
       context: context,
       position: position,
-      items: _currentItem
-          .generateActions(
-            context,
-            ref,
-          )
-          .popupMenuItems(useIcons: true),
+      items: _currentItem.generateActions(context, ref).popupMenuItems(useIcons: true),
     );
   }
 }
@@ -272,18 +243,15 @@ class _BannerInfoOverlay extends StatelessWidget {
 
     final labelWidget = switch (playState) {
       PartiallyPlayed(:final label) => SimpleLabel(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          iconColor: Theme.of(context).colorScheme.primary,
-          label: Text(label),
-        ),
+        color: Theme.of(context).colorScheme.primaryContainer,
+        iconColor: Theme.of(context).colorScheme.primary,
+        label: Text(label),
+      ),
       Played() => SimpleLabel(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          iconColor: Theme.of(context).colorScheme.primary,
-          label: const Icon(
-            Icons.check_rounded,
-            size: 18,
-          ),
-        ),
+        color: Theme.of(context).colorScheme.primaryContainer,
+        iconColor: Theme.of(context).colorScheme.primary,
+        label: const Icon(Icons.check_rounded, size: 18),
+      ),
       Unplayed() => null,
     };
     return Column(
@@ -304,64 +272,57 @@ class _BannerInfoOverlay extends StatelessWidget {
         ),
         ...switch (poster) {
           EpisodeModel episode => [
-              Row(
-                spacing: 12,
-                children: [
-                  Text(
-                    episode.episodeLabel(context.localized),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium
-                        ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                  const CircleAvatar(
-                    radius: 3,
-                    backgroundColor: Colors.white,
-                  ),
-                  MetadataLabels(
-                    favourite: poster.userData.isFavourite ? true : null,
-                    officialRating: episode.overview.parentalRating,
-                    productionYear: episode.overview.productionYear?.toString(),
-                    communityRating: episode.overview.communityRating,
-                    runTime: episode.overview.runTime,
-                    additionalLabels: [if (labelWidget != null) labelWidget],
-                  ),
-                ],
+            Row(
+              spacing: 12,
+              children: [
+                Text(
+                  episode.episodeLabel(context.localized),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                const CircleAvatar(radius: 3, backgroundColor: Colors.white),
+                MetadataLabels(
+                  favourite: poster.userData.isFavourite ? true : null,
+                  officialRating: episode.overview.parentalRating,
+                  productionYear: episode.overview.productionYear?.toString(),
+                  communityRating: episode.overview.communityRating,
+                  runTime: episode.overview.runTime,
+                  additionalLabels: [?labelWidget],
+                ),
+              ],
+            ),
+            Text(
+              episode.overview.summary,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.white.withValues(alpha: opacity),
+                fontWeight: FontWeight.bold,
               ),
-              Text(
-                episode.overview.summary,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.white.withValues(alpha: opacity),
-                      fontWeight: FontWeight.bold,
-                    ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
           _ => [
-              MetadataLabels(
-                favourite: poster.userData.isFavourite ? true : null,
-                officialRating: poster.overview.parentalRating,
-                productionYear: poster.overview.productionYear?.toString(),
-                communityRating: poster.overview.communityRating,
-                runTime: poster.overview.runTime,
-                additionalLabels: [if (labelWidget != null) labelWidget],
+            MetadataLabels(
+              favourite: poster.userData.isFavourite ? true : null,
+              officialRating: poster.overview.parentalRating,
+              productionYear: poster.overview.productionYear?.toString(),
+              communityRating: poster.overview.communityRating,
+              runTime: poster.overview.runTime,
+              additionalLabels: [?labelWidget],
+            ),
+            Genres(genres: poster.overview.genreItems.take(6).toList()),
+            Text(
+              poster.overview.summary,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Colors.white.withValues(alpha: opacity),
+                fontWeight: FontWeight.bold,
               ),
-              Genres(
-                genres: poster.overview.genreItems.take(6).toList(),
-              ),
-              Text(
-                poster.overview.summary,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Colors.white.withValues(alpha: opacity),
-                      fontWeight: FontWeight.bold,
-                    ),
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         },
       ],
     );
@@ -373,11 +334,7 @@ class _NavigationIndicator extends StatelessWidget {
   final int currentIndex;
   final Function(int index)? onTap;
 
-  const _NavigationIndicator({
-    required this.items,
-    required this.currentIndex,
-    this.onTap,
-  });
+  const _NavigationIndicator({required this.items, required this.currentIndex, this.onTap});
 
   @override
   Widget build(BuildContext context) {

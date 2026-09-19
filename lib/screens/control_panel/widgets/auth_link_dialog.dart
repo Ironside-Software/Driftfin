@@ -28,11 +28,7 @@ Future<void> openAuthLinkDialog(
   return showAdaptiveDialog(
     context: context,
     barrierDismissible: true,
-    builder: (context) => AuthLinkDialog(
-      serverUrl: serverUrl,
-      seerrUrl: seerrUrl,
-      user: user,
-    ),
+    builder: (context) => AuthLinkDialog(serverUrl: serverUrl, seerrUrl: seerrUrl, user: user),
   );
 }
 
@@ -41,12 +37,7 @@ class AuthLinkDialog extends StatefulWidget {
   final String? seerrUrl;
   final AccountModel user;
 
-  const AuthLinkDialog({
-    required this.serverUrl,
-    this.seerrUrl,
-    required this.user,
-    super.key,
-  });
+  const AuthLinkDialog({required this.serverUrl, this.seerrUrl, required this.user, super.key});
 
   @override
   State<AuthLinkDialog> createState() => _AuthLinkDialogState();
@@ -58,10 +49,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
   late final usernameController = TextEditingController(text: widget.user.name);
   late final passwordController = TextEditingController();
 
-  AuthLinkData linkData = AuthLinkData(
-    serverUrl: '',
-    userName: '',
-  );
+  AuthLinkData linkData = AuthLinkData(serverUrl: '', userName: '');
 
   String linkUrl = '';
 
@@ -80,10 +68,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
   late final qrDecoration = PrettyQrDecoration(
     image: PrettyQrDecorationImage(
       image: Image.asset("icons/fladder_notification_icon.png").image,
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).colorScheme.primary,
-        BlendMode.srcIn,
-      ),
+      colorFilter: ColorFilter.mode(Theme.of(context).colorScheme.primary, BlendMode.srcIn),
       scale: 0.25,
       isAntiAlias: true,
       padding: const EdgeInsets.all(8),
@@ -91,17 +76,12 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
     ),
     quietZone: const PrettyQrPixelsQuietZone(24),
     background: Theme.of(context).colorScheme.surfaceContainer,
+    // Required to preserve the existing custom finder/alignment styling.
+    // ignore: experimental_member_use
     shape: PrettyQrShape.custom(
-      PrettyQrSmoothSymbol(
-        roundFactor: 1,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-      finderPattern: PrettyQrSmoothSymbol(
-        color: Theme.of(context).colorScheme.primary,
-      ),
-      alignmentPatterns: PrettyQrSmoothSymbol(
-        color: Theme.of(context).colorScheme.primary,
-      ),
+      PrettyQrSmoothSymbol(roundFactor: 1, color: Theme.of(context).colorScheme.primary),
+      finderPattern: PrettyQrSmoothSymbol(color: Theme.of(context).colorScheme.primary),
+      alignmentPatterns: PrettyQrSmoothSymbol(color: Theme.of(context).colorScheme.primary),
     ),
   );
 
@@ -128,14 +108,10 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
                       Container(
                         width: 275,
                         height: 275,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                         clipBehavior: Clip.hardEdge,
                         child: PrettyQrView(
-                          qrImage: QrImage(
-                            QrCode.fromData(data: linkUrl, errorCorrectLevel: QrErrorCorrectLevel.M),
-                          ),
+                          qrImage: QrImage(QrCode.fromData(data: linkUrl, errorCorrectLevel: QrErrorCorrectLevel.M)),
                           decoration: qrDecoration,
                         ),
                       ),
@@ -164,10 +140,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
                     spacing: 8,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
-                        context.localized.linkData,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
+                      Text(context.localized.linkData, style: Theme.of(context).textTheme.bodyMedium),
                       OutlinedTextField(
                         controller: serverTextController,
                         label: context.localized.server,
@@ -194,16 +167,11 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
                       ),
                       const Expanded(child: Divider()),
                       FilledButtonAwait.tonal(
-                        onPressed: () => SharePlus.instance.share(
-                          ShareParams(text: linkUrl),
-                        ),
+                        onPressed: () => SharePlus.instance.share(ShareParams(text: linkUrl)),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 8,
-                          children: [
-                            const Icon(IconsaxPlusLinear.share),
-                            Text(context.localized.shareLoginLink),
-                          ],
+                          children: [const Icon(IconsaxPlusLinear.share), Text(context.localized.shareLoginLink)],
                         ),
                       ),
                       FilledButtonAwait.tonal(
@@ -211,10 +179,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 8,
-                          children: [
-                            const Icon(IconsaxPlusLinear.command_square),
-                            Text(context.localized.shareQRCode),
-                          ],
+                          children: [const Icon(IconsaxPlusLinear.command_square), Text(context.localized.shareQRCode)],
                         ),
                       ),
                       FilledButton.tonal(
@@ -223,10 +188,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           spacing: 8,
-                          children: [
-                            const Icon(IconsaxPlusLinear.close_circle),
-                            Text(context.localized.close),
-                          ],
+                          children: [const Icon(IconsaxPlusLinear.close_circle), Text(context.localized.close)],
                         ),
                       ),
                     ],
@@ -251,10 +213,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
   }
 
   Future<void> _shareQr() async {
-    final qrCode = QrCode.fromData(
-      data: linkUrl,
-      errorCorrectLevel: QrErrorCorrectLevel.H,
-    );
+    final qrCode = QrCode.fromData(data: linkUrl, errorCorrectLevel: QrErrorCorrectLevel.H);
     final qrImage = QrImage(qrCode);
     final qrImageBytes = await qrImage.toImageAsBytes(
       size: 512,
@@ -263,9 +222,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
     );
     if (qrImageBytes == null) {
       if (context.mounted) {
-        FladderSnack.show(
-          context.localized.invalidAuthLink,
-        );
+        FladderSnack.show(context.localized.invalidAuthLink);
       }
       return;
     }
@@ -287,9 +244,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
   Future<void> _copyLink() async {
     await Clipboard.setData(ClipboardData(text: linkUrl));
     if (context.mounted) {
-      FladderSnack.show(
-        context.localized.copiedToClipboard,
-      );
+      FladderSnack.show(context.localized.copiedToClipboard);
     }
   }
 }

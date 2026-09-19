@@ -25,9 +25,7 @@ abstract class HomeSettingsModel with _$HomeSettingsModel {
   }) = _HomeSettingsModel;
 
   static HomeSettingsModel defaultModel() {
-    return HomeSettingsModel(
-      homeBanner: leanBackMode ? HomeBanner.tvSliderBanner : HomeBanner.carousel,
-    );
+    return HomeSettingsModel(homeBanner: leanBackMode ? HomeBanner.tvSliderBanner : HomeBanner.carousel);
   }
 
   factory HomeSettingsModel.fromJson(Map<String, dynamic> json) => _$HomeSettingsModelFromJson(json);
@@ -59,27 +57,26 @@ enum HomeBanner {
   const HomeBanner();
 
   String label(BuildContext context) => switch (this) {
-        HomeBanner.hide => context.localized.hide,
-        HomeBanner.carousel => context.localized.homeBannerCarousel,
-        HomeBanner.banner => context.localized.homeBannerSlideshow,
-        HomeBanner.detailedBanner => context.localized.homeBannerDetailed,
-        HomeBanner.tvSliderBanner => context.localized.homeBannerTV,
-      };
+    HomeBanner.hide => context.localized.hide,
+    HomeBanner.carousel => context.localized.homeBannerCarousel,
+    HomeBanner.banner => context.localized.homeBannerSlideshow,
+    HomeBanner.detailedBanner => context.localized.homeBannerDetailed,
+    HomeBanner.tvSliderBanner => context.localized.homeBannerTV,
+  };
 }
 
 enum HomeCarouselSettings {
   nextUp,
   cont,
-  combined,
-  ;
+  combined;
 
   const HomeCarouselSettings();
 
   String label(BuildContext context) => switch (this) {
-        HomeCarouselSettings.nextUp => context.localized.nextUp,
-        HomeCarouselSettings.cont => context.localized.settingsContinue,
-        HomeCarouselSettings.combined => context.localized.combined,
-      };
+    HomeCarouselSettings.nextUp => context.localized.nextUp,
+    HomeCarouselSettings.cont => context.localized.settingsContinue,
+    HomeCarouselSettings.combined => context.localized.combined,
+  };
 }
 
 enum HomeNextUp {
@@ -87,18 +84,17 @@ enum HomeNextUp {
   nextUp,
   cont,
   combined,
-  separate,
-  ;
+  separate;
 
   const HomeNextUp();
 
   String label(BuildContext context) => switch (this) {
-        HomeNextUp.off => context.localized.hide,
-        HomeNextUp.nextUp => context.localized.nextUp,
-        HomeNextUp.cont => context.localized.settingsContinue,
-        HomeNextUp.combined => context.localized.combined,
-        HomeNextUp.separate => context.localized.separate,
-      };
+    HomeNextUp.off => context.localized.hide,
+    HomeNextUp.nextUp => context.localized.nextUp,
+    HomeNextUp.cont => context.localized.settingsContinue,
+    HomeNextUp.combined => context.localized.combined,
+    HomeNextUp.separate => context.localized.separate,
+  };
 }
 
 enum DashboardSorting {
@@ -110,13 +106,13 @@ enum DashboardSorting {
   const DashboardSorting();
 
   static Map<DashboardSorting, bool> get defaultSorting => {
-        for (final sorting in DashboardSorting.values) sorting: true,
-      };
+    for (final sorting in DashboardSorting.values) sorting: true,
+  };
 
   String label(BuildContext context) => switch (this) {
-        DashboardSorting.liveTV => context.localized.liveTV,
-        DashboardSorting.nextUp => context.localized.nextUp,
-        DashboardSorting.recentlyAdded => context.localized.recentlyAdded,
-        DashboardSorting.filters => context.localized.filter(2),
-      };
+    DashboardSorting.liveTV => context.localized.liveTV,
+    DashboardSorting.nextUp => context.localized.nextUp,
+    DashboardSorting.recentlyAdded => context.localized.recentlyAdded,
+    DashboardSorting.filters => context.localized.filter(2),
+  };
 }

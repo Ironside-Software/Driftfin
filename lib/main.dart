@@ -31,6 +31,8 @@ void main(List<String> args) async {
   final bootstrap = await bootstrapApplication(args);
 
   final app = ProviderScope(
+    // Preserve Riverpod 2 behavior: callers control retries for failed requests.
+    retry: (_, _) => null,
     overrides: [
       sharedPreferencesProvider.overrideWith((ref) => bootstrap.sharedPreferences),
       applicationInfoProvider.overrideWith((ref) => bootstrap.applicationInfo),
@@ -38,20 +40,15 @@ void main(List<String> args) async {
       argumentsStateProvider.overrideWith((ref) => bootstrap.argumentsModel),
       syncProvider.overrideWith((ref) => SyncNotifier(ref, bootstrap.applicationDirectory)),
     ],
-    child: AdaptiveLayoutBuilder(
-      child: (context) => const Main(),
-    ),
+    child: AdaptiveLayoutBuilder(child: (context) => const Main()),
   );
 
   if (bootstrap.crashReportingEnabled) {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = bootstrap.sentryDsn;
-        options.sendDefaultPii = false;
-        options.tracesSampleRate = 0;
-      },
-      appRunner: () => runApp(app),
-    );
+    await SentryFlutter.init((options) {
+      options.dsn = bootstrap.sentryDsn;
+      options.sendDefaultPii = false;
+      options.tracesSampleRate = 0;
+    }, appRunner: () => runApp(app));
   } else {
     runApp(app);
   }
@@ -64,18 +61,14 @@ class Main extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PlatformAppWrapper(
       builder: (context, autoRouter) {
-        return _FladderApp(
-          autoRouter: autoRouter,
-        );
+        return _FladderApp(autoRouter: autoRouter);
       },
     );
   }
 }
 
 class _FladderApp extends ConsumerWidget {
-  const _FladderApp({
-    required this.autoRouter,
-  });
+  const _FladderApp({required this.autoRouter});
 
   final AutoRouter autoRouter;
 
@@ -88,8 +81,11 @@ class _FladderApp extends ConsumerWidget {
     final amoledBlack = ref.watch(clientSettingsProvider.select((value) => value.amoledBlack));
     final mouseDrag = ref.watch(clientSettingsProvider.select((value) => value.mouseDragSupport));
     final reduceAnimations = ref.watch(clientSettingsProvider.select((value) => value.reduceAnimations));
-    final language = ref.watch(clientSettingsProvider
-        .select((value) => value.selectedLocale ?? WidgetsBinding.instance.platformDispatcher.locale));
+    final language = ref.watch(
+      clientSettingsProvider.select(
+        (value) => value.selectedLocale ?? WidgetsBinding.instance.platformDispatcher.locale,
+      ),
+    );
     final scrollBehaviour = const MaterialScrollBehavior();
     final amoledOverwrite = amoledBlack ? Colors.black : null;
 
@@ -100,10 +96,7 @@ class _FladderApp extends ConsumerWidget {
         child: MaterialApp.router(
           theme: lightTheme,
           scrollBehavior: scrollBehaviour.copyWith(
-            dragDevices: {
-              ...scrollBehaviour.dragDevices,
-              mouseDrag ? PointerDeviceKind.mouse : null,
-            }.nonNulls.toSet(),
+            dragDevices: {...scrollBehaviour.dragDevices, mouseDrag ? PointerDeviceKind.mouse : null}.nonNulls.toSet(),
           ),
           localizationsDelegates: FladderLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -129,9 +122,8 @@ class _FladderApp extends ConsumerWidget {
             // single override reaches them without touching each widget.
             // Combined with the OS's own reduce-motion setting, not
             // overriding it.
-            data: MediaQuery.of(context).copyWith(
-              disableAnimations: MediaQuery.of(context).disableAnimations || reduceAnimations,
-            ),
+            data: MediaQuery.of(context)
+                .copyWith(disableAnimations: MediaQuery.of(context).disableAnimations || reduceAnimations),
             child: MediaQueryScaler(
               child: LocalizationContextWrapper(
                 child: PipLifecycleController(child: child ?? Container()),
@@ -152,9 +144,7 @@ class _FladderApp extends ConsumerWidget {
             ),
           ),
           themeMode: themeMode,
-          routerConfig: autoRouter.config(
-            deepLinkBuilder: (deepLink) => deepLinkBuilder(deepLink.uri),
-          ),
+          routerConfig: autoRouter.config(deepLinkBuilder: (deepLink) => deepLinkBuilder(deepLink.uri)),
         ),
       ),
     );

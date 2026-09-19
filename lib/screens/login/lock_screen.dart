@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/account_model.dart';
@@ -41,11 +42,13 @@ class _LockScreenState extends ConsumerState<LockScreen> with WidgetsBindingObse
 
   void hackyFixForBlackNavbar() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarDividerColor: Colors.transparent,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarDividerColor: Colors.transparent,
+      ),
+    );
   }
 
   @override
@@ -123,16 +126,10 @@ class _LockScreenState extends ConsumerState<LockScreen> with WidgetsBindingObse
               runAlignment: WrapAlignment.center,
               direction: Axis.vertical,
               children: [
-                const Icon(
-                  IconsaxPlusLinear.lock_1,
-                  size: 38,
-                ),
+                const Icon(IconsaxPlusLinear.lock_1, size: 38),
                 if (user != null)
                   ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      maxHeight: 400,
-                      maxWidth: 400,
-                    ),
+                    constraints: const BoxConstraints(maxHeight: 400, maxWidth: 400),
                     child: Padding(
                       padding: const EdgeInsets.all(64.0),
                       child: LoginIcon(

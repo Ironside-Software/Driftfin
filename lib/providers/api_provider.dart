@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 import 'package:punycoder/punycoder.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,15 +39,15 @@ final serverUrlProvider = StateProvider<String?>((ref) {
 class JellyApi extends _$JellyApi {
   @override
   JellyService build() => JellyService(
-        ref,
-        JellyfinOpenApi.create(
-          interceptors: [
-            JellyRequest(ref),
-            JellyResponse(ref),
-            HttpLoggingInterceptor(level: Level.basic),
-          ],
-        ),
-      );
+    ref,
+    JellyfinOpenApi.create(
+      interceptors: [
+        JellyRequest(ref),
+        JellyResponse(ref),
+        HttpLoggingInterceptor(level: Level.basic),
+      ],
+    ),
+  );
 }
 
 JellyfinOpenApi createJellyfinApiForAccount(Ref ref, String baseUrl, Map<String, String> headers) {
@@ -106,10 +107,7 @@ class JellyRequest implements Interceptor {
     for (var attempt = 0; attempt <= _maxRetries; attempt++) {
       try {
         final response = await chain.proceed(
-          applyHeaders(
-            chain.request.copyWith(baseUri: Uri.parse(serverUrl)),
-            headers,
-          ),
+          applyHeaders(chain.request.copyWith(baseUri: Uri.parse(serverUrl)), headers),
         );
         unawaited(connectivityNotifier.checkConnectivity(immediate: true));
         return response;
@@ -290,7 +288,9 @@ class JellyResponse implements Interceptor {
     final Response<BodyType> response = await chain.proceed(chain.request);
 
     if (!response.isSuccessful) {
-      log('x- ${response.base.statusCode} - ${response.base.reasonPhrase} - ${response.error} - ${response.base.request?.method} ${response.base.request?.url.toString()}');
+      log(
+        'x- ${response.base.statusCode} - ${response.base.reasonPhrase} - ${response.error} - ${response.base.request?.method} ${response.base.request?.url.toString()}',
+      );
     }
     if (response.statusCode == 404) {
       chopperLogger.severe('404 NOT FOUND');

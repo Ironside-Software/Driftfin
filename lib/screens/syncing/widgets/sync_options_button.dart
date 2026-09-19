@@ -24,30 +24,27 @@ import 'package:driftfin/widgets/shared/filled_button_await.dart';
 class SyncOptionsButton extends ConsumerWidget {
   final SyncedItem syncedItem;
   final List<SyncedItem> children;
-  const SyncOptionsButton({
-    required this.syncedItem,
-    required this.children,
-    super.key,
-  });
+  const SyncOptionsButton({required this.syncedItem, required this.children, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PopupMenuButton(
       itemBuilder: (context) {
         final unSyncedChildren = children.where((element) {
-          final hasDownload = ref.read(syncDownloadStatusProvider(element, []));
+          final hasDownload = ref.read(syncDownloadStatusProvider(element, const []));
           final canSync = element.itemModel?.syncAble == true || element.hasVideoFile;
           return canSync && !element.videoFile.existsSync() && hasDownload?.status == TaskStatus.notFound;
         }).toList();
         final isAudioBatch =
             unSyncedChildren.isNotEmpty && unSyncedChildren.every((element) => element.itemModel is AudioModel);
 
-        final syncedChildren =
-            children.where((element) => element.hasVideoFile && element.videoFile.existsSync()).toList();
+        final syncedChildren = children
+            .where((element) => element.hasVideoFile && element.videoFile.existsSync())
+            .toList();
 
         final syncTasks = children
             .map((element) {
-              final task = ref.read(syncDownloadStatusProvider(element, []));
+              final task = ref.read(syncDownloadStatusProvider(element, const []));
               if (task?.status != TaskStatus.notFound) {
                 return task;
               } else {
@@ -64,10 +61,7 @@ class SyncOptionsButton extends ConsumerWidget {
           PopupMenuItem(
             child: Row(
               spacing: 12,
-              children: [
-                const Icon(IconsaxPlusLinear.arrow_right),
-                Text(context.localized.showDetails),
-              ],
+              children: [const Icon(IconsaxPlusLinear.arrow_right), Text(context.localized.showDetails)],
             ),
             onTap: () {
               syncedItem.itemModel?.navigateTo(context);
@@ -77,10 +71,7 @@ class SyncOptionsButton extends ConsumerWidget {
           PopupMenuItem(
             child: Row(
               spacing: 12,
-              children: [
-                const Icon(IconsaxPlusLinear.refresh_2),
-                Text(context.localized.refreshMetadata),
-              ],
+              children: [const Icon(IconsaxPlusLinear.refresh_2), Text(context.localized.refreshMetadata)],
             ),
             onTap: () => context.refreshData(),
           ),
@@ -101,9 +92,11 @@ class SyncOptionsButton extends ConsumerWidget {
                       if (isAudioBatch) {
                         await showTranscodeMusicSettingsPopup(
                           context: context,
-                          current: ref.read(clientSettingsProvider.select(
-                            (value) => value.transcodeMusicDownloadModel.copyWith(enabled: true),
-                          )),
+                          current: ref.read(
+                            clientSettingsProvider.select(
+                              (value) => value.transcodeMusicDownloadModel.copyWith(enabled: true),
+                            ),
+                          ),
                           onChanged: (value) {
                             musicTranscodeModel = value;
                             cancelled = false;
@@ -115,8 +108,11 @@ class SyncOptionsButton extends ConsumerWidget {
                       } else {
                         await showTranscodeSettingsPopup(
                           context: context,
-                          current: ref.read(clientSettingsProvider
-                              .select((value) => value.transcodeDownloadModel.copyWith(enabled: true))),
+                          current: ref.read(
+                            clientSettingsProvider.select(
+                              (value) => value.transcodeDownloadModel.copyWith(enabled: true),
+                            ),
+                          ),
                           onChanged: (value) {
                             transcodeModel = value;
                             cancelled = false;
@@ -138,10 +134,8 @@ class SyncOptionsButton extends ConsumerWidget {
                         musicTranscodeModel: musicTranscodeModel,
                       );
                     },
-                    icon: const Icon(
-                      Icons.more_vert_rounded,
-                    ),
-                  )
+                    icon: const Icon(Icons.more_vert_rounded),
+                  ),
                 ],
               ),
               onTap: () async => _syncRemainingItems(context, syncedItem, unSyncedChildren, ref),
@@ -150,10 +144,7 @@ class SyncOptionsButton extends ConsumerWidget {
               enabled: syncedChildren.isNotEmpty,
               child: Row(
                 spacing: 12,
-                children: [
-                  const Icon(IconsaxPlusLinear.trash),
-                  Text(context.localized.syncDeleteAll),
-                ],
+                children: [const Icon(IconsaxPlusLinear.trash), Text(context.localized.syncDeleteAll)],
               ),
               onTap: () async => _deleteSyncedItems(context, syncedItem, syncedChildren, ref),
             ),
@@ -162,10 +153,7 @@ class SyncOptionsButton extends ConsumerWidget {
               enabled: pausedTasks.isNotEmpty,
               child: Row(
                 spacing: 12,
-                children: [
-                  const Icon(IconsaxPlusLinear.play),
-                  Text(context.localized.syncResumeAll),
-                ],
+                children: [const Icon(IconsaxPlusLinear.play), Text(context.localized.syncResumeAll)],
               ),
               onTap: () => ref
                   .read(backgroundDownloaderProvider)
@@ -175,10 +163,7 @@ class SyncOptionsButton extends ConsumerWidget {
               enabled: runningTasks.isNotEmpty,
               child: Row(
                 spacing: 12,
-                children: [
-                  const Icon(IconsaxPlusLinear.pause),
-                  Text(context.localized.syncPauseAll),
-                ],
+                children: [const Icon(IconsaxPlusLinear.pause), Text(context.localized.syncPauseAll)],
               ),
               onTap: () {
                 ref
@@ -190,17 +175,17 @@ class SyncOptionsButton extends ConsumerWidget {
               enabled: [...runningTasks, ...pausedTasks, ...enqueuedTasks].isNotEmpty,
               child: Row(
                 spacing: 12,
-                children: [
-                  const Icon(IconsaxPlusLinear.stop),
-                  Text(context.localized.syncStopAll),
-                ],
+                children: [const Icon(IconsaxPlusLinear.stop), Text(context.localized.syncStopAll)],
               ),
               onTap: () {
-                ref.read(backgroundDownloaderProvider).cancelAll(
-                    tasks: [...runningTasks, ...pausedTasks, ...enqueuedTasks].map((e) => e.task).nonNulls.toList());
+                ref
+                    .read(backgroundDownloaderProvider)
+                    .cancelAll(
+                      tasks: [...runningTasks, ...pausedTasks, ...enqueuedTasks].map((e) => e.task).nonNulls.toList(),
+                    );
               },
             ),
-          ]
+          ],
         ];
       },
     );
@@ -208,15 +193,17 @@ class SyncOptionsButton extends ConsumerWidget {
 }
 
 Future<dynamic> _deleteSyncedItems(
-    BuildContext context, SyncedItem syncedItem, List<SyncedItem> syncedChildren, WidgetRef ref) {
+  BuildContext context,
+  SyncedItem syncedItem,
+  List<SyncedItem> syncedChildren,
+  WidgetRef ref,
+) {
   return showDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) => AlertDialog(
       title: Text(context.localized.syncDeleteAllItemsTitle(syncedItem.itemModel?.name ?? "")),
-      content: Text(
-        context.localized.syncDeleteAllItemsDesc(syncedItem.itemModel?.name ?? "", syncedChildren.length),
-      ),
+      content: Text(context.localized.syncDeleteAllItemsDesc(syncedItem.itemModel?.name ?? "", syncedChildren.length)),
       scrollable: true,
       actions: [
         ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.cancel)),
@@ -231,10 +218,8 @@ Future<dynamic> _deleteSyncedItems(
             await Future.wait(deleteList);
             Navigator.of(context).pop();
           },
-          child: Text(
-            context.localized.delete,
-          ),
-        )
+          child: Text(context.localized.delete),
+        ),
       ],
     ),
   );
@@ -253,30 +238,22 @@ Future<dynamic> _syncRemainingItems(
     barrierDismissible: false,
     builder: (context) => AlertDialog(
       title: Text(context.localized.syncAllItemsTitle(syncedItem.itemModel?.name ?? "")),
-      content: Text(
-        context.localized.syncAllItemsDesc(
-          syncedItem.itemModel?.name ?? "",
-          unSyncedChildren.length,
-        ),
-      ),
+      content: Text(context.localized.syncAllItemsDesc(syncedItem.itemModel?.name ?? "", unSyncedChildren.length)),
       scrollable: true,
       actions: [
         ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.cancel)),
         FilledButtonAwait(
           onPressed: () async {
-            final syncList = unSyncedChildren.map((e) => ref.read(syncProvider.notifier).syncSyncedItem(
-                  context,
-                  e,
-                  transcodeModel: transcodeModel,
-                  musicTranscodeModel: musicTranscodeModel,
-                ));
+            final syncList = unSyncedChildren.map(
+              (e) => ref
+                  .read(syncProvider.notifier)
+                  .syncSyncedItem(context, e, transcodeModel: transcodeModel, musicTranscodeModel: musicTranscodeModel),
+            );
             await Future.wait(syncList);
             Navigator.of(context).pop();
           },
-          child: Text(
-            context.localized.sync,
-          ),
-        )
+          child: Text(context.localized.sync),
+        ),
       ],
     ),
   );

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/models/api_result.dart';
@@ -10,8 +11,9 @@ import 'package:driftfin/models/item_editing_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/screens/metadata/edit_item.dart';
 
-final editItemProvider =
-    StateNotifierProvider.autoDispose<EditItemNotifier, ItemEditingModel>((ref) => EditItemNotifier(ref));
+final editItemProvider = StateNotifierProvider.autoDispose<EditItemNotifier, ItemEditingModel>(
+  (ref) => EditItemNotifier(ref),
+);
 
 class EditItemNotifier extends StateNotifier<ItemEditingModel> {
   EditItemNotifier(this.ref) : super(ItemEditingModel());
@@ -25,9 +27,7 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
 
   Future<void> fetchInformation(String id) async {
     state = ItemEditingModel();
-    final itemResponse = await api.usersUserIdItemsItemIdGet(
-      itemId: id,
-    );
+    final itemResponse = await api.usersUserIdItemsItemIdGet(itemId: id);
     final itemModel = itemResponse.body;
     if (itemModel == null) return;
     final images = await api.itemsItemIdImagesGet(itemId: itemModel.id);
@@ -56,9 +56,7 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
       ),
     );
     final response = await api.itemsItemIdMetadataEditorGet(itemId: id);
-    state = state.copyWith(
-      editorInfo: () => response.bodyOrThrow,
-    );
+    state = state.copyWith(editorInfo: () => response.bodyOrThrow);
   }
 
   Future<Response<dynamic>?> fetchRemoteImages({ImageType type = ImageType.primary}) async {
@@ -84,21 +82,13 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
 
   Future<void> updateField(MapEntry<String, dynamic> field) async {
     final editedJson = state.editedJson;
-    editedJson?.update(
-      field.key,
-      (value) => field.value,
-      ifAbsent: () => editedJson.addEntries({field}),
-    );
+    editedJson?.update(field.key, (value) => field.value, ifAbsent: () => editedJson.addEntries({field}));
 
-    state = state.copyWith(
-      editedJson: () => editedJson,
-    );
+    state = state.copyWith(editedJson: () => editedJson);
   }
 
   Future<void> resetChanged() async {
-    state = state.copyWith(
-      editedJson: () => state.json,
-    );
+    state = state.copyWith(editedJson: () => state.json);
   }
 
   Future<ApiResult<ItemBaseModel>?> saveInformation(Set<MetaEditOptions> options) async {
@@ -109,35 +99,18 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
     state = state.copyWith(saving: true);
     ApiResult<dynamic>? response;
     if (options.contains(MetaEditOptions.general)) {
-      response = await api
-          .itemsItemIdPost(
-            itemId: currentItem.id,
-            body: BaseItemDto.fromJson(jsonBody),
-          )
-          .apiResult;
+      response = await api.itemsItemIdPost(itemId: currentItem.id, body: BaseItemDto.fromJson(jsonBody)).apiResult;
     }
 
     if (options.contains(MetaEditOptions.primary)) {
-      await state.primary.setImage(
-        ImageType.primary,
-        uploadData: uploadImage,
-        uploadUrl: _setImage,
-      );
+      await state.primary.setImage(ImageType.primary, uploadData: uploadImage, uploadUrl: _setImage);
     }
     if (options.contains(MetaEditOptions.logo)) {
-      await state.logo.setImage(
-        ImageType.logo,
-        uploadData: uploadImage,
-        uploadUrl: _setImage,
-      );
+      await state.logo.setImage(ImageType.logo, uploadData: uploadImage, uploadUrl: _setImage);
     }
 
     if (options.contains(MetaEditOptions.backdrops)) {
-      await state.backdrop.setImage(
-        ImageType.backdrop,
-        uploadData: uploadImage,
-        uploadUrl: _setImage,
-      );
+      await state.backdrop.setImage(ImageType.backdrop, uploadData: uploadImage, uploadUrl: _setImage);
     }
 
     final newItem = await api.usersUserIdItemsItemIdGet(itemId: currentItem.id);
@@ -151,11 +124,7 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
   Future<Response<dynamic>?> uploadImage(EditingImageModel? imageModel) async {
     final currentItem = state.item;
     if (currentItem == null || imageModel == null) return null;
-    final response = await api.itemIdImagesImageTypePost(
-      imageModel.type,
-      currentItem.id,
-      imageModel.imageData!,
-    );
+    final response = await api.itemIdImagesImageTypePost(imageModel.type, currentItem.id, imageModel.imageData!);
     return response;
   }
 
@@ -174,7 +143,8 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
     switch (type) {
       case ImageType.primary:
         state = state.copyWith(
-            primary: state.primary.copyWith(selected: () => state.primary.selected == image ? null : image));
+          primary: state.primary.copyWith(selected: () => state.primary.selected == image ? null : image),
+        );
       case ImageType.logo:
         state = state.copyWith(logo: state.logo.copyWith(selected: () => state.logo.selected == image ? null : image));
       default:
@@ -213,8 +183,9 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
       case ImageType.backdrop:
         state = state.copyWith(
           backdrop: state.backdrop.copyWith(
-              customImages: [...state.backdrop.customImages, ...list],
-              selection: [...state.backdrop.selection, ...list]),
+            customImages: [...state.backdrop.customImages, ...list],
+            selection: [...state.backdrop.selection, ...list],
+          ),
         );
       default:
         return;
@@ -232,8 +203,9 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
     switch (type) {
       case ImageType.primary:
         state = state.copyWith(
-          primary: state.primary
-              .copyWith(serverImages: state.primary.serverImages..removeWhere((element) => element == image)),
+          primary: state.primary.copyWith(
+            serverImages: state.primary.serverImages..removeWhere((element) => element == image),
+          ),
         );
       case ImageType.logo:
         state = state.copyWith(
@@ -241,8 +213,9 @@ class EditItemNotifier extends StateNotifier<ItemEditingModel> {
         );
       case ImageType.backdrop:
         state = state.copyWith(
-          backdrop: state.backdrop
-              .copyWith(serverImages: state.backdrop.serverImages..removeWhere((element) => element == image)),
+          backdrop: state.backdrop.copyWith(
+            serverImages: state.backdrop.serverImages..removeWhere((element) => element == image),
+          ),
         );
       default:
     }

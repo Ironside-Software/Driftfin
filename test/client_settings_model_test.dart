@@ -43,9 +43,8 @@ void main() {
   });
 
   group('ClientSettingsModel.enableCrashReporting', () {
-    ClientSettingsModel baseModel() => ClientSettingsModel.internal(
-          transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
-        );
+    ClientSettingsModel baseModel() =>
+        ClientSettingsModel(transcodeDownloadModel: TranscodeDownloadModel.fromDefaults());
 
     test('defaults to false (opt-in, off by default)', () {
       expect(baseModel().enableCrashReporting, isFalse);
@@ -71,9 +70,8 @@ void main() {
   });
 
   group('ClientSettingsModel.smartDownloadBudgetBytes', () {
-    ClientSettingsModel baseModel() => ClientSettingsModel.internal(
-          transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
-        );
+    ClientSettingsModel baseModel() =>
+        ClientSettingsModel(transcodeDownloadModel: TranscodeDownloadModel.fromDefaults());
 
     test('defaults to null (no budget, unlimited)', () {
       expect(baseModel().smartDownloadBudgetBytes, isNull);
@@ -100,9 +98,8 @@ void main() {
   });
 
   group('ClientSettingsModel.currentShortcuts / defaultShortCuts', () {
-    ClientSettingsModel baseModel() => ClientSettingsModel.internal(
-          transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
-        );
+    ClientSettingsModel baseModel() =>
+        ClientSettingsModel(transcodeDownloadModel: TranscodeDownloadModel.fromDefaults());
 
     test('defaultShortCuts contains every GlobalHotKeys entry', () {
       final model = baseModel();
@@ -114,10 +111,7 @@ void main() {
       final model = baseModel().copyWith(shortcuts: {GlobalHotKeys.exit: overridden});
 
       expect(model.currentShortcuts[GlobalHotKeys.exit], overridden);
-      expect(
-        model.currentShortcuts[GlobalHotKeys.search],
-        model.defaultShortCuts[GlobalHotKeys.search],
-      );
+      expect(model.currentShortcuts[GlobalHotKeys.search], model.defaultShortCuts[GlobalHotKeys.search]);
     });
 
     test('macOS default shortcuts use the super key; other platforms use control', () {
@@ -203,7 +197,7 @@ void main() {
 
   group('ClientSettingsModel.statusBarBrightness', () {
     testWidgets('dark theme mode always yields light status bar content', (tester) async {
-      final model = ClientSettingsModel.internal(
+      final model = ClientSettingsModel(
         transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
         themeMode: ThemeMode.dark,
       );
@@ -220,7 +214,7 @@ void main() {
     });
 
     testWidgets('light theme mode always yields dark status bar content', (tester) async {
-      final model = ClientSettingsModel.internal(
+      final model = ClientSettingsModel(
         transcodeDownloadModel: TranscodeDownloadModel.fromDefaults(),
         themeMode: ThemeMode.light,
       );

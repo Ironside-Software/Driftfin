@@ -16,11 +16,7 @@ import 'package:driftfin/src/player_settings_helper.g.dart' as pigeon;
 final pigeonPlayerSettingsSyncProvider = Provider<void>((ref) {
   void sendSettings() {
     final userData = ref.read(userProvider);
-    final color = ref.read(
-      clientSettingsProvider.select(
-        (value) => value.themeColor?.color.toARGB32(),
-      ),
-    );
+    final color = ref.read(clientSettingsProvider.select((value) => value.themeColor?.color.toARGB32()));
 
     final value = ref.read(videoPlayerSettingsProvider);
 
@@ -86,9 +82,9 @@ final pigeonPlayerSettingsSyncProvider = Provider<void>((ref) {
     }
   }
 
-  ref.listen(userProvider, (_, __) => sendSettings());
-  ref.listen(clientSettingsProvider, (_, __) => sendSettings());
-  ref.listen(videoPlayerSettingsProvider, (_, __) => sendSettings());
+  ref.listen(userProvider, (_, _) => sendSettings());
+  ref.listen(clientSettingsProvider, (_, _) => sendSettings());
+  ref.listen(videoPlayerSettingsProvider, (_, _) => sendSettings());
 
   sendSettings();
 });

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/providers/shared_provider.dart';
 
@@ -18,13 +19,7 @@ class PhotoViewSettingsModel {
     this.timer = const Duration(seconds: 15),
   });
 
-  PhotoViewSettingsModel copyWith({
-    bool? repeat,
-    bool? mute,
-    bool? autoPlay,
-    bool? theaterMode,
-    Duration? timer,
-  }) {
+  PhotoViewSettingsModel copyWith({bool? repeat, bool? mute, bool? autoPlay, bool? theaterMode, Duration? timer}) {
     return PhotoViewSettingsModel(
       repeat: repeat ?? this.repeat,
       mute: mute ?? this.mute,

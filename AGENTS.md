@@ -4,14 +4,14 @@ Driftfin is a cross-platform **Jellyfin client in Flutter**, a fork of [Fladder]
 
 ## Toolchain
 
-Use the **pinned Flutter via fvm**, not the system one (`.fvmrc` pins `3.35.7`). Prefix every command:
+Use the **pinned Flutter via fvm**, not the system one (`.fvmrc` pins `3.47.5`). Prefix every command:
 
 ```bash
-FLUTTER=~/fvm/versions/3.35.7/bin/flutter
-DART=~/fvm/versions/3.35.7/bin/dart
+FLUTTER=~/fvm/versions/3.47.5/bin/flutter
+DART=~/fvm/versions/3.47.5/bin/dart
 ```
 
-Linux dev needs `libmpv-dev` (`sudo apt install libmpv-dev`); desktop builds also need `clang cmake ninja-build pkg-config libgtk-3-dev libcurl4-openssl-dev` (the last is required by sentry-native's CMake config).
+Linux dev needs `libmpv-dev` (`sudo apt install libmpv-dev`); desktop builds also need `clang cmake ninja-build pkg-config libgtk-3-dev libcurl4-openssl-dev openjdk-17-jdk-headless` (curl is required by sentry-native; the JDK supplies JNI headers).
 
 ## Command cheat-sheet
 
@@ -22,7 +22,7 @@ $DART format --line-length 120 <paths>                  # 120 cols — CI enforc
 $FLUTTER test                                           # unit + widget tests in test/
 $FLUTTER run -d <linux|macos|windows|chrome|<device>>   # run the app
 $FLUTTER gen-l10n                                        # regenerate localizations
-$DART run build_runner build --delete-conflicting-outputs   # see Codegen
+$DART run build_runner build   # see Codegen
 $DART run pigeon --input pigeons/<file>.dart            # regen one bridge (output paths fixed in @ConfigurePigeon)
 ```
 
@@ -36,7 +36,7 @@ Most generated files come from **build_runner**, not by hand:
 `*.freezed.dart` (freezed), `*.mapper.dart` (dart_mappable), json/riverpod/chopper `*.g.dart`, auto_route `*.gr.dart`. After changing an annotated source, run:
 
 ```bash
-$DART run build_runner build --delete-conflicting-outputs
+$DART run build_runner build
 ```
 
 Two generators are **not** build_runner: localizations (`flutter gen-l10n`, from `lib/l10n/app_en.arb`) and the native bridge (`dart run pigeon`, from `pigeons/`).

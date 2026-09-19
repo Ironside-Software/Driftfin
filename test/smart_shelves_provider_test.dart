@@ -165,7 +165,7 @@ AccountModel _accountWithFilters(List<LibraryFiltersModel> filters) {
     id: 'user-id',
     avatar: '',
     lastUsed: DateTime(2024),
-    credentials: CredentialsModel.internal(url: 'http://server'),
+    credentials: CredentialsModel(url: 'http://server'),
     libraryFilters: filters,
   );
 }
@@ -200,9 +200,11 @@ void main() {
       showOnHome: true,
       ids: const ['view-1'],
     );
-    final fakeApi = _FakeJellyApi(itemsByParentId: {
-      'view-1': [_poster('p1')],
-    });
+    final fakeApi = _FakeJellyApi(
+      itemsByParentId: {
+        'view-1': [_poster('p1')],
+      },
+    );
     final container = _containerWith(filters: [filter], fakeApi: fakeApi);
     addTearDown(container.dispose);
 
@@ -232,9 +234,11 @@ void main() {
       showOnHome: true,
       ids: const ['view-1', 'view-2'],
     );
-    final fakeApi = _FakeJellyApi(itemsByParentId: {
-      null: [_poster('p1')],
-    });
+    final fakeApi = _FakeJellyApi(
+      itemsByParentId: {
+        null: [_poster('p1')],
+      },
+    );
     final container = _containerWith(filters: [filter], fakeApi: fakeApi);
     addTearDown(container.dispose);
 
@@ -252,9 +256,11 @@ void main() {
       ids: const ['view-1'],
     );
     final hidden = LibraryFiltersModel(id: 'f2', name: 'Hidden', isFavourite: false, showOnHome: false);
-    final fakeApi = _FakeJellyApi(itemsByParentId: {
-      'view-1': [_poster('p1')],
-    });
+    final fakeApi = _FakeJellyApi(
+      itemsByParentId: {
+        'view-1': [_poster('p1')],
+      },
+    );
     final container = _containerWith(filters: [shown, hidden], fakeApi: fakeApi);
     addTearDown(container.dispose);
 

@@ -1,6 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/models/settings/home_settings_model.dart';
@@ -16,91 +16,77 @@ import 'package:driftfin/widgets/shared/item_actions.dart';
 
 List<Widget> buildClientSettingsDashboard(BuildContext context, WidgetRef ref) {
   final clientSettings = ref.watch(clientSettingsProvider);
-  return settingsListGroup(
-    context,
-    SettingsLabelDivider(label: context.localized.dashboard),
-    [
+  return settingsListGroup(context, SettingsLabelDivider(label: context.localized.dashboard), [
+    SettingsListTileEnum(
+      id: SettingId.homeBanner,
+      label: Text(context.localized.settingsHomeBannerTitle),
+      subLabel: Text(context.localized.settingsHomeBannerDescription),
+      current: ref.watch(homeSettingsProvider.select((value) => value.homeBanner.label(context))),
+      itemBuilder: (context) => HomeBanner.values
+          .map(
+            (entry) => ItemActionButton(
+              label: Text(entry.label(context)),
+              action: () =>
+                  ref.read(homeSettingsProvider.notifier).update((context) => context.copyWith(homeBanner: entry)),
+            ),
+          )
+          .toList(),
+    ),
+    if (ref.watch(homeSettingsProvider.select((value) => value.homeBanner)) != HomeBanner.hide)
       SettingsListTileEnum(
-        id: SettingId.homeBanner,
-        label: Text(context.localized.settingsHomeBannerTitle),
-        subLabel: Text(context.localized.settingsHomeBannerDescription),
-        current: ref.watch(
-          homeSettingsProvider.select(
-            (value) => value.homeBanner.label(context),
-          ),
-        ),
-        itemBuilder: (context) => HomeBanner.values
+        id: SettingId.homeBannerInformation,
+        label: Text(context.localized.settingsHomeBannerInformationTitle),
+        subLabel: Text(context.localized.settingsHomeBannerInformationDesc),
+        current: ref.watch(homeSettingsProvider.select((value) => value.carouselSettings.label(context))),
+        itemBuilder: (context) => HomeCarouselSettings.values
             .map(
               (entry) => ItemActionButton(
                 label: Text(entry.label(context)),
-                action: () =>
-                    ref.read(homeSettingsProvider.notifier).update((context) => context.copyWith(homeBanner: entry)),
+                action: () => ref
+                    .read(homeSettingsProvider.notifier)
+                    .update((context) => context.copyWith(carouselSettings: entry)),
               ),
             )
             .toList(),
       ),
-      if (ref.watch(homeSettingsProvider.select((value) => value.homeBanner)) != HomeBanner.hide)
-        SettingsListTileEnum(
-          id: SettingId.homeBannerInformation,
-          label: Text(context.localized.settingsHomeBannerInformationTitle),
-          subLabel: Text(context.localized.settingsHomeBannerInformationDesc),
-          current: ref.watch(
-            homeSettingsProvider.select((value) => value.carouselSettings.label(context)),
-          ),
-          itemBuilder: (context) => HomeCarouselSettings.values
-              .map(
-                (entry) => ItemActionButton(
-                  label: Text(entry.label(context)),
-                  action: () => ref
-                      .read(homeSettingsProvider.notifier)
-                      .update((context) => context.copyWith(carouselSettings: entry)),
-                ),
-              )
-              .toList(),
-        ),
-      SettingsListTileEnum(
-        id: SettingId.homeNextUp,
-        label: Text(context.localized.settingsHomeNextUpTitle),
-        subLabel: Text(context.localized.settingsHomeNextUpDesc),
-        current: ref.watch(
-          homeSettingsProvider.select(
-            (value) => value.nextUp.label(context),
-          ),
-        ),
-        itemBuilder: (context) => HomeNextUp.values
-            .map(
-              (entry) => ItemActionButton(
-                label: Text(entry.label(context)),
-                action: () =>
-                    ref.read(homeSettingsProvider.notifier).update((context) => context.copyWith(nextUp: entry)),
-              ),
-            )
-            .toList(),
-      ),
-      SettingsListTile(
-        id: SettingId.showAllCollectionTypes,
-        label: Text(context.localized.clientSettingsShowAllCollectionsTitle),
-        subLabel: Text(context.localized.clientSettingsShowAllCollectionsDesc),
-        onTap: () => ref
+    SettingsListTileEnum(
+      id: SettingId.homeNextUp,
+      label: Text(context.localized.settingsHomeNextUpTitle),
+      subLabel: Text(context.localized.settingsHomeNextUpDesc),
+      current: ref.watch(homeSettingsProvider.select((value) => value.nextUp.label(context))),
+      itemBuilder: (context) => HomeNextUp.values
+          .map(
+            (entry) => ItemActionButton(
+              label: Text(entry.label(context)),
+              action: () =>
+                  ref.read(homeSettingsProvider.notifier).update((context) => context.copyWith(nextUp: entry)),
+            ),
+          )
+          .toList(),
+    ),
+    SettingsListTile(
+      id: SettingId.showAllCollectionTypes,
+      label: Text(context.localized.clientSettingsShowAllCollectionsTitle),
+      subLabel: Text(context.localized.clientSettingsShowAllCollectionsDesc),
+      onTap: () => ref
+          .read(clientSettingsProvider.notifier)
+          .update((current) => current.copyWith(showAllCollectionTypes: !current.showAllCollectionTypes)),
+      trailing: Switch(
+        value: clientSettings.showAllCollectionTypes,
+        onChanged: (value) => ref
             .read(clientSettingsProvider.notifier)
-            .update((current) => current.copyWith(showAllCollectionTypes: !current.showAllCollectionTypes)),
-        trailing: Switch(
-          value: clientSettings.showAllCollectionTypes,
-          onChanged: (value) => ref
-              .read(clientSettingsProvider.notifier)
-              .update((current) => current.copyWith(showAllCollectionTypes: value)),
-        ),
+            .update((current) => current.copyWith(showAllCollectionTypes: value)),
       ),
-      if (ref.watch(homeSettingsProvider.select((value) => value.pinnedCollectionIds)).isNotEmpty)
-        SettingsListTile(
-          id: SettingId.managePinnedCollections,
-          label: Text(context.localized.managePinnedCollections),
-          subLabel: Text(context.localized.managePinnedCollectionsDesc),
-          onTap: () => _showManagePinnedCollections(context),
-          trailing: const Icon(Icons.dashboard_customize_outlined),
-        ),
-    ],
-  );
+    ),
+    if (ref.watch(homeSettingsProvider.select((value) => value.pinnedCollectionIds)).isNotEmpty)
+      SettingsListTile(
+        id: SettingId.managePinnedCollections,
+        label: Text(context.localized.managePinnedCollections),
+        subLabel: Text(context.localized.managePinnedCollectionsDesc),
+        onTap: () => _showManagePinnedCollections(context),
+        trailing: const Icon(Icons.dashboard_customize_outlined),
+      ),
+  ]);
 }
 
 Future<void> _showManagePinnedCollections(BuildContext context) {
@@ -109,7 +95,7 @@ Future<void> _showManagePinnedCollections(BuildContext context) {
     builder: (context) => Consumer(
       builder: (context, ref, _) {
         final ids = ref.watch(homeSettingsProvider.select((value) => value.pinnedCollectionIds));
-        final collections = ref.watch(homeCollectionsProvider).valueOrNull ?? [];
+        final collections = ref.watch(homeCollectionsProvider).value ?? [];
         String nameFor(String id) =>
             collections.firstWhereOrNull((collection) => collection.container.id == id)?.name ?? id;
         return AlertDialog(
@@ -120,9 +106,8 @@ Future<void> _showManagePinnedCollections(BuildContext context) {
             child: ids.isEmpty
                 ? Center(child: Text(context.localized.noPinnedCollections, textAlign: TextAlign.center))
                 : ReorderableListView(
-                    onReorder: (oldIndex, newIndex) {
+                    onReorderItem: (oldIndex, newIndex) {
                       final reordered = [...ids];
-                      if (newIndex > oldIndex) newIndex -= 1;
                       reordered.insert(newIndex, reordered.removeAt(oldIndex));
                       ref.read(homeSettingsProvider.notifier).setPinnedCollections(reordered);
                     },
@@ -139,12 +124,7 @@ Future<void> _showManagePinnedCollections(BuildContext context) {
                     ],
                   ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(context.localized.close),
-            ),
-          ],
+          actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(context.localized.close))],
         );
       },
     ),

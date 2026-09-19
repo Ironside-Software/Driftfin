@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/providers/shared_provider.dart';
@@ -11,8 +12,7 @@ import 'package:driftfin/providers/user_provider.dart';
 
 /// Whether launching an external player is possible on this platform (desktop
 /// only).
-bool get externalPlayerSupported =>
-    !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
+bool get externalPlayerSupported => !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform.isLinux);
 
 /// Builds the argument list for the external player by substituting placeholders
 /// in [template]. Supported placeholders: {url}, {position} (resume seconds).
@@ -40,18 +40,18 @@ class ExternalPlayerSettings {
   bool get isConfigured => enabled && path.trim().isNotEmpty;
 
   ExternalPlayerSettings copyWith({bool? enabled, String? path, String? argsTemplate}) => ExternalPlayerSettings(
-        enabled: enabled ?? this.enabled,
-        path: path ?? this.path,
-        argsTemplate: argsTemplate ?? this.argsTemplate,
-      );
+    enabled: enabled ?? this.enabled,
+    path: path ?? this.path,
+    argsTemplate: argsTemplate ?? this.argsTemplate,
+  );
 
   Map<String, dynamic> toJson() => {'enabled': enabled, 'path': path, 'argsTemplate': argsTemplate};
 
   factory ExternalPlayerSettings.fromJson(Map<String, dynamic> json) => ExternalPlayerSettings(
-        enabled: json['enabled'] as bool? ?? false,
-        path: json['path'] as String? ?? '',
-        argsTemplate: json['argsTemplate'] as String? ?? '{url}',
-      );
+    enabled: json['enabled'] as bool? ?? false,
+    path: json['path'] as String? ?? '',
+    argsTemplate: json['argsTemplate'] as String? ?? '{url}',
+  );
 }
 
 const String _externalPlayerKey = 'externalPlayerSettings';

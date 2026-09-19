@@ -19,19 +19,21 @@ class SeerrWatchedButton extends ConsumerWidget {
       jellyfinItemId: poster.jellyfinItemId,
     ));
     final state = ref.watch(provider);
-    final watched = state.valueOrNull ?? false;
+    final watched = state.value ?? false;
     final label = state.hasError
         ? context.localized.retry
         : watched
-            ? context.localized.markAsUnwatched
-            : context.localized.markAsWatched;
+        ? context.localized.markAsUnwatched
+        : context.localized.markAsWatched;
     final icon = state.isLoading
         ? const SizedBox.square(dimension: 18, child: CircularProgressIndicator(strokeWidth: 2))
-        : Icon(state.hasError
-            ? Icons.refresh
-            : watched
+        : Icon(
+            state.hasError
+                ? Icons.refresh
+                : watched
                 ? Icons.visibility
-                : Icons.visibility_outlined);
+                : Icons.visibility_outlined,
+          );
 
     Future<void> onPressed() async {
       if (state.hasError) {
@@ -58,11 +60,7 @@ class SeerrWatchedButton extends ConsumerWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        OutlinedButton.icon(
-          onPressed: state.isLoading ? null : onPressed,
-          icon: icon,
-          label: Text(label),
-        ),
+        OutlinedButton.icon(onPressed: state.isLoading ? null : onPressed, icon: icon, label: Text(label)),
         if (localOnly) Text(context.localized.settingsStaysOnDevice, style: Theme.of(context).textTheme.bodySmall),
       ],
     );

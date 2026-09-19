@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:archive/archive_io.dart';
 import 'package:chopper/chopper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
@@ -19,21 +20,11 @@ class BookViewerModel {
   final bool loading;
   final List<String> pages;
   final int currentPage;
-  BookViewerModel({
-    this.book,
-    this.loading = false,
-    this.pages = const [],
-    this.currentPage = 0,
-  });
+  BookViewerModel({this.book, this.loading = false, this.pages = const [], this.currentPage = 0});
 
   int get clampedCurrentPage => currentPage.clamp(0, pages.length);
 
-  BookViewerModel copyWith({
-    ValueGetter<BookModel?>? book,
-    bool? loading,
-    List<String>? pages,
-    int? currentPage,
-  }) {
+  BookViewerModel copyWith({ValueGetter<BookModel?>? book, bool? loading, List<String>? pages, int? currentPage}) {
     return BookViewerModel(
       book: book != null ? book.call() : this.book,
       loading: loading ?? this.loading,
@@ -128,11 +119,12 @@ class BookViewerNotifier extends StateNotifier<BookViewerModel> {
     }
 
     final response = await api.sessionsPlayingStoppedPost(
-        body: PlaybackStopInfo(
-      itemId: oldState.book?.id,
-      mediaSourceId: oldState.book?.id,
-      positionTicks: oldState.clampedCurrentPage * 10000,
-    ));
+      body: PlaybackStopInfo(
+        itemId: oldState.book?.id,
+        mediaSourceId: oldState.book?.id,
+        positionTicks: oldState.clampedCurrentPage * 10000,
+      ),
+    );
 
     if (oldState.clampedCurrentPage >= oldState.pages.length && oldState.pages.isNotEmpty) {
       await ref.read(userProvider.notifier).markAsPlayed(true, oldState.book?.id ?? "");
@@ -150,11 +142,12 @@ class BookViewerNotifier extends StateNotifier<BookViewerModel> {
     }
 
     final response = await api.sessionsPlayingStoppedPost(
-        body: PlaybackStopInfo(
-      itemId: state.book?.id,
-      mediaSourceId: state.book?.id,
-      positionTicks: state.clampedCurrentPage * 10000,
-    ));
+      body: PlaybackStopInfo(
+        itemId: state.book?.id,
+        mediaSourceId: state.book?.id,
+        positionTicks: state.clampedCurrentPage * 10000,
+      ),
+    );
 
     if (state.clampedCurrentPage >= state.pages.length && state.pages.isNotEmpty) {
       await ref.read(userProvider.notifier).markAsPlayed(true, state.book?.id ?? "");
@@ -183,7 +176,5 @@ class BookViewerNotifier extends StateNotifier<BookViewerModel> {
 
   void setPage(double value) => state = state.copyWith(currentPage: value.toInt());
 
-  void setBook(BookModel book) => state = state.copyWith(
-        book: () => book,
-      );
+  void setBook(BookModel book) => state = state.copyWith(book: () => book);
 }

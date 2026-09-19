@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:driftfin/jellyfin/enum_models.dart';
@@ -77,11 +78,7 @@ EpisodeModel _episode({
     images: images,
     childCount: null,
     primaryRatio: null,
-    userData: UserData(
-      played: played,
-      isFavourite: favourite,
-      progress: progress,
-    ),
+    userData: UserData(played: played, isFavourite: favourite, progress: progress),
     parentImages: null,
     mediaStreams: MediaStreamsModel(versionStreams: []),
   );
@@ -94,9 +91,7 @@ Widget _harness({
   Function(VoidCallback action, EpisodeModel episodeModel)? onEpisodeTap,
 }) {
   return ProviderScope(
-    overrides: [
-      syncProvider.overrideWith((ref) => _FakeSyncNotifier()),
-    ],
+    overrides: [syncProvider.overrideWith((ref) => _FakeSyncNotifier())],
     child: MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
@@ -121,14 +116,7 @@ void main() {
 
   testWidgets('renders a mix of available, missing and unaired episodes across seasons', (tester) async {
     final episodes = [
-      _episode(
-        id: 'e1',
-        season: 1,
-        episode: 1,
-        name: 'Pilot',
-        location: ItemLocation.filesystem,
-        played: true,
-      ),
+      _episode(id: 'e1', season: 1, episode: 1, name: 'Pilot', location: ItemLocation.filesystem, played: true),
       _episode(
         id: 'e2',
         season: 1,
@@ -157,9 +145,7 @@ void main() {
   });
 
   testWidgets('renders with a single season (no season selector) and seasons metadata', (tester) async {
-    final episodes = [
-      _episode(id: 'e1', season: 1, episode: 1, name: 'Only episode'),
-    ];
+    final episodes = [_episode(id: 'e1', season: 1, episode: 1, name: 'Only episode')];
     final seasons = [
       const SeasonModel(
         parentImages: null,
@@ -196,12 +182,14 @@ void main() {
       _episode(id: 'e2', season: 1, episode: 2, name: 'Second'),
     ];
 
-    await tester.pumpWidget(_harness(
-      episodes: episodes,
-      onEpisodeTap: (action, episode) {
-        tappedEpisode = episode;
-      },
-    ));
+    await tester.pumpWidget(
+      _harness(
+        episodes: episodes,
+        onEpisodeTap: (action, episode) {
+          tappedEpisode = episode;
+        },
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.byType(EpisodePoster).first);
@@ -211,20 +199,11 @@ void main() {
   });
 
   testWidgets('EpisodePoster shows favourite, played and progress indicators standalone', (tester) async {
-    final episode = _episode(
-      id: 'solo',
-      season: 1,
-      episode: 1,
-      played: true,
-      favourite: true,
-      progress: 55,
-    );
+    final episode = _episode(id: 'solo', season: 1, episode: 1, played: true, favourite: true, progress: 55);
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          syncProvider.overrideWith((ref) => _FakeSyncNotifier()),
-        ],
+        overrides: [syncProvider.overrideWith((ref) => _FakeSyncNotifier())],
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
@@ -236,11 +215,7 @@ void main() {
               // when at least one interaction handler is set; real callers
               // (see EpisodePosters) always pass `onTap`, so this standalone
               // usage does too.
-              body: EpisodePoster(
-                episode: episode,
-                actions: const [],
-                onTap: () {},
-              ),
+              body: EpisodePoster(episode: episode, actions: const [], onTap: () {}),
             ),
           ),
         ),

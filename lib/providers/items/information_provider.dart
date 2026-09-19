@@ -1,6 +1,7 @@
 import 'package:chopper/chopper.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/models/information_model.dart';
 import 'package:driftfin/models/item_base_model.dart';
@@ -9,26 +10,17 @@ import 'package:driftfin/providers/api_provider.dart';
 class InformationProviderModel {
   final InformationModel? model;
   final bool loading;
-  InformationProviderModel({
-    this.model,
-    this.loading = false,
-  });
+  InformationProviderModel({this.model, this.loading = false});
 
-  InformationProviderModel copyWith({
-    InformationModel? model,
-    bool? loading,
-  }) {
-    return InformationProviderModel(
-      model: model ?? this.model,
-      loading: loading ?? this.loading,
-    );
+  InformationProviderModel copyWith({InformationModel? model, bool? loading}) {
+    return InformationProviderModel(model: model ?? this.model, loading: loading ?? this.loading);
   }
 }
 
-final informationProvider =
-    StateNotifierProvider.autoDispose.family<InformationNotifier, InformationProviderModel, String>((ref, id) {
-  return InformationNotifier(ref);
-});
+final informationProvider = StateNotifierProvider.autoDispose
+    .family<InformationNotifier, InformationProviderModel, String>((ref, id) {
+      return InformationNotifier(ref);
+    });
 
 class InformationNotifier extends StateNotifier<InformationProviderModel> {
   InformationNotifier(this.ref) : super(InformationProviderModel());

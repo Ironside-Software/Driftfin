@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/images_models.dart';
@@ -58,7 +59,8 @@ class _BackgroundImageState extends ConsumerState<BackgroundImage> {
         if (itemId != null) {
           final apiResponse = await ref.read(jellyApiProvider).usersUserIdItemsItemIdGet(itemId: itemId);
 
-          newImage = apiResponse.body?.parentBaseModel.getPosters?.randomBackDrop ??
+          newImage =
+              apiResponse.body?.parentBaseModel.getPosters?.randomBackDrop ??
               apiResponse.body?.getPosters?.randomBackDrop ??
               apiResponse.body?.getPosters?.primary;
         }
