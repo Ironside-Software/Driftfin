@@ -1,8 +1,8 @@
 name: Release Driftfin
 
 # Resolve one commit, build each target once, then publish those artifacts.
-# Tag pushes publish GitHub Releases and Pages. Manual runs are dry builds unless
-# TestFlight is selected, in which case the iOS build is signed and uploaded.
+# Tag pushes publish GitHub Releases, Pages, and TestFlight using one signed iOS build.
+# Manual runs are dry builds unless TestFlight is selected.
 on:
   push:
     tags: ["v*"]
@@ -41,6 +41,7 @@ jobs:
     outputs:
       version: ${{ steps.v.outputs.version }}
       sha: ${{ steps.v.outputs.sha }}
+      testflight: ${{ github.event_name == 'push' || inputs.testflight }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -116,7 +117,7 @@ jobs:
     name: Build iOS
     needs: prepare
     runs-on: blacksmith-6vcpu-macos-latest
-    environment: ${{ inputs.testflight && 'testflight' || '' }}
+    environment: ${{ needs.prepare.outputs.testflight == 'true' && 'testflight' || '' }}
     env:
       DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
       APPSTORE_BUNDLE_ID: app.driftfin.79758DD3NW
@@ -129,13 +130,13 @@ jobs:
           flutter-version-file: .fvmrc
           cache: true
       - name: Import App Store distribution certificate
-        if: inputs.testflight == true
+        if: needs.prepare.outputs.testflight == 'true'
         uses: apple-actions/import-codesign-certs@v7
         with:
           p12-file-base64: ${{ secrets.APPSTORE_CERTIFICATES_FILE_BASE64 }}
           p12-password: ${{ secrets.APPSTORE_CERTIFICATES_PASSWORD }}
       - name: Download App Store provisioning profile
-        if: inputs.testflight == true
+        if: needs.prepare.outputs.testflight == 'true'
         uses: apple-actions/download-provisioning-profiles@v6
         with:
           bundle-id: ${{ env.APPSTORE_BUNDLE_ID }}
@@ -145,17 +146,17 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
       - run: flutter pub get
       - name: Build iOS (unsigned)
-        if: inputs.testflight != true
+        if: needs.prepare.outputs.testflight != 'true'
         run: flutter build ios --release --no-codesign --flavor production --build-number=${{ github.run_number }}
       - name: Package unsigned .ipa
-        if: inputs.testflight != true
+        if: needs.prepare.outputs.testflight != 'true'
         run: |
           cd build/ios/iphoneos
           mkdir -p Payload
           cp -R Runner.app Payload/Runner.app
           zip -qr "../../../Driftfin-iOS-${{ needs.prepare.outputs.version }}-unsigned.ipa" Payload
       - name: Build signed production IPA
-        if: inputs.testflight == true
+        if: needs.prepare.outputs.testflight == 'true'
         run: >-
           flutter build ipa
           --release
@@ -163,7 +164,7 @@ jobs:
           --build-number=${{ github.run_number }}
           --export-options-plist=ios/exportOptions.plist
       - name: Collect signed IPA
-        if: inputs.testflight == true
+        if: needs.prepare.outputs.testflight == 'true'
         run: cp build/ios/ipa/*.ipa "Driftfin-iOS-${{ needs.prepare.outputs.version }}-signed.ipa"
       - uses: actions/upload-artifact@v4
         with:
@@ -320,7 +321,7 @@ jobs:
             - **Web** (`Driftfin-Web-*.zip`) — unzip and serve behind any static host; open in a browser.
             - **Windows installer** (`Driftfin-Windows-*-Setup.exe`) — recommended; installs to your user profile with Start Menu shortcuts.
             - **Windows portable** (`Driftfin-Windows-*.zip`) — unzip and run `driftfin.exe`; supports in-app self-update.
-            - **iOS** (`Driftfin-iOS-*-unsigned.ipa`) — **unsigned**; sideload with AltStore / Sideloadly or re-sign yourself.
+            - **iOS** (`Driftfin-iOS-*-signed.ipa`) — uploaded to TestFlight. Install through a TestFlight invitation; the IPA uses App Store signing and must be re-signed for sideloading.
             - **Android** (`Driftfin-Android-*.apk`) — **release** build (AOT-optimized); the recommended download. Install the APK matching your device's ABI. Signed with the project release key when configured, otherwise debug-signed.
             - **Android debug** (`Driftfin-Android-*-debug.apk`) — slower debug build with assertions and verbose logs; only grab this if you're reproducing a bug for a report.
             - **macOS** (`Driftfin-macOS-*.zip`) — unsigned `.app`; unzip and run (you may need to allow it in Gatekeeper).
@@ -362,8 +363,8 @@ jobs:
 
   testflight:
     name: Upload TestFlight
-    if: github.event_name == 'workflow_dispatch' && inputs.testflight == true
-    needs: ios
+    if: needs.prepare.outputs.testflight == 'true'
+    needs: [prepare, ios]
     runs-on: macos-26
     environment: testflight
     env:

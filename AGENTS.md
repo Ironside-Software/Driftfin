@@ -77,7 +77,7 @@ l10n/       app_*.arb (+ gitignored generated/)
 
 ## Releases
 
-`release.yml` builds and publishes on any pushed `v*` tag (Web/Windows/macOS/Linux + Android + unsigned iOS). The release version is the tag minus the leading `v`.
+`release.yml` builds and publishes on any pushed `v*` tag (Web/Windows/macOS/Linux + Android + signed iOS), and uploads the same signed iOS artifact to TestFlight. The release version is the tag minus the leading `v`. The downloadable IPA uses App Store signing; install through TestFlight or re-sign it for sideloading. Manual runs remain dry builds unless `testflight` is selected; set `ios_only` to skip the other platforms when retrying TestFlight.
 
 Android ships **two** APK sets per ABI: a `--release` (AOT-optimized) build — the recommended download — and a `--debug` build (`-debug` suffix) kept for bug diagnosis. `app/build.gradle` signs the release build with the project release key when `android/app/key.properties` + `keystore.jks` exist, and falls back to the debug key otherwise, so the build needs **no keystore to succeed** — a keyless build is just debug-signed (installable, not Play-publishable). To release-sign in CI, set the `KEYSTORE_BASE_64` (base64 of the `.jks`), `RELEASE_KEYSTORE_PASSWORD`, `RELEASE_KEYSTORE_ALIAS`, and `RELEASE_KEY_PASSWORD` repo secrets. R8/resource shrinking is off by default (see the comment in `app/build.gradle`); keep rules live in `android/app/proguard-rules.pro`.
 - **Stable:** tag `vX.Y.Z` matching the pubspec version (e.g. `v0.10.5`).
