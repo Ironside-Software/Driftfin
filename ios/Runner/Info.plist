@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 		<!-- MDK links camera APIs; Driftfin does not request camera access. -->
 		<key>NSCameraUsageDescription</key>
 		<string>Driftfin does not need camera access to browse or play your media. You can deny this permission.</string>
