@@ -13,7 +13,7 @@ import 'package:driftfin/models/items/media_streams_model.dart';
 import 'package:driftfin/models/items/trick_play_model.dart';
 import 'package:driftfin/models/syncing/sync_item.dart';
 import 'package:driftfin/providers/sync_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/string_extensions.dart';
 
 extension SyncMediaHelpers on SyncNotifier {
@@ -128,7 +128,7 @@ extension SyncMediaHelpers on SyncNotifier {
           imageUrl: path.joinAll([SyncedItem.chaptersPath, fileName]),
         );
       } catch (e, stackTrace) {
-        FladderSnack.showException(e, stackTrace: stackTrace);
+        DriftfinSnack.showException(e, stackTrace: stackTrace);
         return event;
       }
     }).toList();

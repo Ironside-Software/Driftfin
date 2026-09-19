@@ -7,7 +7,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/models/credentials_model.dart';
 import 'package:driftfin/providers/discovery_provider.dart';
 import 'package:driftfin/services/local_network_permission.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/theme_extensions.dart';
@@ -23,7 +23,7 @@ class DiscoverServersWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (FladderConfig.baseUrl?.isNotEmpty == true) return const SizedBox.shrink();
+    if (DriftfinConfig.baseUrl?.isNotEmpty == true) return const SizedBox.shrink();
     final existingServers = serverCredentials
         .map(
           (credentials) => DiscoveryInfo(

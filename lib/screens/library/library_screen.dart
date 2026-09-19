@@ -21,7 +21,7 @@ import 'package:driftfin/screens/shared/nested_scaffold.dart';
 import 'package:driftfin/screens/shared/nested_sliver_appbar.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/sliver_list_padding.dart';
@@ -328,7 +328,7 @@ class LibraryRow extends ConsumerWidget {
                   borderRadius: FladderTheme.smallShape.borderRadius,
                   child: AspectRatio(
                     aspectRatio: 1.60,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: view.imageData?.primary,
                       fit: BoxFit.cover,
                       cachedImage: enableImageCache,

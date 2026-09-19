@@ -18,7 +18,7 @@ import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout_model.dart';
 import 'package:driftfin/util/audio_filter_chain.dart';
 import 'package:driftfin/util/poster_defaults.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 
 const _adaptiveModel = AdaptiveLayoutModel(
   viewSize: ViewSize.desktop,
@@ -128,8 +128,8 @@ void main() {
     container.read(videoPlayerSettingsProvider.notifier).setEnableSpeedBoost(true);
     await tester.pumpAndSettle();
     expect(container.read(videoPlayerSettingsProvider).enableSpeedBoost, isTrue);
-    // The speed boost rate control is a FladderSlider, not a Material Slider.
-    expect(find.byType(FladderSlider), findsWidgets);
+    // The speed boost rate control is a DriftfinSlider, not a Material Slider.
+    expect(find.byType(DriftfinSlider), findsWidgets);
   });
 
   testWidgets('replay gain toggle reveals volume level tile', (tester) async {

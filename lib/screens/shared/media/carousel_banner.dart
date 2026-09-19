@@ -7,7 +7,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/screens/shared/media/banner_play_button.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
@@ -110,7 +110,7 @@ class _CarouselBannerState extends ConsumerState<CarouselBanner> {
                                     },
                               child: Stack(
                                 children: [
-                                  FladderImage(image: item.bannerImage),
+                                  DriftfinImage(image: item.bannerImage),
                                   Container(
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(

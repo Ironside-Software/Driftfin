@@ -7,7 +7,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/screens/shared/detail_scaffold.dart';
 import 'package:driftfin/screens/shared/media/components/poster_placeholder.dart';
 import 'package:driftfin/theme.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/router_extension.dart';
@@ -58,7 +58,7 @@ class EmptyItem extends ConsumerWidget {
                       ),
                       borderRadius: FladderTheme.defaultShape.borderRadius,
                     ),
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: item.getPosters?.primary ?? item.getPosters?.backDrop?.lastOrNull,
                       placeHolder: PosterPlaceholder(item: item),
                     ),

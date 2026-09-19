@@ -6,7 +6,7 @@ import 'package:driftfin/providers/control_panel/control_users_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
 import 'package:driftfin/screens/settings/widgets/settings_label_divider.dart';
 import 'package:driftfin/screens/settings/widgets/settings_list_group.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
@@ -72,12 +72,12 @@ class _ControlUserEditPasswordState extends ConsumerState<ControlUserEditPasswor
                   onPressed: () async {
                     final success = await ref.read(controlUsersProvider.notifier).resetUserPassword();
                     if (success) {
-                      FladderSnack.show(
+                      DriftfinSnack.show(
                         context.localized.passwordResetSuccess,
                         context: context,
                       );
                     } else {
-                      FladderSnack.show(
+                      DriftfinSnack.show(
                         context.localized.passwordResetFailed,
                         context: context,
                       );
@@ -89,7 +89,7 @@ class _ControlUserEditPasswordState extends ConsumerState<ControlUserEditPasswor
                 FilledButtonAwait(
                   onPressed: () async {
                     if (newPasswordController.text != confirmPasswordController.text) {
-                      FladderSnack.show(
+                      DriftfinSnack.show(
                         context.localized.passwordMismatch,
                         context: context,
                       );
@@ -102,7 +102,7 @@ class _ControlUserEditPasswordState extends ConsumerState<ControlUserEditPasswor
                           confirmPassword: confirmPasswordController.text,
                         );
                     if (responseMessage == null) {
-                      FladderSnack.show(
+                      DriftfinSnack.show(
                         context.localized.passwordChangeSuccess,
                         context: context,
                       );
@@ -110,7 +110,7 @@ class _ControlUserEditPasswordState extends ConsumerState<ControlUserEditPasswor
                       newPasswordController.clear();
                       confirmPasswordController.clear();
                     } else {
-                      FladderSnack.show(
+                      DriftfinSnack.show(
                         responseMessage,
                         context: context,
                       );

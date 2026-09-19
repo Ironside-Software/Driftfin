@@ -2,7 +2,7 @@ import 'package:driftfin/models/book_model.dart';
 import 'package:driftfin/providers/book_viewer_provider.dart';
 import 'package:driftfin/providers/items/book_details_provider.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/modal_side_sheet.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +76,7 @@ class BookViewerChapters extends ConsumerWidget {
                             leading: AspectRatio(
                               aspectRatio: 1,
                               child: Card(
-                                child: FladderImage(
+                                child: DriftfinImage(
                                   image: book.getPosters?.primary,
                                 ),
                               ),

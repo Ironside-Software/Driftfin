@@ -9,7 +9,7 @@ import 'package:driftfin/models/account_model.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/login/widgets/login_icon.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/passcode_input.dart';
 import 'package:driftfin/screens/shared/route_wrapper.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
@@ -85,7 +85,7 @@ class _LockScreenState extends ConsumerState<LockScreen> with WidgetsBindingObse
             if (newPin == user.localPin) {
               handleLogin(user);
             } else {
-              FladderSnack.show(context.localized.incorrectPinTryAgain, context: context);
+              DriftfinSnack.show(context.localized.incorrectPinTryAgain, context: context);
             }
           });
         }

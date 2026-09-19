@@ -7,7 +7,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/playlist_model.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/sticky_header_text.dart';
@@ -145,7 +145,7 @@ class MusicPlaylistRow extends ConsumerWidget {
                               ],
                               child: ClipRRect(
                                 borderRadius: FladderTheme.smallShape.borderRadius,
-                                child: FladderImage(
+                                child: DriftfinImage(
                                   image: playlist.images?.primary,
                                   fit: BoxFit.cover,
                                 ),

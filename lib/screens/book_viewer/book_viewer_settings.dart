@@ -6,7 +6,7 @@ import 'package:driftfin/providers/settings/book_viewer_settings_provider.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/string_extensions.dart';
 import 'package:driftfin/widgets/shared/enum_selection.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/widgets/shared/modal_side_sheet.dart';
 
@@ -52,7 +52,7 @@ class BookViewerSettingsScreen extends ConsumerWidget {
                 Flexible(
                   child: Opacity(
                     opacity: settings.screenBrightness == null ? 0.5 : 1,
-                    child: FladderSlider(
+                    child: DriftfinSlider(
                       value: settings.screenBrightness ?? 1.0,
                       min: 0,
                       max: 1,

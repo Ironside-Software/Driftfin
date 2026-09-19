@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:driftfin/jellyfin/enum_models.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/enum_selection.dart';
@@ -115,7 +115,7 @@ class _RefreshPopupDialogState extends ConsumerState<RefreshPopupDialog> {
                     children: [
                       FilledButton(
                           onPressed: () async {
-                            await FladderSnack.showResponse(
+                            await DriftfinSnack.showResponse(
                               ref.read(userProvider.notifier).refreshMetaData(
                                     widget.itemId,
                                     metadataRefreshMode: refreshMode,

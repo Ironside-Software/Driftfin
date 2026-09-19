@@ -25,11 +25,11 @@ import 'package:driftfin/screens/shared/media/people_row.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/providers/sonarr_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
 import 'package:driftfin/util/widget_extensions.dart';
@@ -138,7 +138,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
                                         ),
                                         foregroundDecoration: FladderTheme.defaultPosterDecoration,
                                         clipBehavior: Clip.hardEdge,
-                                        child: FladderImage(
+                                        child: DriftfinImage(
                                           image: currentPoster.images.primary,
                                           fit: BoxFit.cover,
                                         ),
@@ -683,7 +683,7 @@ class _EpisodeCard extends ConsumerWidget {
                                   episode: episode.episodeNumber ?? 0,
                                 );
                             if (context.mounted) {
-                              FladderSnack.show(switch (result) {
+                              DriftfinSnack.show(switch (result) {
                                 SonarrRequestResult.success => context.localized.sonarrEpisodeRequested,
                                 SonarrRequestResult.seriesNotFound => context.localized.sonarrSeriesNotFound,
                                 SonarrRequestResult.episodeNotFound => context.localized.sonarrEpisodeNotFound,
@@ -770,7 +770,7 @@ class _EpisodeCard extends ConsumerWidget {
                   width: 175,
                   child: AspectRatio(
                     aspectRatio: 16 / 9,
-                    child: FladderImage(
+                    child: DriftfinImage(
                       image: posterImage,
                       fit: BoxFit.cover,
                       placeHolder: Container(

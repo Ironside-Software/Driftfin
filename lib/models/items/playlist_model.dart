@@ -9,7 +9,7 @@ import 'package:driftfin/models/items/images_models.dart';
 import 'package:driftfin/models/items/item_shared_models.dart';
 import 'package:driftfin/models/items/overview_model.dart';
 import 'package:driftfin/theme.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 part 'playlist_model.mapper.dart';
 
@@ -70,7 +70,7 @@ class PlaylistModel extends ItemBaseModel with PlaylistModelMappable {
           padding: const EdgeInsets.all(2),
           child: ClipRRect(
             borderRadius: FladderTheme.smallShape.borderRadius,
-            child: FladderImage(
+            child: DriftfinImage(
               image: images?.primary,
               placeHolder: Container(
                 color: backgroundColor,

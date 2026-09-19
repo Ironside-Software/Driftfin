@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/models/items/images_models.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 class MediaHeader extends ConsumerWidget {
   final String name;
@@ -43,7 +43,7 @@ class MediaHeader extends ConsumerWidget {
       child: Stack(
         children: [
           logo != null
-              ? FladderImage(
+              ? DriftfinImage(
                   image: logo,
                   disableBlur: true,
                   alignment: alignment,

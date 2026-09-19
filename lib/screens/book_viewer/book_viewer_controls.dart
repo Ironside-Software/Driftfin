@@ -14,12 +14,12 @@ import 'package:driftfin/providers/settings/book_viewer_settings_provider.dart';
 import 'package:driftfin/screens/book_viewer/book_viewer_chapters.dart';
 import 'package:driftfin/screens/book_viewer/book_viewer_settings.dart';
 import 'package:driftfin/screens/shared/default_title_bar.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/input_handler.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/throttler.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 
 class BookViewController {
   bool controlsVisible = true;
@@ -316,7 +316,7 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
                                                 },
                                               );
                                             }
-                                          : () => FladderSnack.show("No other chapters", context: context),
+                                          : () => DriftfinSnack.show("No other chapters", context: context),
                                       icon: const Icon(IconsaxPlusLinear.bookmark_2),
                                     )
                                   ],
@@ -388,7 +388,7 @@ class _BookViewerControlsState extends ConsumerState<BookViewerControls> {
             flipX: bookViewerSettings.readDirection == ReadDirection.rightToLeft,
             child: SizedBox(
               height: 40,
-              child: FladderSlider(
+              child: DriftfinSlider(
                 value: clampedCurrentPage.toDouble(),
                 divisions: details.pages.length - 1,
                 min: 1,

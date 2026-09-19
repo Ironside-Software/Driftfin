@@ -12,7 +12,7 @@ import 'package:driftfin/screens/control_panel/control_user_edit/control_user_ed
 import 'package:driftfin/screens/control_panel/control_user_edit/control_user_edit_parental_control.dart';
 import 'package:driftfin/screens/control_panel/control_user_edit/control_user_edit_password.dart';
 import 'package:driftfin/screens/settings/settings_scaffold.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/user_icon.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/filled_button_await.dart';
@@ -66,9 +66,9 @@ class _ControlUserEditPageState extends ConsumerState<ControlUserEditPage> {
                   onPressed: () async {
                     final response = await provider.saveUserPolicy();
                     if (response == null) {
-                      FladderSnack.show(context.localized.saved, context: context);
+                      DriftfinSnack.show(context.localized.saved, context: context);
                     } else {
-                      FladderSnack.show(response, context: context);
+                      DriftfinSnack.show(response, context: context);
                     }
                   },
                   child: Text(context.localized.save),

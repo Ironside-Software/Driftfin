@@ -12,7 +12,7 @@ import 'package:driftfin/screens/seerr/widgets/download_status_label.dart';
 import 'package:driftfin/screens/seerr/widgets/seerr_user_label.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 /// Full requests manager: filter tabs, sort, mine/all scope, infinite scroll,
@@ -235,7 +235,7 @@ class _RequestCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(6),
                 child: SizedBox(
                   width: 96,
-                  child: FladderImage(
+                  child: DriftfinImage(
                     image: image,
                     placeHolder: Container(
                       color: theme.colorScheme.surfaceContainer,

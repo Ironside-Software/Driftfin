@@ -91,7 +91,7 @@ void main() {
           serverIntegrationConfigProvider
               .overrideWith((ref) => _FakeDiagNotifier(ref, (status: status, detail: detail))),
         ],
-        // AdaptiveLayout above MaterialApp so the FladderSnack overlay resolves it.
+        // AdaptiveLayout above MaterialApp so the DriftfinSnack overlay resolves it.
         child: const AdaptiveLayout(
           data: _adaptiveModel,
           child: MaterialApp(
@@ -113,7 +113,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 350)); // snack fade-in
   }
 
-  // Drains the FladderSnack's 5s auto-dismiss timer so nothing outlives a test.
+  // Drains the DriftfinSnack's 5s auto-dismiss timer so nothing outlives a test.
   Future<void> drainSnack(WidgetTester tester) async {
     await tester.pump(const Duration(seconds: 6));
     await tester.pump(const Duration(milliseconds: 400));

@@ -21,7 +21,7 @@ import 'package:driftfin/screens/library/library_screen.dart';
 import 'package:driftfin/screens/metadata/edit_item.dart';
 import 'package:driftfin/screens/settings/settings_scaffold.dart';
 import 'package:driftfin/screens/shared/default_alert_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/refresh_state.dart';
@@ -87,9 +87,9 @@ class ControlLibrariesPage extends ConsumerWidget {
                           currentOptions,
                         );
                         if (responseMessage != null) {
-                          FladderSnack.show(responseMessage, context: context);
+                          DriftfinSnack.show(responseMessage, context: context);
                         } else {
-                          FladderSnack.show(context.localized.saved, context: context);
+                          DriftfinSnack.show(context.localized.saved, context: context);
                         }
                       }
                     : null,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:iconsax_plus/iconsax_plus.dart';
 
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/util/deep_link_helper.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -51,7 +51,7 @@ Future<void> showConnectLinkDialog(
                 if (data != null) {
                   initLink(data);
                 } else {
-                  FladderSnack.show(context.localized.invalidAuthLink);
+                  DriftfinSnack.show(context.localized.invalidAuthLink);
                 }
                 Navigator.of(context).pop();
               },

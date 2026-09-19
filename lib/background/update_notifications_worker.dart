@@ -18,7 +18,7 @@ import 'package:driftfin/util/notification_helpers.dart';
 
 const String updateTaskName = 'io.github.hamadtheironside.driftfin.update_notifications_check';
 const String updateTaskNameDebug = 'io.github.hamadtheironside.driftfin.update_notifications_check_debug';
-const String updateWorkerPortName = 'fladder_notification_update_worker_port';
+const String updateWorkerPortName = 'driftfin_notification_update_worker_port';
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {

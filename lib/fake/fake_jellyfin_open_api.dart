@@ -705,7 +705,7 @@ class FakeJellyfinOpenApi extends JellyfinOpenApi {
 class FakeHelper {
   static http.BaseResponse fakeCorrectResponse = http.Response('', 200);
 
-  static String fakeTestServerUrl = "http://22b469df.fladder.nl";
+  static String fakeTestServerUrl = "http://22b469df.driftfin.app";
 
   static UserDto fakeCorrectUser = const UserDto(id: '1', name: 'User 1', configuration: UserConfiguration());
   static String fakeCorrectPassword = "Txnw6RWYb8yEtD";

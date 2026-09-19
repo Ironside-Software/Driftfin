@@ -6,9 +6,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:driftfin/util/theme_extensions.dart';
 
-class FladderIcon extends StatelessWidget {
+class DriftfinIcon extends StatelessWidget {
   final double size;
-  const FladderIcon({this.size = 100, super.key});
+  const DriftfinIcon({this.size = 100, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +38,10 @@ class FladderIcon extends StatelessWidget {
   }
 }
 
-class FladderIconOutlined extends StatelessWidget {
+class DriftfinIconOutlined extends StatelessWidget {
   final double size;
   final Color? color;
-  const FladderIconOutlined({this.size = 100, this.color, super.key});
+  const DriftfinIconOutlined({this.size = 100, this.color, super.key});
 
   @override
   Widget build(BuildContext context) {

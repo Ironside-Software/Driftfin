@@ -7,7 +7,7 @@ import 'package:driftfin/providers/sonarr_provider.dart';
 import 'package:driftfin/providers/trakt_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
 import 'package:driftfin/screens/settings/widgets/trakt_connect_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 /// Sonarr / Radarr / Trakt settings tiles. When an integration is configured by
@@ -150,7 +150,7 @@ List<Widget> buildIntegrationSettings(BuildContext context, WidgetRef ref) {
                   }
                   final connected = await showTraktConnectDialog(context);
                   if (context.mounted) {
-                    FladderSnack.show(connected == true
+                    DriftfinSnack.show(connected == true
                         ? context.localized.traktConnectedSuccess
                         : context.localized.traktConnectFailed);
                   }

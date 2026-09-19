@@ -8,7 +8,7 @@ import 'package:driftfin/providers/views_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
 import 'package:driftfin/screens/settings/widgets/settings_label_divider.dart';
 import 'package:driftfin/screens/settings/widgets/settings_list_group.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/widgets/shared/filled_button_await.dart';
@@ -107,7 +107,7 @@ class LibraryOrderEditor extends ConsumerWidget {
                     FilledButtonAwait(
                       onPressed: hasChanges
                           ? () async {
-                              await FladderSnack.showResponse(
+                              await DriftfinSnack.showResponse(
                                 ref.read(homePreferencesProvider.notifier).save(),
                                 successTitle: context.localized.saved,
                               );

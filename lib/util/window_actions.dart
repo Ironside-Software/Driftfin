@@ -6,7 +6,7 @@ import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:driftfin/screens/shared/default_alert_dialog.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 Future<bool> closeCurrentWindow() async {
@@ -45,6 +45,6 @@ Future<void> quitApplication(BuildContext context) async {
 
   final closed = await closeCurrentWindow();
   if (!closed && context.mounted) {
-    FladderSnack.show(context.localized.somethingWentWrong, context: context);
+    DriftfinSnack.show(context.localized.somethingWentWrong, context: context);
   }
 }

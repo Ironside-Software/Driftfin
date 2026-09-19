@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/account_model.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/passcode_input.dart';
 import 'package:driftfin/util/auth_service.dart';
 import 'package:driftfin/util/list_padding.dart';
@@ -42,7 +42,7 @@ Future<void> showAuthOptionsDialogue(
                       if (authenticated) {
                         setMethod.call(currentUser.copyWith(authMethod: method));
                       } else if (context.mounted) {
-                        FladderSnack.show(context.localized.biometricsFailedCheckAgain, context: context);
+                        DriftfinSnack.show(context.localized.biometricsFailedCheckAgain, context: context);
                       }
                       break;
                     case Authentication.passcode:

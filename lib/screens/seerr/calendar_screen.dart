@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:driftfin/providers/calendar_provider.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 
 enum _CalFilter { all, tv, movies }
@@ -392,7 +392,7 @@ class _CalendarTile extends StatelessWidget {
               child: SizedBox(
                 width: 76,
                 height: 48,
-                child: FladderImage(
+                child: DriftfinImage(
                   image: entry.image,
                   placeHolder: imagePlaceholder,
                   imageErrorBuilder: (context, error, stackTrace) => imagePlaceholder,

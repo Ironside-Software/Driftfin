@@ -14,7 +14,7 @@ import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/details_screens/tracks_detail_screen.dart';
 import 'package:driftfin/screens/shared/detail_scaffold.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/components/poster_placeholder.dart';
 import 'package:driftfin/screens/shared/media/components/small_detail_widgets.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
@@ -23,7 +23,7 @@ import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/color_extensions.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/item_base_model/play_item_helpers.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -186,7 +186,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                                     border: Border.all(width: 1, color: Colors.white.withAlpha(45)),
                                   ),
                                   clipBehavior: Clip.hardEdge,
-                                  child: FladderImage(
+                                  child: DriftfinImage(
                                     image: albumPoster,
                                     fit: BoxFit.cover,
                                     placeHolder: PosterPlaceholder(item: current),
@@ -327,7 +327,7 @@ class _AlbumDetailScreenState extends ConsumerState<AlbumDetailScreen> {
                       onAddToQueueSelected: (selected) async {
                         await ref.read(videoPlayerProvider.notifier).addToTemporaryQueue(selected);
                         if (detailsContext.mounted) {
-                          FladderSnack.show(
+                          DriftfinSnack.show(
                             detailsContext.localized.addedToQueue(selected.length),
                             context: detailsContext,
                           );

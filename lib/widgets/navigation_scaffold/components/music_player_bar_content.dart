@@ -12,7 +12,7 @@ import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/screens/video_player/components/video_volume_slider.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/widgets/navigation_scaffold/components/shared/player_bar_shared.dart';
 import 'package:driftfin/widgets/shared/clickable_text.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
@@ -82,7 +82,7 @@ class MusicFloatingPlayerBarContent extends ConsumerWidget {
                                 showExpandButton: showExpandButton,
                                 onShowExpandButton: onShowExpandButton,
                                 openFullScreenPlayer: openFullScreenPlayer,
-                                child: FladderImage(
+                                child: DriftfinImage(
                                   image: item.images?.primary,
                                   fit: BoxFit.cover,
                                 ),

@@ -15,8 +15,8 @@ import 'package:driftfin/providers/settings/video_player_settings_provider.dart'
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/duration_extensions.dart';
-import 'package:driftfin/util/fladder_image.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/util/driftfin_image.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/wrappers/players/base_player.dart';
 import 'package:driftfin/wrappers/players/lib_mdk.dart'
     if (dart.library.html) 'package:driftfin/stubs/web/lib_mdk_web.dart';
@@ -142,7 +142,7 @@ class _SimpleVideoPlayerState extends ConsumerState<SimpleVideoPlayer> with Wind
         alignment: Alignment.center,
         children: [
           Positioned.fill(
-            child: FladderImage(
+            child: DriftfinImage(
               image: widget.video.thumbnail?.primary,
               disableBlur: true,
               fit: BoxFit.contain,
@@ -180,7 +180,7 @@ class _SimpleVideoPlayerState extends ConsumerState<SimpleVideoPlayer> with Wind
                                 children: [
                                   SizedBox(
                                     height: 40,
-                                    child: FladderSlider(
+                                    child: DriftfinSlider(
                                       min: 0.0,
                                       max: duration.inMilliseconds.toDouble(),
                                       value: position.inMilliseconds.toDouble().clamp(

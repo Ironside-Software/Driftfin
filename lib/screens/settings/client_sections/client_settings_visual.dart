@@ -12,7 +12,7 @@ import 'package:driftfin/screens/settings/widgets/settings_list_group.dart';
 import 'package:driftfin/screens/shared/input_fields.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/localization_helper.dart';
-import 'package:driftfin/widgets/shared/fladder_slider.dart';
+import 'package:driftfin/widgets/shared/driftfin_slider.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 
 List<Widget> buildClientSettingsVisual(
@@ -186,7 +186,7 @@ List<Widget> buildClientSettingsVisual(
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: FladderSlider(
+            child: DriftfinSlider(
               min: 0.5,
               max: 1.5,
               value: clientSettings.posterSize,

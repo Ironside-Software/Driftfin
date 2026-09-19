@@ -14,7 +14,7 @@ import 'package:driftfin/screens/syncing/sync_widgets.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_progress_builder.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/size_formatting.dart';
@@ -89,7 +89,7 @@ class SyncListItem extends ConsumerWidget {
                       clipBehavior: Clip.hardEdge,
                       child: AspectRatio(
                           aspectRatio: baseItem?.primaryRatio ?? 0.67,
-                          child: FladderImage(
+                          child: DriftfinImage(
                             image: baseItem?.getPosters?.primary,
                             fit: BoxFit.cover,
                           )),

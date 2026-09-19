@@ -57,10 +57,10 @@ void main() {
       expect(parsed.userName, 'alice');
     });
 
-    test('parse strips the fladder:///login?authLink= prefix', () {
+    test('parse strips the driftfin:///login?authLink= prefix', () {
       final data = AuthLinkData(serverUrl: 's', userName: 'bob');
       final encoded = encodeAuthLink(data);
-      final parsed = AuthLinkData.parse('fladder:///login?authLink=$encoded');
+      final parsed = AuthLinkData.parse('driftfin:///login?authLink=$encoded');
       expect(parsed, isNotNull);
       expect(parsed!.userName, 'bob');
     });
@@ -98,19 +98,19 @@ void main() {
     });
 
     test('login path with authLink param builds a LoginRoute with that link', () {
-      final route = payloadToRoute(Uri.parse('fladder:///login?authLink=abc123'));
+      final route = payloadToRoute(Uri.parse('driftfin:///login?authLink=abc123'));
       expect(route, isA<LoginRoute>());
       expect((route as LoginRoute).args!.authLink, 'abc123');
     });
 
     test('login path without authLink param uses the placeholder', () {
-      final route = payloadToRoute(Uri.parse('fladder:///login'));
+      final route = payloadToRoute(Uri.parse('driftfin:///login'));
       expect(route, isA<LoginRoute>());
       expect((route as LoginRoute).args!.authLink, 'sdflkj');
     });
 
     test('seerr path with mediaType/tmdbId builds a SeerrDetailsRoute', () {
-      final route = payloadToRoute(Uri.parse('fladder:///seerr/movie/42'));
+      final route = payloadToRoute(Uri.parse('driftfin:///seerr/movie/42'));
       expect(route, isA<SeerrDetailsRoute>());
       final r = route as SeerrDetailsRoute;
       expect(r.args!.mediaType, 'movie');
@@ -118,23 +118,23 @@ void main() {
     });
 
     test('seerr path with a non-numeric id falls back to the seerr list route', () {
-      final route = payloadToRoute(Uri.parse('fladder:///seerr/movie/abc'));
+      final route = payloadToRoute(Uri.parse('driftfin:///seerr/movie/abc'));
       expect(route, isA<SeerrRoute>());
     });
 
     test('seerr path with too few segments falls back to the seerr list route', () {
-      final route = payloadToRoute(Uri.parse('fladder:///seerr'));
+      final route = payloadToRoute(Uri.parse('driftfin:///seerr'));
       expect(route, isA<SeerrRoute>());
     });
 
     test('details path with id builds a DetailsRoute', () {
-      final route = payloadToRoute(Uri.parse('fladder:///details?id=abc'));
+      final route = payloadToRoute(Uri.parse('driftfin:///details?id=abc'));
       expect(route, isA<DetailsRoute>());
       expect((route as DetailsRoute).args!.id, 'abc');
     });
 
     test('unrecognized path returns null', () {
-      expect(payloadToRoute(Uri.parse('fladder:///unknown')), isNull);
+      expect(payloadToRoute(Uri.parse('driftfin:///unknown')), isNull);
     });
   });
 
@@ -158,13 +158,13 @@ void main() {
 
   group('deepLinkBuilder', () {
     test('routable payload becomes a valid path-based DeepLink', () async {
-      final link = await deepLinkBuilder(Uri.parse('fladder:///details?id=abc'));
+      final link = await deepLinkBuilder(Uri.parse('driftfin:///details?id=abc'));
       expect(link.isValid, isTrue);
       expect(link, isNot(same(DeepLink.defaultPath)));
     });
 
     test('unroutable payload falls back to the identical DeepLink.defaultPath instance', () async {
-      final link = await deepLinkBuilder(Uri.parse('fladder:///unknown'));
+      final link = await deepLinkBuilder(Uri.parse('driftfin:///unknown'));
       expect(identical(link, DeepLink.defaultPath), isTrue);
     });
 

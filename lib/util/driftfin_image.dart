@@ -8,7 +8,7 @@ import 'package:driftfin/models/items/images_models.dart';
 import 'package:driftfin/providers/arguments_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 
-class FladderImage extends ConsumerWidget {
+class DriftfinImage extends ConsumerWidget {
   final ImageData? image;
   final Widget Function(BuildContext context, Widget child, int? frame, bool wasSynchronouslyLoaded)? frameBuilder;
   final Widget Function(BuildContext context, Object object, StackTrace? stack)? imageErrorBuilder;
@@ -21,7 +21,7 @@ class FladderImage extends ConsumerWidget {
   final bool blurOnly;
   final int decodeHeight;
   final bool cachedImage;
-  const FladderImage({
+  const DriftfinImage({
     required this.image,
     this.frameBuilder,
     this.imageErrorBuilder,

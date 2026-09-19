@@ -8,7 +8,7 @@ import 'package:driftfin/models/items/images_models.dart';
 import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 final _backgroundImageProvider = StateProvider<ImageData?>((ref) => null);
 
@@ -88,7 +88,7 @@ class _BackgroundImageState extends ConsumerState<BackgroundImage> {
           foregroundDecoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: backgroundOpacity),
           ),
-          child: FladderImage(
+          child: DriftfinImage(
             image: image,
             fit: BoxFit.cover,
             decodeHeight: 64,

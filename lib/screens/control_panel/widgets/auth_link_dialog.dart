@@ -11,7 +11,7 @@ import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:driftfin/models/account_model.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/deep_link_helper.dart';
@@ -79,7 +79,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
 
   late final qrDecoration = PrettyQrDecoration(
     image: PrettyQrDecorationImage(
-      image: Image.asset("icons/fladder_notification_icon.png").image,
+      image: Image.asset("icons/driftfin_notification_icon.png").image,
       colorFilter: ColorFilter.mode(
         Theme.of(context).colorScheme.primary,
         BlendMode.srcIn,
@@ -263,7 +263,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
     );
     if (qrImageBytes == null) {
       if (context.mounted) {
-        FladderSnack.show(
+        DriftfinSnack.show(
           context.localized.invalidAuthLink,
         );
       }
@@ -287,7 +287,7 @@ class _AuthLinkDialogState extends State<AuthLinkDialog> {
   Future<void> _copyLink() async {
     await Clipboard.setData(ClipboardData(text: linkUrl));
     if (context.mounted) {
-      FladderSnack.show(
+      DriftfinSnack.show(
         context.localized.copiedToClipboard,
       );
     }

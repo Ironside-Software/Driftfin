@@ -10,7 +10,7 @@ import 'package:driftfin/providers/live_tv_provider.dart';
 import 'package:driftfin/screens/live_tv/widgets/channel_row.dart';
 import 'package:driftfin/screens/live_tv/widgets/guide_constants.dart';
 import 'package:driftfin/screens/live_tv/widgets/timeline_header.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 
 class LiveTvGuide extends ConsumerStatefulWidget {
   final ChannelModel? currentChannel;
@@ -217,7 +217,7 @@ class _LiveTvGuideState extends ConsumerState<LiveTvGuide> {
                                       child: channel.images != null
                                           ? AspectRatio(
                                               aspectRatio: 1,
-                                              child: FladderImage(
+                                              child: DriftfinImage(
                                                 image: channel.images?.primary,
                                                 fit: BoxFit.contain,
                                               ),

@@ -26,7 +26,7 @@ import 'package:driftfin/util/item_base_model/item_base_model_extensions.dart';
 import 'package:driftfin/util/list_padding.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/themes_data.dart';
-import 'package:driftfin/widgets/navigation_scaffold/components/fladder_app_bar.dart';
+import 'package:driftfin/widgets/navigation_scaffold/components/driftfin_app_bar.dart';
 import 'package:driftfin/widgets/shared/animated_icon.dart';
 import 'package:driftfin/widgets/shared/elevated_icon.dart';
 import 'package:driftfin/widgets/shared/hover_widget.dart';
@@ -159,7 +159,7 @@ class _PhotoViewerScreenState extends ConsumerState<PhotoViewerScreen> with Widg
           onExit: (event) => setState(() => _showOverlay(show: false)),
           child: Scaffold(
             appBar: photos.isEmpty
-                ? FladderAppBar(
+                ? DriftfinAppBar(
                     automaticallyImplyLeading: true,
                     isDesktop: AdaptiveLayout.of(context).isDesktop,
                   )

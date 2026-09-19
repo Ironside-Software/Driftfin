@@ -11,7 +11,7 @@ import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/models/syncing/transcode_download_model.dart';
 import 'package:driftfin/providers/crash_log_provider.dart';
 import 'package:driftfin/util/application_info.dart';
-import 'package:driftfin/util/fladder_config.dart';
+import 'package:driftfin/util/driftfin_config.dart';
 
 class _FakePathProviderPlatform extends PathProviderPlatform {
   @override
@@ -27,14 +27,14 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   PathProviderPlatform.instance = _FakePathProviderPlatform();
 
-  tearDown(() => FladderConfig.sentryDsn = null);
+  tearDown(() => DriftfinConfig.sentryDsn = null);
 
   group('resolvedSentryDsn', () {
     // `flutter test` always runs on the VM (kIsWeb == false), so the
     // config.json-backed DSN is never preferred here — this pins that guard:
-    // FladderConfig.sentryDsn must never leak into non-Web builds.
-    test('ignores FladderConfig.sentryDsn outside Web and falls back to the compile-time value', () {
-      FladderConfig.sentryDsn = 'https://runtime-only-dsn';
+    // DriftfinConfig.sentryDsn must never leak into non-Web builds.
+    test('ignores DriftfinConfig.sentryDsn outside Web and falls back to the compile-time value', () {
+      DriftfinConfig.sentryDsn = 'https://runtime-only-dsn';
 
       expect(resolvedSentryDsn, sentryDsn);
       expect(resolvedSentryDsn, isNot('https://runtime-only-dsn'));

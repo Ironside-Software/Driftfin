@@ -7,7 +7,7 @@ import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/media/external_urls.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
@@ -205,7 +205,7 @@ class _MediaManagementActionsState extends ConsumerState<_MediaManagementActions
     try {
       await action();
       if (mounted) {
-        FladderSnack.show(successMessage);
+        DriftfinSnack.show(successMessage);
         Navigator.of(context).pop();
         widget.onActionComplete();
       }

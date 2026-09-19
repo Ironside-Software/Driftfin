@@ -4,7 +4,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/screens/settings/widgets/settings_list_group.dart';
-import 'package:driftfin/screens/shared/fladder_notification_overlay.dart';
+import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/outlined_text_field.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/extensions/day_of_week_extensions.dart';
@@ -141,7 +141,7 @@ class AccessSchedulesEditor extends StatelessWidget {
                               );
                               if (startTime.hour > endTime.hour ||
                                   (startTime.hour == endTime.hour && startTime.minute >= endTime.minute)) {
-                                FladderSnack.show(context.localized.endTimeMustBeAfter, context: context);
+                                DriftfinSnack.show(context.localized.endTimeMustBeAfter, context: context);
                                 return;
                               }
                               onAddSchedule?.call(schedule);

@@ -42,7 +42,7 @@ class _DesktopAppWrapperState extends BaseAppWrapperState<DesktopAppWrapper> wit
     final packageInfo = await PackageInfo.fromPlatform();
     final clientSettings = ref.read(clientSettingsProvider);
     final startupArguments = ref.read(argumentsStateProvider);
-    await windowManager.setupFladderWindowChrome(
+    await windowManager.setupDriftfinWindowChrome(
       startupArguments,
       clientSettings,
       packageInfo,

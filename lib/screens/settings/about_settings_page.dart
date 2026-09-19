@@ -8,8 +8,8 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 import 'package:driftfin/screens/crash_screen/crash_screen.dart';
 import 'package:driftfin/screens/settings/settings_scaffold.dart';
 import 'package:driftfin/screens/settings/widgets/settings_update_information.dart';
-import 'package:driftfin/screens/shared/fladder_icon.dart';
-import 'package:driftfin/screens/shared/fladder_logo.dart';
+import 'package:driftfin/screens/shared/driftfin_icon.dart';
+import 'package:driftfin/screens/shared/driftfin_logo.dart';
 import 'package:driftfin/screens/shared/media/external_urls.dart';
 import 'package:driftfin/util/application_info.dart';
 import 'package:driftfin/util/list_padding.dart';
@@ -47,7 +47,7 @@ class AboutSettingsPage extends ConsumerWidget {
     return SettingsScaffold(
       label: context.localized.about,
       items: [
-        const FladderLogo(),
+        const DriftfinLogo(),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -71,7 +71,7 @@ class AboutSettingsPage extends ConsumerWidget {
             FilledButton.tonal(
               onPressed: () => showLicensePage(
                 context: context,
-                applicationIcon: const FladderIcon(size: 55),
+                applicationIcon: const DriftfinIcon(size: 55),
                 applicationVersion: applicationInfo.versionPlatformBuild,
                 applicationLegalese: "Driftfin — a fork of Fladder by DonutWare (GPL-3.0)",
                 useRootNavigator: true,

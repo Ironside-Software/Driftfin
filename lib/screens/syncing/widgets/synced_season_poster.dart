@@ -13,7 +13,7 @@ import 'package:driftfin/screens/syncing/sync_widgets.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_options_button.dart';
 import 'package:driftfin/screens/syncing/widgets/sync_progress_builder.dart';
 import 'package:driftfin/screens/syncing/widgets/synced_episode_item.dart';
-import 'package:driftfin/util/fladder_image.dart';
+import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/localization_helper.dart';
 import 'package:driftfin/util/size_formatting.dart';
 
@@ -57,7 +57,7 @@ class _SyncedSeasonPosterState extends ConsumerState<SyncedSeasonPoster> {
                         return context.maybePop();
                       },
                       child: Card(
-                        child: FladderImage(
+                        child: DriftfinImage(
                           image: season.getPosters?.primary ??
                               season.parentImages?.backDrop?.firstOrNull ??
                               season.parentImages?.primary,
