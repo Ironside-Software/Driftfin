@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:driftfin/providers/seerr_api_provider.dart';
@@ -9,24 +11,21 @@ part 'seerr_user_provider.g.dart';
 class SeerrUser extends _$SeerrUser {
   @override
   SeerrUserModel? build() {
-    _fetchUser();
+    refreshUser();
     return null;
   }
 
-  Future<void> _fetchUser() async {
-    final api = ref.read(seerrApiProvider);
-    final response = await api.me();
-    if (response.isSuccessful && response.body is SeerrUserModel) {
-      state = response.body as SeerrUserModel;
-    }
-  }
-
   Future<SeerrUserModel?> refreshUser() async {
-    final api = ref.read(seerrApiProvider);
-    final response = await api.me();
-    if (response.isSuccessful && response.body is SeerrUserModel) {
-      state = response.body as SeerrUserModel;
-      return response.body as SeerrUserModel;
+    try {
+      final api = ref.read(seerrApiProvider);
+      final response = await api.me();
+      if (!ref.mounted) return null;
+      if (response.isSuccessful && response.body != null) {
+        state = response.body;
+        return response.body;
+      }
+    } catch (error) {
+      log('Unable to refresh Seerr user (${error.runtimeType})', name: 'SeerrUser');
     }
     return null;
   }

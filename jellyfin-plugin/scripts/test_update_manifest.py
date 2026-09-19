@@ -107,6 +107,21 @@ class UpdateManifestTests(unittest.TestCase):
         self.assertEqual(len(second[0]["versions"]), 1)
         self.assertEqual(second[0]["versions"][0]["checksum"], "checksum2")
 
+    def test_jellyfin_12_release_preserves_older_server_build(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            first = run_update(tmpdir, write_build_yaml(tmpdir, version="1.0.2.0"))
+            existing_path = os.path.join(tmpdir, "existing.json")
+            with open(existing_path, "w", encoding="utf-8") as f:
+                json.dump(first, f)
+            newer = write_build_yaml(tmpdir, "build-v2.yaml", version="2.0.0.0")
+            with open(newer, encoding="utf-8") as f:
+                content = f.read().replace('10.10.0.0', '12.0.0.0').replace('net8.0', 'net10.0')
+            with open(newer, "w", encoding="utf-8") as f:
+                f.write(content)
+            result = run_update(tmpdir, newer, existing=existing_path)
+        self.assertEqual(result[0]["versions"][1], first[0]["versions"][0])
+        self.assertEqual(result[0]["versions"][0]["targetAbi"], "12.0.0.0")
+
     def test_output_is_valid_json_array_at_top_level(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             manifest = run_update(tmpdir, write_build_yaml(tmpdir))

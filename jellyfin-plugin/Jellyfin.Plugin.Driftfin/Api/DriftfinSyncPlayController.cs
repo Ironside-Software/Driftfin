@@ -104,6 +104,11 @@ namespace Jellyfin.Plugin.Driftfin.Api
             {
                 return NotFound();
             }
+            // ListGroups includes joinable groups, not just memberships.
+            if (!group.Participants.Contains(callerSession.UserName, StringComparer.OrdinalIgnoreCase))
+            {
+                return Forbid();
+            }
 
             var payload = JsonSerializer.Serialize(BuildPayload(body, callerSession.UserName));
 
@@ -121,7 +126,9 @@ namespace Jellyfin.Plugin.Driftfin.Api
                 group.Participants);
 
             await Task.WhenAll(recipientIds.Select(id =>
-                _sessionManager.SendGeneralCommand(callerSession.Id, id, command, cancellationToken)))
+                // Membership is checked above; this is a server-originated chat
+                // relay, not permission for the caller to remote-control users.
+                _sessionManager.SendGeneralCommand(string.Empty, id, command, cancellationToken)))
                 .ConfigureAwait(false);
 
             return NoContent();

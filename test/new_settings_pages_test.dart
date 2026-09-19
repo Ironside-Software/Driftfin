@@ -105,14 +105,19 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  Future<void> pumpPage(WidgetTester tester, Widget page, {List<Override> overrides = const []}) async {
+  Future<void> pumpPage(
+    WidgetTester tester,
+    Widget page, {
+    List<Override> overrides = const [],
+    _FakeUser? account,
+  }) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           sharedPreferencesProvider.overrideWithValue(prefs),
-          userProvider.overrideWith(() => _FakeUser(user)),
+          userProvider.overrideWith(() => account ?? _FakeUser(user)),
           ...overrides,
         ],
         child: MaterialApp(
@@ -164,16 +169,38 @@ void main() {
     expect(find.text(l10n.settingsHomeLibraryTitle), findsWidgets);
   });
 
-  testWidgets('Downloads & Offline page renders its download builder group', (tester) async {
-    useTallView(tester);
-    await pumpPage(
-      tester,
-      const DownloadsSettingsPage(),
-      overrides: [syncProvider.overrideWith((ref) => SyncNotifier(ref, tempDir))],
-    );
+  for (final entry in {
+    'policy not loaded': user,
+    'downloads denied': user.copyWith(
+      policy: const UserPolicy(
+        enableContentDownloading: false,
+        authenticationProviderId: 'test',
+        passwordResetProviderId: 'test',
+      ),
+    ),
+    'signed out': null,
+  }.entries) {
+    testWidgets('Downloads settings remain usable when ${entry.key}', (tester) async {
+      useTallView(tester);
+      await pumpPage(
+        tester,
+        const DownloadsSettingsPage(),
+        account: _FakeUser(entry.value),
+        overrides: [syncProvider.overrideWith((ref) => SyncNotifier(ref, tempDir))],
+      );
 
-    expect(find.text(l10n.settingsDownloadsOfflineTitle), findsWidgets);
-  });
+      expect(find.text(l10n.downloadsPath), findsOneWidget);
+      expect(find.text(l10n.downloadsSyncedData), findsOneWidget);
+      expect(find.text(l10n.downloadsVideoQualityTitle), findsOneWidget);
+      expect(find.text(l10n.smartDownloadBudgetTitle), findsOneWidget);
+      final container = ProviderScope.containerOf(tester.element(find.byType(DownloadsSettingsPage)));
+      final previous = container.read(clientSettingsProvider).requireWifi;
+      await tester.tap(find.text(l10n.clientSettingsRequireWifiTitle));
+      await tester.pump();
+      expect(container.read(clientSettingsProvider).requireWifi, !previous);
+      await tester.pump(const Duration(seconds: 1));
+    });
+  }
 
   testWidgets('Integrations page renders Seerr + arr integration groups', (tester) async {
     useTallView(tester);

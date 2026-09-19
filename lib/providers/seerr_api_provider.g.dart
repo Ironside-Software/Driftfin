@@ -19,7 +19,7 @@ final class SeerrApiProvider extends $NotifierProvider<SeerrApi, SeerrService> {
         argument: null,
         retry: null,
         name: r'seerrApiProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -37,7 +37,7 @@ final class SeerrApiProvider extends $NotifierProvider<SeerrApi, SeerrService> {
   }
 }
 
-String _$seerrApiHash() => r'57b39e9af4926a0b255b94ff257c738ffbd91d32';
+String _$seerrApiHash() => r'ffbd1f8c83ddebfe41cf16130aa873982fe1422e';
 
 abstract class _$SeerrApi extends $Notifier<SeerrService> {
   SeerrService build();

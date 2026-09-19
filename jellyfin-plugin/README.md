@@ -39,28 +39,46 @@ session cookies are still established locally on each device.
 
 ## Build from source
 
-Requires the .NET 8 SDK.
+Requires the .NET 10 SDK.
 
 ```bash
 dotnet build jellyfin-plugin/Jellyfin.Plugin.Driftfin/Jellyfin.Plugin.Driftfin.csproj -c Release
 ```
 
 The plugin DLL lands in
-`jellyfin-plugin/Jellyfin.Plugin.Driftfin/bin/Release/net8.0/Jellyfin.Plugin.Driftfin.dll`.
+`jellyfin-plugin/Jellyfin.Plugin.Driftfin/bin/Release/net10.0/Jellyfin.Plugin.Driftfin.dll`.
 
-### Important: target ABI
+### Supported servers
 
-`build.yaml` (`targetAbi`) and the `Jellyfin.Controller` package version in the
-`.csproj` must match the **Jellyfin server version you run**. The defaults
-target Jellyfin **10.10.x / net8.0**. If you run a different version, bump both
-before building.
+| Jellyfin server | Driftfin plugin | Framework |
+| --- | --- | --- |
+| 12.x | 2.0.0.0 and later | .NET 10 |
+| 10.10 / 10.11 | 1.0.2.0 (retained in the catalog) | .NET 8 |
+
+Plugin 2 targets the exact Jellyfin 12.0.0 API. Jellyfin 10.x must keep the
+older plugin; changing its manifest alone cannot make its DLL compatible with 12.
+The plugin GUID and configuration filename stay the same, so upgrading retains
+saved settings. After updating, restart Jellyfin and refresh integrations in Driftfin.
+
+CI validates the catalog ABI/framework against the project, tests the plugin,
+and starts Jellyfin 12 in Docker to verify loading, existing configuration,
+admin/user permissions and SyncPlay group membership. Run the same checks locally:
+
+```bash
+dotnet test jellyfin-plugin/Jellyfin.Plugin.Driftfin.Tests/Jellyfin.Plugin.Driftfin.Tests.csproj -c Release
+python3 -m unittest discover -s jellyfin-plugin/scripts -p 'test_*.py' -v
+python3 jellyfin-plugin/scripts/smoke_test.py
+```
+
+The Python metadata tests require PyYAML. The smoke test requires Docker and
+uses a temporary server bound to loopback; it never connects to your existing server.
 
 ## Install into Jellyfin
 
 **Via a plugin repository (recommended):** add
 
 ```
-https://hamadtheironside.github.io/Driftfin/jellyfin-plugin/manifest.json
+https://ironside-software.github.io/Driftfin/jellyfin-plugin/manifest.json
 ```
 
 under **Dashboard → Plugins → Repositories**, then find "Driftfin" under
@@ -68,7 +86,7 @@ under **Dashboard → Plugins → Repositories**, then find "Driftfin" under
 normal Jellyfin plugin update, no manual file copying.
 
 **Manual:** grab `driftfin-plugin-*.zip` from the
-[plugin releases](https://github.com/HamadTheIronside/Driftfin/releases?q=plugin-v),
+[plugin releases](https://github.com/Ironside-Software/Driftfin/releases?q=plugin-v),
 unzip it into a `Driftfin` folder under your Jellyfin `plugins/` directory, and
 restart the server.
 
@@ -78,17 +96,18 @@ Then open **Dashboard → Plugins → Driftfin** and fill in the integrations.
 
 The manifest above is generated and deployed automatically by the `Plugin
 (Jellyfin)` GitHub Actions workflow (`.github/workflows/plugin.yaml`) — it
-builds the plugin, publishes a GitHub Release with the zip, computes its MD5
+publishes the exact ZIP that passed unit and Jellyfin 12 smoke tests, computes its MD5
 checksum, and merges a new entry into the manifest hosted on GitHub Pages
 (`gh-pages`, same branch as the landing site — the two deploys are configured
 with `keep_files: true` so neither wipes the other's content).
 
 To cut a release:
 
-1. Bump `version` in [`build.yaml`](build.yaml) **and** the three
-   `<Version>`/`<AssemblyVersion>`/`<FileVersion>` fields in
+1. Bump `version` in [`build.yaml`](build.yaml) **and** the
+   `<Version>` field in
    [`Jellyfin.Plugin.Driftfin.csproj`](Jellyfin.Plugin.Driftfin/Jellyfin.Plugin.Driftfin.csproj)
-   — they must match, and the workflow verifies this.
+   — they must match, and the workflow verifies this. Assembly and file versions
+   are derived from `<Version>` by the .NET SDK.
 2. Merge that change.
 3. `git tag plugin-vX.Y.Z.W && git push origin plugin-vX.Y.Z.W`
 
