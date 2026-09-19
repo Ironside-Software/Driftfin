@@ -3,8 +3,8 @@
 Driftfin's production iOS bundle identifier is `app.driftfin.79758DD3NW`.
 The GitHub Actions workflow at `.github/workflows/release.yml` contains the
 manual TestFlight path alongside the cross-platform release jobs. The iOS job
-builds the `production` flavor once with Xcode 26.6 on a macOS runner, signs it when
-TestFlight is selected, and stores the IPA as an artifact. The TestFlight job
+builds the `production` flavor once with Xcode 26.6 on a macOS runner and stores
+the IPA as an artifact. Tag releases, `testflight` and `sign_ios` enable signing. The TestFlight job
 downloads that artifact and uploads it to App Store Connect.
 
 ## One-time Apple setup
@@ -46,15 +46,19 @@ job and the TestFlight upload job use this environment.
 
 ## Running it
 
-Run **Release Driftfin** manually from the Actions tab, set `testflight` to
-`true`, and use `ref=develop` for a proof build. The ref applies to **every
-platform** and is resolved to a single commit before any builds start. Leave it
-blank to build the branch selected in Actions. The iOS job produces a signed IPA
-instead of also compiling an unsigned copy. Other platform builds still run.
-The upload job depends only on iOS, so unrelated platform failures do not block
-TestFlight. Re-running a failed upload reuses the same IPA.
+Run **Release Driftfin** manually from Actions. The `ref` input applies to
+every selected platform and resolves to one commit before builds start. Leave it
+blank to build the selected branch.
 
-Tag pushes build unsigned iOS alongside the other platforms. GitHub Releases
+- Set `ios_only=true` and `sign_ios=true` for a signed verification artifact
+  without a TestFlight upload.
+- Set `ios_only=true` and `testflight=true` to sign and upload to TestFlight.
+  Re-running a failed upload reuses the same IPA.
+- Set `windows_only=true` to run Windows integration/search widget checks and
+  build the portable ZIP and installer. It cannot be combined with iOS options.
+- Leave both platform filters false to build all platforms.
+
+Tag pushes sign iOS and upload that same artifact to TestFlight. GitHub Releases
 require every platform to succeed; missing APKs and artifacts fail the build.
 Pages downloads the Web artifact and adjusts its base URL to `/Driftfin/app/`
 without recompiling. Android release and debug builds run in parallel. Manual
