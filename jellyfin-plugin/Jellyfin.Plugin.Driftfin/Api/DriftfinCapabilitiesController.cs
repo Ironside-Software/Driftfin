@@ -39,7 +39,7 @@ namespace Jellyfin.Plugin.Driftfin.Api
             if (user is null) return Unauthorized();
             var policy = _users.GetUserDto(user).Policy;
             if (policy is null || policy.IsDisabled) return Forbid();
-            var config = Plugin.Instance?.Configuration;
+            var config = Plugin.Instance?.Configuration.Snapshot();
             if (config is null) return NotFound();
 
             SeerrIdentity? identity = null;
@@ -59,7 +59,7 @@ namespace Jellyfin.Plugin.Driftfin.Api
 
             var contentReason = AllowsExternalCatalog(policy) ? null : "content_restricted";
             var catalogReason = contentReason ?? seerrReason;
-            var canRequest = identity?.HasPermission(32 | 262144 | 524288) == true;
+            var canRequest = identity?.HasPermission(32 | 262144 | 524288 | 1024 | 2048 | 4096) == true;
             var canManageRequests = identity?.HasPermission(16) == true;
             return Ok(new
             {

@@ -27,7 +27,7 @@ namespace Jellyfin.Plugin.Driftfin.Api
                 _ => (IntegrationService?)null,
             };
             if (!target.HasValue) return NotFound();
-            var config = Plugin.Instance?.Configuration;
+            var config = Plugin.Instance?.Configuration.Snapshot();
             if (config is null) return NotFound();
 
             var correlationId = Guid.NewGuid().ToString("N");

@@ -9,6 +9,10 @@ namespace Jellyfin.Plugin.Driftfin.Configuration
     /// </summary>
     public class PluginConfiguration : BasePluginConfiguration
     {
+        // Configuration fields are strings/booleans. One request must not mix
+        // identity lookup on the old integration with a mutation on a new one.
+        internal PluginConfiguration Snapshot() => (PluginConfiguration)MemberwiseClone();
+
         /// <summary>Gets or sets the server-wide local (LAN) URL for reaching this Jellyfin server.</summary>
         public string LocalUrl { get; set; } = string.Empty;
 

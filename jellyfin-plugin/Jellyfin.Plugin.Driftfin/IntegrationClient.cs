@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Jellyfin.Plugin.Driftfin.Configuration;
@@ -47,6 +49,51 @@ namespace Jellyfin.Plugin.Driftfin
         private readonly HttpClient _client;
 
         public IntegrationClient(HttpClient client) => _client = client;
+
+        internal async Task<JsonElement> EnrichCatalogRequests(PluginConfiguration config, JsonElement response,
+            SeerrIdentity identity, CancellationToken cancellationToken)
+        {
+            if (response.ValueKind != JsonValueKind.Object) return response;
+            var body = JsonNode.Parse(response.GetRawText())!.AsObject();
+            var details = new Dictionary<string, JsonElement>();
+            using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            deadline.CancelAfter(TimeSpan.FromSeconds(15));
+            try
+            {
+                foreach (var key in new[] { "results", "cast", "crew" })
+                {
+                    if (body[key] is not JsonArray items) continue;
+                    if (key == "results" && items.Count > 100) throw new IntegrationException("invalid_response");
+                    foreach (var entry in items)
+                    {
+                        if (entry is not JsonObject item || item["mediaInfo"] is not JsonObject info
+                            || info["requests"] is JsonArray) continue;
+                        var type = item["mediaType"]?.GetValue<string>();
+                        if (type != "movie" && type != "tv") continue;
+                        var id = item["id"]?.GetValue<int>();
+                        if (id is null or <= 0) continue;
+                        var route = $"api/v1/{type}/{id}";
+                        if (!details.TryGetValue(route, out var detail))
+                        {
+                            // Seerr search returns global media state without requests.
+                            // Its detail endpoint supplies ownership; projection then filters it.
+                            detail = await SendAsync(config, IntegrationService.Seerr, HttpMethod.Get,
+                                route, identity.Id, null, deadline.Token).ConfigureAwait(false);
+                            details[route] = detail;
+                        }
+                        if (detail.TryGetProperty("mediaInfo", out var mediaInfo)) item["mediaInfo"] = JsonNode.Parse(mediaInfo.GetRawText());
+                        if (type == "tv")
+                            foreach (var field in new[] { "numberOfEpisodes", "seasons" })
+                                if (detail.TryGetProperty(field, out var value)) item[field] = JsonNode.Parse(value.GetRawText());
+                    }
+                }
+                return JsonSerializer.SerializeToElement(body);
+            }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                throw new IntegrationException("unreachable");
+            }
+        }
 
         internal async Task<SeerrIdentity> ResolveSeerrIdentity(
             PluginConfiguration config, string serverId, Guid userId, CancellationToken cancellationToken)
