@@ -1363,5 +1363,7 @@
   "discoveryLoadMore": "More discovery results",
   "discoveryLibraryResults": "Library results",
   "discoveryLibraryOnlyFilters": "Clear library filters to search all sources.",
-  "integrationCredentialsReconnect": "Reconnect to confirm saved integration credentials"
+  "integrationCredentialsReconnect": "Reconnect to confirm saved integration credentials",
+  "pluginUseManualIntegrations": "Use manual integrations",
+  "pluginUseManualIntegrationsDescription": "The plugin could not be found. Use your saved manual connections or configure new ones on this device."
 }

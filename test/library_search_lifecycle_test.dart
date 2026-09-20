@@ -26,8 +26,6 @@ class _User extends User {
   );
   @override
   set userState(AccountModel? account) => state = account;
-  @override
-  void addSearchQuery(String value) {}
 }
 
 class _Service implements JellyService {
@@ -64,6 +62,24 @@ ProviderContainer _container(Future<Response<ServerQueryResult>> Function(Invoca
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   const key = ValueKey('search');
+
+  test('typing updates live results but only submission saves search history', () {
+    final container = _container((_) async => _page('movie'));
+    final subscription = container.listen(librarySearchProvider(key), (_, _) {});
+    addTearDown(subscription.close);
+    final notifier = container.read(librarySearchProvider(key).notifier);
+    for (final query in ['f', 'fi', 'fig', 'fight']) {
+      notifier.setSearch(query);
+      expect(notifier.state.filters.searchQuery, query);
+      expect(container.read(userProvider)!.searchQueryHistory, isEmpty);
+    }
+    notifier.submitSearch('fight');
+    expect(container.read(userProvider)!.searchQueryHistory, ['fight']);
+    notifier.submitSearch('fight');
+    expect(container.read(userProvider)!.searchQueryHistory, ['fight']);
+    notifier.submitSearch('');
+    expect(container.read(userProvider)!.searchQueryHistory, ['fight']);
+  });
 
   test('global library search uses its own offset and requests stable provider IDs', () async {
     final offsets = <int>[];

@@ -10,6 +10,17 @@ namespace Jellyfin.Plugin.Driftfin.Tests
 {
     public class DriftfinConfigDtoTests
     {
+        [Theory]
+        [InlineData("http://lan:8096/base/", "http://lan:8096/base")]
+        [InlineData("https://lan/base", "https://lan/base")]
+        [InlineData("", "")]
+        [InlineData("file:///private", "")]
+        [InlineData("http://user:secret@lan", "")]
+        [InlineData("http://lan?token=secret", "")]
+        [InlineData("http://lan/#secret", "")]
+        public void BootstrapLocalUrlExcludesCredentials(string value, string expected) =>
+            Assert.Equal(expected, DriftfinCapabilitiesController.LocalServerUrl(value));
+
         [Fact]
         public void LegacyRead_ReturnsOnlyUpgradeNotice()
         {

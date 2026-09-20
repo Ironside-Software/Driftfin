@@ -64,6 +64,7 @@ namespace Jellyfin.Plugin.Driftfin.Api
             return Ok(new
             {
                 protocolVersion = 1,
+                localUrl = LocalServerUrl(config.LocalUrl),
                 pluginVersion = typeof(Plugin).Assembly.GetName().Version?.ToString(),
                 features = new
                 {
@@ -84,6 +85,14 @@ namespace Jellyfin.Plugin.Driftfin.Api
                 migration = new { legacyCredentials = "retired", trakt = config.TraktEnabled ? "manual_setup_required" : null },
             });
         }
+
+        // This is the client's Jellyfin address, never an integration destination.
+        internal static string LocalServerUrl(string value) =>
+            Uri.TryCreate(value, UriKind.Absolute, out var uri)
+                && (uri.Scheme == "http" || uri.Scheme == "https")
+                && !string.IsNullOrEmpty(uri.Host) && string.IsNullOrEmpty(uri.UserInfo)
+                && string.IsNullOrEmpty(uri.Query) && string.IsNullOrEmpty(uri.Fragment)
+                ? uri.AbsoluteUri.TrimEnd('/') : string.Empty;
 
         internal static bool AllowsExternalCatalog(UserPolicy policy) => !policy.IsDisabled
             && policy.MaxParentalRating is null && policy.MaxParentalSubRating is null

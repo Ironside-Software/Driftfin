@@ -110,6 +110,7 @@ def main():
             request('/Driftfin/Config', original, token=admin, status=204)
             capabilities = request('/Driftfin/v1/capabilities', token=member, device='member')
             assert capabilities['protocolVersion'] == 1
+            assert capabilities['localUrl'] == original['localUrl']
             assert not capabilities['features']['arrManagement']['allowed']
             assert capabilities['integrations']['seerr']['reason'] == 'not_configured'
             assert 'fixture-key' not in json.dumps(capabilities)

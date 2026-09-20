@@ -50,7 +50,7 @@ class _User extends User {
     credentials: CredentialsModel(serverId: 'server', url: 'https://jellyfin.test', token: 'session'),
   );
   @override
-  void addSearchQuery(String value) {}
+  set userState(AccountModel? account) => state = account;
 }
 
 class _SeerrUser extends SeerrUser {
@@ -181,6 +181,18 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     await tester.pumpAndSettle();
   }
+
+  testWidgets('typing does not save history; submitting the current text saves it once', (tester) async {
+    await pump(tester);
+    final field = find.byType(EditableText).first;
+    final container = ProviderScope.containerOf(tester.element(field));
+    await tester.enterText(field, 'fight');
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(container.read(userProvider)!.searchQueryHistory, isEmpty);
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    expect(container.read(userProvider)!.searchQueryHistory, ['fight']);
+  });
 
   testWidgets('active search combines library and catalog once and switches scopes', (tester) async {
     await pump(tester);

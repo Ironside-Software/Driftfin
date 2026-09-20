@@ -34,6 +34,7 @@ class ServerIntegrationConfig {
   /// No upstream credentials or URLs are accepted from the managed protocol.
   factory ServerIntegrationConfig.managed(PluginCapabilities? capabilities) => ServerIntegrationConfig(
     managedProtocol: true,
+    localUrl: capabilities?.compatible == true ? capabilities!.localUrl : '',
     capabilities: capabilities,
     seerr: SeerrServerConfig(viaPlugin: true, enabled: capabilities?.integration('seerr').configured ?? false),
     sonarr: ArrServerConfig(viaPlugin: true, enabled: capabilities?.integration('sonarr').configured ?? false),

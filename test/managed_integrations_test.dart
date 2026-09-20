@@ -1,6 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chopper/chopper.dart' as chopper;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:driftfin/providers/shared_provider.dart';
+import 'package:driftfin/util/managed_seerr_request.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -61,9 +66,10 @@ Map<String, dynamic> _capabilities({int protocol = 1}) => {
   },
 };
 
-ProviderContainer _container(http.Client client, {AccountModel? account}) {
+ProviderContainer _container(http.Client client, {AccountModel? account, SharedPreferences? preferences}) {
   final container = ProviderContainer(
     overrides: [
+      if (preferences != null) sharedPreferencesProvider.overrideWithValue(preferences),
       userProvider.overrideWith(() => _User(account ?? _account())),
       serverUrlProvider.overrideWith((ref) => ref.watch(userProvider)?.credentials.url),
       serverIntegrationConfigProvider.overrideWith((ref) => ServerIntegrationConfigNotifier(ref, client: client)),
@@ -74,6 +80,107 @@ ProviderContainer _container(http.Client client, {AccountModel? account}) {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  test('managed transport preserves encoded and generated query parameters', () {
+    final base = Uri.parse('https://seerr.test');
+    for (final request in [
+      chopper.Request(
+        'GET',
+        Uri.parse('/api/v1/search'),
+        base,
+        parameters: {'query': 'fight & club', 'page': 2, 'language': 'en-US'},
+      ),
+      chopper.Request('GET', Uri.parse('/api/v1/search?query=fight%20%26%20club&page=2&language=en-US'), base),
+      chopper.Request(
+        'GET',
+        Uri.parse('/api/v1/request'),
+        base,
+        parameters: {'take': 20, 'skip': 40, 'requestedBy': 42, 'filter': 'pending'},
+      ),
+    ]) {
+      final managed = managedSeerrRequest(request, 'https://jellyfin.test/base', {});
+      expect(managed.url.queryParametersAll, request.url.queryParametersAll);
+      expect(managed.url.path, startsWith('/base/Driftfin/v1/seerr/'));
+    }
+  });
+
+  test('managed bootstrap carries only the compatible Jellyfin LAN address', () async {
+    final caps = _capabilities()..['localUrl'] = 'http://jellyfin.lan:8096/base';
+    final container = _container(MockClient((_) async => http.Response(jsonEncode(caps), 200)));
+    await container.read(serverIntegrationConfigProvider.notifier).load();
+    expect(container.read(serverIntegrationConfigProvider)?.localUrl, 'http://jellyfin.lan:8096/base');
+    caps['protocolVersion'] = 2;
+    await container.read(serverIntegrationConfigProvider.notifier).load();
+    expect(container.read(serverIntegrationConfigProvider)?.localUrl, isEmpty);
+  });
+
+  test('manual recovery survives restart without reopening legacy credential negotiation', () async {
+    SharedPreferences.setMockInitialValues({
+      for (final service in ['sonarr', 'radarr'])
+        '${service}Settings': jsonEncode({
+          'baseUrl': 'http://$service',
+          'apiKey': 'manual-key',
+          'enabled': true,
+          'origin': 'manual',
+        }),
+    });
+    final prefs = await SharedPreferences.getInstance();
+    var installed = false;
+    final paths = <String>[];
+    final client = MockClient((request) async {
+      paths.add(request.url.path);
+      return http.Response(installed ? jsonEncode(_capabilities()) : '', installed ? 200 : 404);
+    });
+    final container = _container(client, account: _account(managed: true), preferences: prefs);
+    final notifier = container.read(serverIntegrationConfigProvider.notifier);
+    await notifier.load();
+    expect(container.read(managedIntegrationsProvider), isTrue);
+    notifier.useManualIntegrations();
+    expect(container.read(managedIntegrationsProvider), isFalse);
+    expect(container.read(seerrAvailableProvider), isTrue);
+    expect(container.read(sonarrProvider).isConfigured, isTrue);
+    expect(container.read(radarrProvider).isConfigured, isTrue);
+    final helper = SharedHelper(sharedPreferences: prefs);
+    await helper.saveAccounts([container.read(userProvider)!]);
+    final restored = helper.getAccounts().single;
+    expect(restored.managedIntegrations, isTrue);
+    expect(restored.manualIntegrations, isTrue);
+    expect(restored.usesManagedIntegrations, isFalse);
+    final restarted = _container(client, account: restored, preferences: prefs);
+    await restarted.read(serverIntegrationConfigProvider.notifier).load();
+    expect(restarted.read(managedIntegrationsProvider), isFalse);
+    expect(restarted.read(seerrAvailableProvider), isTrue);
+    expect(paths.every((path) => path.endsWith('/capabilities')), isTrue);
+    installed = true;
+    await restarted.read(serverIntegrationConfigProvider.notifier).load();
+    expect(restarted.read(managedIntegrationsProvider), isTrue);
+    expect(restarted.read(userProvider)!.manualIntegrations, isFalse);
+  });
+
+  for (final code in [401, 403, 502]) {
+    test('HTTP $code cannot enable manual recovery', () async {
+      final container = _container(MockClient((_) async => http.Response('', code)), account: _account(managed: true));
+      final notifier = container.read(serverIntegrationConfigProvider.notifier);
+      await notifier.load();
+      notifier.useManualIntegrations();
+      expect(container.read(managedIntegrationsProvider), isTrue);
+      expect(container.read(userProvider)!.manualIntegrations, isFalse);
+    });
+  }
+
+  test('explicit recovery never activates unknown-origin Seerr credentials', () async {
+    final container = _container(
+      MockClient((_) async => http.Response('', 404)),
+      account: _account(managed: true, origin: CredentialOrigin.unknown),
+    );
+    final notifier = container.read(serverIntegrationConfigProvider.notifier);
+    await notifier.load();
+    notifier.useManualIntegrations();
+    expect(container.read(managedIntegrationsProvider), isFalse);
+    expect(container.read(seerrAvailableProvider), isFalse);
+  });
+
   test('admin diagnostics check only the saved service and expose safe outcomes', () async {
     final caps = _capabilities();
     (caps['features'] as Map)['diagnostics'] = {'supported': true, 'allowed': true};

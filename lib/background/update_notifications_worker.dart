@@ -80,7 +80,7 @@ Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck({
           : (account.credentials.localUrl ?? '');
       if (baseUrl.isEmpty &&
           !(account.seerrRequestsEnabled &&
-              (account.managedIntegrations || account.seerrCredentials?.isConfigured == true))) {
+              (account.usesManagedIntegrations || account.seerrCredentials?.isConfigured == true))) {
         continue;
       }
 
@@ -104,7 +104,7 @@ Future<LastSeenNotificationsModel?> performHeadlessUpdateCheck({
         }
 
         if (account.seerrRequestsEnabled &&
-            (account.managedIntegrations || account.seerrCredentials?.isConfigured == true)) {
+            (account.usesManagedIntegrations || account.seerrCredentials?.isConfigured == true)) {
           final seerrNotifications = await _fetchAndNotifySeerrRequestsForAccount(
             account,
             l10n,
@@ -204,7 +204,7 @@ Future<List<NotificationModel>> _fetchAndNotifySeerrRequestsForAccount(
   SeerrChopperService? seerrApi;
   try {
     final seerrCredentials = account.seerrCredentials ?? const SeerrCredentialsModel();
-    if (!account.managedIntegrations &&
+    if (!account.usesManagedIntegrations &&
         (seerrCredentials.origin != CredentialOrigin.manual || !seerrCredentials.isConfigured)) {
       return [];
     }
@@ -215,7 +215,7 @@ Future<List<NotificationModel>> _fetchAndNotifySeerrRequestsForAccount(
 
     seerrApi = NotificationHelpers.createSeerrClient(
       seerrCredentials,
-      jellyfin: account.managedIntegrations ? account.credentials : null,
+      jellyfin: account.usesManagedIntegrations ? account.credentials : null,
     );
 
     final newRequests = await NotificationHelpers.fetchSeerrRequests(
@@ -274,7 +274,7 @@ Future<List<NotificationModel>> _fetchAndNotifySeerrRequestsForAccount(
       }
     }
 
-    final serverName = account.managedIntegrations ? account.credentials.serverName : seerrCredentials.serverUrl;
+    final serverName = account.usesManagedIntegrations ? account.credentials.serverName : seerrCredentials.serverUrl;
     final summaryText = l10n.notificationNewRequests(seerrNotifications.length);
 
     await NotificationService.showGroupedNotifications(
