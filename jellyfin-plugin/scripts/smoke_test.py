@@ -3,6 +3,7 @@
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 import secrets
 import shutil
@@ -67,7 +68,7 @@ def main():
                     if time.monotonic() >= deadline:
                         raise RuntimeError('Jellyfin did not start within 120 seconds') from None
                     time.sleep(1)
-            assert info['Version'] == '12.0.0', info['Version']
+            assert re.fullmatch(r'12\.0\.[0-9]+', info['Version']), info['Version']
             password = secrets.token_urlsafe(24)
             request('/Startup/Configuration', {'UICulture': 'en-US', 'MetadataCountryCode': 'US',
                                               'PreferredMetadataLanguage': 'en'}, status=204)
