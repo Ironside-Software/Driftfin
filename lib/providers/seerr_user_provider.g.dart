@@ -37,7 +37,7 @@ final class SeerrUserProvider extends $NotifierProvider<SeerrUser, SeerrUserMode
   }
 }
 
-String _$seerrUserHash() => r'afdb995c7f76a05184bdc5ea82c2be653a458c36';
+String _$seerrUserHash() => r'3ab45660b2a56c2a6612e4dade99393b445e06be';
 
 abstract class _$SeerrUser extends $Notifier<SeerrUserModel?> {
   SeerrUserModel? build();
