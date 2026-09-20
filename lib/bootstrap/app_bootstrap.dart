@@ -8,6 +8,7 @@ import 'package:desktop_multi_window/desktop_multi_window.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smtc_windows/smtc_windows.dart' if (dart.library.html) 'package:driftfin/stubs/web/smtc_web.dart';
 
 import 'package:driftfin/models/settings/arguments_model.dart';
 import 'package:driftfin/models/settings/client_settings_model.dart';
@@ -86,6 +87,11 @@ Future<AppBootstrapResult> bootstrapApplication(List<String> args) async {
   if (kIsWeb) {
     final configString = await rootBundle.loadString('config/config.json');
     DriftfinConfig.fromJson(jsonDecode(configString) as Map<String, dynamic>);
+  }
+
+  // Finish the Rust bridge setup before widgets or restored settings start a player.
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
+    await SMTCWindows.initialize();
   }
 
   await SvgUtils.preCacheSVGs();
