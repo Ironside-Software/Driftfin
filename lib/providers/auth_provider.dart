@@ -239,7 +239,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
     final matches = state.accounts.where(
       (account) =>
           account.credentials.serverId == serverId &&
-          !account.managedIntegrations &&
+          !account.usesManagedIntegrations &&
           (account.seerrCredentials?.serverUrl.isNotEmpty ?? false),
     );
 

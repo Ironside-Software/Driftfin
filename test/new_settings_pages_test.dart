@@ -52,6 +52,9 @@ class _FakeUser extends User {
 
   @override
   AccountModel? build() => _initial;
+
+  @override
+  set userState(AccountModel? account) => state = account;
 }
 
 /// Returns an empty culture list without hitting the API (the real notifier
@@ -194,6 +197,30 @@ void main() {
     expect(find.text(l10n.pluginDenied), findsNWidgets(2));
     expect(find.text(l10n.sonarrApiKeyTitle), findsNothing);
     expect(find.byIcon(Icons.network_check), findsNothing);
+  });
+
+  testWidgets('missing plugin offers explicit manual recovery and restores editable settings', (tester) async {
+    useTallView(tester);
+    await pumpPage(
+      tester,
+      const IntegrationsSettingsPage(),
+      account: _FakeUser(user.copyWith(managedIntegrations: true)),
+      overrides: [
+        seerrUserProvider.overrideWith(_FakeSeerrUser.new),
+        serverIntegrationConnectionProvider.overrideWith((ref) => ServerIntegrationConfigStatus.noPlugin),
+        serverIntegrationConfigProvider.overrideWith((ref) => _FakePlugin(ref, ServerIntegrationConfig.managed(null))),
+      ],
+    );
+    expect(find.text(l10n.pluginUseManualIntegrations), findsOneWidget);
+    await tester.tap(find.text(l10n.pluginUseManualIntegrations));
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(tester.element(find.byType(IntegrationsSettingsPage)));
+    expect(container.read(managedIntegrationsProvider), isFalse);
+    expect(container.read(userProvider)!.managedIntegrations, isTrue);
+    expect(find.text(l10n.pluginUseManualIntegrations), findsNothing);
+    final switches = tester.widgetList<Switch>(find.byType(Switch));
+    expect(switches, isNotEmpty);
+    expect(switches.every((value) => value.onChanged != null), isTrue);
   });
 
   testWidgets('managed administrators can check each saved integration', (tester) async {

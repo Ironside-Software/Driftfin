@@ -19,6 +19,7 @@ _AccountModel _$AccountModelFromJson(Map<String, dynamic> json) => _AccountModel
       ? null
       : SeerrCredentialsModel.fromJson(json['seerrCredentials'] as Map<String, dynamic>),
   managedIntegrations: json['managedIntegrations'] as bool? ?? false,
+  manualIntegrations: json['manualIntegrations'] as bool? ?? false,
   latestItemsExcludes: (json['latestItemsExcludes'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
   searchQueryHistory: (json['searchQueryHistory'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
   quickConnectState: json['quickConnectState'] as bool? ?? false,
@@ -47,6 +48,7 @@ Map<String, dynamic> _$AccountModelToJson(_AccountModel instance) => <String, dy
   'credentials': const CredentialsConverter().toJson(instance.credentials),
   'seerrCredentials': instance.seerrCredentials,
   'managedIntegrations': instance.managedIntegrations,
+  'manualIntegrations': instance.manualIntegrations,
   'latestItemsExcludes': instance.latestItemsExcludes,
   'searchQueryHistory': instance.searchQueryHistory,
   'quickConnectState': instance.quickConnectState,

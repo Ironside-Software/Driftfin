@@ -4,6 +4,12 @@ Optional Jellyfin **server** plugin for managed Seerr, Sonarr and Radarr
 integrations, diagnostics and unified discovery in Driftfin. Integration API
 keys stay on the server. Core Jellyfin browsing and playback work without it;
 explicitly configured manual integrations remain available.
+After removing a managed plugin, choose **Settings → Integrations → Use manual
+integrations** to restore confirmed manual connections. A timeout or login failure
+never enables this action. Reinstalling the managed plugin restores managed mode
+on the next successful capability refresh. The Jellyfin LAN address remains part
+of the bootstrap; integration server addresses and credentials stay private.
+
 
 ## How it works
 

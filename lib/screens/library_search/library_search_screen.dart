@@ -862,14 +862,14 @@ class LibraryAppBar extends ConsumerWidget {
                         debounceDuration: const Duration(seconds: 1),
                         onChanged: onQueryChanged,
                         onItem: (value) async {
+                          libraryProvider.submitSearch(value.name);
                           await value.navigateTo(context);
                           refreshKey.currentState?.show();
                         },
                         onSubmited: (value) async {
-                          if (librarySearchResults.filters.searchQuery != value) {
-                            libraryProvider.setSearch(value);
-                            if (onSearchSubmitted == null) refreshKey.currentState?.show();
-                          }
+                          final changed = librarySearchResults.filters.searchQuery != value;
+                          libraryProvider.submitSearch(value);
+                          if (changed && onSearchSubmitted == null) refreshKey.currentState?.show();
                           onSearchSubmitted?.call();
                         },
                       ),

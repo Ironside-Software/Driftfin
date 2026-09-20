@@ -118,11 +118,12 @@ final serverIntegrationConfigProvider =
       (ref) => ServerIntegrationConfigNotifier(ref),
     );
 
-final managedIntegrationsProvider = Provider<bool>(
-  (ref) =>
-      ref.watch(userProvider.select((user) => user?.managedIntegrations ?? false)) ||
-      ref.watch(serverIntegrationConfigProvider.select((config) => config?.managedProtocol ?? false)),
-);
+final managedIntegrationsProvider = Provider<bool>((ref) {
+  final account = ref.watch(userProvider);
+  final config = ref.watch(serverIntegrationConfigProvider);
+  return account?.manualIntegrations != true &&
+      (account?.managedIntegrations == true || config?.managedProtocol == true);
+});
 
 final seerrAvailableProvider = Provider<bool>((ref) {
   if (ref.watch(managedIntegrationsProvider)) {
@@ -138,7 +139,7 @@ final seerrAvailableProvider = Provider<bool>((ref) {
 class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationConfig?> {
   ServerIntegrationConfigNotifier(this.ref, {http.Client? client})
     : _client = client ?? http.Client(),
-      super(ref.read(userProvider)?.managedIntegrations == true ? ServerIntegrationConfig.managed(null) : null) {
+      super(ref.read(userProvider)?.usesManagedIntegrations == true ? ServerIntegrationConfig.managed(null) : null) {
     ref.listen(
       userProvider.select(
         (user) => (user?.id, user?.credentials.serverId, user?.credentials.url, user?.credentials.token),
@@ -175,17 +176,31 @@ class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationCon
       }
     }
     if (!_isCurrent(account, generation)) return (status: ServerIntegrationConfigStatus.notLoggedIn, detail: null);
-    state = result.config ?? (managed ? ServerIntegrationConfig.managed(null) : null);
+    state = result.config ?? (account.usesManagedIntegrations ? ServerIntegrationConfig.managed(null) : null);
     ref.read(serverIntegrationConnectionProvider.notifier).state = result.status;
     if (result.config?.managedProtocol == true) {
       final current = ref.read(userProvider)!;
       final credentials = current.seerrCredentials;
       ref.read(userProvider.notifier).userState = current.copyWith(
         managedIntegrations: true,
+        manualIntegrations: false,
         seerrCredentials: credentials?.origin == CredentialOrigin.plugin ? null : credentials,
       );
     }
     return (status: result.status, detail: result.detail);
+  }
+
+  /// Explicit recovery after removal; keep the migration marker so legacy
+  /// credential sharing is never negotiated again, including after restart.
+  void useManualIntegrations() {
+    final account = ref.read(userProvider);
+    if (account?.managedIntegrations != true ||
+        ref.read(serverIntegrationConnectionProvider) != ServerIntegrationConfigStatus.noPlugin) {
+      return;
+    }
+    ++_generation;
+    state = null;
+    ref.read(userProvider.notifier).userState = account!.copyWith(manualIntegrations: true);
   }
 
   bool _isCurrent(AccountModel account, int generation) {
@@ -237,7 +252,7 @@ class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationCon
 
   void clear() {
     ++_generation;
-    state = ref.read(userProvider)?.managedIntegrations == true ? ServerIntegrationConfig.managed(null) : null;
+    state = ref.read(userProvider)?.usesManagedIntegrations == true ? ServerIntegrationConfig.managed(null) : null;
     ref.read(serverIntegrationConnectionProvider.notifier).state = ServerIntegrationConfigStatus.notLoggedIn;
   }
 

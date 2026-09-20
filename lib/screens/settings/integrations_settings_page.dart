@@ -181,6 +181,12 @@ class _IntegrationsSettingsPageState extends ConsumerState<IntegrationsSettingsP
               : const Icon(Icons.refresh),
         ),
         const SizedBox(height: 12),
+        if (managed && connection == ServerIntegrationConfigStatus.noPlugin)
+          SettingsListTile(
+            label: Text(context.localized.pluginUseManualIntegrations),
+            subLabel: Text(context.localized.pluginUseManualIntegrationsDescription),
+            onTap: () => ref.read(serverIntegrationConfigProvider.notifier).useManualIntegrations(),
+          ),
         if (managed) ...[
           for (final service in const ['seerr', 'sonarr', 'radarr']) _managedService(service, capabilities),
           if (capabilities?.traktMigrationRequired == true)

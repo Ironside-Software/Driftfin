@@ -24,6 +24,8 @@ part 'account_model.g.dart';
 abstract class AccountModel with _$AccountModel {
   const AccountModel._();
 
+  bool get usesManagedIntegrations => managedIntegrations && !manualIntegrations;
+
   const factory AccountModel({
     required String name,
     required String id,
@@ -35,6 +37,7 @@ abstract class AccountModel with _$AccountModel {
     @CredentialsConverter() required CredentialsModel credentials,
     SeerrCredentialsModel? seerrCredentials,
     @Default(false) bool managedIntegrations,
+    @Default(false) bool manualIntegrations,
     @Default([]) List<String> latestItemsExcludes,
     @Default([]) List<String> searchQueryHistory,
     @Default(false) bool quickConnectState,

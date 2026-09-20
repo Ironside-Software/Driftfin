@@ -49,7 +49,7 @@ class ControlUsersPage extends ConsumerWidget {
                   ItemActionButton(
                     action: () {
                       final server = currentUser?.credentials.url;
-                      final seerr = currentUser?.managedIntegrations == true
+                      final seerr = currentUser?.usesManagedIntegrations == true
                           ? null
                           : currentUser?.seerrCredentials?.serverUrl;
                       openAuthLinkDialog(context, serverUrl: server ?? "", seerrUrl: seerr, user: user);

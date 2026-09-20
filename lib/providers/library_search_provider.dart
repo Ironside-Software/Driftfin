@@ -455,7 +455,11 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
     if (query == state.filters.searchQuery) return;
     ++_generation;
     state = state.fullReset().copyWith(loading: false, filters: state.filters.copyWith(searchQuery: query));
-    ref.read(userProvider.notifier).addSearchQuery(query);
+  }
+
+  void submitSearch(String query) {
+    setSearch(query);
+    ref.read(userProvider.notifier).addSearchQuery(query.trim());
   }
 
   void setFavourites(bool? value) => state = state.copyWith(filters: state.filters.copyWith(favourites: value));

@@ -2,6 +2,7 @@
 class PluginCapabilities {
   final int protocolVersion;
   final String pluginVersion;
+  final String localUrl;
   final Map<String, PluginFeature> features;
   final Map<String, PluginIntegration> integrations;
   final bool traktMigrationRequired;
@@ -9,6 +10,7 @@ class PluginCapabilities {
   const PluginCapabilities({
     required this.protocolVersion,
     this.pluginVersion = '',
+    this.localUrl = '',
     this.features = const {},
     this.integrations = const {},
     this.traktMigrationRequired = false,
@@ -25,6 +27,7 @@ class PluginCapabilities {
     return PluginCapabilities(
       protocolVersion: json['protocolVersion'] as int,
       pluginVersion: json['pluginVersion'] as String? ?? '',
+      localUrl: json['localUrl'] as String? ?? '',
       features: {
         for (final entry in (json['features'] as Map<String, dynamic>).entries)
           entry.key: PluginFeature.fromJson(entry.value as Map<String, dynamic>),

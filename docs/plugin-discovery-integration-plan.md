@@ -163,7 +163,9 @@ Add `GET /Driftfin/v1/capabilities`, authenticated and specific to the caller.
 Return plugin version, protocol version, and supported/allowed features, including
 external discovery, media requests, request management, and arr management. Also
 return integration state with stable reason codes. Exclude API keys, cookies,
-internal URLs, upstream user lists, and raw upstream errors.
+integration URLs, upstream user lists, and raw upstream errors. The configured
+Jellyfin LAN address is client connection metadata and remains in the bootstrap;
+credential-bearing addresses are excluded.
 
 Keep three facts distinct: the plugin supports a feature, the user may use it,
 and its upstream service is currently healthy. Examples of reasons:
@@ -318,7 +320,12 @@ The new protocol is independent of plugin assembly version. Feature discovery
 selects supported behavior rather than hardcoded version comparisons. New app +
 old plugin remains usable, but labels the legacy integration behavior clearly.
 New app + new plugin uses the managed paths. Plugin absence keeps explicit,
-manually configured direct integrations available.
+manually configured direct integrations available. Previously migrated accounts
+remain fail-closed on outages. When the plugin is missing, Settings → Integrations
+provides an explicit **Use manual integrations** action. That choice survives
+restart and restores only confirmed manual credentials, while the migration marker
+continues to block legacy credential negotiation. Detecting the managed plugin
+again restores managed mode.
 
 Release the compatible app before enabling the new plugin protocol for users.
 The new plugin stops returning integration secrets from the legacy
