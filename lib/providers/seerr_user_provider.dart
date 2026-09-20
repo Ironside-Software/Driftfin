@@ -15,8 +15,7 @@ class SeerrUser extends _$SeerrUser {
   int _generation = 0;
   @override
   SeerrUserModel? build() {
-    _generation++;
-    ref.watch(userProvider.select((user) => (user?.id, user?.credentials.serverId, user?.credentials.token)));
+    ref.watch(userProvider.select((user) => (user?.id, user?.credentials, user?.seerrCredentials)));
     ref.watch(serverIntegrationConfigProvider);
     ref.watch(serverIntegrationConnectionProvider);
     refreshUser();
@@ -26,11 +25,18 @@ class SeerrUser extends _$SeerrUser {
   Future<SeerrUserModel?> refreshUser() async {
     // Callers await this result without necessarily listening to the provider.
     final keepAlive = ref.keepAlive();
-    final generation = _generation;
+    final generation = ++_generation;
+    final account = ref.read(userProvider);
     try {
       final api = ref.read(seerrApiProvider);
       final response = await api.me().timeout(const Duration(seconds: 20));
       if (!ref.mounted || generation != _generation) return null;
+      final current = ref.read(userProvider);
+      if (account?.id != current?.id ||
+          account?.credentials != current?.credentials ||
+          account?.seerrCredentials != current?.seerrCredentials) {
+        return null;
+      }
       if (response.isSuccessful && response.body != null) {
         state = response.body;
         return response.body;
@@ -44,7 +50,7 @@ class SeerrUser extends _$SeerrUser {
   }
 
   void clearUser() {
-    _generation++;
+    ++_generation;
     state = null;
   }
 }

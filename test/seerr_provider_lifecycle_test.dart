@@ -160,6 +160,65 @@ void main() {
     );
   });
 
+  for (final changeCredentials in [false, true]) {
+    test('stale profile is discarded after ${changeCredentials ? 'credential change' : 'newer refresh'}', () async {
+      final responses = <Completer<http.Response>>[];
+      await http.runWithClient(
+        () async {
+          final container = _container();
+          final subscription = container.listen(seerrUserProvider, (_, _) {});
+          addTearDown(subscription.close);
+          await Future<void>.delayed(Duration.zero);
+          expect(responses, hasLength(1));
+          Future<dynamic>? refreshed;
+          if (changeCredentials) {
+            container.read(userProvider.notifier).userState = container
+                .read(userProvider)!
+                .copyWith(
+                  seerrCredentials: const SeerrCredentialsModel(
+                    origin: CredentialOrigin.manual,
+                    serverUrl: 'https://new-seerr.test',
+                    apiKey: 'new-key',
+                  ),
+                );
+            await container.pump();
+          } else {
+            refreshed = container.read(seerrUserProvider.notifier).refreshUser();
+          }
+          await Future<void>.delayed(Duration.zero);
+          expect(responses, hasLength(2));
+          responses[1].complete(http.Response('{"id":2,"permissions":0}', 200));
+          await Future<void>.delayed(Duration.zero);
+          if (refreshed != null) await refreshed;
+          expect(container.read(seerrUserProvider)?.id, 2);
+          responses[0].complete(http.Response('{"id":1,"permissions":16}', 200));
+          await Future<void>.delayed(Duration.zero);
+          expect(container.read(seerrUserProvider)?.id, 2);
+          expect(container.read(seerrUserProvider)?.permissions, 0);
+        },
+        () => MockClient((_) {
+          final response = Completer<http.Response>();
+          responses.add(response);
+          return response.future;
+        }),
+      );
+    });
+  }
+
+  test('clearing profile discards pending responses', () async {
+    final response = Completer<http.Response>();
+    await http.runWithClient(() async {
+      final container = _container();
+      final subscription = container.listen(seerrUserProvider, (_, _) {});
+      addTearDown(subscription.close);
+      await Future<void>.delayed(Duration.zero);
+      container.read(seerrUserProvider.notifier).clearUser();
+      response.complete(_profile());
+      await Future<void>.delayed(Duration.zero);
+      expect(container.read(seerrUserProvider), isNull);
+    }, () => MockClient((_) => response.future));
+  });
+
   testWidgets('failed initial Seerr profile fetch is handled and can be retried', (tester) async {
     var fail = true;
     await http.runWithClient(
