@@ -3,6 +3,14 @@
     "guid": "a3b1e7c4-1d2f-4b8a-9c6e-7f0d2e5a9b11",
     "versions": [
       {
+        "version": "3.0.0.0",
+        "changelog": "- 3.0.0.0: Breaking change: retire GET /Driftfin/Config secret sharing.\n  Upgrade Driftfin clients first. Add managed integrations, capabilities,\n  diagnostics and user-scoped unified discovery. Preserve saved configuration.\n- 2.0.0.0: Rebuild for Jellyfin 12 and .NET 10. Older servers retain\n  plugin 1.0.2.0; the plugin identity and saved configuration are unchanged.\n  Fix Watch Together chat for users without remote-control permission and\n  require group membership before relaying messages.\n- 1.0.2.0: Add a server-wide \"Local (LAN) URL\" setting that Driftfin clients\n  on the local network adopt automatically.\n- 1.0.1.0: Fix /Driftfin/Config and SyncPlay message relay returning 500 on\n  Jellyfin 10.11 by dropping the removed \"DefaultAuthorization\" policy name\n  in favor of plain [Authorize].\n- 1.0.0.0: Initial release. Serves Seerr/Sonarr/Radarr/Trakt config via\n  GET /Driftfin/Config and an admin dashboard page.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/Ironside-Software/Driftfin/releases/download/plugin-v3.0.0.0/driftfin-plugin-3.0.0.0.zip",
+        "checksum": "0b362df4cefd4a61996ffcccfb7e8dbc",
+        "timestamp": "2026-09-20T10:02:17Z"
+      },
+      {
         "version": "2.0.0.0",
         "changelog": "- 2.0.0.0: Rebuild for Jellyfin 12 and .NET 10. Older servers retain\n  plugin 1.0.2.0; the plugin identity and saved configuration are unchanged.\n  Fix Watch Together chat for users without remote-control permission and\n  require group membership before relaying messages.\n- 1.0.2.0: Add a server-wide \"Local (LAN) URL\" setting that Driftfin clients\n  on the local network adopt automatically.\n- 1.0.1.0: Fix /Driftfin/Config and SyncPlay message relay returning 500 on\n  Jellyfin 10.11 by dropping the removed \"DefaultAuthorization\" policy name\n  in favor of plain [Authorize].\n- 1.0.0.0: Initial release. Serves Seerr/Sonarr/Radarr/Trakt config via\n  GET /Driftfin/Config and an admin dashboard page.",
         "targetAbi": "12.0.0.0",
@@ -36,8 +44,8 @@
       }
     ],
     "name": "Driftfin",
-    "description": "Stores Jellyseerr, Sonarr, Radarr and Trakt connection settings server-side so Driftfin clients can pull a single shared configuration instead of every user configuring their own. The Driftfin app works fully without this plugin.",
-    "overview": "Centralize Driftfin client integration settings on the server.",
+    "description": "Connects Driftfin to Seerr, Sonarr and Radarr through authenticated Jellyfin endpoints while keeping integration credentials on the server. The Driftfin app works fully without this plugin.",
+    "overview": "Managed integrations and unified discovery for Driftfin.",
     "owner": "Ironside-Software",
     "category": "General",
     "imageUrl": "https://raw.githubusercontent.com/Ironside-Software/Driftfin/develop/icons/production/driftfin_icon_512.png"
