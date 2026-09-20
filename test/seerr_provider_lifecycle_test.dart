@@ -12,6 +12,7 @@ import 'package:driftfin/models/credentials_model.dart';
 import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 
 class _User extends User {
@@ -22,7 +23,11 @@ class _User extends User {
     avatar: '',
     lastUsed: DateTime(2026),
     credentials: CredentialsModel(),
-    seerrCredentials: const SeerrCredentialsModel(serverUrl: 'https://seerr.test', apiKey: 'test-key'),
+    seerrCredentials: const SeerrCredentialsModel(
+      origin: CredentialOrigin.manual,
+      serverUrl: 'https://seerr.test',
+      apiKey: 'test-key',
+    ),
   );
 
   @override
@@ -48,6 +53,66 @@ Widget _screen(ProviderContainer container) => UncontrolledProviderScope(
 );
 
 void main() {
+  test('unknown saved credentials stay dormant after plugin negotiation', () async {
+    var calls = 0;
+    await http.runWithClient(
+      () async {
+        final container = _container();
+        final account = container.read(userProvider)!;
+        container.read(userProvider.notifier).userState = account.copyWith(
+          seerrCredentials: account.seerrCredentials!.copyWith(origin: CredentialOrigin.unknown),
+        );
+        final subscription = container.listen(seerrUserProvider, (_, _) {});
+        addTearDown(subscription.close);
+        await container.pump();
+        expect(calls, 0);
+        container.read(serverIntegrationConnectionProvider.notifier).state = ServerIntegrationConfigStatus.noPlugin;
+        await container.pump();
+        await Future<void>.delayed(Duration.zero);
+        expect(calls, 0);
+        expect(container.read(seerrUserProvider), isNull);
+        expect(container.read(seerrAvailableProvider), isFalse);
+        expect(container.read(userProvider)?.seerrCredentials?.apiKey, 'test-key');
+      },
+      () => MockClient((_) async {
+        calls++;
+        return _profile();
+      }),
+    );
+  });
+
+  test('reconnecting unknown credentials never sends the stored key or custom headers', () async {
+    final requests = <http.Request>[];
+    await http.runWithClient(
+      () async {
+        final container = _container();
+        final account = container.read(userProvider)!;
+        container.read(userProvider.notifier).userState = account.copyWith(
+          seerrCredentials: account.seerrCredentials!.copyWith(
+            origin: CredentialOrigin.unknown,
+            sessionCookie: 'old-cookie',
+            customHeaders: {'Authorization': 'old-secret'},
+          ),
+        );
+        final cookie = await container
+            .read(seerrApiProvider)
+            .authenticateLocal(email: 'user@example.test', password: 'new-password');
+        expect(cookie, contains('new-session'));
+        expect(requests, hasLength(1));
+        expect(requests.single.url.path, '/api/v1/auth/local');
+        expect(
+          requests.single.headers.keys.map((key) => key.toLowerCase()),
+          isNot(anyOf(contains('x-api-key'), contains('cookie'), contains('authorization'))),
+        );
+        expect(requests.single.body, contains('new-password'));
+      },
+      () => MockClient((request) async {
+        requests.add(request);
+        return http.Response('{"id":1}', 200, headers: {'set-cookie': 'connect.sid=new-session; Path=/; HttpOnly'});
+      }),
+    );
+  });
+
   test('cached Seerr API works after an idle frame without listeners', () async {
     await http.runWithClient(() async {
       final container = _container();
@@ -74,6 +139,7 @@ void main() {
             .read(userProvider)!
             .copyWith(
               seerrCredentials: const SeerrCredentialsModel(
+                origin: CredentialOrigin.manual,
                 serverUrl: 'https://new-seerr.test',
                 apiKey: 'new-test-key',
               ),
@@ -109,7 +175,11 @@ void main() {
             container.read(userProvider.notifier).userState = container
                 .read(userProvider)!
                 .copyWith(
-                  seerrCredentials: const SeerrCredentialsModel(serverUrl: 'https://new-seerr.test', apiKey: 'new-key'),
+                  seerrCredentials: const SeerrCredentialsModel(
+                    origin: CredentialOrigin.manual,
+                    serverUrl: 'https://new-seerr.test',
+                    apiKey: 'new-key',
+                  ),
                 );
             await container.pump();
           } else {
@@ -180,6 +250,9 @@ void main() {
         final subscription = container.listen(seerrUserProvider, (_, _) {});
         await Future<void>.delayed(Duration.zero);
         subscription.close();
+        await container.pump();
+        expect(container.exists(seerrUserProvider), isTrue, reason: 'Awaited work keeps the profile alive');
+        container.invalidate(seerrUserProvider);
         await container.pump();
         expect(container.exists(seerrUserProvider), isFalse);
 

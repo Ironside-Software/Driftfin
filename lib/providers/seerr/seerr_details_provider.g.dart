@@ -54,7 +54,7 @@ final class SeerrDetailsProvider extends $NotifierProvider<SeerrDetails, SeerrDe
   }
 }
 
-String _$seerrDetailsHash() => r'902b94de548fcfbaf9edfbd8f0532955a3e0234d';
+String _$seerrDetailsHash() => r'bf9b4710bcdbb6f4aa807a3651b57da4cb05113a';
 
 final class SeerrDetailsFamily extends $Family
     with

@@ -10,6 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:driftfin/l10n/generated/app_localizations.dart';
 import 'package:driftfin/models/account_model.dart';
+import 'package:driftfin/models/credentials_model.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/screens/home_screen.dart';
@@ -120,14 +122,18 @@ void main() {
       ..pickFilesReturn = null;
   });
 
-  Future<ProviderContainer> pump(WidgetTester tester) async {
-    SharedPreferences.setMockInitialValues({});
+  Future<ProviderContainer> pump(
+    WidgetTester tester, {
+    AccountModel? account,
+    Map<String, Object> settings = const {},
+  }) async {
+    SharedPreferences.setMockInitialValues(settings);
     final prefs = await SharedPreferences.getInstance();
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           sharedPreferencesProvider.overrideWithValue(prefs),
-          userProvider.overrideWith(() => _FakeUser(null)),
+          userProvider.overrideWith(() => _FakeUser(account)),
         ],
         // AdaptiveLayout sits ABOVE MaterialApp (as it does in the real app) so
         // the DriftfinSnack overlay — inserted into MaterialApp's Overlay — can
@@ -162,6 +168,34 @@ void main() {
     expect(find.text(l10n.settingsExportSettingsTitle), findsOneWidget);
     expect(find.text(l10n.settingsImportSettingsTitle), findsOneWidget);
     expect(find.text(l10n.clearAllSettings), findsOneWidget);
+  });
+
+  testWidgets('export excludes integration credentials and OAuth tokens', (tester) async {
+    await pump(
+      tester,
+      account: AccountModel(
+        name: 'user',
+        id: 'user',
+        avatar: '',
+        lastUsed: DateTime(2026),
+        credentials: CredentialsModel(token: 'private-jellyfin'),
+        seerrCredentials: const SeerrCredentialsModel(apiKey: 'private-seerr', origin: CredentialOrigin.plugin),
+      ),
+      settings: {
+        'sonarrSettings': jsonEncode({'apiKey': 'private-sonarr', 'origin': 'plugin'}),
+        'radarrSettings': jsonEncode({'apiKey': 'private-radarr', 'origin': 'manual'}),
+        'traktSettings': jsonEncode({
+          'clientSecret': 'private-trakt',
+          'tokens': {'accessToken': 'private-oauth'},
+        }),
+      },
+    );
+    await tileFor(tester, l10n.settingsExportSettingsTitle).onTap!();
+    await tester.pump();
+    expect(fakePicker.saveFileBytes, isNotNull);
+    final exported = utf8.decode(fakePicker.saveFileBytes!);
+    expect(exported, isNot(contains('private-')));
+    expect(jsonDecode(exported), isA<Map<String, dynamic>>());
   });
 
   testWidgets('export always passes bytes to saveFile', (tester) async {

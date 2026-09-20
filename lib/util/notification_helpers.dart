@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:chopper/chopper.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart' as dto;
 import 'package:driftfin/models/last_seen_notifications_model.dart';
 import 'package:driftfin/models/seerr_credentials_model.dart';
+import 'package:driftfin/models/credentials_model.dart';
+import 'package:driftfin/util/managed_seerr_request.dart';
 import 'package:driftfin/seerr/seerr_chopper_service.dart';
 import 'package:driftfin/seerr/seerr_json_converter.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
@@ -24,15 +27,25 @@ class NotificationHelpers {
     return [...servers, saved];
   }
 
-  static SeerrChopperService createSeerrClient(SeerrCredentialsModel credentials) {
+  static SeerrChopperService createSeerrClient(SeerrCredentialsModel credentials, {CredentialsModel? jellyfin}) {
+    if (jellyfin == null && credentials.origin != CredentialOrigin.manual) {
+      throw const HttpException('Reconnect Seerr to confirm saved credentials');
+    }
+    if (jellyfin != null && jellyfin.url.isEmpty) {
+      jellyfin = jellyfin.copyWith(url: jellyfin.localUrl ?? '');
+    }
     final chopper = ChopperClient(
-      baseUrl: Uri.parse(credentials.serverUrl),
+      baseUrl: Uri.parse(jellyfin?.url ?? credentials.serverUrl),
       converter: const SeerrJsonConverter(),
       interceptors: [
-        _WorkerSeerrAuthInterceptor(
+        if (jellyfin != null)
+          _WorkerManagedSeerrInterceptor(jellyfin)
+        else
+          _WorkerSeerrAuthInterceptor(
             apiKey: credentials.apiKey.trim(),
             cookie: credentials.sessionCookie.trim(),
-            customHeaders: credentials.customHeaders),
+            customHeaders: credentials.customHeaders,
+          ),
         HttpLoggingInterceptor(level: Level.basic),
       ],
     );
@@ -54,8 +67,9 @@ class NotificationHelpers {
 
       final userId = meResp.body!.id;
       final reqResp = await seerrApi.getRequests(take: limit, skip: 0);
-      final requests =
-          reqResp.isSuccessful && reqResp.body?.results != null ? reqResp.body!.results! : <SeerrMediaRequest>[];
+      final requests = reqResp.isSuccessful && reqResp.body?.results != null
+          ? reqResp.body!.results!
+          : <SeerrMediaRequest>[];
 
       final since = debug ? lastUpdateCheck.subtract(const Duration(days: 12)) : lastUpdateCheck;
 
@@ -85,12 +99,7 @@ class NotificationHelpers {
       final trimmed = baseUrl.endsWith('/') ? baseUrl.substring(0, baseUrl.length - 1) : baseUrl;
       final lastUpdateDate = since;
 
-      api = dto.JellyfinOpenApi.create(
-        baseUrl: Uri.parse(trimmed),
-        interceptors: [
-          _WorkerAuthInterceptor(token),
-        ],
-      );
+      api = dto.JellyfinOpenApi.create(baseUrl: Uri.parse(trimmed), interceptors: [_WorkerAuthInterceptor(token)]);
 
       Future<List<dto.BaseItemDto>> latestGet({String? parentId, required int take}) async {
         final resp = await api!.usersUserIdItemsLatestGet(
@@ -112,9 +121,7 @@ class NotificationHelpers {
       }
 
       if (!includeHiddenViews) {
-        final items = await latestGet(
-          take: limit,
-        );
+        final items = await latestGet(take: limit);
 
         return items.reversed.where((element) {
           final itemDate = element.dateLastMediaAdded ?? element.dateCreated;
@@ -126,9 +133,7 @@ class NotificationHelpers {
       final viewsResp = await api.userViewsGet(userId: userId, includeHidden: true);
       if (!viewsResp.isSuccessful || viewsResp.body == null || (viewsResp.body?.items?.isEmpty ?? true)) {
         log('No views returned for user $userId while includeHiddenViews=true; falling back to single latest call');
-        final items = await latestGet(
-          take: limit,
-        );
+        final items = await latestGet(take: limit);
         return items.reversed.toList();
       }
 
@@ -139,9 +144,7 @@ class NotificationHelpers {
           .toList(growable: false);
 
       if (parentIds.isEmpty) {
-        final items = await latestGet(
-          take: limit,
-        );
+        final items = await latestGet(take: limit);
         return items.reversed.toList();
       }
 
@@ -151,10 +154,7 @@ class NotificationHelpers {
       final List<dto.BaseItemDto> allItems = [];
       for (final parentId in parentIds) {
         try {
-          final items = await latestGet(
-            parentId: parentId,
-            take: perViewLimit,
-          );
+          final items = await latestGet(parentId: parentId, take: perViewLimit);
           if (items.isNotEmpty) allItems.addAll(items);
         } catch (e) {
           log('Error fetching latest items for view $parentId: $e');
@@ -167,13 +167,13 @@ class NotificationHelpers {
         if (item.id != null && !unique.containsKey(item.id)) unique[item.id!] = item;
       }
 
-      final newItems = (unique.values.toList()
-            ..sort((a, b) {
-              final aDate = a.dateLastMediaAdded ?? a.dateCreated ?? DateTime.fromMillisecondsSinceEpoch(0);
-              final bDate = b.dateLastMediaAdded ?? b.dateCreated ?? DateTime.fromMillisecondsSinceEpoch(0);
-              return bDate.compareTo(aDate);
-            }))
-          .toList();
+      final newItems =
+          (unique.values.toList()..sort((a, b) {
+                final aDate = a.dateLastMediaAdded ?? a.dateCreated ?? DateTime.fromMillisecondsSinceEpoch(0);
+                final bDate = b.dateLastMediaAdded ?? b.dateCreated ?? DateTime.fromMillisecondsSinceEpoch(0);
+                return bDate.compareTo(aDate);
+              }))
+              .toList();
 
       return newItems.reversed.where((element) {
         final itemDate = element.dateLastMediaAdded ?? element.dateCreated;
@@ -185,6 +185,19 @@ class NotificationHelpers {
       return [];
     }
   }
+}
+
+class _WorkerManagedSeerrInterceptor implements Interceptor {
+  _WorkerManagedSeerrInterceptor(this.credentials);
+  final CredentialsModel credentials;
+
+  @override
+  FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) => chain.proceed(
+    managedSeerrRequest(chain.request, credentials.url, {
+      'Authorization':
+          'MediaBrowser Token="${credentials.token}", Client="Driftfin", Device="Background", DeviceId="${credentials.deviceId}", Version="1"',
+    }),
+  );
 }
 
 class _WorkerAuthInterceptor implements Interceptor {

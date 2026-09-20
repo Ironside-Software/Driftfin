@@ -37,7 +37,7 @@ final class SeerrRequestProvider extends $NotifierProvider<SeerrRequest, SeerrRe
   }
 }
 
-String _$seerrRequestHash() => r'985de35a81ccf086e636c9dde24e5e0c7f3577c0';
+String _$seerrRequestHash() => r'5f6298f317809349c9ad026addc625d1c88a374b';
 
 abstract class _$SeerrRequest extends $Notifier<SeerrRequestModel> {
   SeerrRequestModel build();

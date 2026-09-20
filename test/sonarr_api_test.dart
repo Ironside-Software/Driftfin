@@ -1,3 +1,5 @@
+import 'package:driftfin/models/seerr_credentials_model.dart';
+
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -22,14 +24,26 @@ void main() {
 
   group('SonarrSettings', () {
     test('isConfigured requires enabled + url + key', () {
-      expect(const SonarrSettings(enabled: true, baseUrl: 'x', apiKey: 'k').isConfigured, isTrue);
-      expect(const SonarrSettings(enabled: false, baseUrl: 'x', apiKey: 'k').isConfigured, isFalse);
-      expect(const SonarrSettings(enabled: true, baseUrl: '', apiKey: 'k').isConfigured, isFalse);
-      expect(const SonarrSettings(enabled: true, baseUrl: 'x', apiKey: '').isConfigured, isFalse);
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: 'x', apiKey: 'k').isConfigured,
+        isTrue,
+      );
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: false, baseUrl: 'x', apiKey: 'k').isConfigured,
+        isFalse,
+      );
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: '', apiKey: 'k').isConfigured,
+        isFalse,
+      );
+      expect(
+        const SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: 'x', apiKey: '').isConfigured,
+        isFalse,
+      );
     });
 
     test('json round-trip', () {
-      const settings = SonarrSettings(enabled: true, baseUrl: 'http://h', apiKey: 'k');
+      const settings = SonarrSettings(origin: CredentialOrigin.manual, enabled: true, baseUrl: 'http://h', apiKey: 'k');
       final restored = SonarrSettings.fromJson(settings.toJson());
       expect(restored.enabled, isTrue);
       expect(restored.baseUrl, 'http://h');
@@ -56,11 +70,14 @@ void main() {
     });
 
     test('findSeriesIdByTvdb returns null when not found', () async {
-      final client = MockClient((req) async => http.Response(
+      final client = MockClient(
+        (req) async => http.Response(
           jsonEncode([
-            {'id': 1, 'tvdbId': 111}
+            {'id': 1, 'tvdbId': 111},
           ]),
-          200));
+          200,
+        ),
+      );
       expect(await api(client).findSeriesIdByTvdb(999), isNull);
     });
 
@@ -97,7 +114,7 @@ void main() {
       expect(captured.url.toString(), '$base/api/v3/episode/monitor');
       expect(jsonDecode(captured.body), {
         'episodeIds': [20],
-        'monitored': true
+        'monitored': true,
       });
     });
 
@@ -112,7 +129,7 @@ void main() {
       expect(captured.url.toString(), '$base/api/v3/command');
       expect(jsonDecode(captured.body), {
         'name': 'EpisodeSearch',
-        'episodeIds': [20]
+        'episodeIds': [20],
       });
     });
 
@@ -122,24 +139,23 @@ void main() {
         calls.add('${req.method} ${req.url.path}');
         return switch (req.url.path) {
           '/api/v3/series' => http.Response(
-              jsonEncode([
-                {'id': 7, 'tvdbId': 222}
-              ]),
-              200),
+            jsonEncode([
+              {'id': 7, 'tvdbId': 222},
+            ]),
+            200,
+          ),
           '/api/v3/episode' => http.Response(
-              jsonEncode([
-                {'id': 20, 'seasonNumber': 2, 'episodeNumber': 5}
-              ]),
-              200),
+            jsonEncode([
+              {'id': 20, 'seasonNumber': 2, 'episodeNumber': 5},
+            ]),
+            200,
+          ),
           '/api/v3/episode/monitor' => http.Response('', 202),
           '/api/v3/command' => http.Response('', 201),
           _ => http.Response('not found', 404),
         };
       });
-      expect(
-        await api(client).requestEpisodeByTvdb(tvdbId: 222, season: 2, episode: 5),
-        SonarrRequestResult.success,
-      );
+      expect(await api(client).requestEpisodeByTvdb(tvdbId: 222, season: 2, episode: 5), SonarrRequestResult.success);
       expect(calls, [
         'GET /api/v3/series',
         'GET /api/v3/episode',
@@ -160,10 +176,11 @@ void main() {
       final client = MockClient((req) async {
         if (req.url.path == '/api/v3/series') {
           return http.Response(
-              jsonEncode([
-                {'id': 7, 'tvdbId': 222}
-              ]),
-              200);
+            jsonEncode([
+              {'id': 7, 'tvdbId': 222},
+            ]),
+            200,
+          );
         }
         return http.Response(jsonEncode([]), 200);
       });
@@ -197,10 +214,7 @@ void main() {
           200,
         );
       });
-      final items = await api(client).calendar(
-        start: DateTime.utc(2008, 1, 1),
-        end: DateTime.utc(2008, 2, 1),
-      );
+      final items = await api(client).calendar(start: DateTime.utc(2008, 1, 1), end: DateTime.utc(2008, 2, 1));
       // The entry with no airDateUtc is dropped.
       expect(items.length, 1);
       expect(items.first.seriesTitle, 'Breaking Bad');
@@ -227,28 +241,32 @@ void main() {
             return http.Response(jsonEncode({'id': 5}), 201);
           case '/api/v3/series/lookup':
             return http.Response(
-                jsonEncode([
-                  {'tvdbId': 78874, 'title': 'Firefly', 'titleSlug': 'firefly', 'seasons': []}
-                ]),
-                200);
+              jsonEncode([
+                {'tvdbId': 78874, 'title': 'Firefly', 'titleSlug': 'firefly', 'seasons': []},
+              ]),
+              200,
+            );
           case '/api/v3/rootfolder':
             return http.Response(
-                jsonEncode([
-                  {'path': '/tv', 'accessible': true}
-                ]),
-                200);
+              jsonEncode([
+                {'path': '/tv', 'accessible': true},
+              ]),
+              200,
+            );
           case '/api/v3/qualityprofile':
             return http.Response(
-                jsonEncode([
-                  {'id': 1, 'name': 'Any'}
-                ]),
-                200);
+              jsonEncode([
+                {'id': 1, 'name': 'Any'},
+              ]),
+              200,
+            );
           case '/api/v3/episode':
             return http.Response(
-                jsonEncode([
-                  {'id': 50, 'seasonNumber': 1, 'episodeNumber': 1}
-                ]),
-                200);
+              jsonEncode([
+                {'id': 50, 'seasonNumber': 1, 'episodeNumber': 1},
+              ]),
+              200,
+            );
           case '/api/v3/episode/monitor':
             return http.Response('', 202);
           case '/api/v3/command':
@@ -272,16 +290,18 @@ void main() {
         return switch (req.url.path) {
           '/api/v3/series' => http.Response(jsonEncode([]), 200),
           '/api/v3/series/lookup' => http.Response(
-              jsonEncode([
-                {'tvdbId': 78874, 'title': 'Firefly'}
-              ]),
-              200),
+            jsonEncode([
+              {'tvdbId': 78874, 'title': 'Firefly'},
+            ]),
+            200,
+          ),
           '/api/v3/rootfolder' => http.Response(jsonEncode([]), 200), // none configured
           '/api/v3/qualityprofile' => http.Response(
-              jsonEncode([
-                {'id': 1}
-              ]),
-              200),
+            jsonEncode([
+              {'id': 1},
+            ]),
+            200,
+          ),
           _ => http.Response('not found', 404),
         };
       });
@@ -291,27 +311,38 @@ void main() {
       );
     });
 
+    test('requestEpisodeByTvdb stops if monitoring fails', () async {
+      final client = MockClient((request) async {
+        expect(request.url.path, isNot('/api/v3/command'));
+        return switch (request.url.path) {
+          '/api/v3/series' => http.Response('[{"id":7,"tvdbId":222}]', 200),
+          '/api/v3/episode' => http.Response('[{"id":20,"seasonNumber":2,"episodeNumber":5}]', 200),
+          _ => http.Response('', 403),
+        };
+      });
+      expect(await api(client).requestEpisodeByTvdb(tvdbId: 222, season: 2, episode: 5), SonarrRequestResult.failed);
+    });
+
     test('requestEpisodeByTvdb -> failed when the search command errors', () async {
       final client = MockClient((req) async {
         return switch (req.url.path) {
           '/api/v3/series' => http.Response(
-              jsonEncode([
-                {'id': 7, 'tvdbId': 222}
-              ]),
-              200),
+            jsonEncode([
+              {'id': 7, 'tvdbId': 222},
+            ]),
+            200,
+          ),
           '/api/v3/episode' => http.Response(
-              jsonEncode([
-                {'id': 20, 'seasonNumber': 2, 'episodeNumber': 5}
-              ]),
-              200),
+            jsonEncode([
+              {'id': 20, 'seasonNumber': 2, 'episodeNumber': 5},
+            ]),
+            200,
+          ),
           '/api/v3/episode/monitor' => http.Response('', 202),
           _ => http.Response('err', 500),
         };
       });
-      expect(
-        await api(client).requestEpisodeByTvdb(tvdbId: 222, season: 2, episode: 5),
-        SonarrRequestResult.failed,
-      );
+      expect(await api(client).requestEpisodeByTvdb(tvdbId: 222, season: 2, episode: 5), SonarrRequestResult.failed);
     });
   });
 }

@@ -17,6 +17,7 @@ import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/driftfin_image.dart';
 import 'package:driftfin/util/focus_provider.dart';
 import 'package:driftfin/util/localization_helper.dart';
+import 'package:driftfin/util/refresh_state.dart';
 import 'package:driftfin/widgets/shared/clickable_text.dart';
 import 'package:driftfin/widgets/shared/item_actions.dart';
 import 'package:driftfin/widgets/shared/modal_bottom_sheet.dart';
@@ -25,8 +26,17 @@ class SeerrPosterCard extends ConsumerWidget {
   final SeerrDashboardPosterModel poster;
   final double? aspectRatio;
   final Function(bool value)? onFocusChanged;
+  final bool? requestAllowed;
+  final VoidCallback? onTap;
 
-  const SeerrPosterCard({required this.poster, this.aspectRatio, this.onFocusChanged, super.key});
+  const SeerrPosterCard({
+    required this.poster,
+    this.aspectRatio,
+    this.onFocusChanged,
+    this.requestAllowed,
+    this.onTap,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,21 +47,25 @@ class SeerrPosterCard extends ConsumerWidget {
 
     final user = ref.watch(seerrUserProvider);
     final canRequest = user?.canRequestMedia(isTv: poster.type == SeerrMediaType.tvshow) ?? true;
+    final offerRequest = requestAllowed ?? (!poster.hasDisplayStatus && canRequest);
 
     final baseItemModel = poster.itemBaseModel;
 
-    void openRequestDetails() {
-      context.router.push(
+    Future<void> openRequestDetails() async {
+      await context.router.push(
         SeerrDetailsRoute(
           mediaType: poster.type == SeerrMediaType.tvshow ? 'tvshow' : 'movie',
           tmdbId: poster.tmdbId,
           poster: poster,
         ),
       );
+      if (context.mounted) await context.refreshData();
     }
 
     void handleTapAction() {
-      if (baseItemModel != null) {
+      if (onTap != null) {
+        onTap!();
+      } else if (baseItemModel != null) {
         baseItemModel.navigateTo(context);
       } else {
         openRequestDetails();
@@ -65,7 +79,7 @@ class SeerrPosterCard extends ConsumerWidget {
           label: Text(context.localized.manageRequest),
           action: openRequestDetails,
         ),
-      if (!poster.hasDisplayStatus && canRequest)
+      if (offerRequest)
         ItemActionButton(
           icon: const Icon(IconsaxPlusBold.add),
           label: Text(context.localized.request),
@@ -109,9 +123,7 @@ class SeerrPosterCard extends ConsumerWidget {
             onSecondaryTapDown: (details) => _showContextMenu(context, itemActions, ref, details.globalPosition),
             onLongPress: () => _showBottomSheet(context, itemActions, ref),
             focusedOverlays: [
-              if (!poster.hasDisplayStatus &&
-                  canRequest &&
-                  AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer)
+              if (offerRequest && AdaptiveLayout.inputDeviceOf(context) == InputDevice.pointer)
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(

@@ -82,13 +82,7 @@ class SeerrDetailsScreen extends ConsumerWidget {
     final hasUsersRequests = requests.any((request) => request.requestedBy?.id == state.currentUser?.id);
     final hasVisibleRequests = (canManageRequest || hasUsersRequests) && requests.isNotEmpty;
 
-    final canRequestMore = hasKnownStatus
-        ? switch (currentPoster?.type) {
-            SeerrMediaType.movie => false,
-            SeerrMediaType.tvshow => true,
-            _ => false,
-          }
-        : true;
+    final canRequestMore = state.canRequestMore;
 
     final mainButtonLabel = currentPoster?.type == SeerrMediaType.movie
         ? context.localized.request

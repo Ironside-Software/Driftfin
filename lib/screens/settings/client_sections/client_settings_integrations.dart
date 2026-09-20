@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/providers/radarr_provider.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/sonarr_provider.dart';
 import 'package:driftfin/providers/trakt_provider.dart';
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
@@ -13,111 +14,139 @@ import 'package:driftfin/util/localization_helper.dart';
 /// Sonarr / Radarr / Trakt settings tiles. When an integration is configured by
 /// the optional Driftfin server plugin it is shown as read-only ("Managed by
 /// server") — the toggle and fields are disabled and edits are no-ops.
-List<Widget> buildIntegrationSettings(BuildContext context, WidgetRef ref) {
+List<Widget> buildIntegrationSettings(BuildContext context, WidgetRef ref, {bool includeArr = true}) {
   final sonarrManaged = ref.watch(sonarrProvider.select((value) => value.managed));
   final radarrManaged = ref.watch(radarrProvider.select((value) => value.managed));
   final traktManaged = ref.watch(traktProvider.select((value) => value.managed));
 
   return [
-    SettingsListTile(
-      label: Text(context.localized.sonarrIntegrationTitle),
-      subLabel: Text(sonarrManaged ? context.localized.managedByServerPlugin : context.localized.sonarrIntegrationDesc),
-      onTap: sonarrManaged
-          ? null
-          : () => ref.read(sonarrProvider.notifier).setEnabled(!ref.read(sonarrProvider).enabled),
-      trailing: Switch(
-        value: ref.watch(sonarrProvider.select((value) => value.enabled)),
-        onChanged: sonarrManaged ? null : (value) => ref.read(sonarrProvider.notifier).setEnabled(value),
-      ),
-    ),
-    if (ref.watch(sonarrProvider.select((value) => value.enabled))) ...[
+    if (includeArr) ...[
       SettingsListTile(
-        label: Text(context.localized.sonarrUrlTitle),
+        label: Text(context.localized.sonarrIntegrationTitle),
         subLabel: Text(
-          ref.watch(sonarrProvider.select((value) => value.baseUrl)).isEmpty
-              ? '—'
-              : ref.watch(sonarrProvider.select((value) => value.baseUrl)),
+          sonarrManaged
+              ? context.localized.managedByServerPlugin
+              : ref.watch(
+                  sonarrProvider.select((value) => value.apiKey.isNotEmpty && value.origin != CredentialOrigin.manual),
+                )
+              ? context.localized.integrationCredentialsReconnect
+              : context.localized.sonarrIntegrationDesc,
         ),
         onTap: sonarrManaged
             ? null
-            : () async {
-                final value = await promptText(
-                  context,
-                  title: context.localized.sonarrUrlTitle,
-                  initial: ref.read(sonarrProvider).baseUrl,
-                );
-                if (value != null) ref.read(sonarrProvider.notifier).setBaseUrl(value);
-              },
-        trailing: const Icon(Icons.link),
+            : () => ref.read(sonarrProvider.notifier).setEnabled(!ref.read(sonarrProvider).enabled),
+        trailing: Switch(
+          value: ref.watch(sonarrProvider.select((value) => value.enabled)),
+          onChanged: sonarrManaged ? null : (value) => ref.read(sonarrProvider.notifier).setEnabled(value),
+        ),
       ),
+      if (ref.watch(sonarrProvider.select((value) => value.enabled))) ...[
+        SettingsListTile(
+          label: Text(context.localized.sonarrUrlTitle),
+          subLabel: Text(
+            ref.watch(sonarrProvider.select((value) => value.baseUrl)).isEmpty
+                ? '—'
+                : ref.watch(sonarrProvider.select((value) => value.baseUrl)),
+          ),
+          onTap: sonarrManaged
+              ? null
+              : () async {
+                  final value = await promptText(
+                    context,
+                    title: context.localized.sonarrUrlTitle,
+                    initial: ref.read(sonarrProvider).baseUrl,
+                  );
+                  if (value != null) ref.read(sonarrProvider.notifier).setBaseUrl(value);
+                },
+          trailing: const Icon(Icons.link),
+        ),
+        SettingsListTile(
+          label: Text(context.localized.sonarrApiKeyTitle),
+          subLabel: Text(ref.watch(sonarrProvider.select((value) => value.apiKey)).isEmpty ? '—' : '••••••••'),
+          onTap: sonarrManaged
+              ? null
+              : () async {
+                  final value = await promptText(
+                    context,
+                    title: context.localized.sonarrApiKeyTitle,
+                    initial: ref.read(sonarrProvider).apiKey,
+                    obscure: true,
+                  );
+                  if (value != null) ref.read(sonarrProvider.notifier).setApiKey(value);
+                },
+          trailing: const Icon(Icons.key),
+        ),
+      ],
       SettingsListTile(
-        label: Text(context.localized.sonarrApiKeyTitle),
-        subLabel: Text(ref.watch(sonarrProvider.select((value) => value.apiKey)).isEmpty ? '—' : '••••••••'),
-        onTap: sonarrManaged
-            ? null
-            : () async {
-                final value = await promptText(
-                  context,
-                  title: context.localized.sonarrApiKeyTitle,
-                  initial: ref.read(sonarrProvider).apiKey,
-                  obscure: true,
-                );
-                if (value != null) ref.read(sonarrProvider.notifier).setApiKey(value);
-              },
-        trailing: const Icon(Icons.key),
-      ),
-    ],
-    SettingsListTile(
-      label: Text(context.localized.radarrIntegrationTitle),
-      subLabel: Text(radarrManaged ? context.localized.managedByServerPlugin : context.localized.radarrIntegrationDesc),
-      onTap: radarrManaged
-          ? null
-          : () => ref.read(radarrProvider.notifier).setEnabled(!ref.read(radarrProvider).enabled),
-      trailing: Switch(
-        value: ref.watch(radarrProvider.select((value) => value.enabled)),
-        onChanged: radarrManaged ? null : (value) => ref.read(radarrProvider.notifier).setEnabled(value),
-      ),
-    ),
-    if (ref.watch(radarrProvider.select((value) => value.enabled))) ...[
-      SettingsListTile(
-        label: Text(context.localized.radarrUrlTitle),
+        label: Text(context.localized.radarrIntegrationTitle),
         subLabel: Text(
-          ref.watch(radarrProvider.select((value) => value.baseUrl)).isEmpty
-              ? '—'
-              : ref.watch(radarrProvider.select((value) => value.baseUrl)),
+          radarrManaged
+              ? context.localized.managedByServerPlugin
+              : ref.watch(
+                  radarrProvider.select((value) => value.apiKey.isNotEmpty && value.origin != CredentialOrigin.manual),
+                )
+              ? context.localized.integrationCredentialsReconnect
+              : context.localized.radarrIntegrationDesc,
         ),
         onTap: radarrManaged
             ? null
-            : () async {
-                final value = await promptText(
-                  context,
-                  title: context.localized.radarrUrlTitle,
-                  initial: ref.read(radarrProvider).baseUrl,
-                );
-                if (value != null) ref.read(radarrProvider.notifier).setBaseUrl(value);
-              },
-        trailing: const Icon(Icons.link),
+            : () => ref.read(radarrProvider.notifier).setEnabled(!ref.read(radarrProvider).enabled),
+        trailing: Switch(
+          value: ref.watch(radarrProvider.select((value) => value.enabled)),
+          onChanged: radarrManaged ? null : (value) => ref.read(radarrProvider.notifier).setEnabled(value),
+        ),
       ),
-      SettingsListTile(
-        label: Text(context.localized.radarrApiKeyTitle),
-        subLabel: Text(ref.watch(radarrProvider.select((value) => value.apiKey)).isEmpty ? '—' : '••••••••'),
-        onTap: radarrManaged
-            ? null
-            : () async {
-                final value = await promptText(
-                  context,
-                  title: context.localized.radarrApiKeyTitle,
-                  initial: ref.read(radarrProvider).apiKey,
-                  obscure: true,
-                );
-                if (value != null) ref.read(radarrProvider.notifier).setApiKey(value);
-              },
-        trailing: const Icon(Icons.key),
-      ),
+      if (ref.watch(radarrProvider.select((value) => value.enabled))) ...[
+        SettingsListTile(
+          label: Text(context.localized.radarrUrlTitle),
+          subLabel: Text(
+            ref.watch(radarrProvider.select((value) => value.baseUrl)).isEmpty
+                ? '—'
+                : ref.watch(radarrProvider.select((value) => value.baseUrl)),
+          ),
+          onTap: radarrManaged
+              ? null
+              : () async {
+                  final value = await promptText(
+                    context,
+                    title: context.localized.radarrUrlTitle,
+                    initial: ref.read(radarrProvider).baseUrl,
+                  );
+                  if (value != null) ref.read(radarrProvider.notifier).setBaseUrl(value);
+                },
+          trailing: const Icon(Icons.link),
+        ),
+        SettingsListTile(
+          label: Text(context.localized.radarrApiKeyTitle),
+          subLabel: Text(ref.watch(radarrProvider.select((value) => value.apiKey)).isEmpty ? '—' : '••••••••'),
+          onTap: radarrManaged
+              ? null
+              : () async {
+                  final value = await promptText(
+                    context,
+                    title: context.localized.radarrApiKeyTitle,
+                    initial: ref.read(radarrProvider).apiKey,
+                    obscure: true,
+                  );
+                  if (value != null) ref.read(radarrProvider.notifier).setApiKey(value);
+                },
+          trailing: const Icon(Icons.key),
+        ),
+      ],
     ],
     SettingsListTile(
       label: Text(context.localized.traktTitle),
-      subLabel: Text(traktManaged ? context.localized.managedByServerPlugin : context.localized.traktDesc),
+      subLabel: Text(
+        traktManaged
+            ? context.localized.managedByServerPlugin
+            : ref.watch(
+                traktProvider.select(
+                  (value) => value.clientSecret.isNotEmpty && value.origin != CredentialOrigin.manual,
+                ),
+              )
+            ? context.localized.integrationCredentialsReconnect
+            : context.localized.traktDesc,
+      ),
       onTap: traktManaged ? null : () => ref.read(traktProvider.notifier).setEnabled(!ref.read(traktProvider).enabled),
       trailing: Switch(
         value: ref.watch(traktProvider.select((value) => value.enabled)),

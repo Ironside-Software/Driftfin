@@ -8,6 +8,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/seerr/seerr_dashboard_model.dart';
 import 'package:driftfin/providers/seerr/seerr_request_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/screens/seerr/widgets/request_configuration_section.dart';
 import 'package:driftfin/screens/seerr/widgets/request_popup_widgets.dart';
 import 'package:driftfin/screens/seerr/widgets/seasons_section.dart';
@@ -101,7 +102,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                   mainAxisSize: MainAxisSize.min,
                   spacing: 8,
                   children: [
-                    AutoApproveBanner(user: currentUser, isTv: requestState.isTv),
+                    AutoApproveBanner(user: currentUser, isTv: requestState.isTv, is4k: requestState.use4k),
                     if (requestState.activeQuota != null && requestState.activeQuota?.hasRestrictions == true)
                       QuotaLimitCard(quota: requestState.activeQuota!, type: model.type),
                     Row(
@@ -110,7 +111,7 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                       children: [
                         if (model.images.primary != null)
                           FocusButton(
-                            onTap: () => openSeerrLink(context, model),
+                            onTap: ref.watch(managedIntegrationsProvider) ? null : () => openSeerrLink(context, model),
                             borderRadius: BorderRadius.circular(8),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8),
@@ -269,6 +270,14 @@ class _SeerrRequestPopupState extends ConsumerState<SeerrRequestPopup> {
                         ),
                       ],
                     ),
+                    if (requestState.has4k && currentUser?.canRequestMedia(isTv: requestState.isTv, is4k: true) == true)
+                      SwitchListTile.adaptive(
+                        title: const Text('4K'),
+                        value: requestState.use4k,
+                        onChanged: currentUser?.canRequestMedia(isTv: requestState.isTv, is4k: false) == true
+                            ? notifier.toggle4k
+                            : null,
+                      ),
                     if (model.type == SeerrMediaType.tvshow && seasons.isNotEmpty) ...[
                       const Divider(),
                       SeerrSeasonsSection(

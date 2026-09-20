@@ -140,7 +140,17 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
         credentials: credentials,
         lastUsed: DateTime.now(),
       );
-      ref.read(sharedUtilityProvider).addAccount(newUser);
+      final shared = ref.read(sharedUtilityProvider);
+      final saved = shared.getAccounts().where((account) => account.sameIdentity(newUser)).firstOrNull;
+      if (saved != null) {
+        newUser = saved.copyWith(
+          credentials: credentials,
+          name: newUser.name,
+          avatar: newUser.avatar,
+          lastUsed: newUser.lastUsed,
+        );
+      }
+      await shared.addAccount(newUser);
       ref.read(userProvider.notifier).userState = newUser;
       // Fetch full account info (policy, userConfiguration, and the optional
       // Driftfin server plugin's integration config) right away instead of
@@ -150,7 +160,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
 
       state = state.copyWith(accounts: currentAccounts);
 
-      return Response(response.base, newUser);
+      return Response(response.base, ref.read(userProvider) ?? newUser);
     }
     return Response(response.base, null);
   }
@@ -228,7 +238,9 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
     if (serverId == null || serverId.isEmpty) return null;
     final matches = state.accounts.where(
       (account) =>
-          account.credentials.serverId == serverId && (account.seerrCredentials?.serverUrl.isNotEmpty ?? false),
+          account.credentials.serverId == serverId &&
+          !account.usesManagedIntegrations &&
+          (account.seerrCredentials?.serverUrl.isNotEmpty ?? false),
     );
 
     if (matches.isEmpty) return null;

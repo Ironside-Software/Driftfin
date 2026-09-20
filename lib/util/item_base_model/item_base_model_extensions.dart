@@ -23,6 +23,7 @@ import 'package:driftfin/models/playback/playback_queue_source.dart';
 import 'package:driftfin/providers/audio_lyrics_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/collections/add_to_collection.dart';
@@ -145,7 +146,7 @@ extension ItemBaseModelExtensions on ItemBaseModel {
         ref.read(userProvider.select((value) => value?.canDownload ?? false)) && syncAble && (canDownload ?? false);
     final downloadUrl = ref.read(userProvider.notifier).createDownloadUrl(this);
     final syncedItemFuture = ref.read(syncProvider.notifier).getSyncedItem(id);
-    final hasSeerrData = overview.seerrUrl?.isNotEmpty == true;
+    final hasSeerrData = ref.read(seerrAvailableProvider) || overview.seerrUrl?.isNotEmpty == true;
     final showMarkAs = switch (this) {
       AlbumModel() => false,
       ArtistModel() => false,

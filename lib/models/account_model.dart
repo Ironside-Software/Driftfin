@@ -24,6 +24,8 @@ part 'account_model.g.dart';
 abstract class AccountModel with _$AccountModel {
   const AccountModel._();
 
+  bool get usesManagedIntegrations => managedIntegrations && !manualIntegrations;
+
   const factory AccountModel({
     required String name,
     required String id,
@@ -34,6 +36,8 @@ abstract class AccountModel with _$AccountModel {
     @Default("") String localPin,
     @CredentialsConverter() required CredentialsModel credentials,
     SeerrCredentialsModel? seerrCredentials,
+    @Default(false) bool managedIntegrations,
+    @Default(false) bool manualIntegrations,
     @Default([]) List<String> latestItemsExcludes,
     @Default([]) List<String> searchQueryHistory,
     @Default(false) bool quickConnectState,
@@ -125,11 +129,7 @@ class FilterSortOrderConverter implements JsonConverter<Map<FilterSortKey, List<
 
   @override
   Object toJson(Map<FilterSortKey, List<String>> value) {
-    return jsonEncode(
-      value.map(
-        (key, value) => MapEntry(key.name, value),
-      ),
-    );
+    return jsonEncode(value.map((key, value) => MapEntry(key.name, value)));
   }
 }
 
@@ -165,11 +165,7 @@ class DashboardSortingConverter implements JsonConverter<Map<DashboardSorting, b
 
   @override
   Object toJson(Map<DashboardSorting, bool> value) {
-    return jsonEncode(
-      value.map(
-        (key, value) => MapEntry(key.name, value),
-      ),
-    );
+    return jsonEncode(value.map((key, value) => MapEntry(key.name, value)));
   }
 }
 
@@ -261,11 +257,11 @@ enum Authentication {
   static Set<Authentication> get secureOptions => Authentication.values.where((element) => element.shouldLock).toSet();
 
   bool get shouldLock => switch (this) {
-        Authentication.autoLogin => false,
-        Authentication.biometrics => true,
-        Authentication.passcode => true,
-        Authentication.none => false,
-      };
+    Authentication.autoLogin => false,
+    Authentication.biometrics => true,
+    Authentication.passcode => true,
+    Authentication.none => false,
+  };
 
   static Future<Set<Authentication>> available() async {
     final localAuthentication = LocalAuthentication();

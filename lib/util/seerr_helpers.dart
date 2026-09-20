@@ -5,10 +5,11 @@ class SeerrHelpers {
   SeerrHelpers._();
 
   /// Builds a season status map from TV details, incorporating both mediaInfo seasons and requests
-  static Map<int, SeerrMediaStatus> buildSeasonStatusMap(SeerrTvDetails details) {
+  static Map<int, SeerrMediaStatus> buildSeasonStatusMap(SeerrTvDetails details, {bool is4k = false}) {
     final Map<int, SeerrMediaStatus> seasonStatusMap = {
       for (final season in details.mediaInfo?.seasons ?? const <SeerrMediaInfoSeason>[])
-        if (season.seasonNumber != null) season.seasonNumber!: SeerrMediaStatus.fromRaw(season.status),
+        if (season.seasonNumber != null)
+          season.seasonNumber!: SeerrMediaStatus.fromRaw(is4k ? season.status4k : season.status),
     };
 
     final knownSeasonNumbers = <int>{
@@ -19,13 +20,15 @@ class SeerrHelpers {
     final requests = details.mediaInfo?.requests ?? const <SeerrMediaRequest>[];
     if (requests.isNotEmpty) {
       for (final request in requests) {
+        if ((request.is4k ?? false) != is4k) continue;
         final requestStatus = SeerrRequestStatus.fromRaw(request.status);
         final mediaStatusFromRequest = _mediaStatusFromRequestStatus(requestStatus);
         if (mediaStatusFromRequest == null || !mediaStatusFromRequest.isKnown) continue;
 
         final requestSeasonNumbers = request.seasons?.whereType<int>().toList(growable: false);
-        final seasonsToUpdate =
-            (requestSeasonNumbers == null || requestSeasonNumbers.isEmpty) ? knownSeasonNumbers : requestSeasonNumbers;
+        final seasonsToUpdate = (requestSeasonNumbers == null || requestSeasonNumbers.isEmpty)
+            ? knownSeasonNumbers
+            : requestSeasonNumbers;
         for (final seasonNumber in seasonsToUpdate) {
           final current = seasonStatusMap[seasonNumber];
           if (current == SeerrMediaStatus.available || current == SeerrMediaStatus.deleted) continue;
@@ -84,8 +87,10 @@ class SeerrHelpers {
   static bool isAnime(SeerrTvDetails details) {
     final keywordHit = details.keywords?.any((k) => (k.name ?? '').toLowerCase() == 'anime') ?? false;
     if (keywordHit) return true;
-    final genreHit = details.genres
-            ?.any((g) => (g.name ?? '').toLowerCase() == 'animation' || (g.name ?? '').toLowerCase() == 'anime') ??
+    final genreHit =
+        details.genres?.any(
+          (g) => (g.name ?? '').toLowerCase() == 'animation' || (g.name ?? '').toLowerCase() == 'anime',
+        ) ??
         false;
     return genreHit;
   }

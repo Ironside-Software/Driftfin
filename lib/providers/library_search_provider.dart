@@ -41,6 +41,7 @@ final librarySearchProvider = StateNotifierProvider.family.autoDispose<LibrarySe
   ref,
   id,
 ) {
+  ref.watch(userProvider.select((account) => (account?.id, account?.credentials.serverId, account?.credentials.token)));
   return LibrarySearchNotifier(ref);
 });
 
@@ -52,6 +53,10 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
   LibrarySearchNotifier(this.ref) : super(const LibrarySearchModel());
 
   final Ref ref;
+  int _generation = 0;
+  bool _queryEdited = false;
+
+  bool _current(int generation) => mounted && generation == _generation;
 
   int get pageSize => ref.read(clientSettingsProvider).libraryPageSize ?? 500;
 
@@ -67,16 +72,19 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
   bool get loading => state.loading;
 
   Future<void> initRefresh({required List<String> parentIds, LibraryFilterModel? filters}) async {
+    final generation = ++_generation;
     loading = true;
-    state = state.resetLazyLoad();
+    state = state.fullReset();
 
     final views = await loadViews(parentIds);
+    if (!_current(generation)) return;
 
     final isFolder = views.keys.map((e) => e.id).toList().containsAny(parentIds) == false && parentIds.isNotEmpty;
 
     if (!wasInitialized) {
       if (isFolder) {
         await loadFolders(folderId: parentIds);
+        if (!_current(generation)) return;
       } else {
         state = state.copyWith(views: views);
       }
@@ -89,10 +97,12 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
     final defaultOrFavourite = filters?.isDefault == true && findFavouriteFilter != null
         ? findFavouriteFilter.filter
         : filters;
-    final activeFilter = defaultOrFavourite ?? firstView?.collectionType.defaultFilters ?? const LibraryFilterModel();
+    var activeFilter = defaultOrFavourite ?? firstView?.collectionType.defaultFilters ?? const LibraryFilterModel();
+    if (_queryEdited) activeFilter = activeFilter.copyWith(searchQuery: state.filters.searchQuery);
 
     if (firstView != null && state.views.isNotEmpty) {
       await loadFilters(activeFilter);
+      if (!_current(generation)) return;
     }
 
     if (!wasInitialized) {
@@ -102,11 +112,14 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
 
     await loadMore(init: true);
 
-    loading = false;
+    if (_current(generation)) loading = false;
   }
 
   Future<void> loadMore({bool? init}) async {
     if ((loading && init != true) || state.allDoneFetching) return;
+    final generation = _generation;
+    final requestState = state;
+    bool current() => _current(generation) && !requestState.shouldRefresh(state);
     loading = true;
 
     final newLastIndices = Map<String, int>.from(state.lastIndices);
@@ -134,6 +147,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
         }).nonNulls,
       );
 
+      if (!current()) return;
       List<ItemBaseModel> newPosters = results.nonNulls.expand((element) => element.items).toList();
       if (state.views.included.length > 1) {
         if (state.filters.sortingOption == SortingOptions.random) {
@@ -172,6 +186,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
         }).nonNulls,
       );
 
+      if (!current()) return;
       List<ItemBaseModel> newPosters = results.nonNulls.expand((element) => element.items).toList();
       if (state.folderOverwrite.length > 1) {
         if (state.filters.sortingOption == SortingOptions.random) {
@@ -189,25 +204,37 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
       );
     }
 
-    if (state.folderOverwrite.isNotEmpty) {
-      await handleFolderLoading();
-    } else if (!state.views.hasEnabled) {
-      if (state.filters.searchQuery.isEmpty && state.filters.favourites != true) {
-        state = state.copyWith(posters: []);
+    try {
+      if (state.folderOverwrite.isNotEmpty) {
+        await handleFolderLoading();
+      } else if (!state.views.hasEnabled) {
+        if (state.filters.searchQuery.isEmpty && state.filters.favourites != true) {
+          state = state.copyWith(posters: []);
+        } else {
+          final offset = newLastIndices[''] ?? 0;
+          final response = await _loadLibrary(recursive: true, startIndex: offset, limit: pageSize);
+          if (!current()) return;
+          final items = response?.items ?? [];
+          state = state.copyWith(
+            posters: offset == 0 ? items : [...state.posters, ...items],
+            lastIndices: {'': offset + items.length},
+            libraryItemCounts: {'': response?.totalRecordCount ?? offset + items.length},
+          );
+        }
       } else {
-        final response = await _loadLibrary(recursive: true);
-        state = state.copyWith(posters: response?.items ?? []);
+        await handleViewLoading();
       }
-    } else {
-      await handleViewLoading();
+    } catch (error) {
+      log('Library search failed (${error.runtimeType})');
+    } finally {
+      if (current()) loading = false;
     }
-
-    loading = false;
   }
 
   Future<Map<ViewModel, bool>> loadViews(List<String>? viewModelId) async {
     try {
       final response = await api.usersUserIdViewsGet(includeHidden: false);
+      if (!mounted) return {};
       final createdViews = response.body?.items?.map((e) => ViewModel.fromBodyDto(e, ref));
 
       Map<ViewModel, bool> mappedModels = createdViews?.isNotEmpty ?? false
@@ -226,6 +253,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
   }
 
   Future<void> loadFolders({List<String>? folderId}) async {
+    final generation = _generation;
     final response = await api.itemsGet(
       ids: folderId ?? state.folderOverwrite.keys.map((e) => e.id).toList(),
       sortBy: state.filters.sortingOption.toSortBy,
@@ -233,12 +261,14 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
       fields: [ItemFields.parentid, ItemFields.primaryimageaspectratio],
     );
 
+    if (!_current(generation)) return;
     state = state.copyWith(
       folderOverwrite: response.body?.items.toList().asMap().map((key, value) => MapEntry(value, true)) ?? {},
     );
   }
 
   Future<void> loadFilters(LibraryFilterModel filters) async {
+    final generation = _generation;
     if (loadedFilters == true) return;
     loadedFilters = true;
 
@@ -261,6 +291,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
     final studiosRaw = await studiosFuture;
     final genresRaw = await genresFuture;
     final yearsRaw = await yearsFuture;
+    if (!_current(generation)) return;
 
     final studios = studiosRaw.expand((element) => element).toSet().toList();
     final genres = genresRaw.expand((element) => element).toSet().toList();
@@ -338,6 +369,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
       sortBy: shuffle == true ? [ItemSortBy.random] : state.filters.sortingOption.toSortBy,
       sortOrder: [state.filters.sortOrder.sortOrder],
       fields: {
+        ItemFields.providerids,
         ItemFields.genres,
         ItemFields.parentid,
         ItemFields.tags,
@@ -380,12 +412,14 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
   }
 
   Future<List<ItemBaseModel>> fetchSuggestions(String searchTerm, {int limit = 25}) async {
+    final generation = _generation;
     if (state.folderOverwrite.isNotEmpty) {
       final mappedList = await Future.wait(
         state.folderOverwrite.included.map(
           (folder) => _loadLibrary(id: folder.id, limit: limit, searchTerm: searchTerm),
         ),
       );
+      if (!_current(generation)) return [];
       return mappedList
           .expand((innerList) => innerList?.items ?? [])
           .where((item) => item != null)
@@ -398,6 +432,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
             (viewModel) => _loadLibrary(viewModel: viewModel, limit: limit, searchTerm: searchTerm),
           ),
         );
+        if (!_current(generation)) return [];
         return mappedList
             .expand((innerList) => innerList?.items ?? [])
             .where((item) => item != null)
@@ -408,6 +443,7 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
           return [];
         } else {
           final response = await _loadLibrary(limit: limit, recursive: true, searchTerm: searchTerm);
+          if (!_current(generation)) return [];
           return response?.items ?? [];
         }
       }
@@ -415,8 +451,15 @@ class LibrarySearchNotifier extends StateNotifier<LibrarySearchModel> {
   }
 
   void setSearch(String query) {
-    state = state.copyWith(filters: state.filters.copyWith(searchQuery: query));
-    ref.read(userProvider.notifier).addSearchQuery(query);
+    _queryEdited = true;
+    if (query == state.filters.searchQuery) return;
+    ++_generation;
+    state = state.fullReset().copyWith(loading: false, filters: state.filters.copyWith(searchQuery: query));
+  }
+
+  void submitSearch(String query) {
+    setSearch(query);
+    ref.read(userProvider.notifier).addSearchQuery(query.trim());
   }
 
   void setFavourites(bool? value) => state = state.copyWith(filters: state.filters.copyWith(favourites: value));

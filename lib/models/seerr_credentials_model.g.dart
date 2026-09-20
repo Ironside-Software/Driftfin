@@ -11,6 +11,7 @@ _SeerrCredentialsModel _$SeerrCredentialsModelFromJson(Map<String, dynamic> json
   apiKey: json['apiKey'] as String? ?? "",
   sessionCookie: json['sessionCookie'] as String? ?? "",
   customHeaders: (json['customHeaders'] as Map<String, dynamic>?)?.map((k, e) => MapEntry(k, e as String)) ?? const {},
+  origin: $enumDecodeNullable(_$CredentialOriginEnumMap, json['origin']) ?? CredentialOrigin.unknown,
 );
 
 Map<String, dynamic> _$SeerrCredentialsModelToJson(_SeerrCredentialsModel instance) => <String, dynamic>{
@@ -18,4 +19,11 @@ Map<String, dynamic> _$SeerrCredentialsModelToJson(_SeerrCredentialsModel instan
   'apiKey': instance.apiKey,
   'sessionCookie': instance.sessionCookie,
   'customHeaders': instance.customHeaders,
+  'origin': _$CredentialOriginEnumMap[instance.origin]!,
+};
+
+const _$CredentialOriginEnumMap = {
+  CredentialOrigin.unknown: 'unknown',
+  CredentialOrigin.manual: 'manual',
+  CredentialOrigin.plugin: 'plugin',
 };

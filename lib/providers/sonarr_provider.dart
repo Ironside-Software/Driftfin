@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:driftfin/models/server_integration_config.dart';
+import 'package:driftfin/util/managed_arr_client.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 
@@ -154,6 +155,7 @@ class SonarrApi {
     final qualityProfileId = await firstQualityProfileId();
     if (rootFolderPath == null || qualityProfileId == null) return null;
 
+    if (_client is ManagedArrClient) lookup.removeWhere((key, _) => key != 'tvdbId');
     lookup['rootFolderPath'] = rootFolderPath;
     lookup['qualityProfileId'] = qualityProfileId;
     lookup['monitored'] = true;
@@ -198,7 +200,7 @@ class SonarrApi {
       }
       if (episodeId == null) return SonarrRequestResult.episodeNotFound;
 
-      await monitorEpisodes([episodeId]);
+      if (!await monitorEpisodes([episodeId])) return SonarrRequestResult.failed;
       final searched = await searchEpisodes([episodeId]);
       return searched ? SonarrRequestResult.success : SonarrRequestResult.failed;
     } catch (_) {
@@ -215,29 +217,53 @@ class SonarrSettings {
   final String baseUrl;
   final String apiKey;
   final bool enabled;
+  final CredentialOrigin origin;
 
   /// True when these values come from the Driftfin server plugin. Transient —
   /// never persisted — so the user's local config survives plugin removal.
   /// While managed, the in-app fields are read-only.
   final bool managed;
+  final bool viaPlugin;
 
-  const SonarrSettings({this.baseUrl = '', this.apiKey = '', this.enabled = false, this.managed = false});
+  const SonarrSettings({
+    this.baseUrl = '',
+    this.apiKey = '',
+    this.enabled = false,
+    this.origin = CredentialOrigin.unknown,
+    this.managed = false,
+    this.viaPlugin = false,
+  });
 
-  bool get isConfigured => enabled && baseUrl.trim().isNotEmpty && apiKey.trim().isNotEmpty;
+  bool get isConfigured =>
+      enabled &&
+      (viaPlugin ||
+          (managed || origin == CredentialOrigin.manual) && baseUrl.trim().isNotEmpty && apiKey.trim().isNotEmpty);
 
-  SonarrSettings copyWith({String? baseUrl, String? apiKey, bool? enabled, bool? managed}) => SonarrSettings(
-    baseUrl: baseUrl ?? this.baseUrl,
-    apiKey: apiKey ?? this.apiKey,
-    enabled: enabled ?? this.enabled,
-    managed: managed ?? this.managed,
-  );
+  SonarrSettings copyWith({String? baseUrl, String? apiKey, bool? enabled, bool? managed, CredentialOrigin? origin}) =>
+      SonarrSettings(
+        baseUrl: baseUrl ?? this.baseUrl,
+        apiKey: apiKey ?? this.apiKey,
+        enabled: enabled ?? this.enabled,
+        managed: managed ?? this.managed,
+        viaPlugin: viaPlugin,
+        origin: origin ?? this.origin,
+      );
 
-  Map<String, dynamic> toJson() => {'baseUrl': baseUrl, 'apiKey': apiKey, 'enabled': enabled};
+  Map<String, dynamic> toJson() => {
+    'baseUrl': managed || origin == CredentialOrigin.plugin ? '' : baseUrl,
+    'apiKey': managed || origin == CredentialOrigin.plugin ? '' : apiKey,
+    'enabled': enabled,
+    'origin': origin.name,
+  };
 
   factory SonarrSettings.fromJson(Map<String, dynamic> json) => SonarrSettings(
     baseUrl: json['baseUrl'] as String? ?? '',
     apiKey: json['apiKey'] as String? ?? '',
     enabled: json['enabled'] as bool? ?? false,
+    origin: CredentialOrigin.values.firstWhere(
+      (value) => value.name == json['origin'],
+      orElse: () => CredentialOrigin.unknown,
+    ),
   );
 }
 
@@ -251,13 +277,25 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
   SonarrNotifier(this.ref) : super(_initialState(ref)) {
     _client = http.Client();
     // Re-apply whenever the server plugin config loads/changes (or is cleared).
-    ref.listen<ServerIntegrationConfig?>(serverIntegrationConfigProvider, (_, next) => _applyServer(next?.sonarr));
+    ref.listen(serverIntegrationConfigProvider, (_, _) => state = _initialState(ref));
+    ref.listen(managedIntegrationsProvider, (_, _) => state = _initialState(ref));
   }
 
   final Ref ref;
   late final http.Client _client;
 
   static SonarrSettings _initialState(Ref ref) {
+    final local = _load(ref);
+    if (ref.read(managedIntegrationsProvider)) {
+      final capabilities = ref.read(serverIntegrationConfigProvider)?.capabilities;
+      return SonarrSettings(
+        managed: true,
+        viaPlugin: true,
+        enabled:
+            capabilities?.feature('arrManagement').allowed == true &&
+            capabilities?.integration('sonarr').configured == true,
+      );
+    }
     final server = ref.read(serverIntegrationConfigProvider)?.sonarr;
     if (server != null && server.isManaged) {
       return SonarrSettings(
@@ -267,31 +305,21 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
         managed: true,
       );
     }
-    return _load(ref);
+    return local;
   }
 
   static SonarrSettings _load(Ref ref) {
     try {
       final raw = ref.read(sharedPreferencesProvider).getString(_sonarrSettingsKey);
       if (raw == null || raw.isEmpty) return const SonarrSettings();
-      return SonarrSettings.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      final saved = SonarrSettings.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      if (saved.origin == CredentialOrigin.plugin) {
+        ref.read(sharedPreferencesProvider).remove(_sonarrSettingsKey);
+        return const SonarrSettings();
+      }
+      return saved;
     } catch (_) {
       return const SonarrSettings();
-    }
-  }
-
-  /// Overlays server-managed values, or reverts to local prefs when the plugin
-  /// no longer manages Sonarr.
-  void _applyServer(ArrServerConfig? server) {
-    if (server != null && server.isManaged) {
-      state = SonarrSettings(
-        baseUrl: normalizeSonarrUrl(server.url),
-        apiKey: server.apiKey.trim(),
-        enabled: true,
-        managed: true,
-      );
-    } else if (state.managed) {
-      state = _load(ref);
     }
   }
 
@@ -311,14 +339,19 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
 
   void setApiKey(String value) {
     if (state.managed) return;
-    state = state.copyWith(apiKey: value.trim());
+    state = state.copyWith(apiKey: value.trim(), origin: CredentialOrigin.manual);
     _persist();
+  }
+
+  SonarrApi get _api {
+    final client = state.viaPlugin ? ManagedArrClient(ref, 'sonarr', _client) : null;
+    return SonarrApi(baseUrl: client?.baseUrl ?? state.baseUrl, apiKey: state.apiKey, client: client ?? _client);
   }
 
   /// Fetches the Sonarr calendar for [start]..[end]; empty if not configured.
   Future<List<SonarrCalendarItem>> calendar({required DateTime start, required DateTime end}) async {
     if (!state.isConfigured) return const [];
-    return SonarrApi(baseUrl: state.baseUrl, apiKey: state.apiKey, client: _client).calendar(start: start, end: end);
+    return _api.calendar(start: start, end: end);
   }
 
   /// Requests a single episode of a show by its TVDB id (from Seerr discovery),
@@ -329,11 +362,7 @@ class SonarrNotifier extends StateNotifier<SonarrSettings> {
     required int episode,
   }) async {
     if (!state.isConfigured) return SonarrRequestResult.notConfigured;
-    return SonarrApi(
-      baseUrl: state.baseUrl,
-      apiKey: state.apiKey,
-      client: _client,
-    ).requestEpisodeByTvdb(tvdbId: tvdbId, season: season, episode: episode, addIfMissing: true);
+    return _api.requestEpisodeByTvdb(tvdbId: tvdbId, season: season, episode: episode, addIfMissing: true);
   }
 
   @override

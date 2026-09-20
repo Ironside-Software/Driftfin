@@ -399,6 +399,7 @@ SeerrMediaInfoSeason _$SeerrMediaInfoSeasonFromJson(Map<String, dynamic> json) =
   id: (json['id'] as num?)?.toInt(),
   seasonNumber: (json['seasonNumber'] as num?)?.toInt(),
   status: (json['status'] as num?)?.toInt(),
+  status4k: (json['status4k'] as num?)?.toInt(),
   createdAt: json['createdAt'] as String?,
   updatedAt: json['updatedAt'] as String?,
 );
@@ -407,6 +408,7 @@ Map<String, dynamic> _$SeerrMediaInfoSeasonToJson(SeerrMediaInfoSeason instance)
   'id': instance.id,
   'seasonNumber': instance.seasonNumber,
   'status': instance.status,
+  'status4k': instance.status4k,
   'createdAt': instance.createdAt,
   'updatedAt': instance.updatedAt,
 };

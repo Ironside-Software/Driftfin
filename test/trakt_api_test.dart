@@ -1,3 +1,5 @@
+import 'package:driftfin/models/seerr_credentials_model.dart';
+
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -21,40 +23,43 @@ void main() {
 
   test('incognito mode suppresses Trakt scrobbles', () async {
     SharedPreferences.setMockInitialValues({
-      'traktSettings': jsonEncode(const TraktSettings(
-        clientId: 'test-client',
-        clientSecret: 'test-secret',
-        enabled: true,
-        tokens: TraktTokens(accessToken: 'test-token', refreshToken: '', createdAt: 0, expiresIn: 10000),
-      ).toJson()),
+      'traktSettings': jsonEncode(
+        const TraktSettings(
+          origin: CredentialOrigin.manual,
+          clientId: 'test-client',
+          clientSecret: 'test-secret',
+          enabled: true,
+          tokens: TraktTokens(accessToken: 'test-token', refreshToken: '', createdAt: 0, expiresIn: 10000),
+        ).toJson(),
+      ),
     });
     final prefs = await SharedPreferences.getInstance();
     var requests = 0;
-    await http.runWithClient(() async {
-      final container = ProviderContainer(overrides: [
-        sharedPreferencesProvider.overrideWithValue(prefs),
-        incognitoProvider.overrideWithValue(true),
-      ]);
-      addTearDown(container.dispose);
-      expect(container.read(traktProvider).isActive, isTrue);
-      await container.read(traktProvider.notifier).scrobbleItem(
-            item: ItemBaseModel.fromBaseDto(
-                const BaseItemDto(
-                  id: 'movie',
-                  type: BaseItemKind.movie,
-                  providerIds: {'Tmdb': '42'},
-                ),
-                null),
-            action: TraktScrobbleAction.start,
-            progress: 10,
-            nowSeconds: 1,
-          );
-      expect(requests, 0);
-    },
-        () => MockClient((request) async {
-              requests++;
-              return http.Response('{}', 200);
-            }));
+    await http.runWithClient(
+      () async {
+        final container = ProviderContainer(
+          overrides: [sharedPreferencesProvider.overrideWithValue(prefs), incognitoProvider.overrideWithValue(true)],
+        );
+        addTearDown(container.dispose);
+        expect(container.read(traktProvider).isActive, isTrue);
+        await container
+            .read(traktProvider.notifier)
+            .scrobbleItem(
+              item: ItemBaseModel.fromBaseDto(
+                const BaseItemDto(id: 'movie', type: BaseItemKind.movie, providerIds: {'Tmdb': '42'}),
+                null,
+              ),
+              action: TraktScrobbleAction.start,
+              progress: 10,
+              nowSeconds: 1,
+            );
+        expect(requests, 0);
+      },
+      () => MockClient((request) async {
+        requests++;
+        return http.Response('{}', 200);
+      }),
+    );
   });
 
   group('TraktApi auth', () {
@@ -97,15 +102,12 @@ void main() {
     });
 
     test('pollDeviceToken success returns tokens', () async {
-      final client = MockClient((req) async => http.Response(
-            jsonEncode({
-              'access_token': 'ACCESS',
-              'refresh_token': 'REFRESH',
-              'created_at': 1000,
-              'expires_in': 7776000,
-            }),
-            200,
-          ));
+      final client = MockClient(
+        (req) async => http.Response(
+          jsonEncode({'access_token': 'ACCESS', 'refresh_token': 'REFRESH', 'created_at': 1000, 'expires_in': 7776000}),
+          200,
+        ),
+      );
       final result = await api(client).pollDeviceToken('DEV');
       expect(result.status, TraktPollStatus.success);
       expect(result.tokens?.accessToken, 'ACCESS');
@@ -127,18 +129,16 @@ void main() {
         captured = req;
         return http.Response('{}', 201);
       });
-      final ok = await api(client, token: 'ACCESS').scrobble(
-        TraktScrobbleAction.start,
-        ids: {'tvdb': 81189},
-        isMovie: false,
-        progress: 12.5,
-      );
+      final ok = await api(
+        client,
+        token: 'ACCESS',
+      ).scrobble(TraktScrobbleAction.start, ids: {'tvdb': 81189}, isMovie: false, progress: 12.5);
       expect(ok, isTrue);
       expect(captured.url.toString(), 'https://api.trakt.tv/scrobble/start');
       expect(captured.headers['Authorization'], 'Bearer ACCESS');
       expect(jsonDecode(captured.body), {
         'episode': {
-          'ids': {'tvdb': 81189}
+          'ids': {'tvdb': 81189},
         },
         'progress': 12.5,
       });
@@ -161,7 +161,7 @@ void main() {
       expect(captured.url.toString(), 'https://api.trakt.tv/scrobble/pause');
       expect(jsonDecode(captured.body), {
         'show': {
-          'ids': {'tvdb': 81189}
+          'ids': {'tvdb': 81189},
         },
         'episode': {'season': 2, 'number': 5},
         'progress': 40.0,
@@ -174,17 +174,15 @@ void main() {
         captured = req;
         return http.Response('{}', 200);
       });
-      final ok = await api(client, token: 'ACCESS').scrobble(
-        TraktScrobbleAction.stop,
-        ids: {'tmdb': 603},
-        isMovie: true,
-        progress: 99.0,
-      );
+      final ok = await api(
+        client,
+        token: 'ACCESS',
+      ).scrobble(TraktScrobbleAction.stop, ids: {'tmdb': 603}, isMovie: true, progress: 99.0);
       expect(ok, isTrue);
       expect(captured.url.toString(), 'https://api.trakt.tv/scrobble/stop');
       expect(jsonDecode(captured.body), {
         'movie': {
-          'ids': {'tmdb': 603}
+          'ids': {'tmdb': 603},
         },
         'progress': 99.0,
       });
@@ -207,14 +205,45 @@ void main() {
   group('TraktSettings', () {
     test('isActive requires enabled + creds + tokens', () {
       const tokens = TraktTokens(accessToken: 'a', refreshToken: 'r', createdAt: 0, expiresIn: 1);
-      expect(const TraktSettings(enabled: true, clientId: 'c', clientSecret: 's', tokens: tokens).isActive, isTrue);
-      expect(const TraktSettings(enabled: false, clientId: 'c', clientSecret: 's', tokens: tokens).isActive, isFalse);
-      expect(const TraktSettings(enabled: true, clientId: '', clientSecret: 's', tokens: tokens).isActive, isFalse);
-      expect(const TraktSettings(enabled: true, clientId: 'c', clientSecret: 's').isActive, isFalse);
+      expect(
+        const TraktSettings(
+          origin: CredentialOrigin.manual,
+          enabled: true,
+          clientId: 'c',
+          clientSecret: 's',
+          tokens: tokens,
+        ).isActive,
+        isTrue,
+      );
+      expect(
+        const TraktSettings(
+          origin: CredentialOrigin.manual,
+          enabled: false,
+          clientId: 'c',
+          clientSecret: 's',
+          tokens: tokens,
+        ).isActive,
+        isFalse,
+      );
+      expect(
+        const TraktSettings(
+          origin: CredentialOrigin.manual,
+          enabled: true,
+          clientId: '',
+          clientSecret: 's',
+          tokens: tokens,
+        ).isActive,
+        isFalse,
+      );
+      expect(
+        const TraktSettings(origin: CredentialOrigin.manual, enabled: true, clientId: 'c', clientSecret: 's').isActive,
+        isFalse,
+      );
     });
 
     test('json round-trip preserves tokens', () {
       const settings = TraktSettings(
+        origin: CredentialOrigin.manual,
         enabled: true,
         clientId: 'c',
         clientSecret: 's',

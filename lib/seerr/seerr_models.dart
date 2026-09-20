@@ -260,10 +260,19 @@ extension SeerrUserPermissions on SeerrUserModel {
 
   bool get canViewRecent => hasPermission(SeerrPermission.recentView);
 
-  bool canRequestMedia({required bool isTv}) {
-    final baseRequest = hasPermission(SeerrPermission.request);
-    if (isTv) return baseRequest || hasPermission(SeerrPermission.requestTv);
-    return baseRequest || hasPermission(SeerrPermission.requestMovie);
+  /// With no quality selected, show the request action if either quality is allowed.
+  bool canRequestMedia({required bool isTv, bool? is4k}) {
+    final normal =
+        hasPermission(SeerrPermission.request) ||
+        hasPermission(isTv ? SeerrPermission.requestTv : SeerrPermission.requestMovie);
+    final fourK =
+        hasPermission(SeerrPermission.request4k) ||
+        hasPermission(isTv ? SeerrPermission.request4kTv : SeerrPermission.request4kMovie);
+    return is4k == null
+        ? normal || fourK
+        : is4k
+        ? fourK
+        : normal;
   }
 }
 
@@ -880,10 +889,11 @@ class SeerrMediaInfoSeason {
   final int? id;
   final int? seasonNumber;
   final int? status;
+  final int? status4k;
   final String? createdAt;
   final String? updatedAt;
 
-  const SeerrMediaInfoSeason({this.id, this.seasonNumber, this.status, this.createdAt, this.updatedAt});
+  const SeerrMediaInfoSeason({this.id, this.seasonNumber, this.status, this.status4k, this.createdAt, this.updatedAt});
 
   factory SeerrMediaInfoSeason.fromJson(Map<String, dynamic> json) => _$SeerrMediaInfoSeasonFromJson(json);
   Map<String, dynamic> toJson() => _$SeerrMediaInfoSeasonToJson(this);

@@ -62,8 +62,18 @@ void main() {
   });
 
   group('NotificationHelpers.createSeerrClient', () {
+    test('does not use unconfirmed credentials for background requests', () {
+      expect(
+        () => NotificationHelpers.createSeerrClient(
+          const SeerrCredentialsModel(serverUrl: 'https://seerr.example.com', apiKey: 'old-key'),
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+
     test('constructs a SeerrChopperService using the provided credentials', () {
       const credentials = SeerrCredentialsModel(
+        origin: CredentialOrigin.manual,
         serverUrl: 'https://seerr.example.com',
         apiKey: ' key-1 ',
         sessionCookie: '',

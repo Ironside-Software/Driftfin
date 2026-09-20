@@ -5,6 +5,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'seerr_credentials_model.freezed.dart';
 part 'seerr_credentials_model.g.dart';
 
+enum CredentialOrigin { unknown, manual, plugin }
+
 @Freezed(copyWith: true)
 abstract class SeerrCredentialsModel with _$SeerrCredentialsModel {
   const SeerrCredentialsModel._();
@@ -14,6 +16,7 @@ abstract class SeerrCredentialsModel with _$SeerrCredentialsModel {
     @Default("") String apiKey,
     @Default("") String sessionCookie,
     @Default({}) Map<String, String> customHeaders,
+    @Default(CredentialOrigin.unknown) CredentialOrigin origin,
   }) = _SeerrCredentialsModel;
 
   bool get isConfigured {

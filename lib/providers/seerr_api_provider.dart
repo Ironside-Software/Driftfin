@@ -5,6 +5,10 @@ import 'package:chopper/chopper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'package:driftfin/providers/seerr_service_provider.dart';
+import 'package:driftfin/providers/api_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
+import 'package:driftfin/models/seerr_credentials_model.dart';
+import 'package:driftfin/util/managed_seerr_request.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/seerr/seerr_chopper_service.dart';
 import 'package:driftfin/seerr/seerr_json_converter.dart';
@@ -42,35 +46,52 @@ class SeerrRequest implements Interceptor {
 
   @override
   FutureOr<Response<BodyType>> intercept<BodyType>(Chain<BodyType> chain) async {
-    final creds = ref.read(userProvider)?.seerrCredentials;
+    final account = ref.read(userProvider);
+    final creds = account?.seerrCredentials;
+    if (ref.read(managedIntegrationsProvider)) {
+      if (account == null) throw const HttpException('Jellyfin login required');
+      final request = managedSeerrRequest(chain.request, buildServerUrl(ref), account.credentials.header(ref));
+      final response = await chain.proceed(request);
+      if (!ref.mounted ||
+          ref.read(userProvider)?.sameIdentity(account) != true ||
+          ref.read(userProvider)?.credentials.token != account.credentials.token) {
+        throw const HttpException('Account changed during request');
+      }
+      return response;
+    }
+    final trusted = creds?.origin == CredentialOrigin.manual;
+    final path = chain.request.uri.path;
+    final publicOperation =
+        (chain.request.method == 'POST' && const ['/api/v1/auth/local', '/api/v1/auth/jellyfin'].contains(path)) ||
+        (chain.request.method == 'GET' && path == '/api/v1/status');
+    if (!trusted && !publicOperation) {
+      throw const HttpException('Reconnect Seerr to confirm saved credentials');
+    }
     final serverUrl = (DriftfinConfig.seerrBaseUrl ?? creds?.serverUrl)?.trim();
 
     if (serverUrl == null || serverUrl.isEmpty) {
       throw const HttpException('Seerr server not configured');
     }
 
-    final apiKey = creds?.apiKey.trim() ?? '';
-    final cookie = creds?.sessionCookie.trim() ?? '';
+    final apiKey = trusted ? creds?.apiKey.trim() ?? '' : '';
+    final cookie = trusted ? creds?.sessionCookie.trim() ?? '' : '';
 
     final authHeaders = _authHeaders(apiKey: apiKey, cookie: cookie);
-    final customHeaders = {...?creds?.customHeaders};
+    final customHeaders = trusted ? {...?creds?.customHeaders} : <String, String>{};
     final headers = {...authHeaders, ...customHeaders};
     final apiBaseUri = Uri.parse(serverUrl);
 
-    Uri resolvedRequestUri;
-    try {
-      resolvedRequestUri = apiBaseUri.resolveUri(chain.request.url);
-    } catch (_) {
-      resolvedRequestUri = chain.request.url;
-    }
-
-    final requestWithHeaders = applyHeaders(chain.request.copyWith(baseUri: apiBaseUri), headers);
+    final directRequest = chain.request.copyWith(
+      baseUri: apiBaseUri,
+      headers: trusted ? chain.request.headers : const {'Content-Type': 'application/json'},
+    )..followRedirects = false;
+    final requestWithHeaders = applyHeaders(directRequest, headers);
 
     try {
       final response = await chain.proceed(requestWithHeaders);
       return response;
-    } catch (e, st) {
-      throw HttpException('Seerr API request failed: ${chain.request.method} $resolvedRequestUri\nError: $e\n$st');
+    } catch (_) {
+      throw const HttpException('Seerr request failed');
     }
   }
 }
@@ -92,15 +113,8 @@ class SeerrResponse implements Interceptor {
     final Response<BodyType> response = await chain.proceed(chain.request);
 
     if (!response.isSuccessful) {
-      final method = response.base.request?.method;
-      final url = response.base.request?.url.toString();
       final status = response.base.statusCode;
-      final reason = response.base.reasonPhrase;
-
-      final body = response.bodyString;
-      final bodyPreview = body.length <= 1500 ? body : '${body.substring(0, 1500)}…';
-
-      log('x- $status - $reason - ${response.error} - $method $url\n$bodyPreview');
+      log('Seerr request returned HTTP $status', name: 'Seerr');
     }
 
     return response;

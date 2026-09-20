@@ -10,11 +10,14 @@ import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart';
 import 'package:driftfin/l10n/generated/app_localizations.dart';
 import 'package:driftfin/models/account_model.dart';
 import 'package:driftfin/models/credentials_model.dart';
+import 'package:driftfin/models/plugin_capabilities.dart';
+import 'package:driftfin/models/server_integration_config.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
 import 'package:driftfin/providers/cultures_provider.dart';
 import 'package:driftfin/providers/home_collections_provider.dart';
 import 'package:driftfin/providers/home_preferences_provider.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
+import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
@@ -49,6 +52,9 @@ class _FakeUser extends User {
 
   @override
   AccountModel? build() => _initial;
+
+  @override
+  set userState(AccountModel? account) => state = account;
 }
 
 /// Returns an empty culture list without hitting the API (the real notifier
@@ -62,6 +68,16 @@ class _FakeCultures extends Cultures {
 class _FakeSeerrUser extends SeerrUser {
   @override
   SeerrUserModel? build() => null;
+}
+
+class _FakePlugin extends ServerIntegrationConfigNotifier {
+  _FakePlugin(super.ref, ServerIntegrationConfig? initial) {
+    state = initial;
+  }
+
+  @override
+  Future<({bool healthy, String? reason, String? correlationId, DateTime? checkedAt})> check(String service) async =>
+      (healthy: true, reason: null, correlationId: 'check-$service', checkedAt: DateTime.utc(2026, 9, 19, 12));
 }
 
 /// No-op load so the Home & Library page doesn't call the Jellyfin API in its
@@ -154,6 +170,108 @@ void main() {
     // Flush the client-settings debounced persistence timer.
     await tester.pump(const Duration(seconds: 1));
   });
+
+  testWidgets('managed integrations explain missing linkage without showing credentials or admin checks', (
+    tester,
+  ) async {
+    useTallView(tester);
+    const capabilities = PluginCapabilities(
+      protocolVersion: 1,
+      features: {
+        'discovery': PluginFeature(supported: true, reason: 'user_not_linked'),
+        'arrManagement': PluginFeature(supported: true, reason: 'permission_denied'),
+      },
+      integrations: {'seerr': PluginIntegration(configured: true, healthy: true)},
+    );
+    await pumpPage(
+      tester,
+      const IntegrationsSettingsPage(),
+      overrides: [
+        seerrUserProvider.overrideWith(_FakeSeerrUser.new),
+        serverIntegrationConfigProvider.overrideWith(
+          (ref) => _FakePlugin(ref, ServerIntegrationConfig.managed(capabilities)),
+        ),
+      ],
+    );
+    expect(find.text(l10n.pluginUserNotLinked), findsOneWidget);
+    expect(find.text(l10n.pluginDenied), findsNWidgets(2));
+    expect(find.text(l10n.sonarrApiKeyTitle), findsNothing);
+    expect(find.byIcon(Icons.network_check), findsNothing);
+  });
+
+  testWidgets('missing plugin offers explicit manual recovery and restores editable settings', (tester) async {
+    useTallView(tester);
+    await pumpPage(
+      tester,
+      const IntegrationsSettingsPage(),
+      account: _FakeUser(user.copyWith(managedIntegrations: true)),
+      overrides: [
+        seerrUserProvider.overrideWith(_FakeSeerrUser.new),
+        serverIntegrationConnectionProvider.overrideWith((ref) => ServerIntegrationConfigStatus.noPlugin),
+        serverIntegrationConfigProvider.overrideWith((ref) => _FakePlugin(ref, ServerIntegrationConfig.managed(null))),
+      ],
+    );
+    expect(find.text(l10n.pluginUseManualIntegrations), findsOneWidget);
+    await tester.tap(find.text(l10n.pluginUseManualIntegrations));
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(tester.element(find.byType(IntegrationsSettingsPage)));
+    expect(container.read(managedIntegrationsProvider), isFalse);
+    expect(container.read(userProvider)!.managedIntegrations, isTrue);
+    expect(find.text(l10n.pluginUseManualIntegrations), findsNothing);
+    final switches = tester.widgetList<Switch>(find.byType(Switch));
+    expect(switches, isNotEmpty);
+    expect(switches.every((value) => value.onChanged != null), isTrue);
+  });
+
+  testWidgets('managed administrators can check each saved integration', (tester) async {
+    useTallView(tester);
+    const capabilities = PluginCapabilities(
+      protocolVersion: 1,
+      features: {'diagnostics': PluginFeature(supported: true, allowed: true)},
+    );
+    await pumpPage(
+      tester,
+      const IntegrationsSettingsPage(),
+      overrides: [
+        seerrUserProvider.overrideWith(_FakeSeerrUser.new),
+        serverIntegrationConfigProvider.overrideWith(
+          (ref) => _FakePlugin(ref, ServerIntegrationConfig.managed(capabilities)),
+        ),
+      ],
+    );
+    expect(find.byTooltip(l10n.pluginCheckConnection), findsNWidgets(3));
+    expect(find.text(l10n.radarrApiKeyTitle), findsNothing);
+    await tester.tap(find.byTooltip(l10n.pluginCheckConnection).first);
+    await tester.pumpAndSettle();
+    expect(find.textContaining(l10n.pluginHealthy), findsOneWidget);
+    expect(find.textContaining('check-seerr'), findsOneWidget);
+    expect(find.textContaining(l10n.pluginLastChecked), findsOneWidget);
+  });
+
+  for (final status in [
+    ServerIntegrationConfigStatus.legacy,
+    ServerIntegrationConfigStatus.noPlugin,
+    ServerIntegrationConfigStatus.expiredLogin,
+  ]) {
+    testWidgets('integration status $status keeps manual settings visible', (tester) async {
+      useTallView(tester);
+      await pumpPage(
+        tester,
+        const IntegrationsSettingsPage(),
+        overrides: [
+          seerrUserProvider.overrideWith(_FakeSeerrUser.new),
+          serverIntegrationConnectionProvider.overrideWith((ref) => status),
+        ],
+      );
+      final label = switch (status) {
+        ServerIntegrationConfigStatus.legacy => l10n.pluginLegacy,
+        ServerIntegrationConfigStatus.noPlugin => l10n.settingsIntegrationsPluginNotInstalled,
+        _ => l10n.pluginExpired,
+      };
+      expect(find.text(label), findsOneWidget);
+      expect(find.text(l10n.sonarrIntegrationTitle), findsOneWidget);
+    });
+  }
 
   testWidgets('Home & Library page renders its dashboard + library-order groups', (tester) async {
     useTallView(tester);

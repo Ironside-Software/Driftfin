@@ -16,9 +16,13 @@ void main() {
     expect(input['type'], 'boolean');
     expect(input['default'], isFalse);
     for (final job in platforms.where((job) => job != 'ios')) {
-      expect(jobs[job]['if'], r'${{ !inputs.ios_only }}', reason: job);
+      expect(
+        jobs[job]['if'],
+        job == 'windows' ? r'${{ !inputs.ios_only }}' : r'${{ !inputs.ios_only && !inputs.windows_only }}',
+        reason: job,
+      );
     }
-    expect(jobs['ios']['if'], isNull);
+    expect(jobs['ios']['if'], r'${{ !inputs.windows_only }}');
     expect(jobs['testflight']['needs'], containsAll(['prepare', 'ios']));
   });
 
@@ -55,7 +59,7 @@ void main() {
     expect(iosBuilds, hasLength(2));
     expect(
       iosBuilds.map((step) => step['if']),
-      unorderedEquals(["needs.prepare.outputs.testflight == 'true'", "needs.prepare.outputs.testflight != 'true'"]),
+      unorderedEquals(["needs.prepare.outputs.signed_ios == 'true'", "needs.prepare.outputs.signed_ios != 'true'"]),
     );
     expect(jobs['android']['strategy']['matrix']['mode'], unorderedEquals(['release', 'debug']));
     expect(jobs['android']['strategy']['fail-fast'], isFalse);
@@ -65,14 +69,18 @@ void main() {
     expect(jobs['prepare']['outputs']['testflight'], r"${{ github.event_name == 'push' || inputs.testflight }}");
     expect(workflow['on']['push']['tags'], ['v*']);
     expect(workflow['on']['workflow_dispatch']['inputs']['testflight']['default'], isFalse);
-    expect(jobs['ios']['environment'], r"${{ needs.prepare.outputs.testflight == 'true' && 'testflight' || '' }}");
+    expect(jobs['ios']['environment'], r"${{ needs.prepare.outputs.signed_ios == 'true' && 'testflight' || '' }}");
     for (final name in [
       'Import App Store distribution certificate',
       'Download App Store provisioning profile',
       'Build signed production IPA',
       'Collect signed IPA',
     ]) {
-      expect(steps('ios').singleWhere((step) => step['name'] == name)['if'], jobs['testflight']['if'], reason: name);
+      expect(
+        steps('ios').singleWhere((step) => step['name'] == name)['if'],
+        "needs.prepare.outputs.signed_ios == 'true'",
+        reason: name,
+      );
     }
     final download = steps('testflight')
         .singleWhere((step) => '${step['uses']}'.startsWith('actions/download-artifact@'));
@@ -80,6 +88,30 @@ void main() {
     final upload = steps('testflight').singleWhere((step) => step['name'] == 'Upload to TestFlight');
     // App Store Connect rejects updating this immutable value once it is set by the IPA.
     expect(upload['with'].containsKey('uses-non-exempt-encryption'), isFalse);
+  });
+
+  test('signed verification never implies TestFlight upload', () {
+    final inputs = workflow['on']['workflow_dispatch']['inputs'];
+    expect(inputs['sign_ios']['default'], isFalse);
+    expect(inputs['windows_only']['default'], isFalse);
+    expect(
+      jobs['prepare']['outputs']['signed_ios'],
+      r"${{ github.event_name == 'push' || inputs.testflight || inputs.sign_ios }}",
+    );
+    expect(jobs['prepare']['outputs']['testflight'], isNot(contains('sign_ios')));
+    expect(jobs['testflight']['if'], "needs.prepare.outputs.testflight == 'true'");
+    expect(
+      steps('prepare').first['if'],
+      'inputs.windows_only && (inputs.ios_only || inputs.testflight || inputs.sign_ios)',
+    );
+    expect(
+      script('windows', 'Verify Windows integration and search UI'),
+      contains('test/unified_search_widget_test.dart'),
+    );
+    expect(
+      script('windows', 'Verify Windows integration and search UI'),
+      contains('test/seerr_request_permissions_test.dart'),
+    );
   });
 
   group('Unix runner scripts', () {
