@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
+import 'package:driftfin/providers/offline_catalog_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:driftfin/jellyfin/jellyfin_open_api.swagger.dart' as dto;
@@ -20,6 +23,8 @@ import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout_model.dart';
 import 'package:driftfin/util/poster_defaults.dart';
 
+final _offline = StateProvider<bool>((ref) => false);
+
 const _testLayoutModel = AdaptiveLayoutModel(
   viewSize: ViewSize.phone,
   layoutMode: LayoutMode.single,
@@ -34,10 +39,7 @@ const _testLayoutModel = AdaptiveLayoutModel(
 );
 
 ItemBaseModel _poster(String id) {
-  return ItemBaseModel.fromBaseDto(
-    dto.BaseItemDto(id: id, name: id, type: dto.BaseItemKind.movie),
-    null,
-  );
+  return ItemBaseModel.fromBaseDto(dto.BaseItemDto(id: id, name: id, type: dto.BaseItemKind.movie), null);
 }
 
 /// Test double that records calls instead of hitting the real Jellyfin API.
@@ -81,12 +83,11 @@ class _Harness {
   late final _FakeDashboardNotifier dashboardNotifier;
   late final _FakeLivingHomeNotifier livingHomeNotifier;
 
-  Widget build({
-    LivingHomeModel livingHome = const LivingHomeModel(),
-    List<RecommendedModel> smartShelves = const [],
-  }) {
+  Widget build({LivingHomeModel livingHome = const LivingHomeModel(), List<RecommendedModel> smartShelves = const []}) {
     return ProviderScope(
       overrides: [
+        offlineStateProvider.overrideWith((ref) => ref.watch(_offline)),
+        offlineCatalogProvider.overrideWith((ref) => Stream.value([])),
         viewsProvider.overrideWith((ref) {
           viewsNotifier = _FakeViewsNotifier(ref);
           return viewsNotifier;
@@ -107,7 +108,7 @@ class _Harness {
         child: MaterialApp(
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          home: DashboardScreen(),
+          home: Scaffold(body: DashboardScreen()),
         ),
       ),
     );
@@ -116,6 +117,26 @@ class _Harness {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('switches between local and network home as connectivity changes', (tester) async {
+    final harness = _Harness();
+    await tester.pumpWidget(harness.build());
+    await tester.pumpAndSettle();
+    final container = ProviderScope.containerOf(tester.element(find.byType(DashboardScreen)));
+    final l10n = await AppLocalizations.delegate.load(const Locale('en'));
+    expect(find.text(l10n.tonight), findsOneWidget);
+    container.read(_offline.notifier).state = true;
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.tonight), findsNothing);
+    expect(find.text(l10n.offlineEmpty), findsOneWidget);
+    final calls = harness.dashboardNotifier.fetchCalls;
+    await tester.pump(const Duration(seconds: 121));
+    expect(harness.dashboardNotifier.fetchCalls, calls);
+    container.read(_offline.notifier).state = false;
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.tonight), findsOneWidget);
+    expect(harness.dashboardNotifier.fetchCalls, greaterThan(calls));
+  });
 
   testWidgets('keeps Tonight and removes the Taste Passport entry point', (tester) async {
     final harness = _Harness();
@@ -140,11 +161,15 @@ void main() {
 
   testWidgets('renders a Living Home rail once one is available', (tester) async {
     final harness = _Harness();
-    await tester.pumpWidget(harness.build(
-      livingHome: LivingHomeModel(rails: [
-        RecommendedModel(name: const BecauseYouWatched('Dune'), posters: [_poster('1')]),
-      ]),
-    ));
+    await tester.pumpWidget(
+      harness.build(
+        livingHome: LivingHomeModel(
+          rails: [
+            RecommendedModel(name: const BecauseYouWatched('Dune'), posters: [_poster('1')]),
+          ],
+        ),
+      ),
+    );
     await tester.pumpAndSettle();
 
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
@@ -153,11 +178,13 @@ void main() {
 
   testWidgets('renders a Smart Shelf rail once one is available', (tester) async {
     final harness = _Harness();
-    await tester.pumpWidget(harness.build(
-      smartShelves: [
-        RecommendedModel(name: const Other('Unwatched Sci-Fi'), posters: [_poster('1')]),
-      ],
-    ));
+    await tester.pumpWidget(
+      harness.build(
+        smartShelves: [
+          RecommendedModel(name: const Other('Unwatched Sci-Fi'), posters: [_poster('1')]),
+        ],
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Unwatched Sci-Fi'), findsOneWidget);

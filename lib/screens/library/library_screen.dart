@@ -13,7 +13,9 @@ import 'package:driftfin/models/recommended_model.dart';
 import 'package:driftfin/models/view_model.dart';
 import 'package:driftfin/providers/library_screen_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
+import 'package:driftfin/screens/offline/offline_catalog_screen.dart';
 import 'package:driftfin/screens/home_screen.dart';
 import 'package:driftfin/screens/metadata/refresh_metadata.dart';
 import 'package:driftfin/screens/shared/media/poster_row.dart';
@@ -43,9 +45,31 @@ class _LibraryScreenState extends ConsumerState<LibraryScreen> with SingleTicker
   final GlobalKey<RefreshIndicatorState>? refreshKey = GlobalKey();
 
   bool refreshing = false;
+  bool availableOffline = false;
 
   @override
   Widget build(BuildContext context) {
+    final offline = ref.watch(offlineStateProvider);
+    final local = offline || availableOffline;
+    return Column(
+      children: [
+        SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: FilterChip(
+              label: Text(context.localized.availableOffline),
+              selected: local,
+              onSelected: offline ? null : (value) => setState(() => availableOffline = value),
+            ),
+          ),
+        ),
+        Expanded(child: local ? const OfflineCatalogScreen() : buildOnline(context)),
+      ],
+    );
+  }
+
+  Widget buildOnline(BuildContext context) {
     ref.listen(libraryScreenProvider, (previous, next) {
       if ((previous?.viewType.length ?? 0) < next.viewType.length) {
         refreshKey?.currentState?.show();

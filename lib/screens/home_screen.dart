@@ -12,7 +12,9 @@ import 'package:driftfin/providers/seerr_requests_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/window_title_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
+import 'package:driftfin/screens/offline/offline_catalog_screen.dart';
 import 'package:driftfin/screens/shared/driftfin_notification_overlay.dart';
 import 'package:driftfin/screens/shared/global_hotkeys.dart';
 import 'package:driftfin/seerr/seerr_models.dart';
@@ -113,9 +115,10 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final offline = ref.watch(offlineStateProvider);
     final canDownload = ref.watch(showSyncButtonProviderProvider);
     final isMusicDashboardMode = ref.watch(musicDashboardModeProvider);
-    final seerrAuthenticated = ref.watch(seerrAvailableProvider);
+    final seerrAuthenticated = !offline && ref.watch(seerrAvailableProvider);
     final pendingRequests = seerrAuthenticated ? (ref.watch(pendingRequestsCountProvider).value ?? 0) : 0;
     final destinations = HomeTabs.values
         .map((e) {
@@ -190,7 +193,7 @@ class HomeScreen extends ConsumerWidget {
                 );
               }
             case HomeTabs.library:
-              if (!isMusicDashboardMode) {
+              if (offline || !isMusicDashboardMode) {
                 return DestinationModel(
                   label: context.localized.library(0),
                   icon: Icon(e.icon),
@@ -221,7 +224,11 @@ class HomeScreen extends ConsumerWidget {
                 child: NavigationScaffold(
                   destinations: destinations.nonNulls.toList(),
                   currentRouteName: context.router.current.name,
-                  nestedChild: child,
+                  nestedChild: offline && context.router.current.name == FavouritesRoute.name
+                      ? const OfflineCatalogScreen(favorites: true)
+                      : offline && context.router.current.name == SeerrRoute.name
+                      ? const OfflineCatalogScreen(home: true)
+                      : child,
                 ),
               );
             },

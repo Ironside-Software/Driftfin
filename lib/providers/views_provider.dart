@@ -6,6 +6,7 @@ import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/view_model.dart';
 import 'package:driftfin/models/views_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
@@ -37,7 +38,7 @@ class ViewsNotifier extends StateNotifier<ViewsModel> {
   late final JellyService api = ref.read(jellyApiProvider);
 
   Future<ViewsModel?> fetchViews() async {
-    if (state.loading) return null;
+    if (state.loading || ref.read(offlineStateProvider)) return null;
     try {
       final showAllCollections = ref.read(clientSettingsProvider.select((value) => value.showAllCollectionTypes));
       final response = await api.usersUserIdViewsGet();

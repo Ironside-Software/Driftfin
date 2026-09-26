@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/view_model.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
 import 'package:driftfin/util/localization_helper.dart';
@@ -46,15 +47,11 @@ class NestedNavigationDrawer extends ConsumerWidget {
               Expanded(
                 child: Text(
                   context.localized.navigation,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.75),
-                      ),
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.75)),
                 ),
               ),
-              IconButton(
-                onPressed: () => toggleExpanded(false),
-                icon: const Icon(IconsaxPlusLinear.sidebar_left),
-              ),
+              IconButton(onPressed: () => toggleExpanded(false), icon: const Icon(IconsaxPlusLinear.sidebar_left)),
             ],
           ),
         ),
@@ -67,18 +64,19 @@ class NestedNavigationDrawer extends ConsumerWidget {
           useOverflow: false,
         ),
         const Divider(indent: 28, endIndent: 28),
-        NavigationButton(
-          horizontal: true,
-          expanded: true,
-          label: context.localized.calendarTitle,
-          selected: currentLocation.contains(const CalendarRoute().routeName),
-          selectedIcon: const Icon(IconsaxPlusBold.calendar_1),
-          icon: const Icon(IconsaxPlusLinear.calendar_1),
-          onPressed: () {
-            context.router.push(const CalendarRoute());
-            Scaffold.of(context).closeDrawer();
-          },
-        ),
+        if (!ref.watch(offlineStateProvider))
+          NavigationButton(
+            horizontal: true,
+            expanded: true,
+            label: context.localized.calendarTitle,
+            selected: currentLocation.contains(const CalendarRoute().routeName),
+            selectedIcon: const Icon(IconsaxPlusBold.calendar_1),
+            icon: const Icon(IconsaxPlusLinear.calendar_1),
+            onPressed: () {
+              context.router.push(const CalendarRoute());
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
         NavigationButton(
           label: context.localized.settings,
           selected: currentLocation.contains(const SettingsRoute().routeName),
