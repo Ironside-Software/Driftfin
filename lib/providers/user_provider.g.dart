@@ -72,7 +72,7 @@ final class UserProvider extends $NotifierProvider<User, AccountModel?> {
   }
 }
 
-String _$userHash() => r'0c388aa963524ce72adce4573158883260bded9e';
+String _$userHash() => r'c2eda0abf406e1774dfc2f04a0cadc83f752312f';
 
 abstract class _$User extends $Notifier<AccountModel?> {
   AccountModel? build();

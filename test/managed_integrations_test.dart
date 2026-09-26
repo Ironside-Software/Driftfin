@@ -16,6 +16,7 @@ import 'package:driftfin/models/credentials_model.dart';
 import 'package:driftfin/models/plugin_capabilities.dart';
 import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/providers/seerr_api_provider.dart';
 import 'package:driftfin/providers/sonarr_provider.dart';
 import 'package:driftfin/providers/radarr_provider.dart';
@@ -71,7 +72,11 @@ ProviderContainer _container(http.Client client, {AccountModel? account, SharedP
     overrides: [
       if (preferences != null) sharedPreferencesProvider.overrideWithValue(preferences),
       userProvider.overrideWith(() => _User(account ?? _account())),
-      serverUrlProvider.overrideWith((ref) => ref.watch(userProvider)?.credentials.url),
+      serverUrlProvider.overrideWith(
+        (ref) => ref.watch(localConnectionAvailableProvider)
+            ? 'http://jellyfin.lan:8096/base'
+            : ref.watch(userProvider)?.credentials.url,
+      ),
       serverIntegrationConfigProvider.overrideWith((ref) => ServerIntegrationConfigNotifier(ref, client: client)),
     ],
   );
@@ -105,11 +110,93 @@ void main() {
     }
   });
 
+  test('plugin data loads automatically without an account refresh', () async {
+    final paths = <String>[];
+    final container = _container(
+      MockClient((request) async {
+        paths.add(request.url.path);
+        return http.Response(jsonEncode(_capabilities()), 200);
+      }),
+    );
+
+    container.read(serverIntegrationConfigProvider);
+    await Future<void>.delayed(Duration.zero);
+    expect(paths, ['/base/Driftfin/v1/capabilities']);
+    expect(container.read(seerrAvailableProvider), isTrue);
+    expect(container.read(serverIntegrationConnectionProvider), ServerIntegrationConfigStatus.ok);
+  });
+
+  test('automatic bootstrap persists settings through the real user provider', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final caps = _capabilities()..['localUrl'] = 'http://jellyfin.lan:8096';
+    final container = ProviderContainer(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        serverUrlProvider.overrideWith(
+          (ref) => ref.watch(localConnectionAvailableProvider)
+              ? 'http://jellyfin.lan:8096/base'
+              : ref.watch(userProvider)?.credentials.url,
+        ),
+        serverIntegrationConfigProvider.overrideWith(
+          (ref) => ServerIntegrationConfigNotifier(
+            ref,
+            client: MockClient((_) async => http.Response(jsonEncode(caps), 200)),
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(sharedUtilityProvider).addAccount(_account());
+    container.read(userProvider.notifier).loginUser(_account());
+    container.read(serverIntegrationConfigProvider);
+    await Future<void>.delayed(Duration.zero);
+    expect(container.read(seerrAvailableProvider), isTrue);
+    expect(container.read(userProvider)?.credentials.localUrl, 'http://jellyfin.lan:8096');
+    expect(container.read(sharedUtilityProvider).getAccounts().single.managedIntegrations, isTrue);
+  });
+
+  test('automatic loading follows login, account switches and address changes', () async {
+    final requests = <http.Request>[];
+    final container = _container(
+      MockClient((request) async {
+        requests.add(request);
+        return http.Response(jsonEncode(_capabilities()), 200);
+      }),
+    );
+    final user = container.read(userProvider.notifier);
+    user.clear();
+    container.listen(serverIntegrationConfigProvider, (_, _) {});
+    await Future<void>.delayed(Duration.zero);
+    expect(requests, isEmpty);
+
+    user.loginUser(_account());
+    await Future<void>.delayed(Duration.zero);
+    expect(requests, hasLength(1));
+    expect(container.read(seerrAvailableProvider), isTrue);
+
+    user.loginUser(_account(id: 'bob'));
+    await Future<void>.delayed(Duration.zero);
+    expect(requests, hasLength(2));
+    container.read(localConnectionAvailableProvider.notifier).state = true;
+    await container.pump();
+    await Future<void>.delayed(Duration.zero);
+    expect(requests, hasLength(3));
+    expect(requests.last.url.host, 'jellyfin.lan');
+
+    user.clear();
+    await Future<void>.delayed(Duration.zero);
+    expect(requests, hasLength(3));
+    expect(container.read(serverIntegrationConfigProvider), isNull);
+    expect(container.read(serverIntegrationConnectionProvider), ServerIntegrationConfigStatus.notLoggedIn);
+  });
+
   test('managed bootstrap carries only the compatible Jellyfin LAN address', () async {
     final caps = _capabilities()..['localUrl'] = 'http://jellyfin.lan:8096/base';
     final container = _container(MockClient((_) async => http.Response(jsonEncode(caps), 200)));
     await container.read(serverIntegrationConfigProvider.notifier).load();
     expect(container.read(serverIntegrationConfigProvider)?.localUrl, 'http://jellyfin.lan:8096/base');
+    expect(container.read(userProvider)?.credentials.localUrl, 'http://jellyfin.lan:8096/base');
     caps['protocolVersion'] = 2;
     await container.read(serverIntegrationConfigProvider.notifier).load();
     expect(container.read(serverIntegrationConfigProvider)?.localUrl, isEmpty);

@@ -35,6 +35,9 @@ class _User extends User {
 }
 
 class _Config extends ServerIntegrationConfigNotifier {
+  @override
+  Future<void> load() async {}
+
   _Config(super.ref, {bool allowed = true, String? reason}) {
     state = ServerIntegrationConfig.managed(
       PluginCapabilities(

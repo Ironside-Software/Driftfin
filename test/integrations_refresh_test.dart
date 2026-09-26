@@ -7,6 +7,8 @@ import 'package:driftfin/l10n/generated/app_localizations.dart';
 import 'package:driftfin/models/account_model.dart';
 import 'package:driftfin/models/credentials_model.dart';
 import 'package:driftfin/providers/seerr_user_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart' as network;
+import 'package:driftfin/screens/settings/widgets/server_connection_tile.dart';
 import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
@@ -51,6 +53,13 @@ class _FakeDiagNotifier extends ServerIntegrationConfigNotifier {
 
   @override
   Future<({ServerIntegrationConfigStatus status, String? detail})> loadWithDiagnostics() async => _result;
+}
+
+class _Connection extends network.ConnectivityStatus {
+  @override
+  network.ConnectionState build() => network.ConnectionState.wifi;
+
+  void goOffline() => state = network.ConnectionState.offline;
 }
 
 void main() {
@@ -115,6 +124,55 @@ void main() {
     await tester.pump(const Duration(seconds: 6));
     await tester.pump(const Duration(milliseconds: 400));
   }
+
+  testWidgets('connection status follows local, main and offline routing', (tester) async {
+    final container = ProviderContainer(
+      overrides: [
+        network.offlineStateProvider.overrideWith(
+          (ref) => ref.watch(network.connectivityStatusProvider) == network.ConnectionState.offline,
+        ),
+        network.connectivityStatusProvider.overrideWith(_Connection.new),
+        userProvider.overrideWith(
+          () => _FakeUser(
+            user.copyWith(
+              credentials: user.credentials.copyWith(
+                url: 'https://jellyfin.example.com',
+                localUrl: 'http://jellyfin.lan:8096',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const AdaptiveLayout(
+          data: _adaptiveModel,
+          child: MaterialApp(
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: Scaffold(body: ServerConnectionTile()),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Server\nhttps://jellyfin.example.com'), findsOneWidget);
+    container.read(network.localConnectionAvailableProvider.notifier).state = true;
+    await tester.pump();
+    expect(find.text('Local Jellyfin URL\nhttp://jellyfin.lan:8096'), findsOneWidget);
+    final account = container.read(userProvider)!;
+    container
+        .read(userProvider.notifier)
+        .loginUser(account.copyWith(credentials: account.credentials.copyWith(localUrl: null)));
+    await tester.pump();
+    expect(find.text('Server\nhttps://jellyfin.example.com'), findsOneWidget);
+    (container.read(network.connectivityStatusProvider.notifier) as _Connection).goOffline();
+    await tester.pump();
+    expect(find.text('Unable to connect to host'), findsOneWidget);
+    expect(find.textContaining('http'), findsNothing);
+  });
 
   testWidgets('ok → success message', (tester) async {
     useTallView(tester);

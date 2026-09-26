@@ -71,6 +71,9 @@ class _FakeSeerrUser extends SeerrUser {
 }
 
 class _FakePlugin extends ServerIntegrationConfigNotifier {
+  @override
+  Future<void> load() async {}
+
   _FakePlugin(super.ref, ServerIntegrationConfig? initial) {
     state = initial;
   }
@@ -261,6 +264,7 @@ void main() {
         overrides: [
           seerrUserProvider.overrideWith(_FakeSeerrUser.new),
           serverIntegrationConnectionProvider.overrideWith((ref) => status),
+          serverIntegrationConfigProvider.overrideWith((ref) => _FakePlugin(ref, null)),
         ],
       );
       final label = switch (status) {

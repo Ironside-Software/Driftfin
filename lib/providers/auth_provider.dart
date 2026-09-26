@@ -152,8 +152,7 @@ class AuthNotifier extends StateNotifier<LoginScreenModel> {
       }
       await shared.addAccount(newUser);
       ref.read(userProvider.notifier).userState = newUser;
-      // Fetch full account info (policy, userConfiguration, and the optional
-      // Driftfin server plugin's integration config) right away instead of
+      // Fetch full account info (policy and userConfiguration) right away instead of
       // waiting for the dashboard's 120s poll to get around to it.
       await ref.read(userProvider.notifier).updateInformation();
       final currentAccounts = getSavedAccounts();

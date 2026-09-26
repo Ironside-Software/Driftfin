@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -144,8 +145,24 @@ class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationCon
       userProvider.select(
         (user) => (user?.id, user?.credentials.serverId, user?.credentials.url, user?.credentials.token),
       ),
-      (_, next) => clear(),
+      (_, next) {
+        clear();
+        _scheduleLoad();
+      },
     );
+    ref.listen(serverUrlProvider, (_, next) => _scheduleLoad());
+    _scheduleLoad();
+  }
+
+  // Defer provider writes until construction and account notifications finish.
+  // An explicit refresh or account switch supersedes a queued startup load.
+  void _scheduleLoad() {
+    final generation = _generation;
+    scheduleMicrotask(() {
+      if (!_disposed && ref.mounted && generation == _generation && ref.read(userProvider) != null) {
+        unawaited(load());
+      }
+    });
   }
 
   final Ref ref;
@@ -156,10 +173,10 @@ class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationCon
   Future<void> load() async => await loadWithDiagnostics();
 
   Future<({ServerIntegrationConfigStatus status, String? detail})> loadWithDiagnostics() async {
-    final generation = ++_generation;
     final account = ref.read(userProvider);
     final url = buildServerUrl(ref, pathSegments: ['Driftfin', 'v1', 'capabilities']);
     final legacyUrl = buildServerUrl(ref, pathSegments: ['Driftfin', 'Config']);
+    final generation = ++_generation;
     if (url.isEmpty || account == null) {
       clear();
       return (status: ServerIntegrationConfigStatus.notLoggedIn, detail: null);
@@ -186,6 +203,13 @@ class ServerIntegrationConfigNotifier extends StateNotifier<ServerIntegrationCon
         manualIntegrations: false,
         seerrCredentials: credentials?.origin == CredentialOrigin.plugin ? null : credentials,
       );
+    }
+    // Apply bootstrap settings for both automatic and manual refreshes.
+    final localUrl = result.config?.localUrl.trim() ?? '';
+    if (localUrl.isNotEmpty) ref.read(userProvider.notifier).setLocalURL(localUrl);
+    final seerr = result.config?.seerr;
+    if (seerr != null && seerr.isManaged && !seerr.viaPlugin) {
+      ref.read(userProvider.notifier).setSeerrServerUrl(seerr.url);
     }
     return (status: result.status, detail: result.detail);
   }

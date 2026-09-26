@@ -23,6 +23,7 @@ import 'package:driftfin/screens/settings/client_sections/client_settings_shortc
 import 'package:driftfin/screens/settings/settings_list_tile.dart';
 import 'package:driftfin/screens/settings/settings_scaffold.dart';
 import 'package:driftfin/screens/settings/widgets/crash_reporting_tile.dart';
+import 'package:driftfin/screens/settings/widgets/server_connection_tile.dart';
 import 'package:driftfin/screens/settings/widgets/password_reset_dialog.dart';
 import 'package:driftfin/screens/settings/widgets/settings_backup_actions.dart';
 import 'package:driftfin/screens/settings/widgets/settings_label_divider.dart';
@@ -106,24 +107,20 @@ class _AccountDeviceSettingsPageState extends ConsumerState<AccountDeviceSetting
       label: context.localized.settingsAccountDeviceTitle,
       items: [
         // ---- Account ----
-        ...settingsListGroup(
-          context,
-          SettingsLabelDivider(label: context.localized.settingsAccountSectionTitle),
-          [
-            SettingsListTileCheckbox(
-              label: Text(context.localized.incognitoModeLocal),
-              value: user?.incognitoMode ?? false,
-              subLabel: Text(context.localized.incognitoModeDesc),
-              onChanged: (value) => ref.read(userProvider.notifier).toggleIncognitoMode(),
-            ),
-            SettingsListTile(
-              label: Text(context.localized.password),
-              onTap: () => openPasswordResetDialog(context),
-            ),
-            Builder(builder: (context) {
+        ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.settingsAccountSectionTitle), [
+          SettingsListTileCheckbox(
+            label: Text(context.localized.incognitoModeLocal),
+            value: user?.incognitoMode ?? false,
+            subLabel: Text(context.localized.incognitoModeDesc),
+            onChanged: (value) => ref.read(userProvider.notifier).toggleIncognitoMode(),
+          ),
+          SettingsListTile(label: Text(context.localized.password), onTap: () => openPasswordResetDialog(context)),
+          Builder(
+            builder: (context) {
               final anyLanguageLabel = context.localized.anyLanguage;
-              final subtitleLanguagePreference =
-                  user?.userConfiguration?.subtitleLanguagePreference?.trim().toLowerCase();
+              final subtitleLanguagePreference = user?.userConfiguration?.subtitleLanguagePreference
+                  ?.trim()
+                  .toLowerCase();
               final hasSubtitleLanguagePreference = subtitleLanguagePreference?.isNotEmpty == true;
 
               final currentCulture = cultures.firstWhereOrNull(
@@ -149,99 +146,94 @@ class _AccountDeviceSettingsPageState extends ConsumerState<AccountDeviceSetting
                       selected: e.matchesLanguageCode(subtitleLanguagePreference),
                       label: Text(e.displayName ?? e.name ?? context.localized.unknown),
                       action: () {
-                        ref.read(userProvider.notifier).updateSubtitleLanguagePreference(
-                            e.threeLetterISOLanguageName?.toLowerCase() ?? e.twoLetterISOLanguageName?.toLowerCase());
+                        ref
+                            .read(userProvider.notifier)
+                            .updateSubtitleLanguagePreference(
+                              e.threeLetterISOLanguageName?.toLowerCase() ?? e.twoLetterISOLanguageName?.toLowerCase(),
+                            );
                       },
                     ),
                   ),
                 ],
               );
-            }),
-            SettingsListTileEnum(
-              id: SettingId.subtitleMode,
-              label: Text(context.localized.settingsProfileSubtitleMode),
-              current: user?.userConfiguration?.subtitleMode?.label(context) ?? context.localized.none,
-              itemBuilder: (context) => allowedSubModes
-                  .map(
-                    (mode) => ItemActionButton(
-                      selected: user?.userConfiguration?.subtitleMode == mode,
-                      label: Text(mode.label(context)),
-                      action: () {
-                        ref.read(userProvider.notifier).updateSubtitleMode(mode);
-                      },
-                    ),
-                  )
-                  .toList(),
-            ),
-            SettingsListTileCheckbox(
-              id: SettingId.includeHiddenItems,
-              label: Text(context.localized.includeHiddenItems),
-              subLabel: Text(context.localized.includeHiddenItemsDesc),
-              value: user?.includeHiddenViews ?? false,
-              onChanged: user?.updateNotificationsEnabled ?? false
-                  ? (val) async {
-                      final current = ref.read(userProvider);
-                      if (current == null || val == null) return;
-                      ref.read(userProvider.notifier).userState = current.copyWith(
-                        includeHiddenViews: val,
-                      );
-                      await ref.read(updateNotificationsProvider).registerBackgroundTask();
-                    }
-                  : null,
-            ),
-          ],
-        ),
+            },
+          ),
+          SettingsListTileEnum(
+            id: SettingId.subtitleMode,
+            label: Text(context.localized.settingsProfileSubtitleMode),
+            current: user?.userConfiguration?.subtitleMode?.label(context) ?? context.localized.none,
+            itemBuilder: (context) => allowedSubModes
+                .map(
+                  (mode) => ItemActionButton(
+                    selected: user?.userConfiguration?.subtitleMode == mode,
+                    label: Text(mode.label(context)),
+                    action: () {
+                      ref.read(userProvider.notifier).updateSubtitleMode(mode);
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+          SettingsListTileCheckbox(
+            id: SettingId.includeHiddenItems,
+            label: Text(context.localized.includeHiddenItems),
+            subLabel: Text(context.localized.includeHiddenItemsDesc),
+            value: user?.includeHiddenViews ?? false,
+            onChanged: user?.updateNotificationsEnabled ?? false
+                ? (val) async {
+                    final current = ref.read(userProvider);
+                    if (current == null || val == null) return;
+                    ref.read(userProvider.notifier).userState = current.copyWith(includeHiddenViews: val);
+                    await ref.read(updateNotificationsProvider).registerBackgroundTask();
+                  }
+                : null,
+          ),
+        ]),
         const SizedBox(height: 16),
 
         // ---- Device ----
-        ...settingsListGroup(
-          context,
-          SettingsLabelDivider(label: context.localized.settingsDeviceSectionTitle),
-          [
-            SettingsListTile(
-              id: SettingId.appLockEnabled,
-              label: Text(context.localized.settingSecurityApplockTitle),
-              subLabel: Text(user?.authMethod.name(context) ?? ""),
-              onTap: () => showAuthOptionsDialogue(
-                context,
-                user!,
-                (newUser) {
-                  ref.read(userProvider.notifier).updateUser(newUser);
-                },
-              ),
-            ),
-            SettingsListTileCheckbox(
-              id: SettingId.openAuthAtLaunch,
-              label: Text(context.localized.profileSettingsOpenAuthAtLaunch),
-              value: user?.askForAuthOnLaunch ?? false,
-              onChanged: user?.authMethod.shouldLock == true
-                  ? (val) async {
-                      if (user == null || val == null) return;
-                      ref.read(userProvider.notifier).updateUser(
-                            user.copyWith(askForAuthOnLaunch: val),
-                          );
-                    }
-                  : null,
-            ),
-            SettingsListTile(
-              id: SettingId.appLockTimeout,
-              label: Text(context.localized.timeOut),
-              subLabel: Text(timePickerString(context, clientSettings.timeOut)),
-              onTap: () async {
-                final timePicker = await showSimpleDurationPicker(
-                  context: context,
-                  initialValue: clientSettings.timeOut ?? const Duration(),
-                );
+        ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.settingsDeviceSectionTitle), [
+          SettingsListTile(
+            id: SettingId.appLockEnabled,
+            label: Text(context.localized.settingSecurityApplockTitle),
+            subLabel: Text(user?.authMethod.name(context) ?? ""),
+            onTap: () => showAuthOptionsDialogue(context, user!, (newUser) {
+              ref.read(userProvider.notifier).updateUser(newUser);
+            }),
+          ),
+          SettingsListTileCheckbox(
+            id: SettingId.openAuthAtLaunch,
+            label: Text(context.localized.profileSettingsOpenAuthAtLaunch),
+            value: user?.askForAuthOnLaunch ?? false,
+            onChanged: user?.authMethod.shouldLock == true
+                ? (val) async {
+                    if (user == null || val == null) return;
+                    ref.read(userProvider.notifier).updateUser(user.copyWith(askForAuthOnLaunch: val));
+                  }
+                : null,
+          ),
+          SettingsListTile(
+            id: SettingId.appLockTimeout,
+            label: Text(context.localized.timeOut),
+            subLabel: Text(timePickerString(context, clientSettings.timeOut)),
+            onTap: () async {
+              final timePicker = await showSimpleDurationPicker(
+                context: context,
+                initialValue: clientSettings.timeOut ?? const Duration(),
+              );
 
-                if (timePicker == null) return;
+              if (timePicker == null) return;
 
-                ref.read(clientSettingsProvider.notifier).setTimeOut(timePicker != Duration.zero
-                    ? Duration(minutes: timePicker.inMinutes, seconds: timePicker.inSeconds % 60)
-                    : null);
-              },
-            ),
-          ],
-        ),
+              ref
+                  .read(clientSettingsProvider.notifier)
+                  .setTimeOut(
+                    timePicker != Duration.zero
+                        ? Duration(minutes: timePicker.inMinutes, seconds: timePicker.inSeconds % 60)
+                        : null,
+                  );
+            },
+          ),
+        ]),
         if (AdaptiveLayout.inputDeviceOf(context) != InputDevice.touch) ...[
           const SizedBox(height: 12),
           ...buildClientSettingsShortCuts(context, ref),
@@ -266,293 +258,283 @@ class _AccountDeviceSettingsPageState extends ConsumerState<AccountDeviceSetting
           ]),
         ],
         const SizedBox(height: 12),
-        ...settingsListGroup(
-          context,
-          SettingsLabelDivider(label: context.localized.advanced),
-          [
+        ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.advanced), [
+          SettingsListTile(
+            label: Text(context.localized.incognitoModeGlobal),
+            subLabel: Text(context.localized.incognitoModeDesc),
+            onTap: () => ref.read(incognitoModeProvider.notifier).state = !ref.read(incognitoModeProvider),
+            trailing: Switch(
+              value: ref.watch(incognitoModeProvider),
+              onChanged: (value) => ref.read(incognitoModeProvider.notifier).state = value,
+            ),
+          ),
+          if (defaultTargetPlatform == TargetPlatform.android)
+            Column(
+              children: [
+                SettingsListTileCheckbox(
+                  label: Text(context.localized.leanBackModeTitle),
+                  subLabel: Text(context.localized.leanBackModeDesc),
+                  value: ref.watch(clientSettingsProvider.select((value) => value.forceLeanBackMode)),
+                  onChanged: (value) => ref.read(clientSettingsProvider.notifier).setForceLeanBackMode(value ?? false),
+                ),
+                SettingsMessageBox(context.localized.leanBackModeInfo),
+              ],
+            ),
+          if (AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad)
             SettingsListTile(
-              label: Text(context.localized.incognitoModeGlobal),
-              subLabel: Text(context.localized.incognitoModeDesc),
-              onTap: () => ref.read(incognitoModeProvider.notifier).state = !ref.read(incognitoModeProvider),
+              id: SettingId.useSystemIME,
+              label: Text(context.localized.clientSettingsUseSystemIMETitle),
+              subLabel: Text(context.localized.clientSettingsUseSystemIMEDesc),
+              onTap: () => ref
+                  .read(clientSettingsProvider.notifier)
+                  .useSystemIME(!ref.read(clientSettingsProvider.select((value) => value.useSystemIME))),
               trailing: Switch(
-                value: ref.watch(incognitoModeProvider),
-                onChanged: (value) => ref.read(incognitoModeProvider.notifier).state = value,
+                value: ref.watch(clientSettingsProvider.select((value) => value.useSystemIME)),
+                onChanged: (value) => ref.read(clientSettingsProvider.notifier).useSystemIME(value),
               ),
             ),
-            if (defaultTargetPlatform == TargetPlatform.android)
-              Column(
-                children: [
-                  SettingsListTileCheckbox(
-                    label: Text(context.localized.leanBackModeTitle),
-                    subLabel: Text(context.localized.leanBackModeDesc),
-                    value: ref.watch(clientSettingsProvider.select((value) => value.forceLeanBackMode)),
-                    onChanged: (value) =>
-                        ref.read(clientSettingsProvider.notifier).setForceLeanBackMode(value ?? false),
-                  ),
-                  SettingsMessageBox(
-                    context.localized.leanBackModeInfo,
-                  ),
-                ],
-              ),
-            if (AdaptiveLayout.inputDeviceOf(context) == InputDevice.dPad)
-              SettingsListTile(
-                id: SettingId.useSystemIME,
-                label: Text(context.localized.clientSettingsUseSystemIMETitle),
-                subLabel: Text(context.localized.clientSettingsUseSystemIMEDesc),
-                onTap: () => ref
-                    .read(clientSettingsProvider.notifier)
-                    .useSystemIME(!ref.read(clientSettingsProvider.select((value) => value.useSystemIME))),
-                trailing: Switch(
-                  value: ref.watch(clientSettingsProvider.select((value) => value.useSystemIME)),
-                  onChanged: (value) => ref.read(clientSettingsProvider.notifier).useSystemIME(value),
+          SettingsListTile(
+            id: SettingId.layoutSizes,
+            label: Text(context.localized.settingsLayoutSizesTitle),
+            subLabel: Text(context.localized.settingsLayoutSizesDesc),
+            onTap: () async {
+              final newItems = await openMultiSelectOptions<ViewSize>(
+                context,
+                label: context.localized.settingsLayoutSizesTitle,
+                items: ViewSize.values,
+                allowMultiSelection: true,
+                selected: ref.read(homeSettingsProvider.select((value) => value.layoutStates.toList())),
+                itemBuilder: (type, selected, tap) => CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: selected,
+                  onChanged: (value) => tap(),
+                  title: Text(type.label(context)),
                 ),
-              ),
-            SettingsListTile(
-              id: SettingId.layoutSizes,
-              label: Text(context.localized.settingsLayoutSizesTitle),
-              subLabel: Text(context.localized.settingsLayoutSizesDesc),
-              onTap: () async {
-                final newItems = await openMultiSelectOptions<ViewSize>(
-                  context,
-                  label: context.localized.settingsLayoutSizesTitle,
-                  items: ViewSize.values,
-                  allowMultiSelection: true,
-                  selected: ref.read(homeSettingsProvider.select((value) => value.layoutStates.toList())),
-                  itemBuilder: (type, selected, tap) => CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    value: selected,
-                    onChanged: (value) => tap(),
-                    title: Text(type.label(context)),
-                  ),
-                );
-                ref.read(homeSettingsProvider.notifier).setViewSize(newItems.toSet());
-              },
-              trailing: Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    spacing: 4,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: ViewSize.values.map((e) {
-                      final isCurrent = AdaptiveLayout.viewSizeOf(context) == e;
-                      final isEnabled =
-                          ref.watch(homeSettingsProvider.select((value) => value.layoutStates.contains(e)));
-                      return Row(
-                        spacing: 4,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(e.label(context),
-                              style: TextStyle(color: isEnabled ? null : Theme.of(context).disabledColor)),
-                          if (isCurrent) const Icon(IconsaxPlusLinear.tick_circle, size: 16),
-                        ],
-                      );
-                    }).toList(),
-                  ),
+              );
+              ref.read(homeSettingsProvider.notifier).setViewSize(newItems.toSet());
+            },
+            trailing: Card(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              shadowColor: Colors.transparent,
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  spacing: 4,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: ViewSize.values.map((e) {
+                    final isCurrent = AdaptiveLayout.viewSizeOf(context) == e;
+                    final isEnabled = ref.watch(homeSettingsProvider.select((value) => value.layoutStates.contains(e)));
+                    return Row(
+                      spacing: 4,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          e.label(context),
+                          style: TextStyle(color: isEnabled ? null : Theme.of(context).disabledColor),
+                        ),
+                        if (isCurrent) const Icon(IconsaxPlusLinear.tick_circle, size: 16),
+                      ],
+                    );
+                  }).toList(),
                 ),
               ),
             ),
-            SettingsListTile(
-              id: SettingId.layoutModes,
-              label: Text(context.localized.settingsLayoutModesTitle),
-              subLabel: Text(context.localized.settingsLayoutModesDesc),
-              onTap: () async {
-                final newItems = await openMultiSelectOptions<LayoutMode>(
-                  context,
-                  label: context.localized.settingsLayoutModesTitle,
-                  items: LayoutMode.values,
-                  allowMultiSelection: true,
-                  selected: ref.read(homeSettingsProvider.select((value) => value.screenLayouts.toList())),
-                  itemBuilder: (type, selected, tap) => CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    value: selected,
-                    onChanged: (value) => tap(),
-                    title: Text(type.label(context)),
-                  ),
-                );
-                ref.read(homeSettingsProvider.notifier).setLayoutModes(newItems.toSet());
-              },
-              trailing: Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    spacing: 4,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: LayoutMode.values.map((e) {
-                      final isCurrent = AdaptiveLayout.layoutModeOf(context) == e;
-                      final isEnabled =
-                          ref.watch(homeSettingsProvider.select((value) => value.screenLayouts.contains(e)));
-                      return Row(
-                        spacing: 4,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(e.label(context),
-                              style: TextStyle(color: isEnabled ? null : Theme.of(context).disabledColor)),
-                          if (isCurrent) const Icon(IconsaxPlusLinear.tick_circle, size: 16),
-                        ],
-                      );
-                    }).toList(),
-                  ),
+          ),
+          SettingsListTile(
+            id: SettingId.layoutModes,
+            label: Text(context.localized.settingsLayoutModesTitle),
+            subLabel: Text(context.localized.settingsLayoutModesDesc),
+            onTap: () async {
+              final newItems = await openMultiSelectOptions<LayoutMode>(
+                context,
+                label: context.localized.settingsLayoutModesTitle,
+                items: LayoutMode.values,
+                allowMultiSelection: true,
+                selected: ref.read(homeSettingsProvider.select((value) => value.screenLayouts.toList())),
+                itemBuilder: (type, selected, tap) => CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: selected,
+                  onChanged: (value) => tap(),
+                  title: Text(type.label(context)),
+                ),
+              );
+              ref.read(homeSettingsProvider.notifier).setLayoutModes(newItems.toSet());
+            },
+            trailing: Card(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              shadowColor: Colors.transparent,
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  spacing: 4,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: LayoutMode.values.map((e) {
+                    final isCurrent = AdaptiveLayout.layoutModeOf(context) == e;
+                    final isEnabled = ref.watch(
+                      homeSettingsProvider.select((value) => value.screenLayouts.contains(e)),
+                    );
+                    return Row(
+                      spacing: 4,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          e.label(context),
+                          style: TextStyle(color: isEnabled ? null : Theme.of(context).disabledColor),
+                        ),
+                        if (isCurrent) const Icon(IconsaxPlusLinear.tick_circle, size: 16),
+                      ],
+                    );
+                  }).toList(),
                 ),
               ),
             ),
-            SettingsListTile(
-              label: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 8,
-                children: [
-                  if (user?.credentials.localUrl?.isNotEmpty == true)
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: ref.watch(localConnectionAvailableProvider)
-                            ? Colors.greenAccent
-                            : Theme.of(context).colorScheme.error,
-                        shape: BoxShape.circle,
-                      ),
+          ),
+          const ServerConnectionTile(),
+          SettingsListTile(
+            label: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 8,
+              children: [
+                if (user?.credentials.localUrl?.isNotEmpty == true)
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: ref.watch(localConnectionAvailableProvider)
+                          ? Colors.greenAccent
+                          : Theme.of(context).colorScheme.error,
+                      shape: BoxShape.circle,
                     ),
-                  Text(context.localized.settingsLocalUrlTitle),
-                ],
-              ),
-              subLabel: Text(user?.credentials.localUrl ?? context.localized.none),
-              onTap: () {
-                openSimpleTextInput(
-                  context,
-                  user?.credentials.localUrl,
-                  (value) => ref.read(userProvider.notifier).setLocalURL(value),
-                  context.localized.settingsLocalUrlSetTitle,
-                  context.localized.settingsLocalUrlSetDesc,
-                );
-              },
+                  ),
+                Text(context.localized.settingsLocalUrlTitle),
+              ],
             ),
-          ],
-        ),
+            subLabel: Text(user?.credentials.localUrl ?? context.localized.none),
+            onTap: () {
+              openSimpleTextInput(
+                context,
+                user?.credentials.localUrl,
+                (value) => ref.read(userProvider.notifier).setLocalURL(value),
+                context.localized.settingsLocalUrlSetTitle,
+                context.localized.settingsLocalUrlSetDesc,
+              );
+            },
+          ),
+        ]),
         if (ref.watch(supportsNotificationsProvider)) ...[
           const SizedBox(height: 16),
-          ...settingsListGroup(
-            context,
-            SettingsLabelDivider(label: context.localized.notifications),
-            [
-              Column(
-                children: [
-                  SettingsListTileEnum(
-                    id: SettingId.updateCheckInterval,
-                    label: Text(context.localized.updateCheckInterval),
-                    subLabel: Text(context.localized.updateCheckIntervalDesc),
-                    current: timePickerString(context, clientSettings.updateNotificationsInterval),
-                    itemBuilder: (context) {
-                      final durations = const [
-                        Duration(minutes: 15),
-                        Duration(minutes: 30),
-                        Duration(hours: 1),
-                        Duration(hours: 3),
-                        Duration(hours: 6),
-                        Duration(hours: 12),
-                        Duration(days: 1),
-                      ];
-                      return durations.map((duration) {
-                        return ItemActionButton(
-                          label: Text(timePickerString(context, duration)),
-                          action: () =>
-                              ref.read(clientSettingsProvider.notifier).setUpdateNotificationsInterval(duration),
-                        );
-                      }).toList();
-                    },
-                  ),
-                  if (lastUpdateAt != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          context.localized.lastUpdateAt(lastUpdateAt, lastUpdateAt),
-                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha(155),
-                              ),
-                        ),
+          ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.notifications), [
+            Column(
+              children: [
+                SettingsListTileEnum(
+                  id: SettingId.updateCheckInterval,
+                  label: Text(context.localized.updateCheckInterval),
+                  subLabel: Text(context.localized.updateCheckIntervalDesc),
+                  current: timePickerString(context, clientSettings.updateNotificationsInterval),
+                  itemBuilder: (context) {
+                    final durations = const [
+                      Duration(minutes: 15),
+                      Duration(minutes: 30),
+                      Duration(hours: 1),
+                      Duration(hours: 3),
+                      Duration(hours: 6),
+                      Duration(hours: 12),
+                      Duration(days: 1),
+                    ];
+                    return durations.map((duration) {
+                      return ItemActionButton(
+                        label: Text(timePickerString(context, duration)),
+                        action: () =>
+                            ref.read(clientSettingsProvider.notifier).setUpdateNotificationsInterval(duration),
+                      );
+                    }).toList();
+                  },
+                ),
+                if (lastUpdateAt != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        context.localized.lastUpdateAt(lastUpdateAt, lastUpdateAt),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(color: Theme.of(context).textTheme.bodyMedium?.color?.withAlpha(155)),
                       ),
                     ),
-                  SettingsMessageBox(
-                    context.localized.notificationsIntervalClientReminder,
-                    messageType: MessageType.info,
                   ),
-                  if (enabledBatteryOptimization == true)
-                    SettingsMessageBox(
-                      context.localized.batteryOptimizationDesc,
-                      messageType: MessageType.warning,
-                      onTap: () async {
-                        await BatteryOptimization.openBatteryOptimizationSettings();
-                        if (!mounted) return;
-                        await checkBatteryOptimization();
-                      },
-                    ),
-                  if (!kIsWeb && Platform.isIOS)
-                    SettingsMessageBox(
-                      context.localized.notificationTimerIOSWarning,
-                      messageType: MessageType.info,
-                    ),
-                ],
-              ),
-              SettingsListTileCheckbox(
-                id: SettingId.showNewItemNotification,
-                label: Text(context.localized.showNewItemNotificationTitle),
-                value: user?.updateNotificationsEnabled ?? false,
-                onChanged: (val) async {
-                  final current = ref.read(userProvider);
-                  if (current == null || val == null) return;
-
-                  ref.read(userProvider.notifier).userState = current.copyWith(updateNotificationsEnabled: val);
-
-                  if (val) {
-                    await NotificationService.requestPermission();
-                    await ref.read(updateNotificationsProvider).registerBackgroundTask();
-                  } else {
-                    await ref.read(updateNotificationsProvider).conditionallyUnregisterBackgroundTask();
-                  }
-                },
-              ),
-              if (kDebugMode) ...[
-                SettingsListTile(
-                  label: const Text('Show notification (debug)'),
-                  onTap: () async => await ref.read(updateNotificationsProvider).executeBackgroundTask(),
+                SettingsMessageBox(
+                  context.localized.notificationsIntervalClientReminder,
+                  messageType: MessageType.info,
                 ),
-                SettingsListTile(
-                  label: const Text('Cancel all tasks (debug)'),
-                  onTap: () async => await ref.read(updateNotificationsProvider).cancelAllTasks(),
-                ),
+                if (enabledBatteryOptimization == true)
+                  SettingsMessageBox(
+                    context.localized.batteryOptimizationDesc,
+                    messageType: MessageType.warning,
+                    onTap: () async {
+                      await BatteryOptimization.openBatteryOptimizationSettings();
+                      if (!mounted) return;
+                      await checkBatteryOptimization();
+                    },
+                  ),
+                if (!kIsWeb && Platform.isIOS)
+                  SettingsMessageBox(context.localized.notificationTimerIOSWarning, messageType: MessageType.info),
               ],
+            ),
+            SettingsListTileCheckbox(
+              id: SettingId.showNewItemNotification,
+              label: Text(context.localized.showNewItemNotificationTitle),
+              value: user?.updateNotificationsEnabled ?? false,
+              onChanged: (val) async {
+                final current = ref.read(userProvider);
+                if (current == null || val == null) return;
+
+                ref.read(userProvider.notifier).userState = current.copyWith(updateNotificationsEnabled: val);
+
+                if (val) {
+                  await NotificationService.requestPermission();
+                  await ref.read(updateNotificationsProvider).registerBackgroundTask();
+                } else {
+                  await ref.read(updateNotificationsProvider).conditionallyUnregisterBackgroundTask();
+                }
+              },
+            ),
+            if (kDebugMode) ...[
+              SettingsListTile(
+                label: const Text('Show notification (debug)'),
+                onTap: () async => await ref.read(updateNotificationsProvider).executeBackgroundTask(),
+              ),
+              SettingsListTile(
+                label: const Text('Cancel all tasks (debug)'),
+                onTap: () async => await ref.read(updateNotificationsProvider).cancelAllTasks(),
+              ),
             ],
-          ),
+          ]),
         ],
         const SizedBox(height: 16),
 
         // ---- Sync & Backup ----
-        ...settingsListGroup(
-          context,
-          SettingsLabelDivider(label: context.localized.settingsSyncBackupSectionTitle),
-          [
-            SettingsListTile(
-              label: Text(context.localized.syncNow),
-              subLabel: Builder(builder: (context) {
+        ...settingsListGroup(context, SettingsLabelDivider(label: context.localized.settingsSyncBackupSectionTitle), [
+          SettingsListTile(
+            label: Text(context.localized.syncNow),
+            subLabel: Builder(
+              builder: (context) {
                 final syncedAt = ref.watch(userProvider.select((value) => value?.userSettings?.syncedAt));
                 final parsed = syncedAt == null ? null : DateTime.tryParse(syncedAt);
-                return Text(parsed == null
-                    ? context.localized.syncedNever
-                    : context.localized.syncedAtLabel(DateFormat.yMd().add_jm().format(parsed.toLocal())));
-              }),
-              onTap: () => ref.read(configSyncProvider).syncNow(),
-              trailing: const Icon(Icons.cloud_sync_outlined),
+                return Text(
+                  parsed == null
+                      ? context.localized.syncedNever
+                      : context.localized.syncedAtLabel(DateFormat.yMd().add_jm().format(parsed.toLocal())),
+                );
+              },
             ),
-            Builder(builder: (context) => buildCrashReportingTile(context, ref)),
-            const SettingsBackupActions(),
-          ],
-        ),
+            onTap: () => ref.read(configSyncProvider).syncNow(),
+            trailing: const Icon(Icons.cloud_sync_outlined),
+          ),
+          Builder(builder: (context) => buildCrashReportingTile(context, ref)),
+          const SettingsBackupActions(),
+        ]),
       ],
     );
   }
