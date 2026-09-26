@@ -22,7 +22,9 @@ import 'package:driftfin/providers/discovery_search_provider.dart';
 import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
+import 'package:driftfin/screens/offline/offline_catalog_screen.dart';
 import 'package:driftfin/screens/collections/add_to_collection.dart';
 import 'package:driftfin/screens/library_search/widgets/library_filter_chips.dart';
 import 'package:driftfin/screens/library_search/widgets/discovery_search_results.dart';
@@ -168,6 +170,9 @@ class _LibrarySearchScreenState extends ConsumerState<LibrarySearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(offlineStateProvider)) {
+      return OfflineCatalogScreen(favorites: widget.favourites == true);
+    }
     final isEmptySearchScreen = widget.parentId == null && widget.favourites == null;
     final librarySearchResults = ref.watch(providerKey);
     final libraryOnly = hasLibraryOnlySearchFilters(librarySearchResults);

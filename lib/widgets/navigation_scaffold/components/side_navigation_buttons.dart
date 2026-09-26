@@ -14,6 +14,7 @@ import 'package:driftfin/providers/library_filters_provider.dart';
 import 'package:driftfin/providers/playlist_provider.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
 import 'package:driftfin/providers/views_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/screens/settings/filters/filters_dialog_popup.dart';
 import 'package:driftfin/theme.dart';
 import 'package:driftfin/util/adaptive_layout/adaptive_layout.dart';
@@ -45,15 +46,18 @@ class SideNavigationButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final offline = ref.watch(offlineStateProvider);
     final expandedSideBar = ref.watch(clientSettingsProvider.select((value) => value.expandSideBar));
-    final views = ref.watch(viewsProvider.select((value) => value.views));
+    final List<ViewModel> views = offline ? [] : ref.watch(viewsProvider.select((value) => value.views));
     final usePostersForLibrary = ref.watch(clientSettingsProvider.select((value) => value.usePosterForLibrary));
-    final musicDashboard = ref.watch(musicDashboardModeProvider);
-    final playLists = ref.watch(playlistProvider.select((value) => value.collections));
+    final musicDashboard = !offline && ref.watch(musicDashboardModeProvider);
+    final Map<PlaylistModel, bool?> playLists = offline
+        ? {}
+        : ref.watch(playlistProvider.select((value) => value.collections));
 
-    final filters = ref.watch(libraryFiltersByKeyProvider(
-      musicDashboard ? FilterSortKey.musicDashboard : FilterSortKey.sideBar,
-    ));
+    final List<LibraryFiltersModel> filters = offline
+        ? []
+        : ref.watch(libraryFiltersByKeyProvider(musicDashboard ? FilterSortKey.musicDashboard : FilterSortKey.sideBar));
 
     final List<Widget> navItems = [
       if (filters.isNotEmpty)
@@ -69,28 +73,20 @@ class SideNavigationButtons extends ConsumerWidget {
               : null,
           shouldExpand: shouldExpand,
         ),
-      ...filters.map(
-        (filter) {
-          final viewsInFilter = views.where((view) => filter.ids.contains(view.id)).toList();
-          return FilterNavigationItem(
-            views: viewsInFilter,
-            filter: filter,
-            expandedSideBar: expandedSideBar,
-            usePostersForLibrary: usePostersForLibrary,
-            shouldExpand: shouldExpand,
-            toolTipPosition: tooltipPosition,
-          );
-        },
-      ),
+      ...filters.map((filter) {
+        final viewsInFilter = views.where((view) => filter.ids.contains(view.id)).toList();
+        return FilterNavigationItem(
+          views: viewsInFilter,
+          filter: filter,
+          expandedSideBar: expandedSideBar,
+          usePostersForLibrary: usePostersForLibrary,
+          shouldExpand: shouldExpand,
+          toolTipPosition: tooltipPosition,
+        );
+      }),
       if (views.isNotEmpty) LabelDivider(label: context.localized.library(2), shouldExpand: shouldExpand),
       if (musicDashboard) ...[
-        ...buildMusicDashboardNavItems(
-          context,
-          views,
-          playLists,
-          shouldExpand,
-          ref,
-        )
+        ...buildMusicDashboardNavItems(context, views, playLists, shouldExpand, ref),
       ] else ...[
         ...views.map(
           (view) => ViewNavigationItem(
@@ -100,8 +96,8 @@ class SideNavigationButtons extends ConsumerWidget {
             shouldExpand: shouldExpand,
             toolTipPosition: tooltipPosition,
           ),
-        )
-      ]
+        ),
+      ],
     ];
 
     final overFlowItems = [
@@ -121,19 +117,11 @@ class SideNavigationButtons extends ConsumerWidget {
                 : Card(
                     child: Padding(
                       padding: const EdgeInsets.all(12),
-                      child: Text(
-                        destination.label,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
+                      child: Text(destination.label, style: Theme.of(context).textTheme.titleSmall),
                     ),
                   ),
             position: tooltipPosition,
-            child: destination.toNavigationButton(
-              currentIndex == index,
-              true,
-              navFocusNode: index == 0,
-              shouldExpand,
-            ),
+            child: destination.toNavigationButton(currentIndex == index, true, navFocusNode: index == 0, shouldExpand),
           ),
         ),
         if (largeBar) ...[
@@ -157,10 +145,7 @@ class SideNavigationButtons extends ConsumerWidget {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(12),
-                            child: Text(
-                              context.localized.moreOptions,
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
+                            child: Text(context.localized.moreOptions, style: Theme.of(context).textTheme.titleSmall),
                           ),
                         ),
                   position: tooltipPosition,
@@ -179,93 +164,77 @@ class SideNavigationButtons extends ConsumerWidget {
                                 borderRadius: FladderTheme.smallShape.borderRadius,
                                 child: const SizedBox.square(
                                   dimension: 50,
-                                  child: Card(
-                                    child: Icon(IconsaxPlusLinear.arrow_square_down),
-                                  ),
+                                  child: Card(child: Icon(IconsaxPlusLinear.arrow_square_down)),
                                 ),
                               )
                             : null,
                         horizontal: true,
                       ),
                     ),
-                    itemBuilder: (context) => overFlowItems.sublist(overFlowItems.length - remainingCount).map(
-                      (e) {
-                        if (e is ViewModel) {
-                          return PopupMenuItem(
-                            onTap: () => e.navigateToView(context),
-                            child: Row(
-                              spacing: 8,
-                              children: [
-                                usePostersForLibrary
-                                    ? e.createIcon(context, selected: false)
-                                    : Icon(e.collectionType.iconOutlined),
-                                Text(e.name),
-                              ],
-                            ),
-                          );
-                        } else if (e is LibraryFiltersModel) {
-                          return PopupMenuItem(
-                            onTap: () => e.navigateTo(context),
-                            child: Row(
-                              spacing: 8,
-                              children: [
-                                e.createIcon(
-                                      context,
-                                      usePostersForLibrary: usePostersForLibrary,
-                                      expandedSideBar: false,
-                                      selected: false,
-                                      views: views,
-                                    ) ??
-                                    const Icon(IconsaxPlusLinear.document_filter),
-                                Text(e.name),
-                              ],
-                            ),
-                          );
-                        } else if (e is PlaylistModel) {
-                          final derivePosterColor =
-                              ref.watch(clientSettingsProvider.select((value) => value.dynamicPosterColors));
-                          final backgroundColor = derivePosterColor
-                              ? e.name.toColor.harmonizeWith(Theme.of(context).colorScheme.surface)
-                              : Theme.of(context).colorScheme.surface;
-                          return PopupMenuItem(
-                            onTap: () => e.navigateTo(context),
-                            child: Row(
-                              spacing: 8,
-                              children: [
-                                e.iconWidget(
-                                  context,
-                                  usePoster: usePostersForLibrary,
-                                  backgroundColor: backgroundColor,
-                                ),
-                                Text(e.name),
-                              ],
-                            ),
-                          );
-                        } else if (e is MusicLibraryItem) {
-                          return PopupMenuItem(
-                            onTap: () => e.onTap(),
-                            child: Row(
-                              spacing: 8,
-                              children: [
-                                e.icon,
-                                Text(e.label),
-                              ],
-                            ),
-                          );
-                        }
-                        return const PopupMenuItem(
-                          onTap: null,
-                          child: SizedBox.shrink(),
+                    itemBuilder: (context) => overFlowItems.sublist(overFlowItems.length - remainingCount).map((e) {
+                      if (e is ViewModel) {
+                        return PopupMenuItem(
+                          onTap: () => e.navigateToView(context),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              usePostersForLibrary
+                                  ? e.createIcon(context, selected: false)
+                                  : Icon(e.collectionType.iconOutlined),
+                              Text(e.name),
+                            ],
+                          ),
                         );
-                      },
-                    ).toList(),
+                      } else if (e is LibraryFiltersModel) {
+                        return PopupMenuItem(
+                          onTap: () => e.navigateTo(context),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              e.createIcon(
+                                    context,
+                                    usePostersForLibrary: usePostersForLibrary,
+                                    expandedSideBar: false,
+                                    selected: false,
+                                    views: views,
+                                  ) ??
+                                  const Icon(IconsaxPlusLinear.document_filter),
+                              Text(e.name),
+                            ],
+                          ),
+                        );
+                      } else if (e is PlaylistModel) {
+                        final derivePosterColor = ref.watch(
+                          clientSettingsProvider.select((value) => value.dynamicPosterColors),
+                        );
+                        final backgroundColor = derivePosterColor
+                            ? e.name.toColor.harmonizeWith(Theme.of(context).colorScheme.surface)
+                            : Theme.of(context).colorScheme.surface;
+                        return PopupMenuItem(
+                          onTap: () => e.navigateTo(context),
+                          child: Row(
+                            spacing: 8,
+                            children: [
+                              e.iconWidget(context, usePoster: usePostersForLibrary, backgroundColor: backgroundColor),
+                              Text(e.name),
+                            ],
+                          ),
+                        );
+                      } else if (e is MusicLibraryItem) {
+                        return PopupMenuItem(
+                          onTap: () => e.onTap(),
+                          child: Row(spacing: 8, children: [e.icon, Text(e.label)]),
+                        );
+                      }
+                      return const PopupMenuItem(onTap: null, child: SizedBox.shrink());
+                    }).toList(),
                   ),
                 ),
               ),
             )
           else
             ...navItems,
-        ]
+        ],
       ],
     );
   }
@@ -276,12 +245,7 @@ class LabelDivider extends StatelessWidget {
   final Widget? action;
   final bool shouldExpand;
 
-  const LabelDivider({
-    required this.label,
-    this.action,
-    required this.shouldExpand,
-    super.key,
-  });
+  const LabelDivider({required this.label, this.action, required this.shouldExpand, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -294,18 +258,14 @@ class LabelDivider extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8),
               child: Text(
                 label,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.75),
-                    ),
+                style: Theme.of(context).textTheme.bodyMedium
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.75)),
               ),
             ),
           ),
         const SizedBox(width: 8),
         Expanded(
-          child: Divider(
-            indent: shouldExpand ? 0 : 16,
-            endIndent: action != null ? 0 : 16,
-          ),
+          child: Divider(indent: shouldExpand ? 0 : 16, endIndent: action != null ? 0 : 16),
         ),
         if (action != null && shouldExpand) action!,
       ],

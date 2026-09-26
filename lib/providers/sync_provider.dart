@@ -82,6 +82,7 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
   }
 
   Future<void> updateSyncStates() async {
+    if (ref.read(offlineStateProvider)) return;
     final lastState = (await _db.getAllItems.get())
         .where((item) => item.unSyncedData && item.userData != null)
         .toList();
@@ -315,6 +316,8 @@ class SyncNotifier extends StateNotifier<SyncSettingsModel> {
     if (id == null) return null;
     return await _db.getItem(id).getSingleOrNull();
   }
+
+  Stream<List<SyncedItem>> watchAllItems() => _db.getAllItems.watch();
 
   Stream<SyncedItem?> watchItem(String id) => _db.getItem(id).watchSingleOrNull();
 

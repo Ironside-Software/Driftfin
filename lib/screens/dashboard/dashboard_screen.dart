@@ -22,7 +22,9 @@ import 'package:driftfin/providers/settings/home_settings_provider.dart';
 import 'package:driftfin/providers/smart_shelves_provider.dart';
 import 'package:driftfin/providers/user_provider.dart';
 import 'package:driftfin/providers/views_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
+import 'package:driftfin/screens/offline/offline_catalog_screen.dart';
 import 'package:driftfin/screens/dashboard/home_banner_widget.dart';
 import 'package:driftfin/screens/dashboard/music_dashboard_screen.dart';
 import 'package:driftfin/screens/home_screen.dart';
@@ -62,7 +64,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       _refreshIndicatorKey.currentState?.show();
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(livingHomeProvider.notifier).refreshIfStale();
+      if (mounted && !ref.read(offlineStateProvider)) {
+        ref.read(livingHomeProvider.notifier).refreshIfStale();
+      }
     });
   }
 
@@ -73,7 +77,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Future<void> _refreshHome() async {
-    if (mounted) {
+    if (mounted && !ref.read(offlineStateProvider)) {
       refreshHomeCollections();
       ref.invalidate(homeCollectionsProvider);
       ref.invalidate(smartShelvesProvider);
@@ -88,6 +92,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (ref.watch(offlineStateProvider)) return const OfflineCatalogScreen(home: true);
+
     if (ref.watch(musicDashboardModeProvider)) {
       return const MusicDashboardScreen();
     }

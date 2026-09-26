@@ -6,6 +6,7 @@ import 'package:iconsax_plus/iconsax_plus.dart';
 
 import 'package:driftfin/models/settings/client_settings_model.dart';
 import 'package:driftfin/providers/settings/client_settings_provider.dart';
+import 'package:driftfin/providers/connectivity_provider.dart';
 import 'package:driftfin/routes/auto_router.dart';
 import 'package:driftfin/routes/auto_router.gr.dart';
 import 'package:driftfin/screens/shared/animated_fade_size.dart';
@@ -47,12 +48,7 @@ class SideNavigationRail extends ConsumerWidget {
     final expandedWidth = 200.0;
 
     final padding = MediaQuery.paddingOf(context);
-    final directionalPadding = EdgeInsetsDirectional.fromSTEB(
-      padding.left,
-      padding.top,
-      padding.right,
-      padding.bottom,
-    );
+    final directionalPadding = EdgeInsetsDirectional.fromSTEB(padding.left, padding.top, padding.right, padding.bottom);
     final startInset = directionalPadding.resolve(textDirection).left;
     final tooltipPosition = isRtl ? TooltipPosition.left : TooltipPosition.right;
 
@@ -62,22 +58,22 @@ class SideNavigationRail extends ConsumerWidget {
     final isDesktop = AdaptiveLayout.of(context).isDesktop;
 
     final railPadding = directionalPadding
-        .copyWith(
-          start: startInset,
-          end: 0,
-          top: isDesktop ? directionalPadding.top : null,
-        )
+        .copyWith(start: startInset, end: 0, top: isDesktop ? directionalPadding.top : null)
         .resolve(textDirection);
     final collapsedWidth = 90.0 + startInset;
 
     final fullScreenChildRoute = fullScreenRoutes.contains(context.router.current.name);
 
-    final hasOverlay = AdaptiveLayout.layoutModeOf(context) == LayoutMode.dual ||
+    final hasOverlay =
+        AdaptiveLayout.layoutModeOf(context) == LayoutMode.dual ||
         homeRoutes.any((element) => element.name.contains(context.router.current.name));
 
-    final useBlurredBackground = ref.watch(clientSettingsProvider.select(
-          (value) => value.backgroundImage == BackgroundType.blurred && value.enableBlurEffects,
-        )) &&
+    final useBlurredBackground =
+        ref.watch(
+          clientSettingsProvider.select(
+            (value) => value.backgroundImage == BackgroundType.blurred && value.enableBlurEffects,
+          ),
+        ) &&
         !topBarNoBlurRoutes.contains(context.router.current.name);
 
     final blurWidth = (shouldExpand ? expandedWidth : collapsedWidth) + 25;
@@ -110,11 +106,7 @@ class SideNavigationRail extends ConsumerWidget {
                       gradient: LinearGradient(
                         begin: isRtl ? Alignment.centerRight : Alignment.centerLeft,
                         end: isRtl ? Alignment.centerLeft : Alignment.centerRight,
-                        colors: [
-                          surfaceColor.withAlpha(255),
-                          surfaceColor.withAlpha(175),
-                          surfaceColor.withAlpha(0),
-                        ],
+                        colors: [surfaceColor.withAlpha(255), surfaceColor.withAlpha(175), surfaceColor.withAlpha(0)],
                       ),
                     ),
                     child: useBlurredBackground
@@ -128,9 +120,7 @@ class SideNavigationRail extends ConsumerWidget {
                                   Colors.white.withAlpha(175),
                                   Colors.white.withAlpha(0),
                                 ],
-                              ).createShader(
-                                Rect.fromLTRB(0, 0, blurWidth, bounds.height),
-                              );
+                              ).createShader(Rect.fromLTRB(0, 0, blurWidth, bounds.height));
                             },
                             blendMode: BlendMode.dstIn,
                             child: const BackgroundImage(),
@@ -167,21 +157,20 @@ class SideNavigationRail extends ConsumerWidget {
                               keepVisible: !(largeBar && expandedSideBar),
                               icon: Icon(
                                 largeBar && expandedSideBar ? IconsaxPlusLinear.sidebar_left : IconsaxPlusLinear.menu,
-                                color: Theme.of(context).colorScheme.onSurface.withValues(
-                                      alpha: largeBar && expandedSideBar ? 0.65 : 1,
-                                    ),
+                                color: Theme.of(context).colorScheme.onSurface
+                                    .withValues(alpha: largeBar && expandedSideBar ? 0.65 : 1),
                               ),
                               onPressed: !largeBar
                                   ? () => scaffoldKey.currentState?.openDrawer()
                                   : () => ref
-                                      .read(clientSettingsProvider.notifier)
-                                      .update((state) => state.copyWith(expandSideBar: !state.expandSideBar)),
+                                        .read(clientSettingsProvider.notifier)
+                                        .update((state) => state.copyWith(expandSideBar: !state.expandSideBar)),
                             ),
                           ),
                           if (largeBar) ...[
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4).copyWith(bottom: expandedSideBar ? 10 : 0),
+                              padding: const EdgeInsets.symmetric(horizontal: 4)
+                                  .copyWith(bottom: expandedSideBar ? 10 : 0),
                               child: AnimatedFadeSize(
                                 duration: const Duration(milliseconds: 250),
                                 child: shouldExpand ? actionButton(context).extended : actionButton(context).normal,
@@ -197,15 +186,16 @@ class SideNavigationRail extends ConsumerWidget {
                               shouldExpand: shouldExpand,
                             ),
                           ),
-                          NavigationButton(
-                            label: context.localized.calendarTitle,
-                            selected: currentLocation.contains(const CalendarRoute().routeName),
-                            selectedIcon: const Icon(IconsaxPlusBold.calendar_1),
-                            icon: const Icon(IconsaxPlusLinear.calendar_1),
-                            horizontal: true,
-                            expanded: shouldExpand,
-                            onPressed: () => context.router.push(const CalendarRoute()),
-                          ),
+                          if (!ref.watch(offlineStateProvider))
+                            NavigationButton(
+                              label: context.localized.calendarTitle,
+                              selected: currentLocation.contains(const CalendarRoute().routeName),
+                              selectedIcon: const Icon(IconsaxPlusBold.calendar_1),
+                              icon: const Icon(IconsaxPlusLinear.calendar_1),
+                              horizontal: true,
+                              expanded: shouldExpand,
+                              onPressed: () => context.router.push(const CalendarRoute()),
+                            ),
                           NavigationButton(
                             label: context.localized.settings,
                             selected: currentLocation.contains(const SettingsRoute().routeName),
@@ -214,7 +204,8 @@ class SideNavigationRail extends ConsumerWidget {
                             expanded: shouldExpand,
                             icon: const SizedBox.shrink(),
                             customIcon: const ExcludeFocusTraversal(
-                                child: SizedBox.square(dimension: 40, child: SettingsUserIcon())),
+                              child: SizedBox.square(dimension: 40, child: SettingsUserIcon()),
+                            ),
                             onPressed: () {
                               if (AdaptiveLayout.layoutModeOf(context) == LayoutMode.single) {
                                 context.router.push(const SettingsRoute());
