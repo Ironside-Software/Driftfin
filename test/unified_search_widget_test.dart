@@ -59,6 +59,9 @@ class _SeerrUser extends SeerrUser {
 }
 
 class _Config extends ServerIntegrationConfigNotifier {
+  @override
+  Future<void> load() async {}
+
   _Config(super.ref) {
     state = ServerIntegrationConfig.managed(
       const PluginCapabilities(

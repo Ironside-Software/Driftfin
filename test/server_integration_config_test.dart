@@ -20,6 +20,9 @@ import 'package:driftfin/providers/trakt_provider.dart';
 /// Test double for the plugin config provider so we can drive managed state
 /// without hitting the network.
 class _FakeServerIntegrationConfig extends ServerIntegrationConfigNotifier {
+  @override
+  Future<void> load() async {}
+
   _FakeServerIntegrationConfig(super.ref, ServerIntegrationConfig? initial) {
     state = initial;
   }

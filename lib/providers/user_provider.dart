@@ -16,7 +16,6 @@ import 'package:driftfin/models/seerr_credentials_model.dart';
 import 'package:driftfin/models/settings/home_settings_model.dart';
 import 'package:driftfin/providers/api_provider.dart';
 import 'package:driftfin/providers/image_provider.dart';
-import 'package:driftfin/providers/server_integration_config_provider.dart';
 import 'package:driftfin/providers/service_provider.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/sync_provider.dart';
@@ -80,39 +79,12 @@ class User extends _$User {
           hasConfiguredPassword: user.hasConfiguredPassword ?? false,
           hasPassword: user.hasPassword ?? false,
         );
-        await _loadServerIntegrationConfig();
         return response.copyWith(body: state);
       }
     } catch (e) {
       return null;
     }
     return null;
-  }
-
-  /// Pulls the optional Driftfin plugin's server-wide integration config and
-  /// applies the Seerr part (the *.arr/Trakt providers listen for it
-  /// themselves). A missing plugin leaves everything on local settings.
-  Future<void> _loadServerIntegrationConfig() async {
-    final account = state;
-    await ref.read(serverIntegrationConfigProvider.notifier).load();
-    if (!ref.mounted || account == null || state?.sameIdentity(account) != true) return;
-    final config = ref.read(serverIntegrationConfigProvider);
-
-    // A server-wide local URL from the plugin applies to every user on the
-    // server, so adopt it as this device's local URL when present.
-    final pluginLocalUrl = config?.localUrl.trim() ?? '';
-    if (pluginLocalUrl.isNotEmpty) {
-      setLocalURL(pluginLocalUrl);
-    }
-
-    final seerr = config?.seerr;
-    if (seerr != null && seerr.isManaged && !seerr.viaPlugin) {
-      // Adopt only the server-provided URL. Injecting the shared admin API key
-      // here authenticated every user as the admin; instead each user signs in
-      // to Seerr as themselves (Jellyfin/local login yields a per-user session
-      // cookie), so we leave the credentials for the connection dialog to set.
-      setSeerrServerUrl(seerr.url);
-    }
   }
 
   void setRememberAudioSelections() async {
@@ -325,14 +297,12 @@ class User extends _$User {
   Future<void> logoutUser() async {
     await ref.read(videoPlayerProvider).stop();
     if (state == null) return;
-    ref.read(serverIntegrationConfigProvider.notifier).clear();
     userState = null;
   }
 
   Future<void> forceLogoutUser(AccountModel account) async {
     userState = account;
     await api.sessionsLogoutPost();
-    ref.read(serverIntegrationConfigProvider.notifier).clear();
     userState = null;
   }
 
