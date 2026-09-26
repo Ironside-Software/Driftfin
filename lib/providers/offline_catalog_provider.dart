@@ -13,17 +13,22 @@ final offlineCatalogProvider = StreamProvider.autoDispose<List<SyncedItem>>((ref
   final userId = ref.watch(userProvider.select((user) => user?.id));
   if (kIsWeb || userId == null) return Stream.value(const []);
   ref.watch(activeDownloadTasksProvider);
-  return ref.watch(syncProvider.notifier).watchAllItems().map(availableOfflineItems);
+  return ref.watch(syncProvider.notifier).watchAllItems().asyncMap(availableOfflineItems);
 });
 
-List<SyncedItem> availableOfflineItems(List<SyncedItem> items) => items.where((item) {
-  if (item.syncing || item.markedForDelete || !item.hasVideoFile || item.itemModel == null) return false;
-  try {
-    return item.videoFile.existsSync() && item.videoFile.lengthSync() > 0;
-  } on FileSystemException {
-    return false;
+Future<List<SyncedItem>> availableOfflineItems(List<SyncedItem> items) async {
+  final available = <SyncedItem>[];
+  for (final item in items) {
+    if (item.syncing || item.markedForDelete || item.videoFileName?.isNotEmpty != true || item.itemModel == null) {
+      continue;
+    }
+    // Source size is optional; the local file is authoritative. Await each stat
+    // to keep filesystem work off the UI isolate and bound concurrent requests.
+    final stat = await item.videoFile.stat();
+    if (stat.type == FileSystemEntityType.file && stat.size > 0) available.add(item);
   }
-}).toList();
+  return available;
+}
 
 /// One next unwatched regular episode per series, ordered by season and episode.
 /// Only downloaded episodes participate; gaps cannot be filled without the server.

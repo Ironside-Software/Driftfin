@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:driftfin/models/items/episode_model.dart';
+import 'package:driftfin/models/items/audio_model.dart';
 import 'package:driftfin/models/playback/playback_model.dart';
 import 'package:driftfin/models/syncing/sync_item.dart';
 import 'package:driftfin/models/video_stream_model.dart';
@@ -59,9 +60,22 @@ class _OfflineCatalogScreenState extends ConsumerState<OfflineCatalogScreen> {
       if (model == null) throw StateError('Download unavailable');
       final start = await model.startDuration() ?? Duration.zero;
       if (!mounted) return;
-      final loaded = await ref.read(videoPlayerProvider.notifier).loadPlaybackItem(model, start);
+      final player = ref.read(videoPlayerProvider.notifier);
+      final audio = model.item;
+      final bool loaded;
+      if (audio is AudioModel) {
+        final queue = model.queue.whereType<AudioModel>().toList();
+        var index = queue.indexWhere((track) => track.id == audio.id);
+        if (index < 0) {
+          queue.add(audio);
+          index = queue.length - 1;
+        }
+        loaded = await player.loadAudioPlaybackItem(model, queue, index, start);
+      } else {
+        loaded = await player.loadPlaybackItem(model, start);
+      }
       if (!loaded) throw StateError('Playback unavailable');
-      if (mounted) await ref.read(videoPlayerProvider.notifier).openPlayer(context);
+      if (mounted && audio is! AudioModel) await player.openPlayer(context);
     } catch (_) {
       if (!mounted) return;
       ref.invalidate(offlineCatalogProvider);
