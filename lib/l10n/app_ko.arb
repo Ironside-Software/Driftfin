@@ -1738,5 +1738,7 @@
   "offlineReconnect": "Reconnect",
   "offlineCatalogError": "Could not load downloads.",
   "offlineEmpty": "No downloads available on this device.",
-  "offlineEmptyHint": "Download media while connected to watch it offline."
+  "offlineEmptyHint": "Download media while connected to watch it offline.",
+  "secondarySubtitle": "보조 자막",
+  "secondarySubtitleRequiresMpv": "libmpv 플레이어가 필요합니다"
 }

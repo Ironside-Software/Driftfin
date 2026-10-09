@@ -394,7 +394,7 @@ class _VideoOptionsMobileState extends ConsumerState<VideoOptions> {
   }
 }
 
-Future<void> showSubSelection(BuildContext context) {
+Future<void> showSubSelection(BuildContext context, {bool secondary = false}) {
   return showDialog(
     context: context,
     builder: (context) {
@@ -402,13 +402,14 @@ Future<void> showSubSelection(BuildContext context) {
         builder: (context, ref, child) {
           final playbackModel = ref.watch(playBackModel);
           final player = ref.watch(videoPlayerProvider);
+          final secondaryIndex = ref.watch(secondarySubtitleProvider);
           return SimpleDialog(
             contentPadding: const EdgeInsets.only(top: 8, bottom: 24),
             title: Row(
               children: [
-                Text(context.localized.subtitle),
+                Flexible(child: Text(secondary ? context.localized.secondarySubtitle : context.localized.subtitle)),
                 const Spacer(),
-                if (player.backend == PlayerOptions.libMPV || player.backend == PlayerOptions.libMDK)
+                if (!secondary && (player.backend == PlayerOptions.libMPV || player.backend == PlayerOptions.libMDK))
                   IconButton.outlined(
                     onPressed: () {
                       Navigator.pop(context);
@@ -418,23 +419,58 @@ Future<void> showSubSelection(BuildContext context) {
                   ),
               ],
             ),
-            children: playbackModel?.subStreams?.mapIndexed((index, subModel) {
-              final selected = playbackModel.mediaStreams?.defaultSubStreamIndex == subModel.index;
-              return ListTile(
-                title: Text(subModel.label(context)),
-                tileColor: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3) : null,
-                subtitle: subModel.language.isNotEmpty
-                    ? Opacity(opacity: 0.6, child: Text(subModel.language.capitalize()))
-                    : null,
-                onTap: () async {
-                  final newModel = await playbackModel.setSubtitle(subModel, player);
-                  ref.read(playBackModel.notifier).update((state) => newModel);
-                  if (newModel != null) {
-                    await ref.read(playbackModelHelper).shouldReload(newModel);
-                  }
-                },
-              );
-            }).toList(),
+            children: [
+              if (!secondary)
+                ListTile(
+                  title: Text(context.localized.secondarySubtitle),
+                  subtitle: Text(
+                    player.capabilities.secondarySubtitles
+                        ? (playbackModel?.subStreams
+                                  ?.firstWhereOrNull((stream) => stream.index == secondaryIndex)
+                                  ?.label(context) ??
+                              context.localized.off)
+                        : context.localized.secondarySubtitleRequiresMpv,
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  enabled: player.capabilities.secondarySubtitles && playbackModel != null,
+                  onTap: () => showSubSelection(context, secondary: true),
+                ),
+              ...?playbackModel?.subStreams?.map((subModel) {
+                final selected = secondary
+                    ? secondaryIndex == subModel.index
+                    : playbackModel.mediaStreams?.defaultSubStreamIndex == subModel.index;
+                return ListTile(
+                  title: Text(subModel.label(context)),
+                  selected: selected,
+                  tileColor: selected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.3) : null,
+                  enabled:
+                      !secondary ||
+                      (player.capabilities.secondarySubtitles &&
+                          (subModel.index == -1 ||
+                              subModel.index != playbackModel.mediaStreams?.defaultSubStreamIndex)),
+                  subtitle: subModel.language.isNotEmpty
+                      ? Opacity(opacity: 0.6, child: Text(subModel.language.capitalize()))
+                      : null,
+                  onTap: () async {
+                    try {
+                      if (secondary) {
+                        await player.setSecondarySubtitleTrack(subModel, playbackModel);
+                      } else {
+                        final newModel = await playbackModel.setSubtitle(subModel, player);
+                        ref.read(playBackModel.notifier).update((state) => newModel);
+                        if (newModel != null) {
+                          await ref.read(playbackModelHelper).shouldReload(newModel);
+                        }
+                      }
+                    } catch (_) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(context.localized.error)));
+                      }
+                    }
+                  },
+                );
+              }),
+            ],
           );
         },
       );

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 import 'package:async/async.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:media_kit/media_kit.dart' as mpv;
 import 'package:media_kit_video/media_kit_video.dart';
@@ -26,6 +25,7 @@ import 'package:driftfin/wrappers/players/base_player.dart';
 import 'package:driftfin/wrappers/players/playback_retry_policy.dart';
 import 'package:driftfin/wrappers/players/player_capabilities.dart';
 import 'package:driftfin/wrappers/players/player_states.dart';
+import 'package:driftfin/wrappers/players/mpv_secondary_subtitle.dart';
 
 class LibMPV extends BasePlayer {
   LibMPV({this._retryPolicy = const PlaybackRetryPolicy()});
@@ -38,6 +38,7 @@ class LibMPV extends BasePlayer {
     errorReporting: true,
     subtitleDelay: true,
     crossfade: true,
+    secondarySubtitles: !kIsWeb,
   );
 
   mpv.Player? _player;
@@ -264,6 +265,9 @@ class LibMPV extends BasePlayer {
     _firstLoadAttempt = DateTime.now();
     setState(lastState.clearError());
 
+    if (_player?.platform is mpv.NativePlayer) {
+      await (_player!.platform as mpv.NativePlayer).setProperty('secondary-sid', 'no');
+    }
     await setStartPosition(startPosition);
 
     await _player?.open(mpv.Media(url), play: play);
@@ -549,9 +553,14 @@ class LibMPV extends BasePlayer {
       await _player?.setSubtitleTrack(mpv.SubtitleTrack.no());
       return -1;
     }
-    final index = playbackModel.subStreams?.sublist(1).indexWhere((element) => element.id == wantedSubtitle.id) ?? -1;
+    final index =
+        playbackModel.subStreams
+            ?.where((stream) => stream.index != -1 && !stream.isExternal)
+            .toList()
+            .indexWhere((element) => element.id == wantedSubtitle.id) ??
+        -1;
     if (!wantedSubtitle.isExternal) await _awaitTrack(index, (tracks) => tracks.subtitle.length);
-    final internalTrack = subTracks.getRange(2, subTracks.length).toList();
+    final internalTrack = subTracks.skip(2).toList();
     final subTrack = internalTrack.elementAtOrNull(index);
     if (wantedSubtitle.isExternal && wantedSubtitle.url != null) {
       await _player?.setSubtitleTrack(mpv.SubtitleTrack.uri(wantedSubtitle.url!));
@@ -559,6 +568,29 @@ class LibMPV extends BasePlayer {
       await _player?.setSubtitleTrack(subTrack);
     }
     return wantedSubtitle.index;
+  }
+
+  @override
+  Future<int> setSecondarySubtitleTrack(SubStreamModel? model, PlaybackModel playbackModel) async {
+    final platform = _player?.platform;
+    if (platform is! mpv.NativePlayer) return -1;
+    if (model != null && model.index != -1 && !model.isExternal) {
+      final index =
+          playbackModel.subStreams
+              ?.where((stream) => stream.index != -1 && !stream.isExternal)
+              .toList()
+              .indexWhere((stream) => stream.id == model.id) ??
+          -1;
+      await _awaitTrack(index, (tracks) => tracks.subtitle.length);
+    }
+    return selectMpvSecondarySubtitle(
+      subtitle: model,
+      streams: playbackModel.subStreams ?? [],
+      embeddedTrackIds: subTracks.skip(2).where((track) => !track.uri && !track.data).map((track) => track.id).toList(),
+      getProperty: platform.getProperty,
+      setProperty: platform.setProperty,
+      command: platform.command,
+    );
   }
 
   @override
@@ -645,8 +677,6 @@ class _VideoSubtitles extends ConsumerStatefulWidget {
 
 class _VideoSubtitlesState extends ConsumerState<_VideoSubtitles> {
   late List<String> subtitle;
-  String _cachedSubtitleText = '';
-  List<String>? _lastSubtitleList;
   StreamSubscription<List<String>>? subscription;
 
   double? _cachedMenuHeight;
@@ -659,7 +689,6 @@ class _VideoSubtitlesState extends ConsumerState<_VideoSubtitles> {
       if (mounted) {
         setState(() {
           subtitle = value;
-          _lastSubtitleList = null;
         });
       }
     });
@@ -678,18 +707,8 @@ class _VideoSubtitlesState extends ConsumerState<_VideoSubtitles> {
     final settings = ref.watch(subtitleSettingsProvider);
     final padding = MediaQuery.paddingOf(context);
 
-    if (!const ListEquality().equals(subtitle, _lastSubtitleList)) {
-      _lastSubtitleList = List<String>.from(subtitle);
-      _cachedSubtitleText = subtitle.where((line) => line.trim().isNotEmpty).map((line) => line.trim()).join('\n');
-    }
-
-    final text = _cachedSubtitleText;
-
     final bool isLibassEnabled = widget.controller.player.platform?.configuration.libass ?? false;
-
-    if (shouldHideOverlay(isLibassEnabled: isLibassEnabled, text: text)) {
-      return const SizedBox.shrink();
-    }
+    if (isLibassEnabled) return const SizedBox.shrink();
 
     final offset = SubtitlePositionCalculator.calculateOffset(
       settings: settings,
@@ -698,7 +717,7 @@ class _VideoSubtitlesState extends ConsumerState<_VideoSubtitles> {
       menuHeight: _cachedMenuHeight,
     );
 
-    return SubtitleText(subModel: settings, padding: padding, offset: offset, text: text);
+    return DualSubtitleOverlay(subtitles: subtitle, settings: settings, padding: padding, primaryOffset: offset);
   }
 
   void _measureMenuHeight() {
@@ -715,4 +734,31 @@ class _VideoSubtitlesState extends ConsumerState<_VideoSubtitles> {
       }
     });
   }
+}
+
+/// media_kit emits primary and secondary text in separate slots.
+class DualSubtitleOverlay extends StatelessWidget {
+  final List<String> subtitles;
+  final SubtitleSettingsModel settings;
+  final EdgeInsets padding;
+  final double primaryOffset;
+
+  const DualSubtitleOverlay({
+    super.key,
+    required this.subtitles,
+    required this.settings,
+    required this.padding,
+    required this.primaryOffset,
+  });
+
+  @override
+  Widget build(BuildContext context) => Stack(
+    fit: StackFit.expand,
+    children: [
+      if (subtitles.isNotEmpty && subtitles[0].trim().isNotEmpty)
+        SubtitleText(subModel: settings, padding: padding, offset: primaryOffset, text: subtitles[0].trim()),
+      if (subtitles.length > 1 && subtitles[1].trim().isNotEmpty)
+        SubtitleText(subModel: settings, padding: padding, offset: 0.9, text: subtitles[1].trim()),
+    ],
+  );
 }

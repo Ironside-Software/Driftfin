@@ -27,6 +27,9 @@ class PlayerCapabilities {
   /// Supports a gapless crossfade between two tracks/streams.
   final bool crossfade;
 
+  /// Supports displaying an independently selected second subtitle track.
+  final bool secondarySubtitles;
+
   const PlayerCapabilities({
     this.screenshots = false,
     this.audioDsp = false,
@@ -35,6 +38,7 @@ class PlayerCapabilities {
     this.errorReporting = false,
     this.subtitleDelay = false,
     this.crossfade = false,
+    this.secondarySubtitles = false,
   });
 
   /// A backend that supports none of the optional capabilities.
@@ -51,21 +55,24 @@ class PlayerCapabilities {
           perTitleZoomPan == other.perTitleZoomPan &&
           errorReporting == other.errorReporting &&
           subtitleDelay == other.subtitleDelay &&
-          crossfade == other.crossfade;
+          crossfade == other.crossfade &&
+          secondarySubtitles == other.secondarySubtitles;
 
   @override
   int get hashCode => Object.hash(
-        screenshots,
-        audioDsp,
-        ambientGlow,
-        perTitleZoomPan,
-        errorReporting,
-        subtitleDelay,
-        crossfade,
-      );
+    screenshots,
+    audioDsp,
+    ambientGlow,
+    perTitleZoomPan,
+    errorReporting,
+    subtitleDelay,
+    crossfade,
+    secondarySubtitles,
+  );
 
   @override
-  String toString() => 'PlayerCapabilities(screenshots: $screenshots, audioDsp: $audioDsp, '
+  String toString() =>
+      'PlayerCapabilities(screenshots: $screenshots, audioDsp: $audioDsp, '
       'ambientGlow: $ambientGlow, perTitleZoomPan: $perTitleZoomPan, '
-      'errorReporting: $errorReporting, subtitleDelay: $subtitleDelay, crossfade: $crossfade)';
+      'errorReporting: $errorReporting, subtitleDelay: $subtitleDelay, crossfade: $crossfade, secondarySubtitles: $secondarySubtitles)';
 }

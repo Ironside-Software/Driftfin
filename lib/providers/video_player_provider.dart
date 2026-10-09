@@ -26,6 +26,8 @@ bool shouldFallbackToTranscode(PlaybackModel? currentModel) => currentModel is D
 
 final mediaPlaybackProvider = StateProvider<MediaPlaybackModel>((ref) => MediaPlaybackModel());
 
+final secondarySubtitleProvider = StateProvider<int>((ref) => -1);
+
 final playBackModel = StateProvider<PlaybackModel?>((ref) => null);
 
 final videoPlayerProvider = StateNotifierProvider<VideoPlayerNotifier, MediaControlsWrapper>((ref) {

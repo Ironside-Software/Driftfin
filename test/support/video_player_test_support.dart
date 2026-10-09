@@ -116,6 +116,9 @@ class FakeBasePlayer implements BasePlayer {
   Future<int> setSubtitleTrack(model, playbackModel) async => -1;
 
   @override
+  Future<int> setSecondarySubtitleTrack(model, playbackModel) async => model?.index ?? -1;
+
+  @override
   Future<int> setAudioTrack(model, playbackModel) async => -1;
 
   @override
@@ -166,31 +169,22 @@ class FakeVideoPlayerNotifier extends VideoPlayerNotifier {
   }
 }
 
-ItemBaseModel testItem({
-  String id = 'item-1',
-  String name = 'Test Item',
-  Duration? runTime,
-}) =>
-    ItemBaseModel(
-      name: name,
-      id: id,
-      overview: OverviewModel(runTime: runTime),
-      parentId: null,
-      playlistId: null,
-      images: null,
-      childCount: null,
-      primaryRatio: null,
-      userData: const UserData(),
-      canDownload: null,
-      canDelete: null,
-      jellyType: null,
-    );
+ItemBaseModel testItem({String id = 'item-1', String name = 'Test Item', Duration? runTime}) => ItemBaseModel(
+  name: name,
+  id: id,
+  overview: OverviewModel(runTime: runTime),
+  parentId: null,
+  playlistId: null,
+  images: null,
+  childCount: null,
+  primaryRatio: null,
+  userData: const UserData(),
+  canDownload: null,
+  canDelete: null,
+  jellyType: null,
+);
 
-PlaybackModel testPlaybackModel({
-  ItemBaseModel? item,
-  List<ItemBaseModel> queue = const [],
-  List<Chapter>? chapters,
-}) {
+PlaybackModel testPlaybackModel({ItemBaseModel? item, List<ItemBaseModel> queue = const [], List<Chapter>? chapters}) {
   return DirectPlaybackModel(
     item: item ?? testItem(),
     media: const Media(url: 'https://example.com/video.mp4'),
@@ -200,10 +194,10 @@ PlaybackModel testPlaybackModel({
 }
 
 List<Chapter> testChapters(int count) => List.generate(
-      count,
-      (index) => Chapter(
-        name: 'Chapter $index',
-        imageUrl: '',
-        startPosition: Duration(minutes: index * 10),
-      ),
-    );
+  count,
+  (index) => Chapter(
+    name: 'Chapter $index',
+    imageUrl: '',
+    startPosition: Duration(minutes: index * 10),
+  ),
+);

@@ -21,6 +21,7 @@ void main() {
       expect(capabilities.errorReporting, isTrue);
       expect(capabilities.subtitleDelay, isTrue);
       expect(capabilities.crossfade, isTrue);
+      expect(capabilities.secondarySubtitles, isTrue);
     });
 
     test('LibMDK (FVP/mdk) supports screenshots, subtitle delay and error reporting', () {
@@ -31,6 +32,7 @@ void main() {
       expect(capabilities.audioDsp, isFalse);
       expect(capabilities.ambientGlow, isFalse);
       expect(capabilities.crossfade, isFalse);
+      expect(capabilities.secondarySubtitles, isFalse);
     });
 
     test('NativePlayer (Android-TV ExoPlayer) gray-zones audio DSP and screenshots', () {
@@ -41,6 +43,7 @@ void main() {
       expect(capabilities.audioDsp, isFalse);
       expect(capabilities.ambientGlow, isFalse);
       expect(capabilities.crossfade, isFalse);
+      expect(capabilities.secondarySubtitles, isFalse);
     });
 
     test('web stub reports no optional capabilities', () {
@@ -56,6 +59,7 @@ void main() {
       expect(PlayerCapabilities.none.errorReporting, isFalse);
       expect(PlayerCapabilities.none.subtitleDelay, isFalse);
       expect(PlayerCapabilities.none.crossfade, isFalse);
+      expect(PlayerCapabilities.none.secondarySubtitles, isFalse);
     });
   });
 
@@ -78,6 +82,7 @@ void main() {
     test('not equal when any single field differs', () {
       const base = PlayerCapabilities(screenshots: true, audioDsp: true);
 
+      expect(base, isNot(const PlayerCapabilities(screenshots: true, audioDsp: true, secondarySubtitles: true)));
       expect(base, isNot(const PlayerCapabilities(screenshots: false, audioDsp: true)));
       expect(base, isNot(const PlayerCapabilities(screenshots: true, audioDsp: false)));
       expect(base, isNot(const PlayerCapabilities(screenshots: true, audioDsp: true, ambientGlow: true)));
