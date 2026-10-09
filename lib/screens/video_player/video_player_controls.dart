@@ -87,6 +87,8 @@ class _DesktopControlsState extends ConsumerState<DesktopControls> {
   double? _vDragLastValue;
 
   int? _lastSelectedSubtitleIndex;
+  int? _lastSelectedSecondarySubtitleIndex;
+  String? _subtitleSelectionItemId;
 
   @override
   void initState() {
@@ -937,22 +939,30 @@ class _DesktopControlsState extends ConsumerState<DesktopControls> {
     _vDragLastValue = null;
   }
 
-  void _toggleSubtitles() {
+  Future<void> _toggleSubtitles() async {
     final playbackModel = ref.read(playBackModel);
     final player = ref.read(videoPlayerProvider);
     final subStreams = playbackModel?.subStreams;
 
-    if (subStreams == null || subStreams.isEmpty) return;
+    if (playbackModel == null || subStreams == null || subStreams.isEmpty) return;
+    if (_subtitleSelectionItemId != playbackModel.item.id) {
+      _lastSelectedSubtitleIndex = null;
+      _lastSelectedSecondarySubtitleIndex = null;
+      _subtitleSelectionItemId = playbackModel.item.id;
+    }
 
     // Filter out the "off" track (index == -1)
     final availableSubtitles = subStreams.where((s) => s.index != -1).toList();
     if (availableSubtitles.isEmpty) return;
 
-    final currentIndex = playbackModel?.mediaStreams?.defaultSubStreamIndex ?? -1;
-    if (currentIndex != -1) {
+    final currentIndex = playbackModel.mediaStreams?.defaultSubStreamIndex ?? -1;
+    final secondaryIndex = ref.read(secondarySubtitleProvider);
+    if (currentIndex != -1 || secondaryIndex != -1) {
       // Subtitles are ON -> Turn OFF and remember this index
       _lastSelectedSubtitleIndex = currentIndex;
-      _setSubtitleTrack(SubStreamModel.no(), playbackModel, player);
+      _lastSelectedSecondarySubtitleIndex = secondaryIndex;
+      await player.setSecondarySubtitleTrack(null, playbackModel);
+      await _setSubtitleTrack(SubStreamModel.no(), playbackModel, player);
     } else {
       // Subtitles are OFF -> Turn ON
       if (_lastSelectedSubtitleIndex != null) {
@@ -961,7 +971,11 @@ class _DesktopControlsState extends ConsumerState<DesktopControls> {
           (s) => s.index == _lastSelectedSubtitleIndex,
           orElse: () => availableSubtitles.first,
         );
-        _setSubtitleTrack(lastSub, playbackModel, player);
+        await _setSubtitleTrack(lastSub, playbackModel, player);
+        final secondary = subStreams.where((s) => s.index == _lastSelectedSecondarySubtitleIndex).firstOrNull;
+        if (secondary != null) {
+          await player.setSecondarySubtitleTrack(secondary, ref.read(playBackModel) ?? playbackModel);
+        }
       } else if (availableSubtitles.length == 1) {
         // If only one subtitle is available, just use it
         _setSubtitleTrack(availableSubtitles.first, playbackModel, player);
@@ -978,7 +992,7 @@ class _DesktopControlsState extends ConsumerState<DesktopControls> {
     }
   }
 
-  void _setSubtitleTrack(SubStreamModel subModel, PlaybackModel? playbackModel, dynamic player) async {
+  Future<void> _setSubtitleTrack(SubStreamModel subModel, PlaybackModel? playbackModel, dynamic player) async {
     if (playbackModel == null) return;
     final newModel = await playbackModel.setSubtitle(subModel, player);
     ref.read(playBackModel.notifier).update((state) => newModel);

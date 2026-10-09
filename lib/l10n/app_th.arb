@@ -1297,5 +1297,7 @@
   "offlineReconnect": "Reconnect",
   "offlineCatalogError": "Could not load downloads.",
   "offlineEmpty": "No downloads available on this device.",
-  "offlineEmptyHint": "Download media while connected to watch it offline."
+  "offlineEmptyHint": "Download media while connected to watch it offline.",
+  "secondarySubtitle": "คำบรรยายรอง",
+  "secondarySubtitleRequiresMpv": "ต้องใช้โปรแกรมเล่น libmpv"
 }
