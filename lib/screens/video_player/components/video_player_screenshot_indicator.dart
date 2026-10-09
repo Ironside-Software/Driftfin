@@ -34,32 +34,49 @@ class VideoPlayerScreenshotIndicatorState extends ConsumerState<VideoPlayerScree
     timer = null;
   }
 
-  void onTakeScreenshot(bool cleanScreenshot) async {
-    bool result;
-
-    if (cleanScreenshot) {
-      final playbackModel = ref.watch(playBackModel);
-      final player = ref.watch(videoPlayerProvider);
-      final selectedSubs = playbackModel?.mediaStreams?.currentSubStream;
-      final noSubsModel = await playbackModel?.setSubtitle(SubStreamModel.no(), player);
-
-      ref.read(playBackModel.notifier).update((state) => noSubsModel);
-
-      if (noSubsModel != null) {
-        await ref.read(playbackModelHelper).shouldReload(noSubsModel);
+  Future<void> onTakeScreenshot(bool cleanScreenshot) async {
+    var result = false;
+    try {
+      if (cleanScreenshot) {
+        final playbackModel = ref.read(playBackModel);
+        final player = ref.read(videoPlayerProvider);
+        final primaryIndex = playbackModel?.mediaStreams?.defaultSubStreamIndex ?? -1;
+        final selectedSubs = playbackModel?.subStreams?.where((stream) => stream.index == primaryIndex).firstOrNull;
+        final secondaryIndex = ref.read(secondarySubtitleProvider);
+        final selectedSecondary = playbackModel?.subStreams
+            ?.where((stream) => stream.index == secondaryIndex)
+            .firstOrNull;
+        try {
+          if (playbackModel != null) {
+            await player.setSecondarySubtitleTrack(null, playbackModel);
+            final noSubsModel = await playbackModel.setSubtitle(SubStreamModel.no(), player);
+            ref.read(playBackModel.notifier).state = noSubsModel;
+            if (noSubsModel != null) {
+              await ref.read(playbackModelHelper).shouldReload(noSubsModel);
+            }
+          }
+          result = await ref.read(videoPlayerProvider.notifier).takeScreenshot();
+        } finally {
+          if (playbackModel != null) {
+            try {
+              final restoredModel = await playbackModel.setSubtitle(selectedSubs ?? SubStreamModel.no(), player);
+              ref.read(playBackModel.notifier).state = restoredModel;
+              if (restoredModel != null) {
+                await ref.read(playbackModelHelper).shouldReload(restoredModel);
+              }
+            } finally {
+              await player.setSecondarySubtitleTrack(selectedSecondary, ref.read(playBackModel) ?? playbackModel);
+            }
+          }
+        }
+      } else {
+        result = await ref.read(videoPlayerProvider.notifier).takeScreenshot();
       }
-
-      result = await ref.read(videoPlayerProvider.notifier).takeScreenshot();
-
-      final restoredModel = await playbackModel?.setSubtitle(selectedSubs, player);
-      ref.read(playBackModel.notifier).update((state) => restoredModel);
-
-      if (restoredModel != null) {
-        await ref.read(playbackModelHelper).shouldReload(restoredModel);
-      }
-    } else {
-      result = await ref.read(videoPlayerProvider.notifier).takeScreenshot();
+    } catch (_) {
+      result = false;
     }
+
+    if (!mounted) return;
 
     if (timer == null) {
       timer = RestartableTimer(const Duration(milliseconds: 500), () => onTimerEnd());
@@ -72,6 +89,12 @@ class VideoPlayerScreenshotIndicatorState extends ConsumerState<VideoPlayerScree
       screenshotTaken = result;
       isCleanScreenshot = cleanScreenshot;
     });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -101,11 +124,11 @@ class VideoPlayerScreenshotIndicatorState extends ConsumerState<VideoPlayerScree
                     Text(
                       screenshotTaken
                           ? isCleanScreenshot
-                              ? context.localized.screenshotCleanTaken
-                              : context.localized.screenshotTaken
+                                ? context.localized.screenshotCleanTaken
+                                : context.localized.screenshotTaken
                           : context.localized.errorTakingScreenshot,
                       style: Theme.of(context).textTheme.bodyMedium,
-                    )
+                    ),
                   ],
                 ),
               ),

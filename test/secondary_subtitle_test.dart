@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:driftfin/l10n/generated/app_localizations.dart';
 import 'package:driftfin/models/items/media_streams_model.dart';
 import 'package:driftfin/models/playback/direct_playback_model.dart';
+import 'package:driftfin/models/playback/playback_model.dart';
 import 'package:driftfin/models/settings/subtitle_settings_model.dart';
 import 'package:driftfin/providers/shared_provider.dart';
 import 'package:driftfin/providers/video_player_provider.dart';
@@ -15,6 +16,24 @@ import 'package:driftfin/wrappers/players/player_capabilities.dart';
 
 import 'mpv_secondary_subtitle_test.dart' show subtitle;
 import 'support/video_player_test_support.dart';
+
+class _PrimarySubtitlePlayer extends FakeBasePlayer {
+  _PrimarySubtitlePlayer() : super(capabilities: const PlayerCapabilities(secondarySubtitles: true));
+
+  @override
+  Future<int> setSubtitleTrack(model, playbackModel) async => model?.index ?? -1;
+}
+
+class _PickerPlaybackHelper extends PlaybackModelHelper {
+  _PickerPlaybackHelper({required super.ref});
+
+  int reloadChecks = 0;
+
+  @override
+  Future<void> shouldReload(PlaybackModel playbackModel) async {
+    reloadChecks++;
+  }
+}
 
 void main() {
   late ProviderContainer container;
@@ -47,6 +66,7 @@ void main() {
         sharedPreferencesProvider.overrideWithValue(prefs),
         videoPlayerProvider.overrideWith((ref) => FakeVideoPlayerNotifier(ref)),
         playBackModel.overrideWith((ref) => model),
+        playbackModelHelper.overrideWith((ref) => _PickerPlaybackHelper(ref: ref)),
       ],
     );
     notifier = container.read(videoPlayerProvider.notifier) as FakeVideoPlayerNotifier;
@@ -63,6 +83,23 @@ void main() {
     expect(container.read(secondarySubtitleProvider), 7);
     await notifier.state.setSecondarySubtitleTrack(SubStreamModel.no(), model);
     expect(container.read(secondarySubtitleProvider), -1);
+  });
+
+  test('bitmap subtitle selection is rejected without replacing the secondary track', () async {
+    await notifier.state.setSecondarySubtitleTrack(model.subStreams.last, model);
+    for (final codec in [
+      'pgs',
+      'PGSSUB',
+      'hdmv_pgs_subtitle',
+      'dvdsub',
+      'dvd_subtitle',
+      'vobsub',
+      'dvbsub',
+      'dvb_subtitle',
+    ]) {
+      await notifier.state.setSecondarySubtitleTrack(subtitle(8).copyWith(codec: codec), model);
+      expect(container.read(secondarySubtitleProvider), 7, reason: codec);
+    }
   });
 
   test('selecting the secondary track as primary disables the duplicate', () async {
@@ -122,6 +159,40 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('primary picker promotes secondary track and clears the duplicate', (tester) async {
+    await notifier.state.setup(_PrimarySubtitlePlayer());
+    await notifier.state.setSecondarySubtitleTrack(model.subStreams.last, model);
+    await pumpPicker(tester);
+    await tester.tap(find.text('Subtitle 7').last);
+    await tester.pumpAndSettle();
+
+    expect(container.read(playBackModel)?.mediaStreams?.defaultSubStreamIndex, 7);
+    expect(container.read(secondarySubtitleProvider), -1);
+    expect(tester.widget<ListTile>(find.widgetWithText(ListTile, 'Subtitle 7')).selected, isTrue);
+    expect((container.read(playbackModelHelper) as _PickerPlaybackHelper).reloadChecks, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('secondary picker disables bitmap tracks but keeps text tracks and Off selectable', (tester) async {
+    final streams = model.mediaStreams!.versionStreams.first.subStreams;
+    streams.addAll([
+      subtitle(8).copyWith(codec: 'pgssub'),
+      subtitle(9).copyWith(codec: 'dvdsub'),
+      subtitle(10).copyWith(codec: 'dvbsub'),
+    ]);
+    await pumpPicker(tester);
+    // Primary subtitles still support bitmap formats.
+    expect(tester.widget<ListTile>(find.widgetWithText(ListTile, 'Subtitle 8')).enabled, isTrue);
+    await tester.tap(find.text('Secondary subtitle'));
+    await tester.pumpAndSettle();
+    for (final index in [8, 9, 10]) {
+      expect(tester.widget<ListTile>(find.widgetWithText(ListTile, 'Subtitle $index').last).enabled, isFalse);
+    }
+    expect(tester.widget<ListTile>(find.widgetWithText(ListTile, 'Subtitle 7').last).enabled, isTrue);
+    expect(tester.widget<ListTile>(find.widgetWithText(ListTile, 'Off').last).enabled, isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('unsupported backend explains the disabled picker', (tester) async {
     await notifier.setupFake();
     await pumpPicker(tester);
@@ -133,10 +204,10 @@ void main() {
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
-        child: MaterialApp(
+        child: const MaterialApp(
           home: Scaffold(
             body: DualSubtitleOverlay(
-              subtitles: const ['Primary\nline two', 'Secondary'],
+              subtitles: ['Primary\nline two', 'Secondary'],
               settings: SubtitleSettingsModel(),
               padding: EdgeInsets.zero,
               primaryOffset: 0.1,

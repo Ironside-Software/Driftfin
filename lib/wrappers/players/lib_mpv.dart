@@ -265,8 +265,8 @@ class LibMPV extends BasePlayer {
     _firstLoadAttempt = DateTime.now();
     setState(lastState.clearError());
 
-    if (_player?.platform is mpv.NativePlayer) {
-      await (_player!.platform as mpv.NativePlayer).setProperty('secondary-sid', 'no');
+    if (!kIsWeb && _player?.platform is mpv.NativePlayer) {
+      await (_player!.platform as dynamic).setProperty('secondary-sid', 'no');
     }
     await setStartPosition(startPosition);
 
@@ -539,9 +539,12 @@ class LibMPV extends BasePlayer {
 
   @override
   Future<void> setSubtitleDelay(Duration delay) async {
-    if (_player?.platform is mpv.NativePlayer) {
-      // mpv expects sub-delay in seconds.
-      await (_player?.platform as dynamic).setProperty('sub-delay', '${delay.inMilliseconds / 1000.0}');
+    if (!kIsWeb && _player?.platform is mpv.NativePlayer) {
+      await setMpvSubtitleDelay(
+        delay,
+        (name, value) async => await (_player!.platform as dynamic).setProperty(name, value),
+        getProperty: (name) async => await (_player!.platform as dynamic).getProperty(name),
+      );
     }
   }
 
@@ -555,14 +558,16 @@ class LibMPV extends BasePlayer {
     }
     final index =
         playbackModel.subStreams
-            ?.where((stream) => stream.index != -1 && !stream.isExternal)
+            ?.where((stream) => stream.index != -1 && !mpvSubtitleUsesExternalStream(stream, playbackModel))
             .toList()
             .indexWhere((element) => element.id == wantedSubtitle.id) ??
         -1;
-    if (!wantedSubtitle.isExternal) await _awaitTrack(index, (tracks) => tracks.subtitle.length);
-    final internalTrack = subTracks.skip(2).toList();
+    if (!mpvSubtitleUsesExternalStream(wantedSubtitle, playbackModel)) {
+      await _awaitTrack(index, (tracks) => tracks.subtitle.length);
+    }
+    final internalTrack = subTracks.skip(2).where((track) => !track.uri && !track.data).toList();
     final subTrack = internalTrack.elementAtOrNull(index);
-    if (wantedSubtitle.isExternal && wantedSubtitle.url != null) {
+    if (mpvSubtitleUsesExternalStream(wantedSubtitle, playbackModel) && wantedSubtitle.url != null) {
       await _player?.setSubtitleTrack(mpv.SubtitleTrack.uri(wantedSubtitle.url!));
     } else if (subTrack != null) {
       await _player?.setSubtitleTrack(subTrack);
@@ -573,11 +578,14 @@ class LibMPV extends BasePlayer {
   @override
   Future<int> setSecondarySubtitleTrack(SubStreamModel? model, PlaybackModel playbackModel) async {
     final platform = _player?.platform;
-    if (platform is! mpv.NativePlayer) return -1;
-    if (model != null && model.index != -1 && !model.isExternal) {
+    if (kIsWeb || platform is! mpv.NativePlayer) return -1;
+    if (model != null && model.index != -1 && !supportsMpvSecondarySubtitle(model)) {
+      throw StateError('Secondary bitmap subtitles are unsupported');
+    }
+    if (model != null && model.index != -1 && !mpvSubtitleUsesExternalStream(model, playbackModel)) {
       final index =
           playbackModel.subStreams
-              ?.where((stream) => stream.index != -1 && !stream.isExternal)
+              ?.where((stream) => stream.index != -1 && !mpvSubtitleUsesExternalStream(stream, playbackModel))
               .toList()
               .indexWhere((stream) => stream.id == model.id) ??
           -1;
@@ -585,11 +593,13 @@ class LibMPV extends BasePlayer {
     }
     return selectMpvSecondarySubtitle(
       subtitle: model,
+      playbackModel: playbackModel,
       streams: playbackModel.subStreams ?? [],
       embeddedTrackIds: subTracks.skip(2).where((track) => !track.uri && !track.data).map((track) => track.id).toList(),
-      getProperty: platform.getProperty,
-      setProperty: platform.setProperty,
-      command: platform.command,
+      // media_kit's Web NativePlayer stub omits the native-only property API.
+      getProperty: (name) async => await (platform as dynamic).getProperty(name),
+      setProperty: (name, value) async => await (platform as dynamic).setProperty(name, value),
+      command: (args) async => await (platform as dynamic).command(args),
     );
   }
 

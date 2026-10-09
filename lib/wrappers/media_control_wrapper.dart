@@ -40,6 +40,7 @@ import 'package:driftfin/wrappers/players/lib_mdk.dart'
     if (dart.library.html) 'package:driftfin/stubs/web/lib_mdk_web.dart';
 import 'package:driftfin/wrappers/players/lib_mpv.dart';
 import 'package:driftfin/wrappers/players/native_player.dart';
+import 'package:driftfin/wrappers/players/mpv_secondary_subtitle.dart';
 import 'package:driftfin/wrappers/players/player_capabilities.dart';
 import 'package:driftfin/wrappers/players/player_states.dart';
 
@@ -699,6 +700,7 @@ class MediaControlsWrapper extends BaseAudioHandler implements VideoPlayerContro
 
   Future<void> setSecondarySubtitleTrack(SubStreamModel? model, PlaybackModel playbackModel) async {
     if (!capabilities.secondarySubtitles) return;
+    if (model != null && !supportsMpvSecondarySubtitle(model)) return;
     if (model != null && model.index != -1 && model.index == playbackModel.mediaStreams?.defaultSubStreamIndex) return;
     final index = await _player?.setSecondarySubtitleTrack(model, playbackModel) ?? -1;
     ref.read(secondarySubtitleProvider.notifier).state = index;

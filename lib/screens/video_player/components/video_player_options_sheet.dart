@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:iconsax_plus/iconsax_plus.dart';
 
+import 'package:driftfin/wrappers/players/mpv_secondary_subtitle.dart';
 import 'package:driftfin/models/item_base_model.dart';
 import 'package:driftfin/models/items/episode_model.dart';
 import 'package:driftfin/models/playback/direct_playback_model.dart';
@@ -446,6 +447,7 @@ Future<void> showSubSelection(BuildContext context, {bool secondary = false}) {
                   enabled:
                       !secondary ||
                       (player.capabilities.secondarySubtitles &&
+                          supportsMpvSecondarySubtitle(subModel) &&
                           (subModel.index == -1 ||
                               subModel.index != playbackModel.mediaStreams?.defaultSubStreamIndex)),
                   subtitle: subModel.language.isNotEmpty
